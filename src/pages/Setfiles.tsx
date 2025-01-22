@@ -56,7 +56,6 @@ const SetfilesPage = () => {
   return (
     <div className="flex-1 p-6 ml-[240px]">
       <div className="max-w-[900px] mx-auto mt-8 border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm">
-        {/* Risk Alert */}
         <Alert variant="destructive" className="mb-6 bg-red-50/10 border-red-200/20">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-red-200">
@@ -64,13 +63,11 @@ const SetfilesPage = () => {
           </AlertDescription>
         </Alert>
 
-        {/* Header Section */}
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-softWhite mb-1">Setfiles</h1>
           <p className="text-mediumGray text-sm">Official Setfiles released by FundedEA</p>
         </div>
 
-        {/* Risk Level Selector */}
         <div className="flex gap-2 mb-8 bg-darkBlue/40 p-1 rounded-lg w-fit">
           {riskLevels.map((risk) => (
             <Button
@@ -100,9 +97,7 @@ const SetfilesPage = () => {
           </p>
         </div>
 
-        {/* Main Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Risk Level Card */}
           <Card className="bg-darkBlue/40 border-mediumGray/20">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
@@ -131,7 +126,6 @@ const SetfilesPage = () => {
             </div>
           </Card>
 
-          {/* Symbol Card */}
           <Card className="bg-darkBlue/40 border-mediumGray/20">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
@@ -146,7 +140,6 @@ const SetfilesPage = () => {
             </div>
           </Card>
 
-          {/* Timeframe Card */}
           <Card className="bg-darkBlue/40 border-mediumGray/20">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
@@ -160,9 +153,7 @@ const SetfilesPage = () => {
           </Card>
         </div>
 
-        {/* Profit & Loss and Market Direction Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Profit & Loss Card - spans 2 columns */}
           <div className="md:col-span-2">
             <Card className="bg-darkBlue/40 border-mediumGray/20 h-full">
               <div className="p-4">
@@ -182,19 +173,25 @@ const SetfilesPage = () => {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-mediumGray text-sm">Daily Profit Target:</span>
-                    <Card className="bg-darkBlue/40 border-mediumGray/20 px-3 py-1">
-                      <span className="text-green-400">
-                        ${calculateDailyProfit(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelProfitPercentage(selectedRisk)}%)
+                    <div className="flex items-center px-4 py-2 rounded-lg bg-[#E8F8E6] border border-[#228B22] hover:bg-[#D7F2D1] transition-colors">
+                      <span className="text-[#228B22] font-bold text-sm">
+                        ${calculateDailyProfit(accountBalance, selectedRisk).toFixed(2)}
                       </span>
-                    </Card>
+                      <span className="text-[#228B22] ml-1 text-sm">
+                        ({getRiskLevelProfitPercentage(selectedRisk)}%)
+                      </span>
+                    </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-mediumGray text-sm">Max Daily Loss:</span>
-                    <Card className="bg-darkBlue/40 border-mediumGray/20 px-3 py-1">
-                      <span className="text-red-400">
-                        ${calculateMaxDailyLoss(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelLossPercentage(selectedRisk)}%)
+                    <div className="flex items-center px-4 py-2 rounded-lg bg-[#FDE9E9] border border-[#B22222] hover:bg-[#FCD6D6] transition-colors">
+                      <span className="text-[#B22222] font-bold text-sm">
+                        ${calculateMaxDailyLoss(accountBalance, selectedRisk).toFixed(2)}
                       </span>
-                    </Card>
+                      <span className="text-[#B22222] ml-1 text-sm">
+                        ({getRiskLevelLossPercentage(selectedRisk)}%)
+                      </span>
+                    </div>
                   </div>
                   <div className="mt-4 text-xs text-mediumGray">
                     <p className="mb-1">Important: Use these exact values when configuring your EA</p>
@@ -209,7 +206,6 @@ const SetfilesPage = () => {
             </Card>
           </div>
 
-          {/* Market Direction Card */}
           <div className="md:col-span-1">
             <Card className="bg-darkBlue/40 border-mediumGray/20 h-full">
               <div className="p-4">
@@ -225,7 +221,6 @@ const SetfilesPage = () => {
           </div>
         </div>
 
-        {/* Instructions Section */}
         <div className="space-y-6">
           <h3 className="text-softWhite font-medium">Instructions</h3>
           
@@ -278,7 +273,6 @@ const SetfilesPage = () => {
           </div>
         </div>
 
-        {/* Download Button */}
         <div className="fixed bottom-8 right-8">
           <Button className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 h-12 px-6">
             <Download className="w-5 h-5 mr-2" />
