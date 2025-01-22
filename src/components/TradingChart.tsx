@@ -27,7 +27,9 @@ const TradingChart = () => {
           enable_publishing: false,
           allow_symbol_change: true,
           container_id: containerRef.current.id,
-          hide_side_toolbar: false,
+          hide_side_toolbar: true,
+          hide_volume: true,
+          studies: [],
         });
       }
     };
