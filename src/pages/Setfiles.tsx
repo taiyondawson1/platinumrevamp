@@ -143,7 +143,9 @@ const SetfilesPage = () => {
           <Card className="bg-darkBlue/40 border-mediumGray/20">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-mediumGray text-sm">5 MIN</span>
+                <span className="bg-white/20 text-white text-xs px-2 py-1 rounded">
+                  5 MIN
+                </span>
                 <span className="text-mediumGray text-sm">Timeframe</span>
               </div>
               <p className="text-mediumGray text-sm">
