@@ -252,9 +252,6 @@ const SetfilesPage = () => {
                           Learn more about market analysis
                         </button>
                       </div>
-                      <p className="text-mediumGray text-sm">
-                        Automatically detect current market analysis from 4-day analysis
-                      </p>
                     </div>
                   ) : selectedRisk === "Ultrasoft" ? (
                     <>
