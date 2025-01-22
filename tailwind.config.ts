@@ -24,7 +24,7 @@ export default {
         darkBlue: "#1A1F2C",
         darkGrey: "#1A1A1A",
         
-        // Embossed palette
+        // Clean palette
         softWhite: "#F6F6F7",
         softGray: "#E5E5E5",
         mediumGray: "#8E9196",
@@ -65,10 +65,6 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-      },
-      boxShadow: {
-        'embossed': 'inset -2px -2px 4px rgba(255,255,255,0.05), inset 2px 2px 4px rgba(0,0,0,0.3)',
-        'embossed-hover': 'inset -1px -1px 3px rgba(255,255,255,0.1), inset 1px 1px 3px rgba(0,0,0,0.4)',
       },
     },
   },
