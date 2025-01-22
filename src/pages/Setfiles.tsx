@@ -240,11 +240,12 @@ const SetfilesPage = () => {
                         : "Hand-Free operation"}
                     </span>
                   </div>
+
                   {selectedRisk === "Conservative" || selectedRisk === "Balanced" || selectedRisk === "Aggressive" ? (
                     <div className="space-y-4">
                       <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
                         <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-[#0EA5E9] shadow-[0_0_10px_#0EA5E9] animate-pulse" />
+                          <div className="w-2 h-2 rounded-full bg-[#0EA5E9] shadow-[0_0_10px_#0EA5E9] animate-pulse mt-[-2px]" />
                           <h3 className="text-softWhite font-bold text-lg mb-2">Market Direction</h3>
                         </div>
                         <p className="text-mediumGray text-sm mb-3">
@@ -258,6 +259,7 @@ const SetfilesPage = () => {
                         </button>
                       </div>
                     </div>
+
                   ) : selectedRisk === "Ultrasoft" ? (
                     <>
                       <div className="mb-4">
@@ -441,3 +443,4 @@ const SetfilesPage = () => {
 };
 
 export default SetfilesPage;
+
