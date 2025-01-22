@@ -229,7 +229,6 @@ const SetfilesPage = () => {
                   <div className="flex items-center mb-4">
                     <span className="bg-blue-500/10 text-blue-300 text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full flex items-center gap-1">
                       <CheckCircle className="w-3 h-3" />
-                      Daily Analysis Required
                     </span>
                   </div>
                   {selectedRisk === "Ultrasoft" ? (
@@ -251,18 +250,13 @@ const SetfilesPage = () => {
                     </>
                   ) : selectedRisk === "Conservative" ? (
                     <>
-                      <div className="bg-blue-50/10 p-4 rounded-lg">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs text-blue-400">Daily Analysis Required</span>
-                        </div>
-                        <h3 className="text-lg font-semibold mb-1">Market Direction</h3>
-                        <p className="text-sm text-mediumGray mb-4">
-                          Must be used in accordance with daily market analysis from #daily-analysis
-                        </p>
-                        <Button variant="link" className="text-blue-400 p-0 h-auto">
-                          Learn more about market analysis
-                        </Button>
-                      </div>
+                      <h3 className="text-lg font-semibold mb-1">Market Direction</h3>
+                      <p className="text-sm text-mediumGray mb-4">
+                        Must be used in accordance with daily market analysis from #daily-analysis
+                      </p>
+                      <Button variant="link" className="text-blue-400 p-0 h-auto">
+                        Learn more about market analysis
+                      </Button>
                     </>
                   ) : (
                     <>
