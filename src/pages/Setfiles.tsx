@@ -173,22 +173,22 @@ const SetfilesPage = () => {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-mediumGray text-sm">Daily Profit Target:</span>
-                    <div className="flex items-center px-1 py-0.5 rounded-lg bg-[#1A1F2C] border border-[#228B22] hover:bg-[#1A1F2C]/90 transition-colors">
-                      <span className="text-[#228B22] font-bold text-[10px]">
+                    <div className="flex items-center px-2 py-1 rounded bg-green-500/20 text-green-300">
+                      <span className="font-bold text-[10px]">
                         ${calculateDailyProfit(accountBalance, selectedRisk).toFixed(2)}
                       </span>
-                      <span className="text-[#228B22] ml-0.5 text-[10px]">
+                      <span className="ml-0.5 text-[10px]">
                         ({getRiskLevelProfitPercentage(selectedRisk)}%)
                       </span>
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-mediumGray text-sm">Max Daily Loss:</span>
-                    <div className="flex items-center px-1 py-0.5 rounded-lg bg-[#1A1F2C] border border-[#B22222] hover:bg-[#1A1F2C]/90 transition-colors">
-                      <span className="text-[#B22222] font-bold text-[10px]">
+                    <div className="flex items-center px-2 py-1 rounded bg-red-500/20 text-red-300">
+                      <span className="font-bold text-[10px]">
                         ${calculateMaxDailyLoss(accountBalance, selectedRisk).toFixed(2)}
                       </span>
-                      <span className="text-[#B22222] ml-0.5 text-[10px]">
+                      <span className="ml-0.5 text-[10px]">
                         ({getRiskLevelLossPercentage(selectedRisk)}%)
                       </span>
                     </div>
