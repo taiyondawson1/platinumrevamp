@@ -235,7 +235,7 @@ const SetfilesPage = () => {
                         : "bg-green-500/10 text-green-300"
                     } text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full flex items-center gap-1`}>
                       <CheckCircle className="w-3 h-3" />
-                      Hand-Free operation
+                      {selectedRisk === "Conservative" ? "Daily Analysis Required" : "Hand-Free operation"}
                     </span>
                   </div>
                   {selectedRisk === "Ultrasoft" ? (
