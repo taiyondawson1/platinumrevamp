@@ -20,9 +20,9 @@ const SetfilesPage = () => {
   const riskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
 
   const expertAdvisors = [
-    { id: "zennbot-nexus", name: "Zennbot Nexus" },
-    { id: "zennbot-prime", name: "Zennbot Prime" },
-    { id: "zennbot-zero", name: "Zennbot Zero" },
+    { id: "zennbot-pulse", name: "Zennbot Pulse" },
+    { id: "zennbot-stealth", name: "Zennbot Stealth" },
+    { id: "zennbot-infinity", name: "Zennbot Infinity" },
   ];
 
   const getRiskLevelProfitPercentage = (risk: string): number => {
