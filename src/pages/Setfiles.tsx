@@ -6,8 +6,47 @@ import { useState } from "react";
 
 const SetfilesPage = () => {
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
+  const [accountBalance, setAccountBalance] = useState<number>(100000);
 
   const riskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
+
+  const getRiskLevelProfitPercentage = (risk: string): number => {
+    switch (risk) {
+      case "Ultrasoft":
+        return 1.0;
+      case "Conservative":
+        return 0.4;
+      case "Balanced":
+        return 1.0;
+      case "Aggressive":
+        return 2.5;
+      default:
+        return 1.0;
+    }
+  };
+
+  const getRiskLevelLossPercentage = (risk: string): number => {
+    switch (risk) {
+      case "Ultrasoft":
+        return 4.5;
+      case "Conservative":
+        return 1.1;
+      case "Balanced":
+        return 2.3;
+      case "Aggressive":
+        return 4.5;
+      default:
+        return 2.3;
+    }
+  };
+
+  const calculateDailyProfit = (balance: number, risk: string): number => {
+    return (balance * getRiskLevelProfitPercentage(risk)) / 100;
+  };
+
+  const calculateMaxDailyLoss = (balance: number, risk: string): number => {
+    return (balance * getRiskLevelLossPercentage(risk)) / 100;
+  };
 
   const handleRiskSelect = (risk: string) => {
     console.log("Selected risk level:", risk);
@@ -115,18 +154,23 @@ const SetfilesPage = () => {
                     Enter Account Balance:
                   </label>
                   <input
-                    type="text"
-                    value="100000"
+                    type="number"
+                    value={accountBalance}
+                    onChange={(e) => setAccountBalance(Number(e.target.value))}
                     className="w-full bg-black/40 border border-mediumGray/20 rounded p-2 text-softWhite"
                   />
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-mediumGray text-sm">Daily Profit Target:</span>
-                  <span className="text-green-400">$1,000 (1.0%)</span>
+                  <span className="text-green-400">
+                    ${calculateDailyProfit(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelProfitPercentage(selectedRisk)}%)
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-mediumGray text-sm">Max Daily Loss:</span>
-                  <span className="text-red-400">$2,500 (2.5%)</span>
+                  <span className="text-red-400">
+                    ${calculateMaxDailyLoss(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelLossPercentage(selectedRisk)}%)
+                  </span>
                 </div>
                 
                 {selectedRisk === "Ultrasoft" && (
@@ -135,8 +179,8 @@ const SetfilesPage = () => {
                       Important: Use these exact values when configuring your EA
                     </p>
                     <ul className="space-y-2 text-sm text-mediumGray">
-                      <li>• DailyProfitTarget: 3 (0.3%)</li>
-                      <li>• MaxDailyLoss: 50 (4.5%)</li>
+                      <li>• DailyProfitTarget: {getRiskLevelProfitPercentage(selectedRisk)} ({getRiskLevelProfitPercentage(selectedRisk)}%)</li>
+                      <li>• MaxDailyLoss: {getRiskLevelLossPercentage(selectedRisk)} ({getRiskLevelLossPercentage(selectedRisk)}%)</li>
                     </ul>
                   </div>
                 )}
