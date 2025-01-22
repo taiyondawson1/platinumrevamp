@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import Home from "@/pages/Home";
-import ExpertsPage from "@/pages/Experts";
+import ExpertAdvisorsPage from "@/pages/ExpertAdvisors";
 
 const queryClient = new QueryClient();
 
@@ -20,7 +20,7 @@ function App() {
             <Sidebar />
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/experts" element={<ExpertsPage />} />
+              <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
             </Routes>
           </div>
         </BrowserRouter>

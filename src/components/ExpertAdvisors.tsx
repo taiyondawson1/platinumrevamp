@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
-const Experts = () => {
+const ExpertAdvisors = () => {
   const { toast } = useToast();
 
   const experts = [
@@ -42,7 +42,7 @@ const Experts = () => {
 
   return (
     <div className="p-3 pt-12">
-      <h1 className="text-2xl font-bold text-white mb-3">Experts</h1>
+      <h1 className="text-2xl font-bold text-white mb-3">Home</h1>
       <div className="grid grid-cols-3 gap-3">
         {experts.map((expert) => (
           <Card
@@ -75,4 +75,4 @@ const Experts = () => {
   );
 };
 
-export default Experts;
+export default ExpertAdvisors;
