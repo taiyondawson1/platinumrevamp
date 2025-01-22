@@ -20,7 +20,7 @@ const SetfilesPage = () => {
   const getRiskLevelProfitPercentage = (risk: string): number => {
     switch (risk) {
       case "Ultrasoft":
-        return 1.0;
+        return 0.3;
       case "Conservative":
         return 0.4;
       case "Balanced":
