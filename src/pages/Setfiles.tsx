@@ -199,6 +199,7 @@ const SetfilesPage = () => {
                       <li>• MaxDailyLoss: 450 (4.5%)</li>
                     </ul>
                   </div>
+                  <p className="text-xs text-mediumGray mt-2">Recommended daily targets based on account balance</p>
                 </div>
               </div>
             </Card>
