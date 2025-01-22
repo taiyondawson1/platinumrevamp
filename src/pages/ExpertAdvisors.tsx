@@ -2,9 +2,9 @@ import ExpertAdvisors from "@/components/ExpertAdvisors";
 
 const ExpertAdvisorsPage = () => {
   return (
-    <main className="flex-1 ml-16 p-8">
+    <div className="flex-1">
       <ExpertAdvisors />
-    </main>
+    </div>
   );
 };
 
