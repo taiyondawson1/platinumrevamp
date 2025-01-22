@@ -227,9 +227,9 @@ const SetfilesPage = () => {
               <div className="p-4 flex flex-col justify-between h-full">
                 <div>
                   <div className="flex items-center mb-4">
-                    <span className="bg-green-500/10 text-green-300 text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full flex items-center gap-1">
+                    <span className="bg-blue-500/10 text-blue-300 text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full flex items-center gap-1">
                       <CheckCircle className="w-3 h-3" />
-                      Hand-Free operation
+                      Daily Analysis Required
                     </span>
                   </div>
                   {selectedRisk === "Ultrasoft" ? (
