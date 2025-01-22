@@ -170,36 +170,33 @@ const SetfilesPage = () => {
                 <h3 className="text-softWhite font-medium mb-0">Profit & Loss Limits</h3>
                 <p className="text-xs text-mediumGray mb-4">Recommended daily targets based on account balance</p>
                 <div className="space-y-4">
-
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-mediumGray text-sm block mb-2">
-                        Enter Account Balance:
-                      </label>
-                      <input
-                        type="number"
-                        value={accountBalance}
-                        onChange={(e) => setAccountBalance(Number(e.target.value))}
-                        className="w-full bg-black/40 border border-mediumGray/20 rounded p-2 text-softWhite"
-                      />
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-mediumGray text-sm">Daily Profit Target:</span>
-                      <Card className="bg-darkBlue/40 border-mediumGray/20 px-3 py-1">
-                        <span className="text-green-400">
-                          ${calculateDailyProfit(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelProfitPercentage(selectedRisk)}%)
-                        </span>
-                      </Card>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-mediumGray text-sm">Max Daily Loss:</span>
-                      <Card className="bg-darkBlue/40 border-mediumGray/20 px-3 py-1">
-                        <span className="text-red-400">
-                          ${calculateMaxDailyLoss(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelLossPercentage(selectedRisk)}%)
-                        </span>
-                      </Card>
-                    </div>
-
+                  <div>
+                    <label className="text-mediumGray text-sm block mb-2">
+                      Enter Account Balance:
+                    </label>
+                    <input
+                      type="number"
+                      value={accountBalance}
+                      onChange={(e) => setAccountBalance(Number(e.target.value))}
+                      className="w-full bg-black/40 border border-mediumGray/20 rounded p-2 text-softWhite"
+                    />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-mediumGray text-sm">Daily Profit Target:</span>
+                    <Card className="bg-darkBlue/40 border-mediumGray/20 px-3 py-1">
+                      <span className="text-green-400">
+                        ${calculateDailyProfit(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelProfitPercentage(selectedRisk)}%)
+                      </span>
+                    </Card>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-mediumGray text-sm">Max Daily Loss:</span>
+                    <Card className="bg-darkBlue/40 border-mediumGray/20 px-3 py-1">
+                      <span className="text-red-400">
+                        ${calculateMaxDailyLoss(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelLossPercentage(selectedRisk)}%)
+                      </span>
+                    </Card>
+                  </div>
                   <div className="mt-4 text-xs text-mediumGray">
                     <p className="mb-1">Important: Use these exact values when configuring your EA</p>
                     <ul className="space-y-1">
@@ -295,4 +292,3 @@ const SetfilesPage = () => {
 };
 
 export default SetfilesPage;
-
