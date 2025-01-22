@@ -1,37 +1,27 @@
-import { ArrowDownIcon, ArrowUpIcon } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface MetricCardProps {
   label: string;
-  value: string;
+  value: string | number;
   trend?: "up" | "down";
+  className?: string;
 }
 
-const MetricCard = ({ label, value, trend }: MetricCardProps) => {
+const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
   return (
-    <Card className="bg-black/40 border border-neonBlue/20">
-      <CardContent className="p-6">
-        <p className="text-sm text-lightGrey mb-2">{label}</p>
-        <div className="flex items-center gap-2">
-          <p className="text-2xl font-semibold text-white">{value}</p>
-          {trend && (
-            <span
-              className={cn(
-                "flex items-center text-sm",
-                trend === "up" ? "text-green-500" : "text-red-500"
-              )}
-            >
-              {trend === "up" ? (
-                <ArrowUpIcon className="w-4 h-4" />
-              ) : (
-                <ArrowDownIcon className="w-4 h-4" />
-              )}
-            </span>
+    <div className={cn("metric-card group hover:animate-glow", className)}>
+      <div className="metric-value">
+        <span
+          className={cn(
+            trend === "up" && "text-successGreen",
+            trend === "down" && "text-alertRed"
           )}
-        </div>
-      </CardContent>
-    </Card>
+        >
+          {value}
+        </span>
+      </div>
+      <div className="metric-label">{label}</div>
+    </div>
   );
 };
 
