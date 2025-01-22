@@ -213,7 +213,7 @@ const SetfilesPage = () => {
                   </div>
                   <div className="mt-4 text-xs text-mediumGray">
                     <p className="mb-1">Important: Use these exact values when configuring your EA</p>
-                    <ul className="space-y-1">
+                    <ul className="space-y-1 -mt-5">
                       <li>• DailyProfitTarget: 250 (2.5%)</li>
                       <li>• MaxDailyLoss: 450 (4.5%)</li>
                     </ul>
