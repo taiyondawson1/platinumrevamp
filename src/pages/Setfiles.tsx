@@ -71,8 +71,8 @@ const SetfilesPage = () => {
         </Alert>
 
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-softWhite mb-1">Setfiles</h1>
-          <p className="text-mediumGray text-sm">Official Setfiles released by FundedEA</p>
+          <h1 className="text-2xl font-semibold text-softWhite tracking-tight mb-1">Setfiles</h1>
+          <p className="text-mediumGray text-sm font-normal">Official Setfiles released by FundedEA</p>
         </div>
 
         <div className="flex gap-2 mb-8 bg-darkBlue/40 p-1 rounded-lg w-fit">
@@ -92,8 +92,8 @@ const SetfilesPage = () => {
         </div>
 
         <div className="mb-8">
-          <h2 className="text-lg font-medium text-softWhite mb-2">{selectedRisk}</h2>
-          <p className="text-mediumGray">
+          <h2 className="text-lg font-bold text-softWhite tracking-tight mb-2">{selectedRisk}</h2>
+          <p className="text-mediumGray text-sm font-normal leading-relaxed">
             {selectedRisk === "Balanced" 
               ? "A balanced approach offering higher potential returns while maintaining reasonable risk control"
               : selectedRisk === "Conservative"
@@ -122,9 +122,9 @@ const SetfilesPage = () => {
                    selectedRisk === "Conservative" ? "Low Risk" :
                    selectedRisk === "Ultrasoft" ? "Minimal Risk" : "Medium Risk"}
                 </span>
-                <span className="text-mediumGray text-sm">Risk Level</span>
+                <span className="text-softWhite text-sm font-semibold tracking-tight">Risk Level</span>
               </div>
-              <p className="text-mediumGray text-sm">
+              <p className="text-mediumGray text-sm font-normal">
                 {selectedRisk.toLowerCase()} approach with {
                   selectedRisk === "Aggressive" ? "high" :
                   selectedRisk === "Conservative" ? "low" :
@@ -140,9 +140,9 @@ const SetfilesPage = () => {
                 <span className="bg-blue-500/20 text-blue-300 text-xs px-2 py-1 rounded">
                   XAUUSD
                 </span>
-                <span className="text-mediumGray text-sm">Symbol</span>
+                <span className="text-softWhite text-sm font-semibold tracking-tight">Symbol</span>
               </div>
-              <p className="text-mediumGray text-sm">
+              <p className="text-mediumGray text-sm font-normal">
                 Primary trading instrument
               </p>
             </div>
@@ -154,9 +154,9 @@ const SetfilesPage = () => {
                 <span className="bg-white/20 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
                   <Clock className="w-3 h-3" /> 5 MIN
                 </span>
-                <span className="text-mediumGray text-sm">Timeframe</span>
+                <span className="text-softWhite text-sm font-semibold tracking-tight">Timeframe</span>
               </div>
-              <p className="text-mediumGray text-sm">
+              <p className="text-mediumGray text-sm font-normal">
                 Optimal trading interval for this strategy
               </p>
             </div>
