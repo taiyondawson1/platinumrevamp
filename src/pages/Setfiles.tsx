@@ -194,13 +194,13 @@ const SetfilesPage = () => {
                   </div>
                   
                   {selectedRisk === "Ultrasoft" && (
-                    <div className="mt-6 p-4 bg-black/20 rounded-lg">
-                      <p className="text-softWhite text-sm font-medium mb-3">
+                    <div className="mt-6">
+                      <p className="text-softWhite text-xs mb-2">
                         Important: Use these exact values when configuring your EA
                       </p>
-                      <ul className="space-y-2 text-sm text-mediumGray">
-                        <li>• DailyProfitTarget: {getRiskLevelProfitPercentage(selectedRisk)} ({getRiskLevelProfitPercentage(selectedRisk)}%)</li>
-                        <li>• MaxDailyLoss: {getRiskLevelLossPercentage(selectedRisk)} ({getRiskLevelLossPercentage(selectedRisk)}%)</li>
+                      <ul className="space-y-1 text-xs text-mediumGray">
+                        <li>• DailyProfitTarget: 250 (2.5%)</li>
+                        <li>• MaxDailyLoss: 450 (4.5%)</li>
                       </ul>
                     </div>
                   )}
