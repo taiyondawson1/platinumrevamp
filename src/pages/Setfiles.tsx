@@ -75,9 +75,8 @@ const SetfilesPage = () => {
           {riskLevels.map((risk) => (
             <Button
               key={risk}
-              size="sm"
               onClick={() => handleRiskSelect(risk)}
-              className={`text-xs px-3 py-1 h-7 ${
+              className={`px-6 py-2 h-10 ${
                 risk === selectedRisk
                   ? "bg-white text-black hover:bg-white/90"
                   : "text-mediumGray hover:text-softWhite"
@@ -88,7 +87,6 @@ const SetfilesPage = () => {
           ))}
         </div>
 
-        {/* Description */}
         <div className="mb-8">
           <h2 className="text-lg font-medium text-softWhite mb-2">{selectedRisk}</h2>
           <p className="text-mediumGray">
@@ -282,8 +280,8 @@ const SetfilesPage = () => {
 
         {/* Download Button */}
         <div className="fixed bottom-8 right-8">
-          <Button size="sm" className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 h-8 px-3">
-            <Download className="w-3 h-3 mr-2" />
+          <Button className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 h-12 px-6">
+            <Download className="w-5 h-5 mr-2" />
             Download Setfile
           </Button>
         </div>
