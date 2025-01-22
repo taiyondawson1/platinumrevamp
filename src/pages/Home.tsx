@@ -26,20 +26,20 @@ const Index = () => {
   ];
 
   return (
-    <main className="flex-1 p-6 max-w-[1400px] mx-auto ml-16">
-      <div className="flex flex-col gap-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <main className="flex-1 p-6 max-w-[1200px] mx-auto ml-16">
+      <div className="flex flex-col gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
           {courses.map((course, index) => (
             <div 
               key={index}
-              className="metric-card flex flex-col items-center text-center"
+              className="metric-card flex flex-col items-center text-center p-4"
             >
-              <course.icon className="w-12 h-12 mb-4 text-softWhite" />
-              <h3 className="text-xl font-semibold mb-2 text-softWhite">{course.title}</h3>
-              <p className="text-mediumGray mb-6">{course.description}</p>
+              <course.icon className="w-8 h-8 mb-3 text-softWhite" />
+              <h3 className="text-lg font-semibold mb-2 text-softWhite">{course.title}</h3>
+              <p className="text-sm text-mediumGray mb-4">{course.description}</p>
               <Button
                 onClick={() => window.open(course.url, '_blank')}
-                className="bg-darkBlue hover:bg-darkBlue/80 text-softWhite"
+                className="bg-darkBlue hover:bg-darkBlue/80 text-softWhite text-sm px-4 py-2"
               >
                 Start Learning
               </Button>
@@ -47,8 +47,8 @@ const Index = () => {
           ))}
         </div>
         
-        <div className="flex gap-4">
-          <div className="w-[425px]">
+        <div className="flex gap-4 justify-center">
+          <div className="w-[400px]">
             <TechnicalAnalysisWidget />
           </div>
         </div>
