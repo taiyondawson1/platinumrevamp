@@ -102,7 +102,7 @@ const SetfilesPage = () => {
         </div>
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Risk Level Card */}
           <Card className="bg-darkBlue/40 border-mediumGray/20">
             <div className="p-4">
@@ -132,6 +132,22 @@ const SetfilesPage = () => {
             </div>
           </Card>
 
+          {/* Symbol Card */}
+          <Card className="bg-darkBlue/40 border-mediumGray/20">
+            <div className="p-4">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="bg-blue-500/20 text-blue-300 text-xs px-2 py-1 rounded">
+                  XAUUSD
+                </span>
+                <span className="text-mediumGray text-sm">Symbol</span>
+              </div>
+              <p className="text-mediumGray text-sm">
+                Primary trading instrument
+              </p>
+            </div>
+          </Card>
+
+          {/* Timeframe Card */}
           <Card className="bg-darkBlue/40 border-mediumGray/20">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
