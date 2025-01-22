@@ -2,8 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Download, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useState } from "react";
 
 const SetfilesPage = () => {
+  const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
+
+  const riskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
+
+  const handleRiskSelect = (risk: string) => {
+    console.log("Selected risk level:", risk);
+    setSelectedRisk(risk);
+  };
+
   return (
     <div className="flex-1 p-6 ml-[240px]">
       <div className="max-w-[900px] mx-auto mt-8 border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm">
@@ -23,12 +33,13 @@ const SetfilesPage = () => {
 
         {/* Risk Level Selector */}
         <div className="flex gap-2 mb-8 bg-darkBlue/40 p-1 rounded-lg w-fit">
-          {["Ultrasoft", "Conservative", "Balanced", "Aggressive"].map((risk) => (
+          {riskLevels.map((risk) => (
             <Button
               key={risk}
-              variant={risk === "Balanced" ? "default" : "ghost"}
+              variant={risk === selectedRisk ? "default" : "ghost"}
+              onClick={() => handleRiskSelect(risk)}
               className={`text-sm ${
-                risk === "Balanced"
+                risk === selectedRisk
                   ? "bg-black/60"
                   : "text-mediumGray hover:text-softWhite"
               }`}
@@ -40,9 +51,15 @@ const SetfilesPage = () => {
 
         {/* Description */}
         <div className="mb-8">
-          <h2 className="text-lg font-medium text-softWhite mb-2">Balanced</h2>
+          <h2 className="text-lg font-medium text-softWhite mb-2">{selectedRisk}</h2>
           <p className="text-mediumGray">
-            A balanced approach offering higher potential returns while maintaining reasonable risk control
+            {selectedRisk === "Balanced" 
+              ? "A balanced approach offering higher potential returns while maintaining reasonable risk control"
+              : selectedRisk === "Conservative"
+              ? "A conservative approach focused on capital preservation with moderate returns"
+              : selectedRisk === "Ultrasoft"
+              ? "The safest approach with minimal risk and steady, smaller returns"
+              : "An aggressive approach targeting maximum returns with higher risk tolerance"}
           </p>
         </div>
 
@@ -52,18 +69,31 @@ const SetfilesPage = () => {
           <Card className="bg-darkBlue/40 border-mediumGray/20">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
-                <span className="bg-orange-500/20 text-orange-300 text-xs px-2 py-1 rounded">
-                  Medium Risk
+                <span className={`${
+                  selectedRisk === "Aggressive" 
+                    ? "bg-red-500/20 text-red-300"
+                    : selectedRisk === "Conservative"
+                    ? "bg-blue-500/20 text-blue-300"
+                    : selectedRisk === "Ultrasoft"
+                    ? "bg-green-500/20 text-green-300"
+                    : "bg-orange-500/20 text-orange-300"
+                } text-xs px-2 py-1 rounded`}>
+                  {selectedRisk === "Aggressive" ? "High Risk" : 
+                   selectedRisk === "Conservative" ? "Low Risk" :
+                   selectedRisk === "Ultrasoft" ? "Minimal Risk" : "Medium Risk"}
                 </span>
                 <span className="text-mediumGray text-sm">Risk Level</span>
               </div>
               <p className="text-mediumGray text-sm">
-                Balanced approach with moderate risk
+                {selectedRisk.toLowerCase()} approach with {
+                  selectedRisk === "Aggressive" ? "high" :
+                  selectedRisk === "Conservative" ? "low" :
+                  selectedRisk === "Ultrasoft" ? "minimal" : "moderate"
+                } risk
               </p>
             </div>
           </Card>
 
-          {/* Timeframe Card */}
           <Card className="bg-darkBlue/40 border-mediumGray/20">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
