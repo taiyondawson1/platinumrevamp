@@ -11,8 +11,11 @@ import {
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
@@ -107,6 +110,11 @@ const SetfilesPage = () => {
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-red-950 border-red-900/50 text-red-200 hover:bg-red-900/50 hover:text-red-100">
+              Close
+            </AlertDialogCancel>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
