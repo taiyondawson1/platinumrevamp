@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, Info, Clock, CheckCircle, BarChart, Asterisk } from "lucide-react";
+import { Download, Info, X, Clock, CheckCircle, BarChart, Asterisk } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
 import {
@@ -9,29 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
 const SetfilesPage = () => {
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
   const [accountBalance, setAccountBalance] = useState<number>(100000);
   const [showNewsDialog, setShowNewsDialog] = useState(false);
-  const [selectedEA, setSelectedEA] = useState("platinumai-pulse");
 
   const riskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
-
-  const expertAdvisors = [
-    { id: "platinumai-pulse", name: "PlatinumAI Pulse" },
-    { id: "platinumai-stealth", name: "PlatinumAI Stealth" },
-    { id: "platinumai-infinity", name: "PlatinumAI Infinity" },
-  ];
 
   const getRiskLevelProfitPercentage = (risk: string): number => {
     switch (risk) {
@@ -78,77 +62,16 @@ const SetfilesPage = () => {
 
   return (
     <div className="flex-1 p-6 ml-[240px]">
-      <div className="w-full max-w-[900px] mx-auto mb-8">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Alert variant="destructive" className="bg-red-50/10 border-red-200/20 cursor-pointer hover:bg-red-50/20 transition-colors">
-              <Info className="h-4 w-4" />
-              <AlertDescription className="text-red-200 font-semibold">
-                Important: What You Need to Know About Risk
-              </AlertDescription>
-            </Alert>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="bg-darkBlue/95 border-red-200/20">
-            <AlertDialogHeader>
-              <AlertDialogTitle className="text-xl font-semibold text-red-200">
-                Critical Market Conditions
-              </AlertDialogTitle>
-              <AlertDialogDescription className="space-y-6">
-                <div className="space-y-4 text-mediumGray">
-                  <p>
-                    While FundedEA Quantum's safety features provide robust protection, pay special attention when the EA opens its first trade during a strong trend. In rare cases, sustained market movement against this position may require manual intervention to protect your account.
-                  </p>
-
-                  <div className="space-y-2">
-                    <h3 className="text-softWhite font-medium">Daily Analysis Requirement</h3>
-                    <p>
-                      For Conservative, Balanced, and Aggressive setfiles, it's mandatory to follow our daily market analysis posted in the #daily-analysis channel. This analysis helps optimize your trading by aligning the EA with predicted market direction through the ForceMarketCond parameter.
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h3 className="text-softWhite font-medium">Recommended Safety Measures</h3>
-                    <ul className="list-disc pl-4 space-y-2">
-                      <li>Always disable the EA during high-impact news events</li>
-                      <li>Monitor and close positions if market conditions deteriorate</li>
-                      <li>Check #daily-analysis before each trading session</li>
-                      <li>Update ForceMarketCond according to daily predictions</li>
-                    </ul>
-                  </div>
-                </div>
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-
       <div className="max-w-[900px] mx-auto mt-8 border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-        <div className="relative mb-6">
-          <div className="absolute -top-14 left-1/2 transform -translate-x-1/2 bg-[#00ADB5] text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg border border-[#00ADB5]/20 backdrop-blur-sm">
-            Select Expert Advisor
-          </div>
-          <Tabs 
-            value={selectedEA} 
-            onValueChange={setSelectedEA}
-          >
-            <TabsList className="bg-darkBlue/40 border border-mediumGray/20">
-              {expertAdvisors.map((ea) => (
-                <TabsTrigger
-                  key={ea.id}
-                  value={ea.id}
-                  className="data-[state=active]:bg-[#00ADB5] data-[state=active]:text-white"
-                >
-                  {ea.name}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-        </div>
+        <Alert variant="destructive" className="mb-6 bg-red-50/10 border-red-200/20">
+          <Info className="h-4 w-4" />
+          <AlertDescription className="text-red-200">
+            Important: What You Need to Know About Risk
+          </AlertDescription>
+        </Alert>
 
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-softWhite tracking-tight mb-1">
-            Setfiles for {expertAdvisors.find(ea => ea.id === selectedEA)?.name}
-          </h1>
+          <h1 className="text-2xl font-semibold text-softWhite tracking-tight mb-1">Setfiles</h1>
           <p className="text-mediumGray text-sm font-normal">Official Setfiles released by FundedEA</p>
         </div>
 
@@ -322,12 +245,18 @@ const SetfilesPage = () => {
                     <div className="space-y-4">
                       <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
                         <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-[#0EA5E9] shadow-[0_0_10px_#0EA5E9] animate-pulse mt-[-12px]" />
+                          <div className="w-2 h-2 rounded-full bg-[#0EA5E9] shadow-[0_0_10px_#0EA5E9] animate-pulse mt-[-4px]" />
                           <h3 className="text-softWhite font-bold text-lg mb-2">Market Direction</h3>
                         </div>
                         <p className="text-mediumGray text-sm mb-3">
                           Must be used in accordance with daily market analysis from #daily-analysis
                         </p>
+                        <button 
+                          onClick={() => setShowNewsDialog(true)}
+                          className="text-[#0EA5E9] text-sm hover:underline"
+                        >
+                          Learn more about market analysis
+                        </button>
                       </div>
                     </div>
 
