@@ -6,11 +6,11 @@ const Index = () => {
   return (
     <main className="flex-1 p-6 max-w-[1400px] mx-auto ml-16">
       <div className="flex flex-col gap-4">
-        <div className="flex gap-4">
-          <div className="w-[700px]">
+        <div className="flex gap-4 items-start">
+          <div className="flex-1">
             <ExpertAdvisors />
           </div>
-          <div>
+          <div className="mt-32">
             <TechnicalAnalysisWidget />
           </div>
         </div>
