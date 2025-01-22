@@ -33,7 +33,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-gradient-to-br from-darkNavy to-black text-foreground font-['Inter'];
+    @apply bg-gradient-to-br from-darkBlue to-darkBase text-foreground font-['Inter'];
     min-height: 100vh;
   }
 }

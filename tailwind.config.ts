@@ -19,17 +19,25 @@ export default {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        // Base dark colors
+        darkBase: "#121212",
+        darkBlue: "#1A1F2C",
+        darkGrey: "#1A1A1A",
+        
+        // Accent colors
         neonBlue: "#00ffff",
         vibrantPurple: "#8000ff",
         alertRed: "#ff4c4c",
         successGreen: "#00ff00",
         lightGrey: "#cccccc",
         darkNavy: "#000033",
+
+        // UI Elements
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
