@@ -44,8 +44,8 @@ const TradingChart = () => {
   console.log("TradingView chart container rendered");
 
   return (
-    <div className="chart-container h-[650px] bg-black/20 p-2 rounded-lg w-[98vw]">
-      <h2 className="text-xl font-bold mb-2 text-white">XAUUSD Live Chart</h2>
+    <div className="chart-container h-[600px] bg-black/20 p-1 rounded-lg w-[98vw]">
+      <h2 className="text-lg font-bold mb-1 text-white">XAUUSD Live Chart</h2>
       <div 
         id="tradingview_chart" 
         ref={containerRef} 
