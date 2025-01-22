@@ -55,7 +55,7 @@ const SetfilesPage = () => {
 
   return (
     <div className="flex-1 p-6 ml-[240px]">
-      <div className="max-w-[900px] mx-auto mt-8 border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm">
+      <div className="max-w-[900px] mx-auto mt-8 border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
         <Alert variant="destructive" className="mb-6 bg-red-50/10 border-red-200/20">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-red-200">
@@ -98,7 +98,7 @@ const SetfilesPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-darkBlue/40 border-mediumGray/20">
+          <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
                 <span className={`${
@@ -126,7 +126,7 @@ const SetfilesPage = () => {
             </div>
           </Card>
 
-          <Card className="bg-darkBlue/40 border-mediumGray/20">
+          <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
                 <span className="bg-blue-500/20 text-blue-300 text-xs px-2 py-1 rounded">
@@ -140,7 +140,7 @@ const SetfilesPage = () => {
             </div>
           </Card>
 
-          <Card className="bg-darkBlue/40 border-mediumGray/20">
+          <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
                 <span className="bg-white/20 text-white text-xs px-2 py-1 rounded">
@@ -157,7 +157,7 @@ const SetfilesPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="md:col-span-2">
-            <Card className="bg-darkBlue/40 border-mediumGray/20 h-full">
+            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px_rgba(0,0,0,0.25)] h-full">
               <div className="p-4">
                 <h3 className="text-softWhite font-medium mb-0">Profit & Loss Limits</h3>
                 <p className="text-xs text-mediumGray mb-4">Recommended daily targets based on account balance</p>
@@ -209,7 +209,7 @@ const SetfilesPage = () => {
           </div>
 
           <div className="md:col-span-1">
-            <Card className="bg-darkBlue/40 border-mediumGray/20 h-full">
+            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px_rgba(0,0,0,0.25)] h-full">
               <div className="p-4">
                 <h3 className="text-softWhite font-medium mb-4">Market Direction</h3>
                 <p className="text-mediumGray text-sm mb-4">
