@@ -47,22 +47,22 @@ const ExpertAdvisors = () => {
         {experts.map((expert) => (
           <Card
             key={expert.name}
-            className="bg-black/40 border border-neonBlue/20 hover:border-neonBlue/40 transition-all duration-300"
+            className="metric-card"
           >
             <CardHeader>
               <div className="flex items-center gap-3">
-                <expert.icon className="w-6 h-6 text-neonBlue" />
-                <CardTitle className="text-white">{expert.name}</CardTitle>
+                <expert.icon className="w-6 h-6 text-softWhite" />
+                <CardTitle className="text-softWhite">{expert.name}</CardTitle>
               </div>
-              <CardDescription className="text-lightGrey">
+              <CardDescription className="text-mediumGray">
                 {expert.description}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-lightGrey mb-4">{expert.stats}</p>
+              <p className="text-sm text-mediumGray mb-4">{expert.stats}</p>
               <Button
                 onClick={() => handleActivate(expert.name)}
-                className="w-full bg-neonBlue/10 hover:bg-neonBlue/20 text-neonBlue border border-neonBlue/50"
+                className="w-full bg-black/40 hover:bg-black/60 text-softWhite border border-mediumGray/20"
               >
                 Activate
               </Button>
