@@ -20,7 +20,7 @@ const TradingChart = () => {
           width: "100%",
           height: 600,
           symbol: "OANDA:XAUUSD",
-          interval: "1",
+          interval: "15",
           timezone: "Etc/UTC",
           theme: "dark",
           style: "1",
@@ -30,10 +30,6 @@ const TradingChart = () => {
           allow_symbol_change: true,
           container_id: containerRef.current.id,
           hide_side_toolbar: false,
-          studies: [
-            "RSI@tv-basicstudies",
-            "MASimple@tv-basicstudies",
-          ],
         });
       }
     };
