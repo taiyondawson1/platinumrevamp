@@ -238,7 +238,25 @@ const SetfilesPage = () => {
                       {selectedRisk === "Conservative" ? "Daily Analysis Required" : "Hand-Free operation"}
                     </span>
                   </div>
-                  {selectedRisk === "Ultrasoft" ? (
+                  {selectedRisk === "Conservative" ? (
+                    <div className="space-y-4">
+                      <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
+                        <h3 className="text-softWhite font-bold text-lg mb-2">Market Direction</h3>
+                        <p className="text-mediumGray text-sm mb-3">
+                          Must be used in accordance with daily market analysis from #daily-analysis
+                        </p>
+                        <button 
+                          onClick={() => setShowNewsDialog(true)}
+                          className="text-[#0EA5E9] text-sm hover:underline"
+                        >
+                          Learn more about market analysis
+                        </button>
+                      </div>
+                      <p className="text-mediumGray text-sm">
+                        Automatically detect current market analysis from 4-day analysis
+                      </p>
+                    </div>
+                  ) : selectedRisk === "Ultrasoft" ? (
                     <>
                       <div className="mb-4">
                         <div className="flex items-center gap-2 mb-2">
