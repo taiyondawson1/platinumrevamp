@@ -2,6 +2,7 @@ import Sidebar from "@/components/Sidebar";
 import MetricCard from "@/components/MetricCard";
 import TradingChart from "@/components/TradingChart";
 import StatsGrid from "@/components/StatsGrid";
+import ExpertAdvisors from "@/components/ExpertAdvisors";
 
 const Index = () => {
   return (
@@ -25,6 +26,8 @@ const Index = () => {
         <div className="mb-8">
           <TradingChart />
         </div>
+
+        <ExpertAdvisors />
 
         <StatsGrid />
       </main>
