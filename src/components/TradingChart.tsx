@@ -50,11 +50,11 @@ const TradingChart = () => {
   }, []);
 
   return (
-    <div className="chart-container h-[600px] bg-black/40 p-0 rounded-lg w-full shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-800/50 hover:border-gray-700/50">
+    <div className="chart-container h-[600px] bg-black/40 p-0 overflow-hidden rounded-lg w-full shadow-md hover:shadow-lg transition-shadow duration-200 border border-gray-800/50 hover:border-gray-700/50">
       <div 
         id="tradingview_widget" 
         ref={containerRef} 
-        className="w-full h-full"
+        className="w-full h-full -m-[1px]"
       />
     </div>
   );
