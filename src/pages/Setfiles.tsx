@@ -157,7 +157,7 @@ const SetfilesPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="md:col-span-2">
-            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px rgba(0,0,0,0.25)] h-full">
+            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_8px_32px_rgba(0,0,0,0.4)] h-full">
               <div className="p-4">
                 <h3 className="text-softWhite font-medium mb-0">Profit & Loss Limits</h3>
                 <p className="text-xs text-mediumGray mb-4">Recommended daily targets based on account balance</p>
@@ -209,15 +209,19 @@ const SetfilesPage = () => {
           </div>
 
           <div className="md:col-span-1">
-            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px rgba(0,0,0,0.25)] h-full">
-              <div className="p-4">
-                <h3 className="text-softWhite font-medium mb-4">Market Direction</h3>
-                <p className="text-mediumGray text-sm mb-4">
-                  Automatically detect current market analysis from 4-day analysis
-                </p>
-                <Button variant="link" className="text-blue-400 p-0 h-auto">
-                  Learn more about market analysis
-                </Button>
+            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_8px_32px_rgba(0,0,0,0.4)] h-full">
+              <div className="p-4 flex flex-col justify-between h-full">
+                <div>
+                  <h3 className="text-softWhite font-medium mb-4">Market Direction</h3>
+                  <p className="text-mediumGray text-sm mb-6">
+                    Automatically detect current market analysis from 4-day analysis
+                  </p>
+                </div>
+                <div className="mt-auto">
+                  <Button variant="link" className="text-blue-400 p-0 h-auto">
+                    Learn more about market analysis
+                  </Button>
+                </div>
               </div>
             </Card>
           </div>
