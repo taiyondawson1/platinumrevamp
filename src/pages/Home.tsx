@@ -30,20 +30,18 @@ const Index = () => {
       <div className="flex flex-col gap-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
           {courses.map((course, index) => (
-            <div 
+            <Button
               key={index}
-              className="metric-card flex flex-col items-center text-center p-4"
+              onClick={() => window.open(course.url, '_blank')}
+              variant="outline"
+              className="h-auto p-4 flex flex-col items-center gap-3 bg-darkBlue/50 hover:bg-darkBlue/70 border-mediumGray/20 shadow-embossed hover:shadow-embossed-hover transition-all duration-300"
             >
-              <course.icon className="w-8 h-8 mb-3 text-softWhite" />
-              <h3 className="text-lg font-semibold mb-2 text-softWhite">{course.title}</h3>
-              <p className="text-sm text-mediumGray mb-4">{course.description}</p>
-              <Button
-                onClick={() => window.open(course.url, '_blank')}
-                className="bg-darkBlue hover:bg-darkBlue/80 text-softWhite text-sm px-4 py-2"
-              >
-                Start Learning
-              </Button>
-            </div>
+              <course.icon className="w-6 h-6 text-softWhite" />
+              <div className="space-y-2 text-center">
+                <h3 className="text-base font-semibold text-softWhite">{course.title}</h3>
+                <p className="text-xs text-mediumGray">{course.description}</p>
+              </div>
+            </Button>
           ))}
         </div>
         
