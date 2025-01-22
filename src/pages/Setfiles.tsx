@@ -40,7 +40,7 @@ const SetfilesPage = () => {
               onClick={() => handleRiskSelect(risk)}
               className={`text-sm ${
                 risk === selectedRisk
-                  ? "bg-black/60"
+                  ? "bg-white text-black hover:bg-white/90"
                   : "text-mediumGray hover:text-softWhite"
               }`}
             >
