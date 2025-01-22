@@ -42,8 +42,7 @@ const TechnicalAnalysisWidget = () => {
   console.log("Technical Analysis widget container rendered");
 
   return (
-    <div className="technical-analysis-container bg-black/20 p-4 rounded-lg">
-      <h2 className="text-lg font-bold mb-2 text-white">Technical Analysis</h2>
+    <div className="chart-container">
       <div 
         ref={containerRef}
         className="tradingview-widget-container"
