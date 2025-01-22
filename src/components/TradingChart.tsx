@@ -30,6 +30,8 @@ const TradingChart = () => {
           hide_side_toolbar: true,
           hide_volume: true,
           studies: [],
+          backgroundColor: "rgba(0, 0, 0, 0.2)",
+          gridColor: "rgba(255, 255, 255, 0.05)",
         });
       }
     };
@@ -44,12 +46,11 @@ const TradingChart = () => {
   console.log("TradingView chart container rendered");
 
   return (
-    <div className="chart-container h-[600px] bg-black/20 p-1 rounded-lg w-full max-w-[1200px]">
-      <h2 className="text-lg font-bold mb-1 text-white">XAUUSD Live Chart</h2>
+    <div className="chart-container h-[600px] bg-black/20 p-1 rounded-lg w-full">
       <div 
         id="tradingview_chart" 
         ref={containerRef} 
-        className="w-full h-[calc(100%-2rem)]"
+        className="w-full h-full"
       />
     </div>
   );
