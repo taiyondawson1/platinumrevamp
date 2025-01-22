@@ -44,14 +44,12 @@ const ExpertAdvisors = () => {
     <div className="p-3 pt-12">
       <h1 className="text-2xl font-bold text-white mb-3">Home</h1>
       <div className="grid grid-cols-3 gap-3">
-        {experts.map((expert, index) => (
+        {experts.map((expert) => (
           <Card
             key={expert.name}
-            className={`metric-card ${index === 0 ? 'relative group overflow-hidden' : ''}`}
+            className="metric-card relative group overflow-hidden"
           >
-            {index === 0 && (
-              <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300 ease-in-out backdrop-blur-sm"></div>
-            )}
+            <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300 ease-in-out backdrop-blur-sm"></div>
             <CardHeader className="p-3">
               <div className="flex items-center gap-2 mb-2">
                 <expert.icon className="w-5 h-5 text-softWhite" />
