@@ -45,9 +45,9 @@ const ExpertAdvisors = () => {
   };
 
   return (
-    <div className="p-3 pt-12">
-      <h1 className="text-2xl font-bold text-white mb-3">Home</h1>
-      <div className="grid grid-cols-3 gap-3">
+    <div className="p-3">
+      <h1 className="text-2xl font-bold text-white mb-3 fixed top-8 left-24">Home</h1>
+      <div className="grid grid-cols-3 gap-3 pt-32">
         {experts.map((expert) => (
           <Link to={expert.path} key={expert.name} className="block">
             <Card className="metric-card relative group overflow-hidden h-full transition-all duration-300 hover:scale-[1.02]">
