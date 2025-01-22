@@ -5,24 +5,38 @@ const MarketHours = () => {
 
   useEffect(() => {
     console.log("MarketHours mounting...");
-    console.log("Container dimensions:", {
-      width: containerRef.current?.offsetWidth,
-      height: containerRef.current?.offsetHeight
-    });
+    
+    // Create script element for Myfxbook widget
+    const script = document.createElement('script');
+    script.src = 'https://widgets.myfxbook.com/scripts/fxMarketHours.js';
+    script.async = true;
+    script.onload = () => {
+      console.log("Myfxbook script loaded");
+      if (window.fxMarketHours) {
+        window.fxMarketHours();
+        console.log("Myfxbook widget initialized");
+      } else {
+        console.error("fxMarketHours function not found");
+      }
+    };
+    script.onerror = (error) => {
+      console.error("Error loading Myfxbook script:", error);
+    };
+
+    // Add script to document
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup script on component unmount
+      document.body.removeChild(script);
+    };
   }, []);
 
   return (
     <div ref={containerRef} className="chart-container w-full">
       <div className="flex flex-col gap-2">
-        <div className="w-full h-[400px]">
-          <iframe 
-            src="https://widget.myfxbook.com/widget/market-hours.html" 
-            className="w-full h-full border-0"
-            title="Market Hours"
-            allow="fullscreen"
-            loading="eager"
-            onLoad={() => console.log("iframe loaded")}
-          />
+        <div className="w-full h-[400px]" id="MarketHoursWidget">
+          {/* The widget will be injected here by the Myfxbook script */}
         </div>
         <div className="text-center text-sm text-lightGrey font-['Roboto',sans-serif]">
           <a 
