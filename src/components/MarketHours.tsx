@@ -5,32 +5,29 @@ const MarketHours = () => {
 
   useEffect(() => {
     console.log("MarketHours mounting...");
-    const script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src = "https://widgets.myfxbook.com/scripts/fxMarketHours.js";
-    script.async = true;
-
-    script.onload = () => {
-      console.log("Myfxbook script loaded");
-      if (window.fxMarketHours) {
-        console.log("Initializing Myfxbook widget");
-        window.fxMarketHours();
-      }
-    };
-
-    document.head.appendChild(script);
-
-    return () => {
-      console.log("MarketHours unmounting...");
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
-      }
-    };
   }, []);
 
   return (
     <div className="chart-container">
-      <div ref={containerRef} id="myfxbook-market-hours-widget"></div>
+      <div className="flex flex-col gap-2">
+        <iframe 
+          src="https://widget.myfxbook.com/widget/market-hours.html" 
+          className="w-full h-[400px] border-0"
+          title="Market Hours"
+        />
+        <div className="text-center text-sm text-lightGrey font-['Roboto',sans-serif]">
+          <a 
+            href="https://www.myfxbook.com/market-hours" 
+            title="Forex Market Hours" 
+            className="hover:text-neonBlue transition-colors"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            <b>Market Hours</b>
+          </a>
+          {" "}by Myfxbook.com
+        </div>
+      </div>
     </div>
   );
 };
