@@ -47,8 +47,9 @@ const ExpertAdvisors = () => {
         {experts.map((expert) => (
           <Card
             key={expert.name}
-            className="metric-card"
+            className="metric-card relative group overflow-hidden"
           >
+            <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300 ease-in-out backdrop-blur-sm"></div>
             <CardHeader className="p-3">
               <div className="flex items-center gap-2 mb-2">
                 <expert.icon className="w-5 h-5 text-softWhite" />
