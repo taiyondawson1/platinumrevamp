@@ -246,7 +246,7 @@ const SetfilesPage = () => {
                       </p>
                       <div className="mt-auto">
                         <Button variant="link" className="text-blue-400 p-0 h-auto">
-                          Learn more about market analysis
+                          Learn about news handling
                         </Button>
                       </div>
                     </>
