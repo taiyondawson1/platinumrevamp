@@ -1,9 +1,13 @@
-import ExpertAdvisors from "@/components/ExpertAdvisors";
+import AccountMetrics from "@/components/AccountMetrics";
+import StatsGrid from "@/components/StatsGrid";
 
 const ExpertAdvisorsPage = () => {
   return (
-    <main className="flex-1 ml-16 p-8">
-      <ExpertAdvisors />
+    <main className="flex-1 p-8 max-w-[1400px] mx-auto ml-16">
+      <div className="space-y-8">
+        <AccountMetrics />
+        <StatsGrid />
+      </div>
     </main>
   );
 };
