@@ -82,7 +82,7 @@ const SetfilesPage = () => {
             </AlertDescription>
           </Alert>
         </AlertDialogTrigger>
-        <AlertDialogContent className="bg-red-900/95 border-red-800/50">
+        <AlertDialogContent className="bg-red-950/95 border-red-900/50">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-red-50 mb-4">Critical Market Conditions</AlertDialogTitle>
             <AlertDialogDescription className="text-red-200/90 space-y-6">
@@ -111,7 +111,7 @@ const SetfilesPage = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-red-900 border-red-800/50 text-red-200 hover:bg-red-800/50 hover:text-red-100">
+            <AlertDialogCancel className="bg-red-950 border-red-900/50 text-red-200 hover:bg-red-900/50 hover:text-red-100">
               Close
             </AlertDialogCancel>
           </AlertDialogFooter>
