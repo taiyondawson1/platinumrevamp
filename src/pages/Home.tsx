@@ -1,5 +1,6 @@
 import TradingChart from "@/components/TradingChart";
 import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
+import MarketHours from "@/components/MarketHours";
 import { BookOpen, TrendingUp, LineChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -26,35 +27,43 @@ const Index = () => {
   ];
 
   return (
-    <main className="flex-1 p-6 max-w-[1200px] mx-auto ml-16">
-      <div className="flex flex-col gap-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
-          {courses.map((course, index) => (
-            <div 
-              key={index}
-              className="metric-card flex flex-col items-center text-center p-4"
-            >
-              <course.icon className="w-8 h-8 mb-3 text-softWhite" />
-              <h3 className="text-lg font-semibold mb-2 text-softWhite">{course.title}</h3>
-              <p className="text-sm text-mediumGray mb-4">{course.description}</p>
-              <Button
-                onClick={() => window.open(course.url, '_blank')}
-                className="bg-darkBlue hover:bg-darkBlue/80 text-softWhite text-sm px-4 py-2"
-              >
-                Start Learning
-              </Button>
-            </div>
-          ))}
+    <main className="flex-1 p-4 max-w-[1400px] mx-auto space-y-4">
+      {/* Market Hours Widget */}
+      <div className="w-full max-w-[1400px] mx-auto mb-4">
+        <MarketHours />
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Left Column - Technical Analysis */}
+        <div className="lg:col-span-1">
+          <TechnicalAnalysisWidget />
         </div>
-        
-        <div className="flex gap-4 justify-center">
-          <div className="w-[400px]">
-            <TechnicalAnalysisWidget />
-          </div>
-        </div>
-        <div className="flex-1">
+
+        {/* Center and Right Columns - Trading Chart */}
+        <div className="lg:col-span-2">
           <TradingChart />
         </div>
+      </div>
+
+      {/* Course Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        {courses.map((course, index) => (
+          <div 
+            key={index}
+            className="metric-card flex flex-col items-center text-center p-4"
+          >
+            <course.icon className="w-6 h-6 mb-2 text-softWhite" />
+            <h3 className="text-base font-semibold mb-2 text-softWhite">{course.title}</h3>
+            <p className="text-xs text-mediumGray mb-3">{course.description}</p>
+            <Button
+              onClick={() => window.open(course.url, '_blank')}
+              className="bg-darkBlue hover:bg-darkBlue/80 text-softWhite text-xs px-3 py-1"
+            >
+              Start Learning
+            </Button>
+          </div>
+        ))}
       </div>
     </main>
   );
