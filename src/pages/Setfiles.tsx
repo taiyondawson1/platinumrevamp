@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, Info, X } from "lucide-react";
+import { Download, Info, X, Clock } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
 import {
@@ -150,8 +150,8 @@ const SetfilesPage = () => {
           <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px rgba(0,0,0,0.25)]">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
-                <span className="bg-white/20 text-white text-xs px-2 py-1 rounded">
-                  5 MIN
+                <span className="bg-white/20 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
+                  <Clock className="w-3 h-3" /> 5 MIN
                 </span>
                 <span className="text-mediumGray text-sm">Timeframe</span>
               </div>
