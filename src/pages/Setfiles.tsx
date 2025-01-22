@@ -251,20 +251,16 @@ const SetfilesPage = () => {
                     </>
                   ) : selectedRisk === "Conservative" ? (
                     <>
-                      <div className={`bg-blue-500/10 p-4 rounded-lg`}>
+                      <div className="bg-blue-50/10 p-4 rounded-lg">
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="w-4 h-4 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-300">
-                            ⚠
-                          </div>
-                          <h3 className="text-blue-300 font-medium">News Event Handling</h3>
+                          <span className="text-xs text-blue-400">Daily Analysis Required</span>
                         </div>
-                        <p className="text-sm text-mediumGray">
-                          While the EA can run autonomously, it's crucial to disable it before high-impact news events and re-enable it afterward. This precaution helps avoid potential market volatility risks.
+                        <h3 className="text-lg font-semibold mb-1">Market Direction</h3>
+                        <p className="text-sm text-mediumGray mb-4">
+                          Must be used in accordance with daily market analysis from #daily-analysis
                         </p>
-                      </div>
-                      <div className="mt-auto">
-                        <Button variant="link" className="text-green-400 p-0 h-auto" onClick={() => setShowNewsDialog(true)}>
-                          Learn about news handling
+                        <Button variant="link" className="text-blue-400 p-0 h-auto">
+                          Learn more about market analysis
                         </Button>
                       </div>
                     </>
