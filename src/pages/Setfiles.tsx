@@ -230,15 +230,17 @@ const SetfilesPage = () => {
                 <div>
                   <div className="flex items-center mb-4">
                     <span className={`${
-                      selectedRisk === "Conservative" || selectedRisk === "Balanced"
+                      selectedRisk === "Conservative" || selectedRisk === "Balanced" || selectedRisk === "Aggressive"
                         ? "bg-[#0EA5E9]/10 text-[#0EA5E9]" 
                         : "bg-green-500/10 text-green-300"
                     } text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full flex items-center gap-1`}>
                       <CheckCircle className="w-3 h-3" />
-                      {selectedRisk === "Conservative" || selectedRisk === "Balanced" ? "Daily Analysis Required" : "Hand-Free operation"}
+                      {selectedRisk === "Conservative" || selectedRisk === "Balanced" || selectedRisk === "Aggressive" 
+                        ? "Daily Analysis Required" 
+                        : "Hand-Free operation"}
                     </span>
                   </div>
-                  {selectedRisk === "Conservative" || selectedRisk === "Balanced" ? (
+                  {selectedRisk === "Conservative" || selectedRisk === "Balanced" || selectedRisk === "Aggressive" ? (
                     <div className="space-y-4">
                       <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
                         <h3 className="text-softWhite font-bold text-lg mb-2">Market Direction</h3>
