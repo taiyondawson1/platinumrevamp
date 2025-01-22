@@ -10,7 +10,7 @@ const Index = () => {
           <div className="w-[700px]">
             <ExpertAdvisors />
           </div>
-          <div>
+          <div className="w-[425px]">
             <TechnicalAnalysisWidget />
           </div>
         </div>
