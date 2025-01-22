@@ -42,7 +42,7 @@ const ExpertAdvisors = () => {
 
   return (
     <div className="p-3">
-      <h1 className="text-2xl font-bold text-white mb-3">Expert Advisors</h1>
+      <h1 className="text-2xl font-bold text-white mb-3">Home</h1>
       <div className="grid grid-cols-3 gap-3">
         {experts.map((expert) => (
           <Card
