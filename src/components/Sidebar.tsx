@@ -8,7 +8,7 @@ const Sidebar = () => {
   const navItems = [
     { icon: Home, label: "Dashboard", path: "/" },
     { icon: BarChart3, label: "Trading", path: "/trading" },
-    { icon: Bot, label: "Expert Advisors", path: "/expert-advisors" },
+    { icon: Bot, label: "Experts", path: "/experts" },
     { icon: DollarSign, label: "Balance", path: "/balance" },
     { icon: PieChart, label: "Analytics", path: "/analytics" },
     { icon: Settings, label: "Settings", path: "/settings" },
