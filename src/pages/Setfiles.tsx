@@ -194,7 +194,7 @@ const SetfilesPage = () => {
                   </div>
                   
                   {selectedRisk === "Ultrasoft" && (
-                    <div className="mt-6 rounded-lg">
+                    <div className="mt-6 p-4 bg-black/20 rounded-lg">
                       <p className="text-softWhite text-sm font-medium mb-3">
                         Important: Use these exact values when configuring your EA
                       </p>
