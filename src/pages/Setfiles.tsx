@@ -212,7 +212,11 @@ const SetfilesPage = () => {
             <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_8px_32px rgba(0,0,0,0.4)] h-full">
               <div className="p-4 flex flex-col justify-between h-full">
                 <div>
-                  <h3 className="text-softWhite font-medium mb-4">Market Direction</h3>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="bg-green-500/20 text-green-300 text-xs px-3 py-0.5 rounded-full whitespace-nowrap">
+                      handsfree operation
+                    </span>
+                  </div>
                   {selectedRisk === "Ultrasoft" ? (
                     <>
                       <div className="mb-4">
