@@ -9,6 +9,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 const SetfilesPage = () => {
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
@@ -62,12 +70,45 @@ const SetfilesPage = () => {
 
   return (
     <div className="flex-1 p-6 ml-[240px]">
-      <Alert variant="destructive" className="max-w-[900px] mx-auto mb-4 bg-red-50/10 border-red-200/20">
-        <Info className="h-4 w-4" />
-        <AlertDescription className="text-red-200">
-          Important: What You Need to Know About Risk
-        </AlertDescription>
-      </Alert>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Alert variant="destructive" className="max-w-[900px] mx-auto mb-4 bg-red-50/10 border-red-200/20 cursor-pointer hover:bg-red-50/20 transition-colors">
+            <Info className="h-4 w-4" />
+            <AlertDescription className="text-red-200">
+              Important: What You Need to Know About Risk
+            </AlertDescription>
+          </Alert>
+        </AlertDialogTrigger>
+        <AlertDialogContent className="bg-red-950/95 border-red-900/50">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-red-50 mb-4">Critical Market Conditions</AlertDialogTitle>
+            <AlertDialogDescription className="text-red-200/90 space-y-6">
+              <div className="space-y-4">
+                <p>
+                  While FundedEA Quantum's safety features provide robust protection, pay special attention when the EA opens its first trade during a strong trend. In rare cases, sustained market movement against this position may require manual intervention to protect your account.
+                </p>
+
+                <div>
+                  <h3 className="text-red-50 font-medium mb-2">Daily Analysis Requirement</h3>
+                  <p>
+                    For Conservative, Balanced, and Aggressive setfiles, it's mandatory to follow our daily market analysis posted in the #daily-analysis channel. This analysis helps optimize your trading by aligning the EA with predicted market direction through the ForceMarketCond parameter.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-red-50 font-medium mb-2">Recommended Safety Measures</h3>
+                  <ul className="space-y-2 list-disc pl-4">
+                    <li>Always disable the EA during high-impact news events</li>
+                    <li>Monitor and close positions if market conditions deteriorate</li>
+                    <li>Check #daily-analysis before each trading session</li>
+                    <li>Update ForceMarketCond according to daily predictions</li>
+                  </ul>
+                </div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <div className="max-w-[900px] mx-auto border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
         <div className="mb-8">
