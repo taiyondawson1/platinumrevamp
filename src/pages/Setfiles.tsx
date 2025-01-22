@@ -159,63 +159,70 @@ const SetfilesPage = () => {
               </p>
             </div>
           </Card>
+        </div>
 
-          {/* Profit & Loss Card */}
-          <Card className="bg-darkBlue/40 border-mediumGray/20">
-            <div className="p-4">
-              <h3 className="text-softWhite font-medium mb-4">Profit & Loss Limits</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="text-mediumGray text-sm block mb-2">
-                    Enter Account Balance:
-                  </label>
-                  <input
-                    type="number"
-                    value={accountBalance}
-                    onChange={(e) => setAccountBalance(Number(e.target.value))}
-                    className="w-full bg-black/40 border border-mediumGray/20 rounded p-2 text-softWhite"
-                  />
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-mediumGray text-sm">Daily Profit Target:</span>
-                  <span className="text-green-400">
-                    ${calculateDailyProfit(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelProfitPercentage(selectedRisk)}%)
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-mediumGray text-sm">Max Daily Loss:</span>
-                  <span className="text-red-400">
-                    ${calculateMaxDailyLoss(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelLossPercentage(selectedRisk)}%)
-                  </span>
-                </div>
-                
-                {selectedRisk === "Ultrasoft" && (
-                  <div className="mt-6 p-4 bg-black/20 rounded-lg">
-                    <p className="text-softWhite text-sm font-medium mb-3">
-                      Important: Use these exact values when configuring your EA
-                    </p>
-                    <ul className="space-y-2 text-sm text-mediumGray">
-                      <li>• DailyProfitTarget: {getRiskLevelProfitPercentage(selectedRisk)} ({getRiskLevelProfitPercentage(selectedRisk)}%)</li>
-                      <li>• MaxDailyLoss: {getRiskLevelLossPercentage(selectedRisk)} ({getRiskLevelLossPercentage(selectedRisk)}%)</li>
-                    </ul>
+        {/* Profit & Loss and Market Direction Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* Profit & Loss Card - spans 2 columns */}
+          <div className="md:col-span-2">
+            <Card className="bg-darkBlue/40 border-mediumGray/20">
+              <div className="p-4">
+                <h3 className="text-softWhite font-medium mb-4">Profit & Loss Limits</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-mediumGray text-sm block mb-2">
+                      Enter Account Balance:
+                    </label>
+                    <input
+                      type="number"
+                      value={accountBalance}
+                      onChange={(e) => setAccountBalance(Number(e.target.value))}
+                      className="w-full bg-black/40 border border-mediumGray/20 rounded p-2 text-softWhite"
+                    />
                   </div>
-                )}
+                  <div className="flex justify-between items-center">
+                    <span className="text-mediumGray text-sm">Daily Profit Target:</span>
+                    <span className="text-green-400">
+                      ${calculateDailyProfit(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelProfitPercentage(selectedRisk)}%)
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-mediumGray text-sm">Max Daily Loss:</span>
+                    <span className="text-red-400">
+                      ${calculateMaxDailyLoss(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelLossPercentage(selectedRisk)}%)
+                    </span>
+                  </div>
+                  
+                  {selectedRisk === "Ultrasoft" && (
+                    <div className="mt-6 p-4 bg-black/20 rounded-lg">
+                      <p className="text-softWhite text-sm font-medium mb-3">
+                        Important: Use these exact values when configuring your EA
+                      </p>
+                      <ul className="space-y-2 text-sm text-mediumGray">
+                        <li>• DailyProfitTarget: {getRiskLevelProfitPercentage(selectedRisk)} ({getRiskLevelProfitPercentage(selectedRisk)}%)</li>
+                        <li>• MaxDailyLoss: {getRiskLevelLossPercentage(selectedRisk)} ({getRiskLevelLossPercentage(selectedRisk)}%)</li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          </div>
 
           {/* Market Direction Card */}
-          <Card className="bg-darkBlue/40 border-mediumGray/20">
-            <div className="p-4">
-              <h3 className="text-softWhite font-medium mb-4">Market Direction</h3>
-              <p className="text-mediumGray text-sm mb-4">
-                Automatically detect current market analysis from 4-day analysis
-              </p>
-              <Button variant="link" className="text-blue-400 p-0 h-auto">
-                Learn more about market analysis
-              </Button>
-            </div>
-          </Card>
+          <div className="md:col-span-1">
+            <Card className="bg-darkBlue/40 border-mediumGray/20">
+              <div className="p-4">
+                <h3 className="text-softWhite font-medium mb-4">Market Direction</h3>
+                <p className="text-mediumGray text-sm mb-4">
+                  Automatically detect current market analysis from 4-day analysis
+                </p>
+                <Button variant="link" className="text-blue-400 p-0 h-auto">
+                  Learn more about market analysis
+                </Button>
+              </div>
+            </Card>
+          </div>
         </div>
 
         {/* Instructions Section */}
