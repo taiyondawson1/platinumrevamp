@@ -7,6 +7,7 @@ import Sidebar from "@/components/Sidebar";
 import Home from "@/pages/Home";
 import ExpertAdvisorsPage from "@/pages/ExpertAdvisors";
 import SetfilesPage from "@/pages/Setfiles";
+import CommunitySetfiles from "@/pages/CommunitySetfiles";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
               <Route path="/setfiles" element={<SetfilesPage />} />
+              <Route path="/community-setfiles" element={<CommunitySetfiles />} />
             </Routes>
           </div>
         </BrowserRouter>
