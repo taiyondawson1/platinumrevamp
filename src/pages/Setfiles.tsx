@@ -88,7 +88,7 @@ const SetfilesPage = () => {
               </AlertDescription>
             </Alert>
           </AlertDialogTrigger>
-          <AlertDialogContent className="bg-darkBlue/95 border-red-200/20" onPointerDownOutside={(e) => e.preventDefault()}>
+          <AlertDialogContent className="bg-darkBlue/95 border-red-200/20">
             <AlertDialogHeader>
               <AlertDialogTitle className="text-xl font-semibold text-red-200">
                 Critical Market Conditions
@@ -433,7 +433,7 @@ const SetfilesPage = () => {
       </div>
 
       <Dialog open={showNewsDialog} onOpenChange={setShowNewsDialog}>
-        <DialogContent className="bg-darkBlue/95 border-mediumGray/20" onPointerDownOutside={(e) => e.preventDefault()}>
+        <DialogContent className="bg-darkBlue/95 border-mediumGray/20">
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold text-softWhite">
               {selectedRisk === "Conservative" ? "Daily Market Analysis System" : "Hands-Free Operation Guide"}
