@@ -192,18 +192,13 @@ const SetfilesPage = () => {
                       ${calculateMaxDailyLoss(accountBalance, selectedRisk).toFixed(2)} ({getRiskLevelLossPercentage(selectedRisk)}%)
                     </span>
                   </div>
-                  
-                  {selectedRisk === "Ultrasoft" && (
-                    <div className="mt-6 rounded-lg">
-                      <p className="text-softWhite text-sm font-medium mb-3">
-                        Important: Use these exact values when configuring your EA
-                      </p>
-                      <ul className="space-y-2 text-sm text-mediumGray">
-                        <li>• DailyProfitTarget: {getRiskLevelProfitPercentage(selectedRisk)} ({getRiskLevelProfitPercentage(selectedRisk)}%)</li>
-                        <li>• MaxDailyLoss: {getRiskLevelLossPercentage(selectedRisk)} ({getRiskLevelLossPercentage(selectedRisk)}%)</li>
-                      </ul>
-                    </div>
-                  )}
+                  <div className="mt-4 text-xs text-mediumGray">
+                    <p className="mb-1">Important: Use these exact values when configuring your EA</p>
+                    <ul className="space-y-1">
+                      <li>• DailyProfitTarget: 250 (2.5%)</li>
+                      <li>• MaxDailyLoss: 450 (4.5%)</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </Card>
