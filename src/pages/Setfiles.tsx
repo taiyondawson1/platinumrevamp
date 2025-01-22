@@ -82,8 +82,8 @@ const SetfilesPage = () => {
               onClick={() => handleRiskSelect(risk)}
               className={`px-6 py-2 h-10 ${
                 risk === selectedRisk
-                  ? "bg-white text-black hover:bg-white/90"
-                  : "text-mediumGray hover:text-softWhite"
+                  ? "bg-[#00ADB5] text-white hover:bg-[#00ADB5]/90"
+                  : "bg-darkBlue/40 text-mediumGray hover:bg-darkBlue/60 hover:text-softWhite"
               }`}
             >
               {risk}
