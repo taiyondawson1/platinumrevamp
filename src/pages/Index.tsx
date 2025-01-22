@@ -1,16 +1,18 @@
-import Sidebar from "@/components/Sidebar";
 import TradingChart from "@/components/TradingChart";
+import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex">
-      <Sidebar />
-      <main className="flex-1 ml-16 p-8">
-        <div className="mb-8">
+    <main className="flex-1 p-8">
+      <div className="flex flex-wrap gap-6">
+        <div className="flex-1 min-w-[600px]">
           <TradingChart />
         </div>
-      </main>
-    </div>
+        <div className="w-[425px]">
+          <TechnicalAnalysisWidget />
+        </div>
+      </div>
+    </main>
   );
 };
 
