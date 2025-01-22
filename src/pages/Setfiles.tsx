@@ -88,7 +88,7 @@ const SetfilesPage = () => {
             <AlertDialogDescription className="text-red-200/90 space-y-6">
               <div className="space-y-4">
                 <p>
-                  While FundedEA Quantum's safety features provide robust protection, pay special attention when the EA opens its first trade during a strong trend. In rare cases, sustained market movement against this position may require manual intervention to protect your account.
+                  While PlatinumAi Quantum's safety features provide robust protection, pay special attention when the EA opens its first trade during a strong trend. In rare cases, sustained market movement against this position may require manual intervention to protect your account.
                 </p>
 
                 <div>
@@ -121,7 +121,7 @@ const SetfilesPage = () => {
       <div className="max-w-[900px] mx-auto border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-softWhite tracking-tight mb-1">Setfiles</h1>
-          <p className="text-mediumGray text-sm font-normal">Official Setfiles released by FundedEA</p>
+          <p className="text-mediumGray text-sm font-normal">Official Setfiles released by PlatinumAi</p>
         </div>
 
         <div className="flex gap-2 mb-8 bg-darkBlue/40 p-1 rounded-lg w-fit">
