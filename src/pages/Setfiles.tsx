@@ -70,6 +70,15 @@ const SetfilesPage = () => {
 
   return (
     <div className="flex-1 p-6 ml-[240px]">
+      <div className="w-full max-w-[900px] mx-auto mb-8">
+        <Alert variant="destructive" className="bg-red-50/10 border-red-200/20">
+          <Info className="h-4 w-4" />
+          <AlertDescription className="text-red-200 font-semibold">
+            Important: What You Need to Know About Risk
+          </AlertDescription>
+        </Alert>
+      </div>
+
       <div className="max-w-[900px] mx-auto mt-8 border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
         <div className="relative mb-6">
           <div className="absolute -top-14 left-1/2 transform -translate-x-1/2 bg-[#00ADB5] text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg border border-[#00ADB5]/20 backdrop-blur-sm">
@@ -92,13 +101,6 @@ const SetfilesPage = () => {
             </TabsList>
           </Tabs>
         </div>
-
-        <Alert variant="destructive" className="mb-6 bg-red-50/10 border-red-200/20">
-          <Info className="h-4 w-4" />
-          <AlertDescription className="text-red-200">
-            Important: What You Need to Know About Risk
-          </AlertDescription>
-        </Alert>
 
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-softWhite tracking-tight mb-1">
