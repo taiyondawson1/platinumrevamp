@@ -9,12 +9,12 @@ interface MetricCardProps {
 
 const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
   return (
-    <div className={cn("metric-card group hover:animate-glow", className)}>
+    <div className={cn("metric-card", className)}>
       <div className="metric-value">
         <span
           className={cn(
-            trend === "up" && "text-successGreen",
-            trend === "down" && "text-alertRed"
+            trend === "up" && "text-softGray",
+            trend === "down" && "text-mediumGray"
           )}
         >
           {value}

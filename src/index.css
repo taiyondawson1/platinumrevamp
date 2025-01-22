@@ -39,19 +39,21 @@
 }
 
 .metric-card {
-  @apply bg-black/40 rounded-xl p-6 backdrop-blur-sm border border-neonBlue/20 hover:border-neonBlue/40 transition-all duration-300;
+  @apply bg-black/40 rounded-xl p-6 backdrop-blur-sm border border-mediumGray/20 
+         shadow-embossed hover:shadow-embossed-hover transition-all duration-300;
 }
 
 .metric-value {
-  @apply text-3xl font-bold mb-2;
+  @apply text-3xl font-bold mb-2 text-softWhite;
 }
 
 .metric-label {
-  @apply text-lightGrey text-sm font-medium;
+  @apply text-mediumGray text-sm font-medium;
 }
 
 .chart-container {
-  @apply bg-black/40 rounded-xl p-6 backdrop-blur-sm border border-neonBlue/20;
+  @apply bg-black/40 rounded-xl backdrop-blur-sm border border-mediumGray/20 
+         shadow-embossed hover:shadow-embossed-hover transition-all duration-300;
 }
 
 .stats-grid {

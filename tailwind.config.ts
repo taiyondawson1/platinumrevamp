@@ -19,19 +19,18 @@ export default {
     },
     extend: {
       colors: {
-        // Base dark colors
+        // Base colors
         darkBase: "#121212",
         darkBlue: "#1A1F2C",
         darkGrey: "#1A1A1A",
         
-        // Accent colors
-        neonBlue: "#00ffff",
-        vibrantPurple: "#8000ff",
-        alertRed: "#ff4c4c",
-        successGreen: "#00ff00",
-        lightGrey: "#cccccc",
-        darkNavy: "#000033",
-
+        // Embossed palette
+        softWhite: "#F6F6F7",
+        softGray: "#E5E5E5",
+        mediumGray: "#8E9196",
+        shadowGray: "#2A2A2A",
+        highlightGray: "#FFFFFF10",
+        
         // UI Elements
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -67,14 +66,9 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      keyframes: {
-        glow: {
-          "0%, 100%": { boxShadow: "0 0 15px #00ffff33" },
-          "50%": { boxShadow: "0 0 30px #00ffff66" },
-        },
-      },
-      animation: {
-        glow: "glow 2s ease-in-out infinite",
+      boxShadow: {
+        'embossed': 'inset -2px -2px 4px rgba(255,255,255,0.05), inset 2px 2px 4px rgba(0,0,0,0.3)',
+        'embossed-hover': 'inset -1px -1px 3px rgba(255,255,255,0.1), inset 1px 1px 3px rgba(0,0,0,0.4)',
       },
     },
   },
