@@ -15,7 +15,7 @@ const SetfilesPage = () => {
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
   const [accountBalance, setAccountBalance] = useState<number>(100000);
   const [showNewsDialog, setShowNewsDialog] = useState(false);
-  const [selectedEA, setSelectedEA] = useState("zennbot-nexus");
+  const [selectedEA, setSelectedEA] = useState("platinumai-pulse");
 
   const riskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
 
@@ -71,23 +71,27 @@ const SetfilesPage = () => {
   return (
     <div className="flex-1 p-6 ml-[240px]">
       <div className="max-w-[900px] mx-auto mt-8 border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-        <Tabs 
-          value={selectedEA} 
-          onValueChange={setSelectedEA}
-          className="mb-6"
-        >
-          <TabsList className="bg-darkBlue/40 border border-mediumGray/20">
-            {expertAdvisors.map((ea) => (
-              <TabsTrigger
-                key={ea.id}
-                value={ea.id}
-                className="data-[state=active]:bg-[#00ADB5] data-[state=active]:text-white"
-              >
-                {ea.name}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+        <div className="relative mb-6">
+          <div className="absolute -top-14 left-1/2 transform -translate-x-1/2 bg-[#00ADB5] text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg border border-[#00ADB5]/20 backdrop-blur-sm">
+            Select Expert Advisor
+          </div>
+          <Tabs 
+            value={selectedEA} 
+            onValueChange={setSelectedEA}
+          >
+            <TabsList className="bg-darkBlue/40 border border-mediumGray/20">
+              {expertAdvisors.map((ea) => (
+                <TabsTrigger
+                  key={ea.id}
+                  value={ea.id}
+                  className="data-[state=active]:bg-[#00ADB5] data-[state=active]:text-white"
+                >
+                  {ea.name}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
 
         <Alert variant="destructive" className="mb-6 bg-red-50/10 border-red-200/20">
           <Info className="h-4 w-4" />
