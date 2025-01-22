@@ -159,6 +159,11 @@ const SetfilesPage = () => {
           <div className="md:col-span-2">
             <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_8px_32px rgba(0,0,0,0.4)] h-full">
               <div className="p-4">
+                <div className="flex items-center mb-4">
+                  <span className="bg-green-500/10 text-green-300 text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full">
+                    Daily Targets
+                  </span>
+                </div>
                 <h3 className="text-softWhite font-medium mb-0">Profit & Loss Limits</h3>
                 <p className="text-xs text-mediumGray mb-4">Recommended daily targets based on account balance</p>
                 <div className="space-y-4">
@@ -212,9 +217,9 @@ const SetfilesPage = () => {
             <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_8px_32px rgba(0,0,0,0.4)] h-full">
               <div className="p-4 flex flex-col justify-between h-full">
                 <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="bg-green-500/20 text-green-300 text-xs px-3 py-0.5 rounded-full whitespace-nowrap">
-                      handsfree operation
+                  <div className="flex items-center mb-4">
+                    <span className="bg-green-500/10 text-green-300 text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full">
+                      Hand-Free operation
                     </span>
                   </div>
                   {selectedRisk === "Ultrasoft" ? (
