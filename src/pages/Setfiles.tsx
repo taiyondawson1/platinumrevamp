@@ -250,13 +250,15 @@ const SetfilesPage = () => {
                     </>
                   ) : selectedRisk === "Conservative" ? (
                     <>
-                      <h3 className="text-lg font-semibold mb-1">Market Direction</h3>
-                      <p className="text-sm text-mediumGray mb-4">
-                        Must be used in accordance with daily market analysis from #daily-analysis
-                      </p>
-                      <Button variant="link" className="text-blue-400 p-0 h-auto">
-                        Learn more about market analysis
-                      </Button>
+                      <div className="bg-blue-500/10 p-4 rounded-lg">
+                        <h3 className="text-lg font-semibold mb-1">Market Direction</h3>
+                        <p className="text-sm text-mediumGray mb-4">
+                          Must be used in accordance with daily market analysis from #daily-analysis
+                        </p>
+                        <Button variant="link" className="text-blue-400 p-0 h-auto">
+                          Learn more about market analysis
+                        </Button>
+                      </div>
                     </>
                   ) : (
                     <>
