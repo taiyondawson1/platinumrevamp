@@ -17,8 +17,7 @@ const TradingChart = () => {
     script.onload = () => {
       if (containerRef.current) {
         new window.TradingView.widget({
-          width: "100%",
-          height: 600,
+          autosize: true,
           symbol: "OANDA:XAUUSD",
           interval: "15",
           timezone: "Etc/UTC",
@@ -46,12 +45,12 @@ const TradingChart = () => {
   console.log("TradingView chart container rendered");
 
   return (
-    <div className="chart-container h-[650px] bg-black/20 p-4 rounded-lg">
+    <div className="chart-container h-[650px] bg-black/20 p-4 rounded-lg w-full">
       <h2 className="text-xl font-bold mb-4 text-white">XAUUSD Live Chart</h2>
       <div 
         id="tradingview_chart" 
         ref={containerRef} 
-        className="w-full h-[600px]"
+        className="w-full h-[calc(100%-2rem)]"
       />
     </div>
   );
