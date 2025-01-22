@@ -74,7 +74,7 @@ const ExpertAdvisors = () => {
                   <div className="flex gap-3">
                     <Button
                       onClick={() => handleBrowsePresets(expert.name)}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white w-32 rounded-full shadow-embossed hover:shadow-embossed-hover transition-all duration-300"
+                      className="bg-indigo-500/80 hover:bg-indigo-600/80 text-white w-32 rounded-full shadow-embossed hover:shadow-embossed-hover transition-all duration-300"
                     >
                       Browse presets
                     </Button>
