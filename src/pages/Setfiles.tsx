@@ -173,22 +173,22 @@ const SetfilesPage = () => {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-mediumGray text-sm">Daily Profit Target:</span>
-                    <div className="flex items-center px-4 py-2 rounded-lg bg-[#E8F8E6] border border-[#228B22] hover:bg-[#D7F2D1] transition-colors">
-                      <span className="text-[#228B22] font-bold text-sm">
+                    <div className="flex items-center px-2 py-1 rounded-lg bg-[#E8F8E6] border border-[#228B22] hover:bg-[#D7F2D1] transition-colors">
+                      <span className="text-[#228B22] font-bold text-xs">
                         ${calculateDailyProfit(accountBalance, selectedRisk).toFixed(2)}
                       </span>
-                      <span className="text-[#228B22] ml-1 text-sm">
+                      <span className="text-[#228B22] ml-0.5 text-xs">
                         ({getRiskLevelProfitPercentage(selectedRisk)}%)
                       </span>
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-mediumGray text-sm">Max Daily Loss:</span>
-                    <div className="flex items-center px-4 py-2 rounded-lg bg-[#FDE9E9] border border-[#B22222] hover:bg-[#FCD6D6] transition-colors">
-                      <span className="text-[#B22222] font-bold text-sm">
+                    <div className="flex items-center px-2 py-1 rounded-lg bg-[#FDE9E9] border border-[#B22222] hover:bg-[#FCD6D6] transition-colors">
+                      <span className="text-[#B22222] font-bold text-xs">
                         ${calculateMaxDailyLoss(accountBalance, selectedRisk).toFixed(2)}
                       </span>
-                      <span className="text-[#B22222] ml-1 text-sm">
+                      <span className="text-[#B22222] ml-0.5 text-xs">
                         ({getRiskLevelLossPercentage(selectedRisk)}%)
                       </span>
                     </div>
