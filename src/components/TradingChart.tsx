@@ -10,11 +10,15 @@ const TradingChart = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    console.log("TradingChart mounting...");
+    
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/tv.js";
     script.async = true;
     script.onload = () => {
-      if (containerRef.current) {
+      console.log("TradingView script loaded");
+      if (containerRef.current && window.TradingView) {
+        console.log("Initializing TradingView widget");
         new window.TradingView.widget({
           autosize: true,
           symbol: "OANDA:XAUUSD",
@@ -23,10 +27,9 @@ const TradingChart = () => {
           theme: "dark",
           style: "1",
           locale: "en",
-          toolbar_bg: "#f1f3f6",
           enable_publishing: false,
           allow_symbol_change: true,
-          container_id: containerRef.current.id,
+          container_id: "tradingview_widget",
           hide_side_toolbar: true,
           hide_volume: true,
           studies: [],
@@ -39,16 +42,17 @@ const TradingChart = () => {
     document.head.appendChild(script);
 
     return () => {
-      script.remove();
+      console.log("TradingChart unmounting...");
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
+      }
     };
   }, []);
-
-  console.log("TradingView chart container rendered");
 
   return (
     <div className="chart-container h-[600px] bg-black/20 p-1 rounded-lg w-full">
       <div 
-        id="tradingview_chart" 
+        id="tradingview_widget" 
         ref={containerRef} 
         className="w-full h-full"
       />
