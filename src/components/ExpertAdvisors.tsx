@@ -74,14 +74,14 @@ const ExpertAdvisors = () => {
                   <div className="flex gap-3">
                     <Button
                       onClick={() => handleBrowsePresets(expert.name)}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white"
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white w-32"
                     >
                       Browse presets
                     </Button>
                     <Button
                       onClick={() => handleSetupGuide(expert.name)}
                       variant="outline"
-                      className="border-gray-700 hover:bg-gray-800 text-gray-300"
+                      className="border-gray-700 hover:bg-gray-800 text-gray-300 w-32"
                     >
                       Setup guide
                     </Button>
