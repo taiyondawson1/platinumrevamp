@@ -167,8 +167,8 @@ const SetfilesPage = () => {
           <div className="md:col-span-2">
             <Card className="bg-darkBlue/40 border-mediumGray/20 h-full">
               <div className="p-4">
-                <h3 className="text-softWhite font-medium mb-1">Profit & Loss Limits</h3>
-                <p className="text-xs text-mediumGray mb-3">Recommended daily targets based on account balance</p>
+                <h3 className="text-softWhite font-medium mb-0">Profit & Loss Limits</h3>
+                <p className="text-xs text-mediumGray mb-4">Recommended daily targets based on account balance</p>
                 <div className="space-y-4">
                   <div>
                     <label className="text-mediumGray text-sm block mb-2">
