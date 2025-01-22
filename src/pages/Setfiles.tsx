@@ -62,14 +62,14 @@ const SetfilesPage = () => {
 
   return (
     <div className="flex-1 p-6 ml-[240px]">
-      <div className="max-w-[900px] mx-auto mt-8 border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-        <Alert variant="destructive" className="mb-6 bg-red-50/10 border-red-200/20">
-          <Info className="h-4 w-4" />
-          <AlertDescription className="text-red-200">
-            Important: What You Need to Know About Risk
-          </AlertDescription>
-        </Alert>
+      <Alert variant="destructive" className="max-w-[900px] mx-auto mb-4 bg-red-50/10 border-red-200/20">
+        <Info className="h-4 w-4" />
+        <AlertDescription className="text-red-200">
+          Important: What You Need to Know About Risk
+        </AlertDescription>
+      </Alert>
 
+      <div className="max-w-[900px] mx-auto border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-softWhite tracking-tight mb-1">Setfiles</h1>
           <p className="text-mediumGray text-sm font-normal">Official Setfiles released by FundedEA</p>
