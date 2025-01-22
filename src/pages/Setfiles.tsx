@@ -13,7 +13,6 @@ import {
 const SetfilesPage = () => {
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
   const [accountBalance, setAccountBalance] = useState<number>(100000);
-  const [showNewsDialog, setShowNewsDialog] = useState(false);
 
   const riskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
 
@@ -227,47 +226,62 @@ const SetfilesPage = () => {
               <div className="p-4 flex flex-col justify-between h-full">
                 <div>
                   <div className="flex items-center mb-4">
-                    <span className="bg-blue-500/10 text-blue-300 text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full flex items-center gap-1">
+                    <span className="bg-green-500/10 text-green-300 text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full flex items-center gap-1">
                       <CheckCircle className="w-3 h-3" />
+                      Market Direction
                     </span>
                   </div>
-                  {selectedRisk === "Ultrasoft" ? (
-                    <>
-                      <div className="mb-4">
+                  {selectedRisk === "Conservative" && (
+                    <div className="space-y-4">
+                      <div className="bg-blue-500/10 rounded-lg p-4">
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
-                            <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                          </div>
-                          <span className="text-softWhite font-medium">Automated Trading</span>
+                          <Info className="w-4 h-4 text-blue-400" />
+                          <span className="text-blue-400 text-sm font-medium">Daily Analysis Required</span>
                         </div>
-                        <p className="text-mediumGray text-sm mb-4">
-                          Can run autonomously with minimal intervention, except during high-impact news
+                        <p className="text-sm text-mediumGray">
+                          Must be used in accordance with daily market analysis from #daily-analysis
                         </p>
-                      </div>
-                      <Button variant="link" className="text-green-400 p-0 h-auto" onClick={() => setShowNewsDialog(true)}>
-                        Learn about news handling
-                      </Button>
-                    </>
-                  ) : selectedRisk === "Conservative" ? (
-                    <>
-                      <h3 className="text-lg font-semibold mb-1">Market Direction</h3>
-                      <p className="text-sm text-mediumGray mb-4">
-                        Must be used in accordance with daily market analysis from #daily-analysis
-                      </p>
-                      <Button variant="link" className="text-blue-400 p-0 h-auto">
-                        Learn more about market analysis
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-mediumGray text-sm mb-6">
-                        Automatically detect current market analysis from 4-day analysis
-                      </p>
-                      <div className="mt-auto">
-                        <Button variant="link" className="text-green-400 p-0 h-auto" onClick={() => setShowNewsDialog(true)}>
-                          Learn about news handling
+                        <Button 
+                          variant="link" 
+                          className="text-blue-400 p-0 h-auto mt-2 text-sm hover:text-blue-300"
+                          onClick={() => window.open('#', '_blank')}
+                        >
+                          Learn more about market analysis
                         </Button>
                       </div>
+                    </div>
+                  )}
+                  {selectedRisk !== "Conservative" && (
+                    <>
+                      {selectedRisk === "Ultrasoft" ? (
+                        <>
+                          <div className="mb-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
+                                <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                              </div>
+                              <span className="text-softWhite font-medium">Automated Trading</span>
+                            </div>
+                            <p className="text-mediumGray text-sm mb-4">
+                              Can run autonomously with minimal intervention, except during high-impact news
+                            </p>
+                          </div>
+                          <Button variant="link" className="text-green-400 p-0 h-auto">
+                            Learn about news handling
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-mediumGray text-sm mb-6">
+                            Automatically detect current market analysis from 4-day analysis
+                          </p>
+                          <div className="mt-auto">
+                            <Button variant="link" className="text-green-400 p-0 h-auto">
+                              Learn about news handling
+                            </Button>
+                          </div>
+                        </>
+                      )}
                     </>
                   )}
                 </div>
@@ -339,55 +353,6 @@ const SetfilesPage = () => {
           </Button>
         </div>
       </div>
-
-      <Dialog open={showNewsDialog} onOpenChange={setShowNewsDialog}>
-        <DialogContent className="bg-darkBlue/95 border-mediumGray/20">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-semibold text-softWhite">Hands-Free Operation Guide</DialogTitle>
-          </DialogHeader>
-          <div className="text-mediumGray">
-            <p className="mb-4">Important guidelines for automated trading</p>
-            
-            <div className="space-y-6">
-              <div className="bg-green-500/10 p-4 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                  </div>
-                  <h3 className="text-green-300 font-medium">Automated Operation</h3>
-                </div>
-                <p className="text-sm">
-                  The Ultrasafe setfile is designed to operate autonomously with minimal user intervention. Its conservative approach and built-in safety features allow for hands-free operation during normal market conditions.
-                </p>
-              </div>
-
-              <div className="bg-red-500/10 p-4 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-red-300">
-                    ⚠
-                  </div>
-                  <h3 className="text-red-300 font-medium">News Event Handling</h3>
-                </div>
-                <p className="text-sm">
-                  While the EA can run autonomously, it's crucial to disable it before high-impact news events and re-enable it afterward. This precaution helps avoid potential market volatility risks.
-                </p>
-              </div>
-
-              <div className="bg-blue-500/10 p-4 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-4 h-4 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                  </div>
-                  <h3 className="text-blue-300 font-medium">Optional Analysis</h3>
-                </div>
-                <p className="text-sm">
-                  For enhanced performance, you can optionally follow our daily market analysis on Discord. While not required for Ultrasafe, this additional insight can help optimize your trading results.
-                </p>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
