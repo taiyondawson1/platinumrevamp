@@ -36,7 +36,6 @@ const SetfilesPage = () => {
           {riskLevels.map((risk) => (
             <Button
               key={risk}
-              variant={risk === selectedRisk ? "default" : "ghost"}
               onClick={() => handleRiskSelect(risk)}
               className={`text-sm ${
                 risk === selectedRisk
@@ -129,6 +128,18 @@ const SetfilesPage = () => {
                   <span className="text-mediumGray text-sm">Max Daily Loss:</span>
                   <span className="text-red-400">$2,500 (2.5%)</span>
                 </div>
+                
+                {selectedRisk === "Ultrasoft" && (
+                  <div className="mt-6 p-4 bg-black/20 rounded-lg">
+                    <p className="text-softWhite text-sm font-medium mb-3">
+                      Important: Use these exact values when configuring your EA
+                    </p>
+                    <ul className="space-y-2 text-sm text-mediumGray">
+                      <li>• DailyProfitTarget: 3 (0.3%)</li>
+                      <li>• MaxDailyLoss: 50 (4.5%)</li>
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           </Card>
@@ -200,7 +211,7 @@ const SetfilesPage = () => {
           </div>
         </div>
 
-        {/* Download Button - Fixed Position */}
+        {/* Download Button */}
         <div className="fixed bottom-8 right-8">
           <Button className="bg-[#00ADB5] hover:bg-[#00ADB5]/90">
             <Download className="w-4 h-4 mr-2" />
