@@ -165,7 +165,7 @@ const SetfilesPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Profit & Loss Card - spans 2 columns */}
           <div className="md:col-span-2">
-            <Card className="bg-darkBlue/40 border-mediumGray/20">
+            <Card className="bg-darkBlue/40 border-mediumGray/20 h-full">
               <div className="p-4">
                 <h3 className="text-softWhite font-medium mb-4">Profit & Loss Limits</h3>
                 <div className="space-y-4">
@@ -211,7 +211,7 @@ const SetfilesPage = () => {
 
           {/* Market Direction Card */}
           <div className="md:col-span-1">
-            <Card className="bg-darkBlue/40 border-mediumGray/20">
+            <Card className="bg-darkBlue/40 border-mediumGray/20 h-full">
               <div className="p-4">
                 <h3 className="text-softWhite font-medium mb-4">Market Direction</h3>
                 <p className="text-mediumGray text-sm mb-4">
