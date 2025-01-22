@@ -334,47 +334,24 @@ const SetfilesPage = () => {
       <Dialog open={showNewsDialog} onOpenChange={setShowNewsDialog}>
         <DialogContent className="bg-darkBlue/95 border-mediumGray/20">
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold text-softWhite">Hands-Free Operation Guide</DialogTitle>
+            <DialogTitle className="text-xl font-semibold text-softWhite">Market Direction</DialogTitle>
           </DialogHeader>
-          <div className="text-mediumGray">
-            <p className="mb-4">Important guidelines for automated trading</p>
-            
-            <div className="space-y-6">
-              <div className="bg-green-500/10 p-4 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                  </div>
-                  <h3 className="text-green-300 font-medium">Automated Operation</h3>
-                </div>
-                <p className="text-sm">
-                  The Ultrasafe setfile is designed to operate autonomously with minimal user intervention. Its conservative approach and built-in safety features allow for hands-free operation during normal market conditions.
-                </p>
+          <div className="space-y-6">
+            <div className="bg-blue-500/10 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Info className="w-4 h-4 text-blue-400" />
+                <span className="text-blue-400 text-sm font-medium">Daily Analysis Required</span>
               </div>
-
-              <div className="bg-red-500/10 p-4 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-red-300">
-                    ⚠
-                  </div>
-                  <h3 className="text-red-300 font-medium">News Event Handling</h3>
-                </div>
-                <p className="text-sm">
-                  While the EA can run autonomously, it's crucial to disable it before high-impact news events and re-enable it afterward. This precaution helps avoid potential market volatility risks.
-                </p>
-              </div>
-
-              <div className="bg-blue-500/10 p-4 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-4 h-4 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                  </div>
-                  <h3 className="text-blue-300 font-medium">Optional Analysis</h3>
-                </div>
-                <p className="text-sm">
-                  For enhanced performance, you can optionally follow our daily market analysis on Discord. While not required for Ultrasafe, this additional insight can help optimize your trading results.
-                </p>
-              </div>
+              <p className="text-sm text-mediumGray">
+                Must be used in accordance with daily market analysis from #daily-analysis
+              </p>
+              <Button 
+                variant="link" 
+                className="text-blue-400 p-0 h-auto mt-2 text-sm hover:text-blue-300"
+                onClick={() => window.open('#', '_blank')}
+              >
+                Learn more about market analysis
+              </Button>
             </div>
           </div>
         </DialogContent>
