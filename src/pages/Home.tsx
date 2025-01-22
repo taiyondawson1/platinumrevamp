@@ -1,6 +1,5 @@
 import TradingChart from "@/components/TradingChart";
 import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
-import ExpertAdvisors from "@/components/ExpertAdvisors";
 
 const Index = () => {
   return (
@@ -8,7 +7,6 @@ const Index = () => {
       <div className="flex flex-col gap-4">
         <div className="flex gap-4 items-start">
           <div className="flex-1">
-            <ExpertAdvisors />
           </div>
           <div className="mt-32">
             <TechnicalAnalysisWidget />
