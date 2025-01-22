@@ -41,15 +41,15 @@ const ExpertAdvisors = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold text-white mb-4">Expert Advisors</h1>
-      <div className="grid grid-cols-3 gap-4">
+    <div className="p-3">
+      <h1 className="text-2xl font-bold text-white mb-3">Expert Advisors</h1>
+      <div className="grid grid-cols-3 gap-3">
         {experts.map((expert) => (
           <Card
             key={expert.name}
             className="metric-card"
           >
-            <CardHeader className="p-4">
+            <CardHeader className="p-3">
               <div className="flex items-center gap-2 mb-2">
                 <expert.icon className="w-5 h-5 text-softWhite" />
                 <CardTitle className="text-softWhite text-lg">{expert.name}</CardTitle>
@@ -58,7 +58,7 @@ const ExpertAdvisors = () => {
                 {expert.description}
               </CardDescription>
             </CardHeader>
-            <CardContent className="p-4 pt-0">
+            <CardContent className="p-3 pt-0">
               <p className="text-xs text-mediumGray mb-3">{expert.stats}</p>
               <Button
                 onClick={() => handleActivate(expert.name)}
