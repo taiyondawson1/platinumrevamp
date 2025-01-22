@@ -16,7 +16,7 @@ const TechnicalAnalysisWidget = () => {
     script.innerHTML = JSON.stringify({
       "interval": "15m",
       "width": 425,
-      "isTransparent": false,
+      "isTransparent": true,
       "height": 450,
       "symbol": "FX:XAUUSD",
       "showIntervalTabs": true,
@@ -42,12 +42,12 @@ const TechnicalAnalysisWidget = () => {
   console.log("Technical Analysis widget container rendered");
 
   return (
-    <div className="chart-container">
+    <div className="chart-container h-full">
       <div 
         ref={containerRef}
-        className="tradingview-widget-container"
+        className="tradingview-widget-container h-full"
       >
-        <div className="tradingview-widget-container__widget"></div>
+        <div className="tradingview-widget-container__widget h-full"></div>
       </div>
     </div>
   );
