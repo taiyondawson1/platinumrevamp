@@ -98,7 +98,7 @@ const SetfilesPage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
+          <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px rgba(0,0,0,0.25)]">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
                 <span className={`${
@@ -126,7 +126,7 @@ const SetfilesPage = () => {
             </div>
           </Card>
 
-          <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
+          <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px rgba(0,0,0,0.25)]">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
                 <span className="bg-blue-500/20 text-blue-300 text-xs px-2 py-1 rounded">
@@ -157,7 +157,7 @@ const SetfilesPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="md:col-span-2">
-            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_8px_32px_rgba(0,0,0,0.4)] h-full">
+            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_8px_32px rgba(0,0,0,0.4)] h-full">
               <div className="p-4">
                 <h3 className="text-softWhite font-medium mb-0">Profit & Loss Limits</h3>
                 <p className="text-xs text-mediumGray mb-4">Recommended daily targets based on account balance</p>
@@ -209,18 +209,39 @@ const SetfilesPage = () => {
           </div>
 
           <div className="md:col-span-1">
-            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_8px_32px_rgba(0,0,0,0.4)] h-full">
+            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_8px_32px rgba(0,0,0,0.4)] h-full">
               <div className="p-4 flex flex-col justify-between h-full">
                 <div>
                   <h3 className="text-softWhite font-medium mb-4">Market Direction</h3>
-                  <p className="text-mediumGray text-sm mb-6">
-                    Automatically detect current market analysis from 4-day analysis
-                  </p>
-                </div>
-                <div className="mt-auto">
-                  <Button variant="link" className="text-blue-400 p-0 h-auto">
-                    Learn more about market analysis
-                  </Button>
+                  {selectedRisk === "Ultrasoft" ? (
+                    <>
+                      <div className="mb-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
+                            <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                          </div>
+                          <span className="text-softWhite font-medium">Automated Trading</span>
+                        </div>
+                        <p className="text-mediumGray text-sm mb-4">
+                          Can run autonomously with minimal intervention, except during high-impact news
+                        </p>
+                      </div>
+                      <Button variant="link" className="text-blue-400 p-0 h-auto">
+                        Learn about news handling
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-mediumGray text-sm mb-6">
+                        Automatically detect current market analysis from 4-day analysis
+                      </p>
+                      <div className="mt-auto">
+                        <Button variant="link" className="text-blue-400 p-0 h-auto">
+                          Learn more about market analysis
+                        </Button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </Card>
