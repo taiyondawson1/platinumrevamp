@@ -52,7 +52,7 @@
 }
 
 .chart-container {
-  @apply bg-black/40 rounded-xl backdrop-blur-sm border border-mediumGray/20 
+  @apply bg-black/40 rounded-xl border border-mediumGray/20 
          shadow-embossed hover:shadow-embossed-hover transition-all duration-300;
 }
 
