@@ -235,7 +235,7 @@ const SetfilesPage = () => {
                           Can run autonomously with minimal intervention, except during high-impact news
                         </p>
                       </div>
-                      <Button variant="link" className="text-blue-400 p-0 h-auto">
+                      <Button variant="link" className="text-green-400 p-0 h-auto">
                         Learn about news handling
                       </Button>
                     </>
@@ -245,7 +245,7 @@ const SetfilesPage = () => {
                         Automatically detect current market analysis from 4-day analysis
                       </p>
                       <div className="mt-auto">
-                        <Button variant="link" className="text-blue-400 p-0 h-auto">
+                        <Button variant="link" className="text-green-400 p-0 h-auto">
                           Learn about news handling
                         </Button>
                       </div>
