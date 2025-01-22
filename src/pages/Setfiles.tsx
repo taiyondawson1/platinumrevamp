@@ -6,7 +6,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 const SetfilesPage = () => {
   return (
     <div className="flex-1 p-6 ml-[240px]">
-      <div className="max-w-[900px] mx-auto mt-8">
+      <div className="max-w-[900px] mx-auto mt-8 border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm">
         {/* Risk Alert */}
         <Alert variant="destructive" className="mb-6 bg-red-50/10 border-red-200/20">
           <Info className="h-4 w-4" />
