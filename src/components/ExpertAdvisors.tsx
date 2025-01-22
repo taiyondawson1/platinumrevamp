@@ -44,44 +44,52 @@ const ExpertAdvisors = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold text-white mb-4">Expert Advisors</h1>
-      <div className="flex flex-col gap-4">
+    <div className="p-10 ml-[240px]">
+      <h1 className="text-2xl font-bold text-softWhite mb-10">Expert Advisors</h1>
+      <div className="flex flex-col gap-8">
         {experts.map((expert) => (
           <div 
             key={expert.name}
-            className="bg-[#0D1117]/60 rounded-lg p-4 border border-gray-800 hover:border-gray-700 transition-all duration-300"
+            className="bg-darkBlue/40 backdrop-blur-sm rounded-xl p-6 border border-mediumGray/20 
+                     hover:border-mediumGray/30 transition-all duration-300
+                     shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
           >
-            <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center">
+            <div className="flex items-start gap-6">
+              <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-purple-500/10 to-cyan-500/10 
+                            flex items-center justify-center p-4 border border-mediumGray/10">
                 {expert.image ? (
-                  <img src={expert.image} alt={expert.name} className="w-14 h-14" />
+                  <img src={expert.image} alt={expert.name} className="w-16 h-16" />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500" />
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500/40 to-cyan-500/40" />
                 )}
               </div>
-              <div className="flex-1">
-                <h2 className="text-lg font-semibold text-white mb-1">{expert.name}</h2>
-                <p className="text-gray-300 text-sm mb-1">{expert.description}</p>
-                {expert.subtitle && (
-                  <p className="text-gray-400 text-xs mb-2">{expert.subtitle}</p>
-                )}
-                <div className="flex items-center gap-3">
-                  <div className="text-xs text-gray-400">
-                    <span className="inline-block mr-1">📄</span>
+              <div className="flex-1 space-y-4">
+                <div>
+                  <h2 className="text-xl font-semibold text-softWhite mb-2">{expert.name}</h2>
+                  <p className="text-mediumGray leading-relaxed">{expert.description}</p>
+                  {expert.subtitle && (
+                    <p className="text-mediumGray/80 text-sm mt-2 leading-relaxed">{expert.subtitle}</p>
+                  )}
+                </div>
+                <div className="flex items-center gap-6 pt-2">
+                  <div className="text-sm text-mediumGray flex items-center">
+                    <span className="inline-block mr-2">📄</span>
                     {expert.presets}
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-3">
                     <Button
                       onClick={() => handleBrowsePresets(expert.name)}
-                      className="bg-indigo-500/80 hover:bg-indigo-600/80 text-white text-xs px-3 py-1 h-8 rounded-full shadow-embossed hover:shadow-embossed-hover transition-all duration-300"
+                      className="bg-indigo-500/20 hover:bg-indigo-500/30 text-softWhite px-6 
+                               shadow-embossed hover:shadow-embossed-hover transition-all duration-300
+                               border border-indigo-500/30 hover:border-indigo-500/40"
                     >
                       Browse presets
                     </Button>
                     <Button
                       onClick={() => handleSetupGuide(expert.name)}
                       variant="outline"
-                      className="border-gray-700 hover:bg-gray-800 text-gray-300 text-xs px-3 py-1 h-8"
+                      className="border-mediumGray/20 hover:bg-mediumGray/10 text-mediumGray 
+                               hover:text-softWhite transition-colors duration-300"
                     >
                       Setup guide
                     </Button>
