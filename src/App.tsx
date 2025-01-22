@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { Sidebar } from "./components/Sidebar";
+import Sidebar from "./components/Sidebar";
 import Index from "./pages/Index";
 import ExpertAdvisors from "./pages/ExpertAdvisors";
 import Analytics from "./pages/Analytics";

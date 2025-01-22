@@ -1,10 +1,10 @@
-import { MetricCard } from "@/components/MetricCard";
+import MetricCard from "@/components/MetricCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { StatsGrid } from "@/components/StatsGrid";
+import StatsGrid from "@/components/StatsGrid";
 
 const Analytics = () => {
   const [accountId, setAccountId] = useState("");
