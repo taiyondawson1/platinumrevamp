@@ -256,19 +256,21 @@ const SetfilesPage = () => {
                   ) : selectedRisk === "Ultrasoft" ? (
                     <>
                       <div className="mb-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
-                            <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                        <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
+                              <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                            </div>
+                            <span className="text-softWhite font-medium">Automated Trading</span>
                           </div>
-                          <span className="text-softWhite font-medium">Automated Trading</span>
+                          <p className="text-mediumGray text-sm mb-4">
+                            Can run autonomously with minimal intervention, except during high-impact news
+                          </p>
+                          <Button variant="link" className="text-green-400 p-0 h-auto" onClick={() => setShowNewsDialog(true)}>
+                            Learn about news handling
+                          </Button>
                         </div>
-                        <p className="text-mediumGray text-sm mb-4">
-                          Can run autonomously with minimal intervention, except during high-impact news
-                        </p>
                       </div>
-                      <Button variant="link" className="text-green-400 p-0 h-auto" onClick={() => setShowNewsDialog(true)}>
-                        Learn about news handling
-                      </Button>
                     </>
                   ) : (
                     <>
