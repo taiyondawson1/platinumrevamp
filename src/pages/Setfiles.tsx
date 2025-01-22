@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, Info, X, Clock, CheckCircle, BarChart, Asterisk } from "lucide-react";
+import { Download, Info, Clock, CheckCircle, BarChart, Asterisk } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
 import {
@@ -9,13 +9,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const SetfilesPage = () => {
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
   const [accountBalance, setAccountBalance] = useState<number>(100000);
   const [showNewsDialog, setShowNewsDialog] = useState(false);
+  const [selectedEA, setSelectedEA] = useState("zennbot-nexus");
 
   const riskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
+
+  const expertAdvisors = [
+    { id: "zennbot-nexus", name: "Zennbot Nexus" },
+    { id: "zennbot-prime", name: "Zennbot Prime" },
+    { id: "zennbot-zero", name: "Zennbot Zero" },
+  ];
 
   const getRiskLevelProfitPercentage = (risk: string): number => {
     switch (risk) {
@@ -63,6 +71,24 @@ const SetfilesPage = () => {
   return (
     <div className="flex-1 p-6 ml-[240px]">
       <div className="max-w-[900px] mx-auto mt-8 border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+        <Tabs 
+          value={selectedEA} 
+          onValueChange={setSelectedEA}
+          className="mb-6"
+        >
+          <TabsList className="bg-darkBlue/40 border border-mediumGray/20">
+            {expertAdvisors.map((ea) => (
+              <TabsTrigger
+                key={ea.id}
+                value={ea.id}
+                className="data-[state=active]:bg-[#00ADB5] data-[state=active]:text-white"
+              >
+                {ea.name}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+
         <Alert variant="destructive" className="mb-6 bg-red-50/10 border-red-200/20">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-red-200">
@@ -71,7 +97,9 @@ const SetfilesPage = () => {
         </Alert>
 
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-softWhite tracking-tight mb-1">Setfiles</h1>
+          <h1 className="text-2xl font-semibold text-softWhite tracking-tight mb-1">
+            Setfiles for {expertAdvisors.find(ea => ea.id === selectedEA)?.name}
+          </h1>
           <p className="text-mediumGray text-sm font-normal">Official Setfiles released by FundedEA</p>
         </div>
 
