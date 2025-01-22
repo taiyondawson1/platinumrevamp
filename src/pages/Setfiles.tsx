@@ -266,7 +266,7 @@ const SetfilesPage = () => {
                         <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
                           <div className="flex items-center gap-2 mb-2">
                             <div className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
-                              <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                              <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_10px_#4ade80] animate-pulse"></div>
                             </div>
                             <span className="text-softWhite font-medium">Automated Trading</span>
                           </div>
