@@ -140,7 +140,7 @@ const SetfilesPage = () => {
             </div>
           </Card>
 
-          <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px_rgba(0,0,0,0.25)]">
+          <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px rgba(0,0,0,0.25)]">
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
                 <span className="bg-white/20 text-white text-xs px-2 py-1 rounded">
@@ -157,7 +157,7 @@ const SetfilesPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="md:col-span-2">
-            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px_rgba(0,0,0,0.25)] h-full">
+            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px rgba(0,0,0,0.25)] h-full">
               <div className="p-4">
                 <h3 className="text-softWhite font-medium mb-0">Profit & Loss Limits</h3>
                 <p className="text-xs text-mediumGray mb-4">Recommended daily targets based on account balance</p>
@@ -209,7 +209,7 @@ const SetfilesPage = () => {
           </div>
 
           <div className="md:col-span-1">
-            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px_rgba(0,0,0,0.25)] h-full">
+            <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px rgba(0,0,0,0.25)] h-full">
               <div className="p-4">
                 <h3 className="text-softWhite font-medium mb-4">Market Direction</h3>
                 <p className="text-mediumGray text-sm mb-4">
@@ -224,55 +224,59 @@ const SetfilesPage = () => {
         </div>
 
         <div className="space-y-6">
-          <h3 className="text-softWhite font-medium">Instructions</h3>
-          
-          <div className="space-y-2">
-            <h4 className="text-mediumGray text-sm font-medium mb-2">Installation Steps</h4>
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2 text-mediumGray text-sm">
-                <div className="w-4 h-4 rounded-full border border-mediumGray/40 flex items-center justify-center text-xs">
-                  1
-                </div>
-                Download and extract the setfile to your MT4 data folder
-              </li>
-              <li className="flex items-center gap-2 text-mediumGray text-sm">
-                <div className="w-4 h-4 rounded-full border border-mediumGray/40 flex items-center justify-center text-xs">
-                  2
-                </div>
-                Restart your trading platform
-              </li>
-              <li className="flex items-center gap-2 text-mediumGray text-sm">
-                <div className="w-4 h-4 rounded-full border border-mediumGray/40 flex items-center justify-center text-xs">
-                  3
-                </div>
-                Load the EA with the provided .set file
-              </li>
-            </ul>
-          </div>
+          <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_4px_20px rgba(0,0,0,0.25)] p-6">
+            <h3 className="text-softWhite font-medium">Instructions</h3>
+            
+            <div className="space-y-4 mt-4">
+              <div className="space-y-2">
+                <h4 className="text-mediumGray text-sm font-medium mb-2">Installation Steps</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2 text-mediumGray text-sm">
+                    <div className="w-4 h-4 rounded-full border border-mediumGray/40 flex items-center justify-center text-xs">
+                      1
+                    </div>
+                    Download and extract the setfile to your MT4 data folder
+                  </li>
+                  <li className="flex items-center gap-2 text-mediumGray text-sm">
+                    <div className="w-4 h-4 rounded-full border border-mediumGray/40 flex items-center justify-center text-xs">
+                      2
+                    </div>
+                    Restart your trading platform
+                  </li>
+                  <li className="flex items-center gap-2 text-mediumGray text-sm">
+                    <div className="w-4 h-4 rounded-full border border-mediumGray/40 flex items-center justify-center text-xs">
+                      3
+                    </div>
+                    Load the EA with the provided .set file
+                  </li>
+                </ul>
+              </div>
 
-          <div className="space-y-2">
-            <h4 className="text-mediumGray text-sm font-medium mb-2">Best Practices</h4>
-            <ul className="space-y-2">
-              <li className="flex items-center gap-2 text-mediumGray text-sm">
-                <div className="w-4 h-4 rounded-full border border-blue-400/40 flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                </div>
-                Avoid trading during high impact news events
-              </li>
-              <li className="flex items-center gap-2 text-mediumGray text-sm">
-                <div className="w-4 h-4 rounded-full border border-blue-400/40 flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                </div>
-                Use a VPS for optimal performance
-              </li>
-              <li className="flex items-center gap-2 text-mediumGray text-sm">
-                <div className="w-4 h-4 rounded-full border border-blue-400/40 flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                </div>
-                Monitor system performance regularly
-              </li>
-            </ul>
-          </div>
+              <div className="space-y-2">
+                <h4 className="text-mediumGray text-sm font-medium mb-2">Best Practices</h4>
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2 text-mediumGray text-sm">
+                    <div className="w-4 h-4 rounded-full border border-blue-400/40 flex items-center justify-center">
+                      <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                    </div>
+                    Avoid trading during high impact news events
+                  </li>
+                  <li className="flex items-center gap-2 text-mediumGray text-sm">
+                    <div className="w-4 h-4 rounded-full border border-blue-400/40 flex items-center justify-center">
+                      <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                    </div>
+                    Use a VPS for optimal performance
+                  </li>
+                  <li className="flex items-center gap-2 text-mediumGray text-sm">
+                    <div className="w-4 h-4 rounded-full border border-blue-400/40 flex items-center justify-center">
+                      <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                    </div>
+                    Monitor system performance regularly
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </Card>
         </div>
 
         <div className="fixed bottom-8 right-8">
