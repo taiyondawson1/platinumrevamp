@@ -42,7 +42,10 @@ const SetfilesPage = () => {
     }
   ];
 
-  const riskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
+  const defaultRiskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
+  const stealthPhases = ["Phase 1", "Phase 2", "Live"];
+
+  const riskLevels = selectedExpert === "PlatinumAi: Stealth" ? stealthPhases : defaultRiskLevels;
 
   const getRiskLevelProfitPercentage = (risk: string): number => {
     switch (risk) {
@@ -54,6 +57,12 @@ const SetfilesPage = () => {
         return 1.0;
       case "Aggressive":
         return 2.5;
+      case "Phase 1":
+        return 0.5; // Example value for Phase 1
+      case "Phase 2":
+        return 1.5; // Example value for Phase 2
+      case "Live":
+        return 2.0; // Example value for Live
       default:
         return 1.0;
     }
@@ -69,6 +78,12 @@ const SetfilesPage = () => {
         return 2.3;
       case "Aggressive":
         return 4.5;
+      case "Phase 1":
+        return 1.0; // Example value for Phase 1
+      case "Phase 2":
+        return 2.0; // Example value for Phase 2
+      case "Live":
+        return 3.0; // Example value for Live
       default:
         return 2.3;
     }
@@ -90,6 +105,8 @@ const SetfilesPage = () => {
   const handleExpertSelect = (expert: string) => {
     console.log("Selected expert:", expert);
     setSelectedExpert(expert);
+    // Reset risk selection when switching experts
+    setSelectedRisk(expert === "PlatinumAi: Stealth" ? "Phase 1" : "Balanced");
   };
 
   return (
@@ -172,7 +189,7 @@ const SetfilesPage = () => {
                 onClick={() => handleRiskSelect(risk)}
                 className={`px-6 py-2 h-10 ${
                   risk === selectedRisk
-                    ? risk === "Conservative"
+                    ? risk === "Conservative" || risk === "Phase 1" 
                       ? "bg-[#0EA5E9] text-white hover:bg-[#0EA5E9]/90"
                       : "bg-[#00ADB5] text-white hover:bg-[#00ADB5]/90"
                     : "bg-darkBlue/40 text-mediumGray hover:bg-darkBlue/60 hover:text-softWhite"
@@ -197,6 +214,10 @@ const SetfilesPage = () => {
               ? "A conservative approach focused on capital preservation with moderate returns"
               : selectedRisk === "Ultrasoft"
               ? "The safest approach with minimal risk and steady, smaller returns"
+              : selectedRisk === "Phase 1"
+              ? "Initial phase with controlled risk"
+              : selectedRisk === "Phase 2"
+              ? "Intermediate phase with moderate risk"
               : "An aggressive approach targeting maximum returns with higher risk tolerance"}
           </p>
         </div>
@@ -208,7 +229,7 @@ const SetfilesPage = () => {
                 <span className={`${
                   selectedRisk === "Aggressive" 
                     ? "bg-red-500/20 text-red-300"
-                    : selectedRisk === "Conservative"
+                    : selectedRisk === "Conservative" || selectedRisk === "Phase 1"
                     ? "bg-blue-500/20 text-blue-300"
                     : selectedRisk === "Ultrasoft"
                     ? "bg-green-500/20 text-green-300"
@@ -216,7 +237,7 @@ const SetfilesPage = () => {
                 } text-xs px-2 py-1 rounded flex items-center gap-1`}>
                   <Asterisk className="w-3 h-3" />
                   {selectedRisk === "Aggressive" ? "High Risk" : 
-                   selectedRisk === "Conservative" ? "Low Risk" :
+                   selectedRisk === "Conservative" || selectedRisk === "Phase 1" ? "Low Risk" :
                    selectedRisk === "Ultrasoft" ? "Minimal Risk" : "Medium Risk"}
                 </span>
                 <span className="text-softWhite text-sm font-semibold tracking-tight">Risk Level</span>
@@ -224,7 +245,7 @@ const SetfilesPage = () => {
               <p className="text-mediumGray text-sm font-normal">
                 {selectedRisk.toLowerCase()} approach with {
                   selectedRisk === "Aggressive" ? "high" :
-                  selectedRisk === "Conservative" ? "low" :
+                  selectedRisk === "Conservative" || selectedRisk === "Phase 1" ? "low" :
                   selectedRisk === "Ultrasoft" ? "minimal" : "moderate"
                 } risk
               </p>
