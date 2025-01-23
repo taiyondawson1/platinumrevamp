@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { Download } from "lucide-react";
 
 const ExpertAdvisors = () => {
   const { toast } = useToast();
@@ -28,10 +29,10 @@ const ExpertAdvisors = () => {
     },
   ];
 
-  const handleBrowsePresets = (expertName: string) => {
+  const handleDownload = (expertName: string) => {
     toast({
-      title: "Accessing Presets",
-      description: `Loading presets for ${expertName}...`,
+      title: "Starting Download",
+      description: `Downloading ${expertName}...`,
     });
   };
 
@@ -77,13 +78,14 @@ const ExpertAdvisors = () => {
                   </div>
                   <div className="flex gap-2">
                     <Button
-                      onClick={() => handleBrowsePresets(expert.name)}
+                      onClick={() => handleDownload(expert.name)}
                       size="sm"
-                      className="bg-indigo-500/20 hover:bg-indigo-500/30 text-softWhite px-3 
+                      className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 text-softWhite px-3 
                                shadow-embossed hover:shadow-embossed-hover transition-all duration-300
-                               border border-indigo-500/30 hover:border-indigo-500/40 text-xs h-7"
+                               border border-[#00ADB5]/30 hover:border-[#00ADB5]/40 text-xs h-7"
                     >
-                      Browse presets
+                      <Download className="w-3.5 h-3.5 mr-1" />
+                      Download
                     </Button>
                     <Button
                       onClick={() => handleSetupGuide(expert.name)}
