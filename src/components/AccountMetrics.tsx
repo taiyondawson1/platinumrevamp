@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { supabase } from "@/lib/supabase";
+import { useEffect } from "react";
 
 interface AccountMetric {
   balance: number;
@@ -13,19 +14,26 @@ interface AccountMetric {
   marginLevel: number;
   openPositions: number;
   timestamp: string;
+  account_id: string;
 }
 
 const AccountMetrics = ({ accountId }: { accountId: string }) => {
   const { toast } = useToast();
 
-  const { data: metrics, isLoading, error } = useQuery({
+  const { data: metrics, isLoading, error, refetch } = useQuery({
     queryKey: ['account-metrics', accountId],
     queryFn: async () => {
       try {
-        // This is a mock fetch - replace with your actual API endpoint
-        const response = await fetch(`/api/account-metrics/${accountId}`);
-        if (!response.ok) throw new Error('Failed to fetch account metrics');
-        return response.json() as Promise<AccountMetric>;
+        const { data, error } = await supabase
+          .from('account_metrics')
+          .select('*')
+          .eq('account_id', accountId)
+          .order('timestamp', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (error) throw error;
+        return data as AccountMetric;
       } catch (err) {
         console.error('Error fetching account metrics:', err);
         toast({
@@ -36,8 +44,29 @@ const AccountMetrics = ({ accountId }: { accountId: string }) => {
         throw err;
       }
     },
-    refetchInterval: 5000, // Refresh every 5 seconds
   });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('account_metrics_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'account_metrics',
+          filter: `account_id=eq.${accountId}`,
+        },
+        () => {
+          refetch();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [accountId, refetch]);
 
   if (isLoading) {
     return <MetricsSkeleton />;
