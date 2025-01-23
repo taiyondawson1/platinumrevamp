@@ -258,11 +258,14 @@ const SetfilesPage = () => {
                 <span className="text-softWhite text-sm font-semibold tracking-tight">Risk Level</span>
               </div>
               <p className="text-mediumGray text-sm font-normal">
-                {selectedRisk.toLowerCase()} approach with {
-                  selectedRisk === "Aggressive" ? "high" :
-                  selectedRisk === "Conservative" || selectedRisk === "Phase 1" ? "low" :
-                  selectedRisk === "Ultrasoft" ? "minimal" : "moderate"
-                } risk
+                {selectedExpert === "PlatinumAi: Stealth" && selectedRisk === "Phase 1"
+                  ? "Manual set lot size to 0.5% risk per trade"
+                  : `${selectedRisk.toLowerCase()} approach with ${
+                      selectedRisk === "Aggressive" ? "high" :
+                      selectedRisk === "Conservative" || selectedRisk === "Phase 1" ? "low" :
+                      selectedRisk === "Ultrasoft" ? "minimal" : "moderate"
+                    } risk`
+                }
               </p>
             </div>
           </Card>
