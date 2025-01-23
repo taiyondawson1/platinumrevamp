@@ -136,12 +136,12 @@ const SetfilesPage = () => {
             className={`flex-1 h-[72px] transition-all duration-300 border shadow-lg ${
               expert.name === selectedExpert
                 ? "bg-gradient-to-br from-[#9b87f5] to-[#8B5CF6] text-white hover:from-[#8B5CF6] hover:to-[#7E69AB] border-[#D6BCFA]/20"
-                : "bg-gradient-to-br from-darkBlue/60 to-darkBlue/40 text-mediumGray hover:from-darkBlue/70 hover:to-darkBlue/50 hover:text-softWhite border-mediumGray/10"
+                : "bg-gradient-to-br from-darkBlue/80 to-darkBlue/60 text-softWhite hover:from-darkBlue/90 hover:to-darkBlue/70 hover:text-white border-mediumGray/20"
             } rounded-xl animate-[scale-in_0.2s_ease-out]`}
           >
             <div className="text-left animate-[fade-in_0.3s_ease-out] px-2">
-              <div className="font-semibold mb-1">{expert.name}</div>
-              <div className="text-xs opacity-80 font-medium">{expert.description}</div>
+              <div className="font-semibold text-lg mb-1.5 drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)]">{expert.name}</div>
+              <div className="text-sm opacity-90 font-medium drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]">{expert.description}</div>
             </div>
           </Button>
         ))}
@@ -575,3 +575,4 @@ const SetfilesPage = () => {
 };
 
 export default SetfilesPage;
+
