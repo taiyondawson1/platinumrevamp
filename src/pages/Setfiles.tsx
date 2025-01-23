@@ -142,25 +142,31 @@ const SetfilesPage = () => {
 
   return (
     <div className="flex-1 p-6 ml-[240px]">
-      <div className="flex gap-3 mb-8 max-w-[900px] mx-auto">
+      <div className="flex gap-4 mb-8 max-w-[900px] mx-auto">
         {experts.map((expert) => (
           <Button
             key={expert.name}
             onClick={() => handleExpertSelect(expert.name)}
             variant="ghost"
-            className={`flex-1 h-[72px] transition-all duration-300 border shadow-lg ${
-              expert.name === selectedExpert
-                ? "bg-gradient-to-br from-[#0EA5E9] to-[#0284C7] text-white hover:from-[#0284C7] hover:to-[#0369A1] border-[#BAE6FD]/20"
-                : "bg-gradient-to-br from-darkBlue/80 to-darkBlue/60 text-softWhite hover:from-darkBlue/90 hover:to-darkBlue/70 hover:text-white border-mediumGray/20"
-            } rounded-xl animate-[scale-in_0.2s_ease-out]`}
+            className={`
+              relative flex-1 h-[72px] px-6 py-4
+              transition-all duration-300 
+              rounded-xl border 
+              ${expert.name === selectedExpert
+                ? "bg-gradient-to-br from-[#8B5CF6] to-[#6D28D9] text-white border-purple-400/20 shadow-lg hover:from-[#7C3AED] hover:to-[#5B21B6]"
+                : "bg-darkBlue/40 text-mediumGray border-mediumGray/20 hover:bg-darkBlue/60 hover:text-white"
+              }
+              group
+              animate-[scale-in_0.2s_ease-out]
+            `}
           >
-            <div className="text-left animate-[fade-in_0.3s_ease-out] px-2">
-              <div className="font-semibold text-lg mb-1.5 drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)]">
+            <div className="flex flex-col items-start justify-center w-full animate-[fade-in_0.3s_ease-out]">
+              <span className="font-semibold text-base mb-1 group-hover:text-white transition-colors">
                 {expert.name}
-              </div>
-              <div className="text-sm opacity-90 font-medium drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]">
+              </span>
+              <span className="text-sm opacity-80 font-medium group-hover:text-white/90 transition-colors">
                 {expert.description}
-              </div>
+              </span>
             </div>
           </Button>
         ))}
