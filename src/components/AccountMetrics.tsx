@@ -88,11 +88,6 @@ const AccountMetrics = ({ accountId }: { accountId: string }) => {
     );
   }
 
-  // Ensure metrics exists before rendering
-  if (!metrics) {
-    return <MetricsSkeleton />;
-  }
-
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       <Card className="bg-darkBlue/40 backdrop-blur-sm border-mediumGray/20">
