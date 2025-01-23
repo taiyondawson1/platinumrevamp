@@ -133,13 +133,13 @@ const SetfilesPage = () => {
           <Button
             key={expert.name}
             onClick={() => handleExpertSelect(expert.name)}
-            className={`flex-1 h-16 ${
+            className={`flex-1 h-16 transition-all duration-300 ${
               expert.name === selectedExpert
-                ? "bg-[#00ADB5] text-white hover:bg-[#00ADB5]/90"
+                ? "bg-[#00ADB5] text-white hover:bg-[#00ADB5]/90 animate-[scale-in_0.2s_ease-out]"
                 : "bg-darkBlue/40 text-mediumGray hover:bg-darkBlue/60 hover:text-softWhite"
             }`}
           >
-            <div className="text-left">
+            <div className="text-left animate-[fade-in_0.3s_ease-out]">
               <div className="font-medium">{expert.name}</div>
               <div className="text-xs opacity-80">{expert.description}</div>
             </div>
@@ -147,6 +147,7 @@ const SetfilesPage = () => {
         ))}
       </div>
 
+      <div className="max-w-[900px] mx-auto border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)] animate-[fade-in_0.3s_ease-out]">
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Alert variant="destructive" className="max-w-[900px] mx-auto mb-4 bg-red-50/10 border-red-200/20 cursor-pointer hover:bg-red-50/20 transition-colors">
@@ -563,6 +564,7 @@ const SetfilesPage = () => {
           )}
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 };
