@@ -15,7 +15,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="fixed left-0 top-0 h-full w-[240px] bg-darkBlue/40 backdrop-blur-sm border-r border-mediumGray/20 flex flex-col py-8">
+    <div className="fixed left-0 top-0 h-full w-[64px] bg-darkBlue/40 backdrop-blur-sm border-r border-mediumGray/20 flex flex-col py-8">
       <div className="space-y-5">
         {navItems.map((item) => {
           const isActive = window.location.pathname === item.path;
@@ -24,10 +24,11 @@ const Sidebar = () => {
               key={item.label}
               onClick={() => navigate(item.path)}
               className={cn(
-                "w-full flex items-center gap-4 px-6 py-3 transition-all duration-300",
+                "w-full flex items-center justify-center py-3 transition-all duration-300",
                 "hover:bg-highlightGray/5 relative group",
                 isActive && "text-softWhite bg-highlightGray/10"
               )}
+              title={item.label}
             >
               <div className={cn(
                 "absolute left-0 w-1 h-full transition-all duration-300 rounded-r-full",
@@ -41,12 +42,6 @@ const Sidebar = () => {
                   isActive ? "text-softWhite filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" : "text-mediumGray"
                 )}
               />
-              <span className={cn(
-                "font-medium transition-all duration-300",
-                isActive ? "text-softWhite" : "text-mediumGray"
-              )}>
-                {item.label}
-              </span>
             </button>
           );
         })}
