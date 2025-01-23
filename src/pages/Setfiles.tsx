@@ -109,6 +109,23 @@ const SetfilesPage = () => {
     setSelectedRisk(expert === "PlatinumAi: Stealth" ? "Phase 1" : "Balanced");
   };
 
+  const getRiskDescription = (risk: string) => {
+    if (selectedExpert === "PlatinumAi: Stealth" && risk === "Phase 1") {
+      return "Manual set lot size to 0.5% risk per trade risking only 1.5% risk per day for a 6% return at newyork open";
+    }
+    return risk === "Balanced" 
+      ? "A balanced approach offering higher potential returns while maintaining reasonable risk control"
+      : risk === "Conservative"
+      ? "A conservative approach focused on capital preservation with moderate returns"
+      : risk === "Ultrasoft"
+      ? "The safest approach with minimal risk and steady, smaller returns"
+      : risk === "Phase 1"
+      ? "Initial phase with controlled risk"
+      : risk === "Phase 2"
+      ? "Intermediate phase with moderate risk"
+      : "An aggressive approach targeting maximum returns with higher risk tolerance";
+  };
+
   return (
     <div className="flex-1 p-6 ml-[240px]">
       <div className="flex gap-2 mb-6 max-w-[900px] mx-auto">
@@ -208,17 +225,7 @@ const SetfilesPage = () => {
         <div className="mb-8">
           <h2 className="text-lg font-bold text-softWhite tracking-tight mb-2">{selectedRisk}</h2>
           <p className="text-mediumGray text-sm font-normal leading-relaxed">
-            {selectedRisk === "Balanced" 
-              ? "A balanced approach offering higher potential returns while maintaining reasonable risk control"
-              : selectedRisk === "Conservative"
-              ? "A conservative approach focused on capital preservation with moderate returns"
-              : selectedRisk === "Ultrasoft"
-              ? "The safest approach with minimal risk and steady, smaller returns"
-              : selectedRisk === "Phase 1"
-              ? "Initial phase with controlled risk"
-              : selectedRisk === "Phase 2"
-              ? "Intermediate phase with moderate risk"
-              : "An aggressive approach targeting maximum returns with higher risk tolerance"}
+            {getRiskDescription(selectedRisk)}
           </p>
         </div>
 
