@@ -149,25 +149,19 @@ const SetfilesPage = () => {
             onClick={() => handleExpertSelect(expert.name)}
             variant="ghost"
             className={`
-              relative flex-1 h-[72px] px-6 py-4
+              relative flex-1 h-[48px] px-4
               transition-all duration-300 
-              rounded-xl border 
+              rounded-lg border 
               ${expert.name === selectedExpert
-                ? "bg-gradient-to-br from-[#8B5CF6] to-[#6D28D9] text-white border-purple-400/20 shadow-lg hover:from-[#7C3AED] hover:to-[#5B21B6]"
-                : "bg-darkBlue/40 text-mediumGray border-mediumGray/20 hover:bg-darkBlue/60 hover:text-white"
+                ? "bg-[#383D54] text-white border-[#383D54]/20"
+                : "bg-[#1E2132]/40 text-[#9096A5] border-[#2A2F42]/20 hover:bg-[#1E2132]/60 hover:text-white"
               }
               group
-              animate-[scale-in_0.2s_ease-out]
             `}
           >
-            <div className="flex flex-col items-start justify-center w-full animate-[fade-in_0.3s_ease-out]">
-              <span className="font-semibold text-base mb-1 group-hover:text-white transition-colors">
-                {expert.name}
-              </span>
-              <span className="text-sm opacity-80 font-medium group-hover:text-white/90 transition-colors">
-                {expert.description}
-              </span>
-            </div>
+            <span className="font-medium text-sm">
+              {expert.name}
+            </span>
           </Button>
         ))}
       </div>
@@ -266,12 +260,10 @@ const SetfilesPage = () => {
                 <span className={`${
                   selectedRisk === "Aggressive" 
                     ? "bg-red-500/20 text-red-300"
-                    : selectedRisk === "Conservative" || selectedRisk === "Phase 1"
+                    : selectedRisk === "Conservative" || selectedRisk === "Phase 1" || selectedRisk === "Phase 2" || selectedRisk === "Live" 
                     ? "bg-blue-500/20 text-blue-300"
                     : selectedRisk === "Ultrasoft"
                     ? "bg-green-500/20 text-green-300"
-                    : selectedRisk === "Phase 2" || selectedRisk === "Live"
-                    ? "bg-blue-500/20 text-blue-300"
                     : "bg-orange-500/20 text-orange-300"
                 } text-xs px-2 py-1 rounded flex items-center gap-1`}>
                   <Asterisk className="w-3 h-3" />
