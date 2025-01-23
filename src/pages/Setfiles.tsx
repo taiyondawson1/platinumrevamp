@@ -164,22 +164,28 @@ const SetfilesPage = () => {
           <p className="text-mediumGray text-sm font-normal">Official Setfiles released by PlatinumAi</p>
         </div>
 
-        <div className="flex gap-2 mb-8 bg-darkBlue/40 p-1 rounded-lg w-fit">
-          {riskLevels.map((risk) => (
-            <Button
-              key={risk}
-              onClick={() => handleRiskSelect(risk)}
-              className={`px-6 py-2 h-10 ${
-                risk === selectedRisk
-                  ? risk === "Conservative"
-                    ? "bg-[#0EA5E9] text-white hover:bg-[#0EA5E9]/90"
-                    : "bg-[#00ADB5] text-white hover:bg-[#00ADB5]/90"
-                  : "bg-darkBlue/40 text-mediumGray hover:bg-darkBlue/60 hover:text-softWhite"
-              }`}
-            >
-              {risk}
-            </Button>
-          ))}
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex gap-2 bg-darkBlue/40 p-1 rounded-lg">
+            {riskLevels.map((risk) => (
+              <Button
+                key={risk}
+                onClick={() => handleRiskSelect(risk)}
+                className={`px-6 py-2 h-10 ${
+                  risk === selectedRisk
+                    ? risk === "Conservative"
+                      ? "bg-[#0EA5E9] text-white hover:bg-[#0EA5E9]/90"
+                      : "bg-[#00ADB5] text-white hover:bg-[#00ADB5]/90"
+                    : "bg-darkBlue/40 text-mediumGray hover:bg-darkBlue/60 hover:text-softWhite"
+                }`}
+              >
+                {risk}
+              </Button>
+            ))}
+          </div>
+          <Button className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 h-10 px-6">
+            <Download className="w-5 h-5 mr-2" />
+            Download Setfile
+          </Button>
         </div>
 
         <div className="mb-8">
@@ -440,13 +446,6 @@ const SetfilesPage = () => {
               </div>
             </div>
           </Card>
-        </div>
-
-        <div className="fixed bottom-8 right-8">
-          <Button className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 h-12 px-6">
-            <Download className="w-5 h-5 mr-2" />
-            Download Setfile
-          </Button>
         </div>
       </div>
 
