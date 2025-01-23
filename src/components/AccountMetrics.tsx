@@ -18,15 +18,29 @@ const AccountMetrics = ({ accountId }: { accountId: string }) => {
           .select('*')
           .eq('account_number', accountId)
           .order('created_at', { ascending: false })
-          .limit(1)
-          .single();
+          .limit(1);
 
         if (error) {
           console.error('Supabase error:', error);
           throw error;
         }
 
-        return data as AccountMetric;
+        // Return default values if no data is found
+        if (!data || data.length === 0) {
+          return {
+            account_number: accountId,
+            balance: 0,
+            equity: 0,
+            floating: 0,
+            margin: 0,
+            freeMargin: 0,
+            marginLevel: 0,
+            openPositions: 0,
+            created_at: new Date().toISOString()
+          } as AccountMetric;
+        }
+
+        return data[0] as AccountMetric;
       } catch (err) {
         console.error('Error fetching account metrics:', err);
         toast({
@@ -66,7 +80,7 @@ const AccountMetrics = ({ accountId }: { accountId: string }) => {
     return <MetricsSkeleton />;
   }
 
-  if (error || !metrics) {
+  if (error) {
     return (
       <div className="p-4 text-red-400">
         Failed to load account metrics. Please try again later.
