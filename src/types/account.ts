@@ -1,6 +1,6 @@
 export interface AccountMetric {
   id?: string;
-  account_id: string;
+  account_number: string;
   balance: number;
   equity: number;
   floating: number;
@@ -8,5 +8,5 @@ export interface AccountMetric {
   freeMargin: number;
   marginLevel: number;
   openPositions: number;
-  timestamp: string;
+  created_at: string;
 }

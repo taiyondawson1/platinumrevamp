@@ -17,7 +17,7 @@ const AccountMetrics = ({ accountId }: { accountId: string }) => {
           .from('account_metrics')
           .select('*')
           .eq('account_number', accountId)
-          .order('timestamp', { ascending: false })
+          .order('created_at', { ascending: false })
           .limit(1)
           .single();
 
