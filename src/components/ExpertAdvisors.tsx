@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Download } from "lucide-react";
-import AccountMetrics from "./AccountMetrics";
 
 const ExpertAdvisors = () => {
   const { toast } = useToast();
@@ -50,12 +49,6 @@ const ExpertAdvisors = () => {
   return (
     <div className="p-4 ml-[64px]">
       <h1 className="text-xl font-semibold text-softWhite mb-4">Expert Advisors</h1>
-      
-      {/* Account Metrics Dashboard */}
-      <div className="mb-6">
-        <h2 className="text-lg font-medium text-softWhite mb-4">Account Metrics</h2>
-        <AccountMetrics accountId={connectedAccountId} />
-      </div>
       
       <div className="grid gap-3">
         {experts.map((expert) => (
