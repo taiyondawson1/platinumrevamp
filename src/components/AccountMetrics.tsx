@@ -4,18 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/lib/supabase";
 import { useEffect } from "react";
-
-interface AccountMetric {
-  balance: number;
-  equity: number;
-  floating: number;
-  margin: number;
-  freeMargin: number;
-  marginLevel: number;
-  openPositions: number;
-  timestamp: string;
-  account_id: string;
-}
+import { AccountMetric } from "@/types/account";
 
 const AccountMetrics = ({ accountId }: { accountId: string }) => {
   const { toast } = useToast();
@@ -32,7 +21,11 @@ const AccountMetrics = ({ accountId }: { accountId: string }) => {
           .limit(1)
           .single();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
+
         return data as AccountMetric;
       } catch (err) {
         console.error('Error fetching account metrics:', err);
@@ -44,6 +37,7 @@ const AccountMetrics = ({ accountId }: { accountId: string }) => {
         throw err;
       }
     },
+    retry: 1,
   });
 
   useEffect(() => {
@@ -73,7 +67,11 @@ const AccountMetrics = ({ accountId }: { accountId: string }) => {
   }
 
   if (error || !metrics) {
-    return null;
+    return (
+      <div className="p-4 text-red-400">
+        Failed to load account metrics. Please try again later.
+      </div>
+    );
   }
 
   return (
