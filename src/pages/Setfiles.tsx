@@ -44,8 +44,15 @@ const SetfilesPage = () => {
 
   const defaultRiskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
   const stealthPhases = ["Phase 1", "Phase 2", "Live"];
+  const infinityLevels = ["Trend", "Consolodation (XAUUSD)", "Consolodation (US30)", "STRIKER"];
 
-  const riskLevels = selectedExpert === "PlatinumAi: Stealth" ? stealthPhases : defaultRiskLevels;
+  const getRiskLevels = () => {
+    if (selectedExpert === "PlatinumAi: Stealth") return stealthPhases;
+    if (selectedExpert === "PlatinumAi: Infinity") return infinityLevels;
+    return defaultRiskLevels;
+  };
+
+  const riskLevels = getRiskLevels();
 
   const getRiskLevelProfitPercentage = (risk: string): number => {
     switch (risk) {
