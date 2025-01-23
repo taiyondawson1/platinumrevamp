@@ -111,7 +111,7 @@ const SetfilesPage = () => {
 
   const getRiskDescription = (risk: string) => {
     if (selectedExpert === "PlatinumAi: Stealth" && risk === "Phase 1") {
-      return "Phase 2 approach with moderate risk.";
+      return "Phase 1 approach with 1.5% risk.";
     }
     return risk === "Balanced" 
       ? "A balanced approach offering higher potential returns while maintaining reasonable risk control."
@@ -120,7 +120,7 @@ const SetfilesPage = () => {
       : risk === "Ultrasoft"
       ? "The safest approach with minimal risk and steady, smaller returns."
       : risk === "Phase 1"
-      ? "Initial phase with controlled risk."
+      ? "Phase 1 approach with controlled risk."
       : risk === "Phase 2"
       ? "Intermediate phase with moderate risk."
       : "An aggressive approach targeting maximum returns with higher risk tolerance.";
@@ -263,7 +263,7 @@ const SetfilesPage = () => {
                 </div>
                 <p className="text-mediumGray text-sm font-normal">
                   {selectedExpert === "PlatinumAi: Stealth" && selectedRisk === "Phase 1"
-                    ? "Phase 2 approach with moderate risk."
+                    ? "Phase 1 approach with 1.5% risk."
                     : `${selectedRisk.toLowerCase()} approach with ${
                         selectedRisk === "Aggressive" ? "high" :
                         selectedRisk === "Conservative" || selectedRisk === "Phase 1" ? "low" :
