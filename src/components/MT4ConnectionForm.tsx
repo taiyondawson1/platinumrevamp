@@ -5,7 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/lib/supabase";
 
-const MT4ConnectionForm = () => {
+interface MT4ConnectionFormProps {
+  onSuccess?: (accountNumber: string) => void;
+}
+
+const MT4ConnectionForm = ({ onSuccess }: MT4ConnectionFormProps) => {
   const [accountNumber, setAccountNumber] = useState("");
   const [password, setPassword] = useState("");
   const [server, setServer] = useState("");
@@ -41,7 +45,7 @@ const MT4ConnectionForm = () => {
           {
             account_number: accountNumber,
             server: server,
-            password: password, // Note: In production, this should be properly encrypted
+            password: password,
           }
         ])
         .select()
@@ -78,6 +82,11 @@ const MT4ConnectionForm = () => {
         setAccountNumber("");
         setPassword("");
         setServer("");
+        
+        // Notify parent component of successful connection
+        if (onSuccess) {
+          onSuccess(accountNumber);
+        }
       }
     } catch (error: any) {
       console.error('Error:', error);

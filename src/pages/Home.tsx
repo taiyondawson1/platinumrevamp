@@ -7,6 +7,10 @@ import { useState } from "react";
 const Index = () => {
   const [connectedAccountId, setConnectedAccountId] = useState<string | null>(null);
 
+  const handleSuccessfulConnection = (accountNumber: string) => {
+    setConnectedAccountId(accountNumber);
+  };
+
   return (
     <main className="flex-1 p-6 max-w-[1400px] mx-auto ml-[64px]">
       <div className="flex flex-col gap-4">
@@ -27,7 +31,7 @@ const Index = () => {
           </>
         ) : (
           <div className="mt-8">
-            <MT4ConnectionForm />
+            <MT4ConnectionForm onSuccess={handleSuccessfulConnection} />
           </div>
         )}
       </div>
