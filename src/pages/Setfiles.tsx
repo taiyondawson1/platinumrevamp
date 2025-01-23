@@ -25,19 +25,19 @@ const SetfilesPage = () => {
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
   const [accountBalance, setAccountBalance] = useState<number>(100000);
   const [showNewsDialog, setShowNewsDialog] = useState(false);
-  const [selectedExpert, setSelectedExpert] = useState<string>("Zennbot Nexus");
+  const [selectedExpert, setSelectedExpert] = useState<string>("PlatinumAi: Pulse");
 
   const experts = [
     {
-      name: "Zennbot Nexus",
+      name: "PlatinumAi: Pulse",
       description: "Advanced mean reversion strategy"
     },
     {
-      name: "Zennbot Prime",
+      name: "PlatinumAi: Stealth",
       description: "High-performance trading system"
     },
     {
-      name: "Zennbot Zero",
+      name: "PlatinumAi: Infinity",
       description: "Minimal intervention strategy"
     }
   ];
