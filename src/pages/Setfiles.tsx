@@ -129,7 +129,9 @@ const SetfilesPage = () => {
       : risk === "Phase 1"
       ? "Phase 1 approach with controlled risk."
       : risk === "Phase 2"
-      ? "Intermediate phase with moderate risk."
+      ? "Live approach with low risk high reward."
+      : risk === "Trend"
+      ? "Catches large trending moves"
       : "An aggressive approach targeting maximum returns with higher risk tolerance.";
   };
 
