@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import ExpertAdvisorsPage from "@/pages/ExpertAdvisors";
 import SetfilesPage from "@/pages/Setfiles";
 import TradingPage from "@/pages/Trading";
+import CoursesPage from "@/pages/Courses";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ function App() {
               <Route path="/trading" element={<TradingPage />} />
               <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
               <Route path="/setfiles" element={<SetfilesPage />} />
+              <Route path="/courses" element={<CoursesPage />} />
             </Routes>
           </div>
         </BrowserRouter>
