@@ -272,7 +272,7 @@ const SetfilesPage = () => {
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
                 <span className="bg-white/20 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> 5 MIN
+                  <Clock className="w-3 h-3" /> {selectedExpert === "PlatinumAi: Stealth" ? "15 MIN" : "5 MIN"}
                 </span>
                 <span className="text-softWhite text-sm font-semibold tracking-tight">Timeframe</span>
               </div>
