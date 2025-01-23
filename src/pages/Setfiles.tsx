@@ -258,7 +258,7 @@ const SetfilesPage = () => {
             <div className="p-4">
               <div className="flex items-center gap-2 mb-4">
                 <span className="bg-blue-500/20 text-blue-300 text-xs px-2 py-1 rounded">
-                  XAUUSD
+                  {selectedExpert === "PlatinumAi: Stealth" ? "US30" : "XAUUSD"}
                 </span>
                 <span className="text-softWhite text-sm font-semibold tracking-tight">Symbol</span>
               </div>
