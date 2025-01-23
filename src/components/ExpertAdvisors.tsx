@@ -46,6 +46,22 @@ const ExpertAdvisors = () => {
   return (
     <div className="p-4 ml-[240px]">
       <h1 className="text-xl font-semibold text-softWhite mb-4">Expert Advisors</h1>
+      
+      <div className="flex gap-2 mb-6 bg-black/40 p-1.5 rounded-lg w-fit">
+        {["All", "US30", "XAUUSD", "DJ30"].map((tab) => (
+          <Button
+            key={tab}
+            variant="ghost"
+            className={`px-4 py-1.5 h-8 text-sm font-medium rounded-md transition-all duration-200
+              ${tab === "All" 
+                ? "bg-[#6D28D9] text-white shadow-lg hover:bg-[#5B21B6]" 
+                : "text-mediumGray hover:bg-white/5 hover:text-white"}`}
+          >
+            {tab}
+          </Button>
+        ))}
+      </div>
+
       <div className="grid gap-3">
         {experts.map((expert) => (
           <div 
