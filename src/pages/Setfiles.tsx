@@ -237,7 +237,7 @@ const SetfilesPage = () => {
                 } text-xs px-2 py-1 rounded flex items-center gap-1`}>
                   <Asterisk className="w-3 h-3" />
                   {selectedRisk === "Aggressive" ? "High Risk" : 
-                   selectedRisk === "Conservative" || selectedRisk === "Phase 1" ? "Low Risk" :
+                   selectedRisk === "Conservative" || selectedRisk === "Phase 1" || selectedRisk === "Phase 2" ? "Low Risk" :
                    selectedRisk === "Ultrasoft" ? "Minimal Risk" : "Medium Risk"}
                 </span>
                 <span className="text-softWhite text-sm font-semibold tracking-tight">Risk Level</span>
