@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import ExpertAdvisorsPage from "@/pages/ExpertAdvisors";
 import SetfilesPage from "@/pages/Setfiles";
 import CommunitySetfiles from "@/pages/CommunitySetfiles";
+import TradingPage from "@/pages/Trading";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ function App() {
             <Sidebar />
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/trading" element={<TradingPage />} />
               <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
               <Route path="/setfiles" element={<SetfilesPage />} />
               <Route path="/community-setfiles" element={<CommunitySetfiles />} />
