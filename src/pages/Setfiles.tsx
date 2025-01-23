@@ -25,6 +25,22 @@ const SetfilesPage = () => {
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
   const [accountBalance, setAccountBalance] = useState<number>(100000);
   const [showNewsDialog, setShowNewsDialog] = useState(false);
+  const [selectedExpert, setSelectedExpert] = useState<string>("Zennbot Nexus");
+
+  const experts = [
+    {
+      name: "Zennbot Nexus",
+      description: "Advanced mean reversion strategy"
+    },
+    {
+      name: "Zennbot Prime",
+      description: "High-performance trading system"
+    },
+    {
+      name: "Zennbot Zero",
+      description: "Minimal intervention strategy"
+    }
+  ];
 
   const riskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
 
@@ -71,8 +87,32 @@ const SetfilesPage = () => {
     setSelectedRisk(risk);
   };
 
+  const handleExpertSelect = (expert: string) => {
+    console.log("Selected expert:", expert);
+    setSelectedExpert(expert);
+  };
+
   return (
     <div className="flex-1 p-6 ml-[240px]">
+      <div className="flex gap-2 mb-6 max-w-[900px] mx-auto">
+        {experts.map((expert) => (
+          <Button
+            key={expert.name}
+            onClick={() => handleExpertSelect(expert.name)}
+            className={`flex-1 h-16 ${
+              expert.name === selectedExpert
+                ? "bg-[#00ADB5] text-white hover:bg-[#00ADB5]/90"
+                : "bg-darkBlue/40 text-mediumGray hover:bg-darkBlue/60 hover:text-softWhite"
+            }`}
+          >
+            <div className="text-left">
+              <div className="font-medium">{expert.name}</div>
+              <div className="text-xs opacity-80">{expert.description}</div>
+            </div>
+          </Button>
+        ))}
+      </div>
+
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Alert variant="destructive" className="max-w-[900px] mx-auto mb-4 bg-red-50/10 border-red-200/20 cursor-pointer hover:bg-red-50/20 transition-colors">
