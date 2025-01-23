@@ -17,34 +17,73 @@ const MT4ConnectionForm = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase
+      // First, check if the account already exists
+      const { data: existingAccount } = await supabase
+        .from('mt4_accounts')
+        .select('*')
+        .eq('account_number', accountNumber)
+        .single();
+
+      if (existingAccount) {
+        toast({
+          title: "Account Already Exists",
+          description: "This MT4 account is already connected.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // If account doesn't exist, insert new record
+      const { data, error } = await supabase
         .from('mt4_accounts')
         .insert([
           {
             account_number: accountNumber,
             server: server,
-            // Note: In a production environment, you should never store plain text passwords
-            // This is just for demo purposes
-            password: password,
+            password: password, // Note: In production, this should be properly encrypted
           }
-        ]);
+        ])
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
-      toast({
-        title: "Success",
-        description: "MT4 account connected successfully!",
-      });
+      if (data) {
+        // Create initial metrics record
+        await supabase
+          .from('account_metrics')
+          .insert([
+            {
+              account_number: accountNumber,
+              balance: 0,
+              equity: 0,
+              floating: 0,
+              margin: 0,
+              freeMargin: 0,
+              marginLevel: 0,
+              openPositions: 0,
+            }
+          ]);
 
-      // Clear form
-      setAccountNumber("");
-      setPassword("");
-      setServer("");
-    } catch (error) {
+        toast({
+          title: "Success",
+          description: "MT4 account connected successfully!",
+        });
+
+        // Clear form
+        setAccountNumber("");
+        setPassword("");
+        setServer("");
+      }
+    } catch (error: any) {
       console.error('Error:', error);
       toast({
-        title: "Error",
-        description: "Failed to connect MT4 account. Please try again.",
+        title: "Connection Failed",
+        description: error.message || "Failed to connect MT4 account. Please try again.",
         variant: "destructive",
       });
     } finally {
