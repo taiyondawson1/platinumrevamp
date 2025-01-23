@@ -111,7 +111,7 @@ const SetfilesPage = () => {
 
   const getRiskDescription = (risk: string) => {
     if (selectedExpert === "PlatinumAi: Stealth" && risk === "Phase 1") {
-      return "Manual set lot size to 0.5% risk per trade risking only 1.5% risk per day for a 6% return at newyork open";
+      return "Phase 2 approach with moderate risk";
     }
     return risk === "Balanced" 
       ? "A balanced approach offering higher potential returns while maintaining reasonable risk control"
@@ -263,7 +263,7 @@ const SetfilesPage = () => {
                 </div>
                 <p className="text-mediumGray text-sm font-normal">
                   {selectedExpert === "PlatinumAi: Stealth" && selectedRisk === "Phase 1"
-                    ? "Low Risk"
+                    ? "Phase 2 approach with moderate risk"
                     : `${selectedRisk.toLowerCase()} approach with ${
                         selectedRisk === "Aggressive" ? "high" :
                         selectedRisk === "Conservative" || selectedRisk === "Phase 1" ? "low" :
@@ -575,4 +575,3 @@ const SetfilesPage = () => {
 };
 
 export default SetfilesPage;
-
