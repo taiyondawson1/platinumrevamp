@@ -205,15 +205,15 @@ const SetfilesPage = () => {
               <Button
                 key={risk}
                 onClick={() => handleRiskSelect(risk)}
-                className={`px-6 py-2 h-10 ${
+                className={`px-6 py-2 h-10 transition-all duration-300 ${
                   risk === selectedRisk
                     ? risk === "Conservative" || risk === "Phase 1" 
-                      ? "bg-[#0EA5E9] text-white hover:bg-[#0EA5E9]/90"
-                      : "bg-[#00ADB5] text-white hover:bg-[#00ADB5]/90"
+                      ? "bg-[#0EA5E9] text-white hover:bg-[#0EA5E9]/90 animate-[scale-in_0.2s_ease-out]"
+                      : "bg-[#00ADB5] text-white hover:bg-[#00ADB5]/90 animate-[scale-in_0.2s_ease-out]"
                     : "bg-darkBlue/40 text-mediumGray hover:bg-darkBlue/60 hover:text-softWhite"
                 }`}
               >
-                {risk}
+                <span className="animate-[fade-in_0.3s_ease-out]">{risk}</span>
               </Button>
             ))}
           </div>
