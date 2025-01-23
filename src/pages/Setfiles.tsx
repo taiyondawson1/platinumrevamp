@@ -129,15 +129,8 @@ const SetfilesPage = () => {
       : risk === "Phase 1"
       ? "Phase 1 approach with controlled risk."
       : risk === "Phase 2"
-      ? "Live approach with low risk high reward."
-      : risk === "Trend"
-      ? "Catches large trending moves"
+      ? "Intermediate phase with moderate risk."
       : "An aggressive approach targeting maximum returns with higher risk tolerance.";
-  };
-
-  const shouldShowDailyAnalysis = () => {
-    return selectedRisk === "Trend" || 
-           (selectedRisk !== "Ultrasoft" && selectedExpert !== "PlatinumAi: Infinity");
   };
 
   return (
@@ -393,7 +386,7 @@ const SetfilesPage = () => {
                       </span>
                     </div>
 
-                    {shouldShowDailyAnalysis() ? (
+                    {selectedRisk === "Conservative" || selectedRisk === "Balanced" || selectedRisk === "Aggressive" ? (
                       <div className="space-y-4">
                         <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
                           <div className="flex items-center gap-2">
@@ -411,6 +404,26 @@ const SetfilesPage = () => {
                           </button>
                         </div>
                       </div>
+
+                    ) : selectedRisk === "Ultrasoft" ? (
+                      <>
+                        <div className="mb-4">
+                          <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
+                                <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_10px_#4ade80] animate-pulse"></div>
+                              </div>
+                              <span className="text-softWhite font-medium">Automated Trading</span>
+                            </div>
+                            <p className="text-mediumGray text-sm mb-4">
+                              Can run autonomously with minimal intervention, except during high-impact news
+                            </p>
+                            <Button variant="link" className="text-green-400 p-0 h-auto" onClick={() => setShowNewsDialog(true)}>
+                              Learn about news handling
+                            </Button>
+                          </div>
+                        </div>
+                      </>
                     ) : (
                       <>
                         <p className="text-mediumGray text-sm mb-6">
@@ -555,7 +568,7 @@ const SetfilesPage = () => {
                       <h3 className="text-blue-300 font-medium">Optional Analysis</h3>
                     </div>
                     <p className="text-sm">
-                      {selectedRisk === "Trend" ? "AC1" : "AC2"}
+                      For enhanced performance, you can optionally follow our daily market analysis on Discord. While not required for Ultrasafe, this additional insight can help optimize your trading results.
                     </p>
                   </div>
                 </div>
