@@ -133,6 +133,13 @@ const SetfilesPage = () => {
       : "An aggressive approach targeting maximum returns with higher risk tolerance.";
   };
 
+  const getSymbolForSelectedRisk = () => {
+    if (selectedExpert === "PlatinumAi: Infinity" && (selectedRisk === "Trend" || selectedRisk === "Consolodation (US30)")) {
+      return "US30";
+    }
+    return selectedExpert === "PlatinumAi: Stealth" ? "US30" : "XAUUSD";
+  };
+
   return (
     <div className="flex-1 p-6 ml-[240px]">
       <div className="flex gap-3 mb-8 max-w-[900px] mx-auto">
@@ -285,7 +292,7 @@ const SetfilesPage = () => {
               <div className="p-4">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="bg-blue-500/20 text-blue-300 text-xs px-2 py-1 rounded">
-                    {selectedExpert === "PlatinumAi: Stealth" ? "US30" : "XAUUSD"}
+                    {getSymbolForSelectedRisk()}
                   </span>
                   <span className="text-softWhite text-sm font-semibold tracking-tight">Symbol</span>
                 </div>
