@@ -1,6 +1,6 @@
 export interface AccountMetric {
   id?: string;
-  account_id: string;
+  account_number: string;  // Changed from account_id to account_number
   balance: number;
   equity: number;
   floating: number;

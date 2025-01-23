@@ -16,7 +16,7 @@ const AccountMetrics = ({ accountId }: { accountId: string }) => {
         const { data, error } = await supabase
           .from('account_metrics')
           .select('*')
-          .eq('account_id', accountId)
+          .eq('account_number', accountId)  // Changed from account_id to account_number
           .order('timestamp', { ascending: false })
           .limit(1)
           .single();
@@ -49,7 +49,7 @@ const AccountMetrics = ({ accountId }: { accountId: string }) => {
           event: 'INSERT',
           schema: 'public',
           table: 'account_metrics',
-          filter: `account_id=eq.${accountId}`,
+          filter: `account_number=eq.${accountId}`,  // Changed from account_id to account_number
         },
         () => {
           refetch();
