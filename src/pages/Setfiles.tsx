@@ -570,7 +570,7 @@ const SetfilesPage = () => {
                       <h3 className="text-blue-300 font-medium">Optional Analysis</h3>
                     </div>
                     <p className="text-sm">
-                      For enhanced performance, you can optionally follow our daily market analysis on Discord. While not required for Ultrasafe, this additional insight can help optimize your trading results.
+                      {selectedRisk === "Trend" ? "AC1" : "AC2"}
                     </p>
                   </div>
                 </div>
