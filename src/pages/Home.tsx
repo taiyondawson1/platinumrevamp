@@ -1,6 +1,7 @@
 import TradingChart from "@/components/TradingChart";
 import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
 import AccountMetrics from "@/components/AccountMetrics";
+import MetaTraderConnection from "@/components/MetaTraderConnection";
 
 const Index = () => {
   // Mock connected account ID - replace this with actual account connection logic
@@ -17,6 +18,10 @@ const Index = () => {
           <div className="mt-32">
             <TechnicalAnalysisWidget />
           </div>
+        </div>
+        <div className="flex-1">
+          <h2 className="text-lg font-medium text-softWhite mb-4">Connection Details</h2>
+          <MetaTraderConnection />
         </div>
         <div className="flex-1">
           <TradingChart />
