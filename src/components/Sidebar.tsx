@@ -7,7 +7,6 @@ const Sidebar = () => {
   
   const navItems = [
     { icon: Home, label: "Dashboard", path: "/" },
-    { icon: BarChart3, label: "Trading", path: "/trading" },
     { icon: Bot, label: "Expert Advisors", path: "/expert-advisors" },
     { icon: Files, label: "Setfiles", path: "/setfiles" },
     { icon: Users, label: "Community Setfiles", path: "/community-setfiles" },
