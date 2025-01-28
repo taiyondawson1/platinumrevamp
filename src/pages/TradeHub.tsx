@@ -6,6 +6,7 @@ import DailyGainChart from "@/components/DailyGainChart";
 import TotalGainCard from "@/components/TotalGainCard";
 import CustomWidget from "@/components/CustomWidget";
 import GainWidget from "@/components/GainWidget";
+import CommunityOutlookWidget from "@/components/CommunityOutlookWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -187,6 +188,7 @@ const TradeHub = () => {
                   </TabsContent>
                 </Tabs>
               </Card>
+              <CommunityOutlookWidget />
               <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                 <CardContent className="p-0">
                   <OpenOrdersTable orders={openTrades} />
