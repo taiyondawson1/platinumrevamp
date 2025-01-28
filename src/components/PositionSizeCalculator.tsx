@@ -30,7 +30,7 @@ const PositionSizeCalculator = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-4 bg-darkBase/40 h-full">
+    <div className="flex flex-col gap-4 p-4 bg-darkBase/40 h-full overflow-auto">
       <h3 className="text-lg font-semibold text-softWhite mb-2">Position Size Calculator</h3>
       
       <div className="space-y-4">
