@@ -10,6 +10,7 @@ import CommunityOutlookWidget from "@/components/CommunityOutlookWidget";
 import DailyDataWidget from "@/components/DailyDataWidget";
 import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
 import US30AnalysisWidget from "@/components/US30AnalysisWidget";
+import BitcoinAnalysisWidget from "@/components/BitcoinAnalysisWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -153,6 +154,7 @@ const TradeHub = () => {
               <div className="flex gap-3 justify-center">
                 <TechnicalAnalysisWidget />
                 <US30AnalysisWidget />
+                <BitcoinAnalysisWidget />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <TotalGainCard accountId={selectedAccount?.id?.toString()} />
