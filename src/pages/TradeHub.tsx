@@ -165,6 +165,11 @@ const TradeHub = () => {
                   <OpenOrdersTable orders={openTrades} />
                 </CardContent>
               </Card>
+              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+                <CardContent className="p-0">
+                  <HistoryTable history={tradeHistory} />
+                </CardContent>
+              </Card>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                   <Tabs defaultValue="daily" className="w-full">
@@ -192,11 +197,6 @@ const TradeHub = () => {
               </div>
               <CommunityOutlookWidget />
               <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
-              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                <CardContent className="p-0">
-                  <HistoryTable history={tradeHistory} />
-                </CardContent>
-              </Card>
             </div>
           </>
         )}
