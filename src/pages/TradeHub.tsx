@@ -147,7 +147,7 @@ const TradeHub = () => {
         {isLoading ? (
           <Card className="tradehub-card w-full">
             <CardContent className="py-6">
-              <p className="text-center text-muted-foreground">Loading data...</p>
+              <p className="text-center text-softWhite">Loading data...</p>
             </CardContent>
           </Card>
         ) : (
@@ -156,9 +156,9 @@ const TradeHub = () => {
               <div className="flex-[3] space-y-4">
                 <Card className="tradehub-card w-full">
                   <Tabs defaultValue="daily" className="w-full">
-                    <TabsList className="ml-4 mt-4">
-                      <TabsTrigger value="daily">Daily Gain</TabsTrigger>
-                      <TabsTrigger value="total">Total Gain</TabsTrigger>
+                    <TabsList className="ml-4 mt-4 bg-darkBlue/40">
+                      <TabsTrigger value="daily" className="text-softWhite data-[state=active]:bg-darkBlue/60">Daily Gain</TabsTrigger>
+                      <TabsTrigger value="total" className="text-softWhite data-[state=active]:bg-darkBlue/60">Total Gain</TabsTrigger>
                     </TabsList>
                     <TabsContent value="daily">
                       <DailyGainChart accountId={selectedAccount?.id?.toString()} />
