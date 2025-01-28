@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { Calendar, Book, Share2, Plus, Activity, LineChart, PenLine, Check, MoreHorizontal } from "lucide-react";
+import { Calendar, Book, Share2, Plus, Activity, LineChart, PenLine, Check, MoreHorizontal, UserRound, CalendarDays, BarChart } from "lucide-react";
 import { format } from 'date-fns';
 import {
   ContextMenu,
@@ -163,8 +163,18 @@ const DailyHabits = () => {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent border-silver/20">
-              <TableHead className="text-mediumGray h-5 py-0.5">Name</TableHead>
-              <TableHead className="text-mediumGray h-5 py-0.5">Date</TableHead>
+              <TableHead className="text-mediumGray h-5 py-0.5">
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-4 w-4" />
+                  <span>Name</span>
+                </div>
+              </TableHead>
+              <TableHead className="text-mediumGray h-5 py-0.5">
+                <div className="flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4" />
+                  <span>Date</span>
+                </div>
+              </TableHead>
               <TableHead className="text-mediumGray h-5 py-0.5">
                 <div className="flex flex-col items-center gap-1">
                   <PenLine className="h-4 w-4" />
@@ -195,7 +205,12 @@ const DailyHabits = () => {
                   <span className="text-xs">Share in Discord</span>
                 </div>
               </TableHead>
-              <TableHead className="text-mediumGray h-5 py-0.5">Progress</TableHead>
+              <TableHead className="text-mediumGray h-5 py-0.5">
+                <div className="flex items-center gap-2">
+                  <BarChart className="h-4 w-4" />
+                  <span>Progress</span>
+                </div>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
