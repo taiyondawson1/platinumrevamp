@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AccountsTable from "@/components/AccountsTable";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
-import { useLocation, Navigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -14,10 +14,6 @@ import {
 const TradeHub = () => {
   const location = useLocation();
   const selectedAccount = location.state?.selectedAccount;
-
-  if (!selectedAccount) {
-    return <Navigate to="/" replace />;
-  }
 
   const sampleAccounts = selectedAccount ? [
     {
@@ -38,16 +34,28 @@ const TradeHub = () => {
     }
   ] : [];
 
-  const sampleOpenOrders = [];
-  const sampleWatchedAccounts = [];
-
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6 ml-[64px]">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight text-white">TradeHub - {selectedAccount.name}</h2>
+        <h2 className="text-3xl font-bold tracking-tight text-white">
+          TradeHub {selectedAccount ? `- ${selectedAccount.name}` : ''}
+        </h2>
       </div>
       <div className="grid gap-4">
-        <AccountsTable accounts={sampleAccounts} />
+        {selectedAccount ? (
+          <AccountsTable accounts={sampleAccounts} />
+        ) : (
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold">Accounts</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground text-center py-8">
+                No account selected. Select an account from the home page to view details.
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="w-full">
           <CardHeader>
