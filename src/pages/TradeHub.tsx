@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
+import HistoryTable from "@/components/HistoryTable";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -21,21 +22,48 @@ interface OpenTrade {
   lots: number;
 }
 
+interface TradeHistory {
+  openTime: string;
+  closeTime: string;
+  symbol: string;
+  action: string;
+  sizing: {
+    type: string;
+    value: string;
+  };
+  openPrice: number;
+  closePrice: number;
+  tp: number;
+  sl: number;
+  comment: string;
+  pips: number;
+  profit: number;
+  interest: number;
+  commission: number;
+}
+
 interface OpenTradesResponse {
   error: boolean;
   message: string;
   trades: OpenTrade[];
 }
 
+interface HistoryResponse {
+  error: boolean;
+  message: string;
+  history: TradeHistory[];
+}
+
 const TradeHub = () => {
   const location = useLocation();
   const selectedAccount = location.state?.selectedAccount;
   const [openTrades, setOpenTrades] = useState<OpenTrade[]>([]);
+  const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    const fetchOpenTrades = async () => {
+    const fetchData = async () => {
       if (!selectedAccount?.id) return;
 
       const session = localStorage.getItem("myfxbook_session");
@@ -50,39 +78,55 @@ const TradeHub = () => {
 
       setIsLoading(true);
       try {
-        console.log("Fetching trades for account:", selectedAccount.id); // Add this log
-        const response = await fetch(
+        // Fetch open trades
+        console.log("Fetching trades for account:", selectedAccount.id);
+        const openTradesResponse = await fetch(
           `https://www.myfxbook.com/api/get-open-trades.json?session=${encodeURIComponent(
             session
           )}&id=${encodeURIComponent(selectedAccount.id)}`
         );
 
-        if (!response.ok) {
+        if (!openTradesResponse.ok) {
           throw new Error("Failed to fetch open trades");
         }
 
-        const data: OpenTradesResponse = await response.json();
-        console.log("API Response:", data); // Add this log
+        const openTradesData: OpenTradesResponse = await openTradesResponse.json();
+        console.log("Open Trades API Response:", openTradesData);
 
-        if (!data.error) {
-          setOpenTrades(data.trades || []);
-          console.log("Setting trades:", data.trades); // Add this log
+        // Fetch trade history
+        console.log("Fetching trade history for account:", selectedAccount.id);
+        const historyResponse = await fetch(
+          `https://www.myfxbook.com/api/get-history.json?session=${encodeURIComponent(
+            session
+          )}&id=${encodeURIComponent(selectedAccount.id)}`
+        );
+
+        if (!historyResponse.ok) {
+          throw new Error("Failed to fetch trade history");
+        }
+
+        const historyData: HistoryResponse = await historyResponse.json();
+        console.log("History API Response:", historyData);
+
+        if (!openTradesData.error && !historyData.error) {
+          setOpenTrades(openTradesData.trades || []);
+          setTradeHistory(historyData.history || []);
         } else {
-          throw new Error(data.message || "Failed to fetch open trades");
+          throw new Error(openTradesData.message || historyData.message || "Failed to fetch data");
         }
       } catch (error) {
-        console.error("Error fetching trades:", error); // Add this log
+        console.error("Error fetching data:", error);
         toast({
           variant: "destructive",
           title: "Error",
-          description: error instanceof Error ? error.message : "Failed to fetch open trades",
+          description: error instanceof Error ? error.message : "Failed to fetch data",
         });
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchOpenTrades();
+    fetchData();
   }, [selectedAccount?.id, toast]);
 
   return (
@@ -96,11 +140,14 @@ const TradeHub = () => {
         {isLoading ? (
           <Card className="w-full">
             <CardContent className="py-6">
-              <p className="text-center text-muted-foreground">Loading open trades...</p>
+              <p className="text-center text-muted-foreground">Loading data...</p>
             </CardContent>
           </Card>
         ) : (
-          <OpenOrdersTable orders={openTrades} />
+          <>
+            <OpenOrdersTable orders={openTrades} />
+            <HistoryTable history={tradeHistory} />
+          </>
         )}
       </div>
     </div>
