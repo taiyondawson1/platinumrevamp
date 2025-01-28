@@ -152,11 +152,13 @@ const TradeHub = () => {
               <DailyGainChart accountId={selectedAccount?.id?.toString()} />
               <TotalGainCard accountId={selectedAccount?.id?.toString()} />
             </div>
-            <CustomWidgetChart 
-              accountId={selectedAccount?.id?.toString()} 
-              width={600}
-              height={300}
-            />
+            {selectedAccount?.id && (
+              <CustomWidgetChart 
+                accountId={selectedAccount.id.toString()} 
+                width={600}
+                height={300}
+              />
+            )}
             <OpenOrdersTable orders={openTrades} />
             <HistoryTable history={tradeHistory} />
           </>
