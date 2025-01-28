@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import WorldClocks from "@/components/WorldClocks";
+import CompoundCalculator from "@/components/CompoundCalculator";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -11,9 +12,12 @@ const Dashboard = () => {
   return (
     <main className="flex-1 p-6 max-w-[1400px] mx-auto overflow-hidden">
       <div className="flex flex-col gap-8">
-        {/* World Clocks */}
+        {/* World Clocks and Calculator Section */}
         <section className="mb-8 border border-silver/20 p-8">
-          <WorldClocks />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <WorldClocks />
+            <CompoundCalculator />
+          </div>
         </section>
 
         {/* Welcome Section */}
