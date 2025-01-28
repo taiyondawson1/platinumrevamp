@@ -107,7 +107,7 @@ const PositionSizeCalculator = () => {
         <div className="mt-2">
           <Button 
             onClick={calculatePositionSize}
-            className="w-full bg-accent-blue hover:bg-accent-blue/90 h-7 text-[10px]"
+            className="w-full bg-white text-black hover:bg-white/90 h-7 text-[10px]"
           >
             Calculate
           </Button>
