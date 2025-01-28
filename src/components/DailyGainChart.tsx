@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { format, parseISO } from "date-fns";
+import { format, parse } from "date-fns";
 
 interface DailyGainProps {
   accountId?: string;
@@ -47,9 +47,10 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
         console.log("Daily Gain API Response:", data);
 
         if (!data.error && data.dailyGain) {
-          const formattedData = Object.entries(data.dailyGain).map(([date, value]) => ({
-            date,
-            value: Number(value),
+          // Handle the nested array structure and parse dates correctly
+          const formattedData = data.dailyGain.flat().map((item: any) => ({
+            date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'yyyy-MM-dd'),
+            value: Number(item.value),
           }));
           setDailyGainData(formattedData);
         }
@@ -80,12 +81,12 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="date"
-                  tickFormatter={(date) => format(parseISO(date), 'MMM dd')}
+                  tickFormatter={(str) => format(new Date(str), 'MMM dd')}
                   stroke="#fff"
                 />
                 <YAxis stroke="#fff" />
                 <Tooltip
-                  labelFormatter={(date) => format(parseISO(date as string), 'MMM dd, yyyy')}
+                  labelFormatter={(label) => format(new Date(label as string), 'MMM dd, yyyy')}
                   formatter={(value: number) => [`${value.toFixed(2)}%`, 'Gain']}
                 />
                 <Line
