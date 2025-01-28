@@ -44,6 +44,20 @@
     @apply bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey text-foreground font-['Inter'];
     min-height: 100vh;
   }
+
+  /* Custom Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-silver/30 hover:bg-silver/40 transition-colors rounded-full;
+  }
 }
 
 .metric-card {
