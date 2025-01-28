@@ -2,8 +2,14 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { Calendar, Book, Share2, Plus, Activity, LineChart, PenLine, Check } from "lucide-react";
+import { Calendar, Book, Share2, Plus, Activity, LineChart, PenLine, Check, MoreHorizontal } from "lucide-react";
 import { format } from 'date-fns';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 interface Habit {
   id: string;
@@ -60,62 +66,78 @@ const DailyHabits = () => {
     return Math.round((completed / fields.length) * 100);
   };
 
+  const handleDeleteHabit = (habitId: string) => {
+    setHabits(habits.filter(habit => habit.id !== habitId));
+  };
+
   const renderHabitRow = (habit: Habit) => (
-    <TableRow key={habit.id} className="hover:bg-black/20 border-silver/20">
-      <TableCell className="text-mediumGray h-5 py-0.5">{habit.name}</TableCell>
-      <TableCell className="text-mediumGray h-5 py-0.5">{format(new Date(habit.date), 'MMM dd')}</TableCell>
-      <TableCell className="text-mediumGray h-5 py-0.5">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className={`h-5 w-5 p-0 ${habit.journaling ? 'text-accent-blue' : 'text-mediumGray'}`}
-          onClick={() => toggleHabitStatus(habit.id, 'journaling')}
-        >
-          {habit.journaling ? <Check className="h-4 w-4" /> : <PenLine className="h-4 w-4" />}
-        </Button>
-      </TableCell>
-      <TableCell className="text-mediumGray h-5 py-0.5">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className={`h-5 w-5 p-0 ${habit.backtesting ? 'text-accent-blue' : 'text-mediumGray'}`}
-          onClick={() => toggleHabitStatus(habit.id, 'backtesting')}
-        >
-          {habit.backtesting ? <Check className="h-4 w-4" /> : <LineChart className="h-4 w-4" />}
-        </Button>
-      </TableCell>
-      <TableCell className="text-mediumGray h-5 py-0.5">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className={`h-5 w-5 p-0 ${habit.exercise ? 'text-accent-blue' : 'text-mediumGray'}`}
-          onClick={() => toggleHabitStatus(habit.id, 'exercise')}
-        >
-          {habit.exercise ? <Check className="h-4 w-4" /> : <Activity className="h-4 w-4" />}
-        </Button>
-      </TableCell>
-      <TableCell className="text-mediumGray h-5 py-0.5">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className={`h-5 w-5 p-0 ${habit.reading ? 'text-accent-blue' : 'text-mediumGray'}`}
-          onClick={() => toggleHabitStatus(habit.id, 'reading')}
-        >
-          {habit.reading ? <Check className="h-4 w-4" /> : <Book className="h-4 w-4" />}
-        </Button>
-      </TableCell>
-      <TableCell className="text-mediumGray h-5 py-0.5">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className={`h-5 w-5 p-0 ${habit.shared ? 'text-accent-blue' : 'text-mediumGray'}`}
-          onClick={() => toggleHabitStatus(habit.id, 'shared')}
-        >
-          {habit.shared ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-        </Button>
-      </TableCell>
-      <TableCell className="text-mediumGray h-5 py-0.5">{calculateProgress(habit)}%</TableCell>
-    </TableRow>
+    <ContextMenu key={habit.id}>
+      <ContextMenuTrigger>
+        <TableRow className="group hover:bg-black/20 border-silver/20">
+          <TableCell className="text-mediumGray h-5 py-0.5">{habit.name}</TableCell>
+          <TableCell className="text-mediumGray h-5 py-0.5">{format(new Date(habit.date), 'MMM dd')}</TableCell>
+          <TableCell className="text-mediumGray h-5 py-0.5">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className={`h-5 w-5 p-0 ${habit.journaling ? 'text-accent-blue' : 'text-mediumGray'}`}
+              onClick={() => toggleHabitStatus(habit.id, 'journaling')}
+            >
+              {habit.journaling ? <Check className="h-4 w-4" /> : <PenLine className="h-4 w-4" />}
+            </Button>
+          </TableCell>
+          <TableCell className="text-mediumGray h-5 py-0.5">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className={`h-5 w-5 p-0 ${habit.backtesting ? 'text-accent-blue' : 'text-mediumGray'}`}
+              onClick={() => toggleHabitStatus(habit.id, 'backtesting')}
+            >
+              {habit.backtesting ? <Check className="h-4 w-4" /> : <LineChart className="h-4 w-4" />}
+            </Button>
+          </TableCell>
+          <TableCell className="text-mediumGray h-5 py-0.5">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className={`h-5 w-5 p-0 ${habit.exercise ? 'text-accent-blue' : 'text-mediumGray'}`}
+              onClick={() => toggleHabitStatus(habit.id, 'exercise')}
+            >
+              {habit.exercise ? <Check className="h-4 w-4" /> : <Activity className="h-4 w-4" />}
+            </Button>
+          </TableCell>
+          <TableCell className="text-mediumGray h-5 py-0.5">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className={`h-5 w-5 p-0 ${habit.reading ? 'text-accent-blue' : 'text-mediumGray'}`}
+              onClick={() => toggleHabitStatus(habit.id, 'reading')}
+            >
+              {habit.reading ? <Check className="h-4 w-4" /> : <Book className="h-4 w-4" />}
+            </Button>
+          </TableCell>
+          <TableCell className="text-mediumGray h-5 py-0.5">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className={`h-5 w-5 p-0 ${habit.shared ? 'text-accent-blue' : 'text-mediumGray'}`}
+              onClick={() => toggleHabitStatus(habit.id, 'shared')}
+            >
+              {habit.shared ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
+            </Button>
+          </TableCell>
+          <TableCell className="text-mediumGray h-5 py-0.5">{calculateProgress(habit)}%</TableCell>
+          <TableCell className="text-mediumGray h-5 py-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+            <MoreHorizontal className="h-4 w-4" />
+          </TableCell>
+        </TableRow>
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem className="text-red-500" onClick={() => handleDeleteHabit(habit.id)}>
+          Delete
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 
   return (
