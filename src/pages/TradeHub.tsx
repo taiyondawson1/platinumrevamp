@@ -152,8 +152,8 @@ const TradeHub = () => {
           </Card>
         ) : (
           <>
-            <div className="flex gap-3 h-full">
-              <div className="flex-[3] space-y-3">
+            <div className="grid grid-cols-[2fr_1fr] gap-3 h-full">
+              <div className="space-y-3">
                 <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg overflow-hidden">
                   <Tabs defaultValue="daily" className="w-full">
                     <TabsList className="ml-4 mt-3 bg-darkBlue/60">
@@ -195,11 +195,11 @@ const TradeHub = () => {
                 </Card>
               </div>
               
-              <div className="flex-1 h-full">
-                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg h-full">
+              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg h-full">
+                <CardContent className="p-0">
                   <HistoryTable history={tradeHistory} />
-                </Card>
-              </div>
+                </CardContent>
+              </Card>
             </div>
           </>
         )}
