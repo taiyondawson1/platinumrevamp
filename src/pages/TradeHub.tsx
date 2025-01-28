@@ -19,18 +19,12 @@ const TradeHub = () => {
     {
       id: selectedAccount.id,
       name: selectedAccount.name,
-      description: "",
-      gain: selectedAccount.gain,
       balance: selectedAccount.balance,
       equity: selectedAccount.equity,
-      drawdown: 0,
       profit: selectedAccount.profit,
-      currency: selectedAccount.currency,
+      gain: selectedAccount.gain,
       demo: selectedAccount.demo,
-      lastUpdateDate: new Date().toISOString(),
-      server: {
-        name: "MyFxBook"
-      }
+      currency: selectedAccount.currency
     }
   ] : [];
 
@@ -62,16 +56,7 @@ const TradeHub = () => {
             <CardTitle className="text-xl font-bold">Open Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-center py-8">No open orders</p>
-          </CardContent>
-        </Card>
-
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">Watched Accounts</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground text-center py-8">No watched accounts</p>
+            <OpenOrdersTable />
           </CardContent>
         </Card>
       </div>
