@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 
 interface Country {
@@ -79,28 +80,30 @@ const CommunityOutlookWidget = ({ symbol = "eurusd" }: { symbol?: string }) => {
         {isLoading ? (
           <p className="text-center text-muted-foreground py-4">Loading data...</p>
         ) : data.length > 0 ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Country</TableHead>
-                <TableHead>Long Volume</TableHead>
-                <TableHead>Short Volume</TableHead>
-                <TableHead>Long Positions</TableHead>
-                <TableHead>Short Positions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.map((country) => (
-                <TableRow key={country.code}>
-                  <TableCell>{country.name}</TableCell>
-                  <TableCell>{country.longVolume.toFixed(2)}%</TableCell>
-                  <TableCell>{country.shortVolume.toFixed(2)}%</TableCell>
-                  <TableCell>{country.longPositions}</TableCell>
-                  <TableCell>{country.shortPositions}</TableCell>
+          <ScrollArea className="h-[480px]"> {/* Height for approximately 12 rows */}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Country</TableHead>
+                  <TableHead>Long Volume</TableHead>
+                  <TableHead>Short Volume</TableHead>
+                  <TableHead>Long Positions</TableHead>
+                  <TableHead>Short Positions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {data.map((country) => (
+                  <TableRow key={country.code}>
+                    <TableCell>{country.name}</TableCell>
+                    <TableCell>{country.longVolume.toFixed(2)}%</TableCell>
+                    <TableCell>{country.shortVolume.toFixed(2)}%</TableCell>
+                    <TableCell>{country.longPositions}</TableCell>
+                    <TableCell>{country.shortPositions}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </ScrollArea>
         ) : (
           <p className="text-center text-muted-foreground py-4">No data available</p>
         )}
