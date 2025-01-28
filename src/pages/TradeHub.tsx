@@ -2,14 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AccountsTable from "@/components/AccountsTable";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
 import { useLocation } from "react-router-dom";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 const TradeHub = () => {
   const location = useLocation();
@@ -19,14 +11,23 @@ const TradeHub = () => {
     {
       id: selectedAccount.id,
       name: selectedAccount.name,
+      description: "",
       balance: selectedAccount.balance,
       equity: selectedAccount.equity,
+      drawdown: 0,
       profit: selectedAccount.profit,
       gain: selectedAccount.gain,
+      currency: selectedAccount.currency,
       demo: selectedAccount.demo,
-      currency: selectedAccount.currency
+      lastUpdateDate: new Date().toISOString(),
+      server: {
+        name: "MyFxBook"
+      }
     }
   ] : [];
+
+  // Sample empty orders array for the OpenOrdersTable
+  const emptyOrders = [];
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6 ml-[64px]">
@@ -56,7 +57,7 @@ const TradeHub = () => {
             <CardTitle className="text-xl font-bold">Open Orders</CardTitle>
           </CardHeader>
           <CardContent>
-            <OpenOrdersTable />
+            <OpenOrdersTable orders={emptyOrders} />
           </CardContent>
         </Card>
       </div>
