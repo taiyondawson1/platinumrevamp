@@ -29,7 +29,7 @@ interface OpenOrdersTableProps {
   orders: OpenOrder[];
 }
 
-const OpenOrdersTable = ({ orders }: OpenOrdersTableProps) => {
+const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
   return (
     <Card className="w-full">
       <CardHeader>

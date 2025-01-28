@@ -21,7 +21,7 @@ const TradeHub = () => {
       demo: selectedAccount.demo,
       lastUpdateDate: new Date().toISOString(),
       server: {
-        name: "MyFxBook"
+        name: selectedAccount.server?.name || "MyFxBook"
       }
     }
   ] : [];
