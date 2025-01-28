@@ -27,16 +27,18 @@ function App() {
             <Sidebar />
             <TradingViewTickerTape />
             <Separator className="fixed left-0 right-0 top-[290px] z-50 bg-silver/20" />
-            <main className="flex-1 ml-[270px] mt-[300px]">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/trading" element={<TradingPage />} />
-                <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
-                <Route path="/setfiles" element={<SetfilesPage />} />
-                <Route path="/courses" element={<CoursesPage />} />
-                <Route path="/tradehub" element={<TradeHub />} />
-              </Routes>
+            <main className="flex-1 ml-[270px] mt-[300px] relative">
+              <div className="absolute inset-0 overflow-auto">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/trading" element={<TradingPage />} />
+                  <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
+                  <Route path="/setfiles" element={<SetfilesPage />} />
+                  <Route path="/courses" element={<CoursesPage />} />
+                  <Route path="/tradehub" element={<TradeHub />} />
+                </Routes>
+              </div>
             </main>
           </div>
         </BrowserRouter>
