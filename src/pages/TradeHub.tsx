@@ -11,9 +11,9 @@ import DailyDataWidget from "@/components/DailyDataWidget";
 import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
 import US30AnalysisWidget from "@/components/US30AnalysisWidget";
 import BitcoinAnalysisWidget from "@/components/BitcoinAnalysisWidget";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface OpenTrade {
   id: number;
@@ -141,7 +141,7 @@ const TradeHub = () => {
 
   return (
     <>
-      <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[25px] mr-[25px] mx-auto flex flex-col items-center">
+      <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[25px] mr-[25px] mx-auto flex flex-col items-center max-w-[100vw] overflow-x-hidden">
         {isLoading ? (
           <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
             <CardContent className="py-4">
@@ -151,7 +151,7 @@ const TradeHub = () => {
         ) : (
           <>
             <div className="space-y-3 w-full">
-              <div className="flex gap-3 justify-center translate-x-[200px] -mr-[400px]">
+              <div className="flex gap-3 justify-center w-full overflow-x-auto pb-2">
                 <TechnicalAnalysisWidget />
                 <US30AnalysisWidget />
                 <BitcoinAnalysisWidget />
