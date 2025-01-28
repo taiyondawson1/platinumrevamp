@@ -6,26 +6,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
+    --background: 0 0% 10%;
     --foreground: 0 0% 98%;
     
-    --card: 0 0% 3%;
+    --card: 0 0% 12%;
     --card-foreground: 0 0% 98%;
     
-    --popover: 0 0% 3%;
+    --popover: 0 0% 12%;
     --popover-foreground: 0 0% 98%;
     
     --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
+    --primary-foreground: 0 0% 12%;
     
     --secondary: 0 0% 75%;
-    --secondary-foreground: 0 0% 9%;
+    --secondary-foreground: 0 0% 12%;
     
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 63.9%;
     
     --accent: 0 0% 75%;
-    --accent-foreground: 0 0% 9%;
+    --accent-foreground: 0 0% 12%;
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -41,7 +41,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-gradient-to-br from-darkBlue to-darkBase text-foreground font-['Inter'];
+    @apply bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey text-foreground font-['Inter'];
     min-height: 100vh;
   }
 }

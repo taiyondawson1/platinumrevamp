@@ -20,7 +20,7 @@ function App() {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-black">
+          <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
             <Sidebar />
             <main className="flex-1 ml-[270px] mt-[300px]">
               <Routes>

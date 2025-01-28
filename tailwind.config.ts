@@ -30,9 +30,9 @@ export default {
       },
       colors: {
         // Base colors
-        darkBase: "#000000",
-        darkBlue: "#111111",
-        darkGrey: "#1A1A1A",
+        darkBase: "#191919", // Updated to RGB(25, 25, 25)
+        darkBlue: "#1A1A1A", // Slightly lighter for gradient
+        darkGrey: "#1D1D1D", // Middle tone for contrast
         
         // Metallic palette
         silver: {
