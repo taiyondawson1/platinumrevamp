@@ -11,23 +11,7 @@ const TradingViewTickerTape = () => {
       symbols: [
         {
           description: "",
-          proName: "PYTH:XAUUSD"
-        },
-        {
-          description: "",
-          proName: "GBEBROKERS:DJ30"
-        },
-        {
-          description: "",
           proName: "FX:EURUSD"
-        },
-        {
-          description: "",
-          proName: "BITSTAMP:BTCUSD"
-        },
-        {
-          description: "",
-          proName: "FX:GBPUSD"
         }
       ],
       showSymbolLogo: true,
