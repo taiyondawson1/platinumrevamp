@@ -137,28 +137,38 @@ const TradeHub = () => {
   }, [selectedAccount?.id, toast]);
 
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6 ml-[304px] mx-[25%] flex flex-col items-center">
-      <div className="flex items-center justify-center w-full">
-        <h2 className="text-3xl font-bold tracking-tight text-white text-center">
+    <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[304px] mx-[25%] flex flex-col items-center">
+      <div className="flex items-center justify-center w-full mb-2">
+        <h2 className="text-2xl font-semibold tracking-tight text-softWhite">
           TradeHub {selectedAccount ? `- ${selectedAccount.name}` : ""}
         </h2>
       </div>
-      <div className="grid gap-4 w-full">
+      <div className="grid gap-3 w-full">
         {isLoading ? (
-          <Card className="tradehub-card w-full">
-            <CardContent className="py-6">
+          <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+            <CardContent className="py-4">
               <p className="text-center text-softWhite">Loading data...</p>
             </CardContent>
           </Card>
         ) : (
           <>
-            <div className="flex gap-4 h-full">
-              <div className="flex-[3] space-y-4">
-                <Card className="tradehub-card w-full">
+            <div className="flex gap-3 h-full">
+              <div className="flex-[3] space-y-3">
+                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg overflow-hidden">
                   <Tabs defaultValue="daily" className="w-full">
-                    <TabsList className="ml-4 mt-4 bg-darkBlue/40">
-                      <TabsTrigger value="daily" className="text-softWhite data-[state=active]:bg-darkBlue/60">Daily Gain</TabsTrigger>
-                      <TabsTrigger value="total" className="text-softWhite data-[state=active]:bg-darkBlue/60">Total Gain</TabsTrigger>
+                    <TabsList className="ml-4 mt-3 bg-darkBlue/60">
+                      <TabsTrigger 
+                        value="daily" 
+                        className="text-softWhite data-[state=active]:bg-darkBlue/80"
+                      >
+                        Daily Gain
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="total" 
+                        className="text-softWhite data-[state=active]:bg-darkBlue/80"
+                      >
+                        Total Gain
+                      </TabsTrigger>
                     </TabsList>
                     <TabsContent value="daily">
                       <DailyGainChart accountId={selectedAccount?.id?.toString()} />
@@ -169,7 +179,7 @@ const TradeHub = () => {
                   </Tabs>
                 </Card>
                 {selectedAccount?.id && (
-                  <Card className="tradehub-card">
+                  <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg overflow-hidden">
                     <CardContent className="p-0">
                       <CustomWidget 
                         session={localStorage.getItem("myfxbook_session") || ""}
@@ -180,13 +190,13 @@ const TradeHub = () => {
                     </CardContent>
                   </Card>
                 )}
-                <Card className="tradehub-card">
+                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                   <OpenOrdersTable orders={openTrades} />
                 </Card>
               </div>
               
               <div className="flex-1 h-full">
-                <Card className="tradehub-card h-full">
+                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg h-full">
                   <HistoryTable history={tradeHistory} />
                 </Card>
               </div>
