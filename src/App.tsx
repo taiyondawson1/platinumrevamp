@@ -26,7 +26,7 @@ function App() {
           <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
             <Sidebar />
             <TradingViewTickerTape />
-            <Separator className="fixed left-0 right-0 top-[240px] z-50 bg-silver/20" />
+            <Separator className="fixed left-0 right-0 top-[290px] z-50 bg-silver/20" />
             <main className="flex-1 ml-[270px] mt-[40px]">
               <Routes>
                 <Route path="/" element={<Home />} />
