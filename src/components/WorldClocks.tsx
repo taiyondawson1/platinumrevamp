@@ -40,70 +40,72 @@ const WorldClocks = () => {
         const handStyles = getHandStyles(city.timezone);
         
         return (
-          <div key={city.name} className="relative w-[200px] h-[200px] mx-auto">
-            <div className="relative w-full h-full backdrop-blur-xl">
-              {/* Hour markers */}
-              {[...Array(12)].map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute w-0.5 h-3 bg-softWhite/50"
-                  style={{
-                    left: '50%',
-                    top: '0',
-                    transformOrigin: '50% 100px',
-                    transform: `rotate(${i * 30}deg) translateX(-50%)`
-                  }}
-                />
-              ))}
+          <div key={city.name} className="flex flex-col items-center">
+            {/* City Name - Moved to top */}
+            <div className="mb-4">
+              <span className="text-sm font-medium text-mediumGray">
+                {city.name}
+              </span>
+            </div>
+            
+            <div className="relative w-[200px] h-[200px]">
+              <div className="relative w-full h-full backdrop-blur-xl">
+                {/* Hour markers */}
+                {[...Array(12)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="absolute w-0.5 h-3 bg-softWhite/50"
+                    style={{
+                      left: '50%',
+                      top: '0',
+                      transformOrigin: '50% 100px',
+                      transform: `rotate(${i * 30}deg) translateX(-50%)`
+                    }}
+                  />
+                ))}
 
-              {/* Clock Hands */}
-              <div className="absolute inset-0">
-                {/* Hour Hand */}
-                <div
-                  className="absolute w-1 h-[40px] bg-softWhite/90 rounded-full left-1/2 bottom-1/2"
-                  style={{
-                    transformOrigin: 'bottom',
-                    ...handStyles.hours,
-                  }}
-                />
-                
-                {/* Minute Hand */}
-                <div
-                  className="absolute w-0.5 h-[60px] bg-softWhite/70 rounded-full left-1/2 bottom-1/2"
-                  style={{
-                    transformOrigin: 'bottom',
-                    ...handStyles.minutes,
-                  }}
-                />
-                
-                {/* Second Hand */}
-                <div
-                  className="absolute w-[1px] h-[70px] bg-accent-red rounded-full left-1/2 bottom-1/2"
-                  style={{
-                    transformOrigin: 'bottom',
-                    ...handStyles.seconds,
-                  }}
-                />
-                
-                {/* Center Dot */}
-                <div className="absolute w-2 h-2 bg-softWhite rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
-              </div>
-
-              {/* Digital Time */}
-              <div className="absolute top-1/4 left-0 right-0 text-center">
-                <div className="text-2xl font-bold text-softWhite">
-                  {formatInTimeZone(time, city.timezone, 'HH:mm')}
+                {/* Clock Hands */}
+                <div className="absolute inset-0">
+                  {/* Hour Hand */}
+                  <div
+                    className="absolute w-1 h-[40px] bg-softWhite/90 rounded-full left-1/2 bottom-1/2"
+                    style={{
+                      transformOrigin: 'bottom',
+                      ...handStyles.hours,
+                    }}
+                  />
+                  
+                  {/* Minute Hand */}
+                  <div
+                    className="absolute w-0.5 h-[60px] bg-softWhite/70 rounded-full left-1/2 bottom-1/2"
+                    style={{
+                      transformOrigin: 'bottom',
+                      ...handStyles.minutes,
+                    }}
+                  />
+                  
+                  {/* Second Hand */}
+                  <div
+                    className="absolute w-[1px] h-[70px] bg-accent-red rounded-full left-1/2 bottom-1/2"
+                    style={{
+                      transformOrigin: 'bottom',
+                      ...handStyles.seconds,
+                    }}
+                  />
+                  
+                  {/* Center Dot */}
+                  <div className="absolute w-2 h-2 bg-softWhite rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
                 </div>
-                <div className="text-xs text-mediumGray mt-1">
-                  {formatInTimeZone(time, city.timezone, 'EEEE • MMM dd')}
-                </div>
-              </div>
 
-              {/* City Name */}
-              <div className="absolute bottom-8 left-0 right-0 text-center">
-                <span className="text-sm font-medium text-mediumGray">
-                  {city.name}
-                </span>
+                {/* Digital Time */}
+                <div className="absolute top-1/4 left-0 right-0 text-center">
+                  <div className="text-2xl font-bold text-softWhite">
+                    {formatInTimeZone(time, city.timezone, 'HH:mm')}
+                  </div>
+                  <div className="text-xs text-mediumGray mt-1">
+                    {formatInTimeZone(time, city.timezone, 'EEEE • MMM dd')}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
