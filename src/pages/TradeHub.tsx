@@ -141,7 +141,7 @@ const TradeHub = () => {
 
   return (
     <>
-      <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[94px] mr-[-200px] mx-[25%] flex flex-col items-center">
+      <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[94px] mr-[100px] mx-[25%] flex flex-col items-center">
         {isLoading ? (
           <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
             <CardContent className="py-4">
