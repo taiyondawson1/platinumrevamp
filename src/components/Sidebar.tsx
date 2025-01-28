@@ -36,7 +36,6 @@ const Sidebar = () => {
           })}
         </div>
       </div>
-      <div className="w-[50px] h-[2px] bg-silver/20 mx-auto mt-6"></div>
     </div>
   );
 };
