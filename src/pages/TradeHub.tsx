@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AccountsTable from "@/components/AccountsTable";
+import OpenOrdersTable from "@/components/OpenOrdersTable";
 import {
   Table,
   TableBody,
@@ -54,6 +55,25 @@ const sampleWatchedAccounts = [
   }
 ];
 
+const sampleOpenOrders = [
+  {
+    id: 1,
+    ticket: 123456,
+    symbol: "EURUSD",
+    action: "Buy",
+    openTime: "2024-03-14 10:30:00",
+    openPrice: 1.0890,
+    sl: 1.0850,
+    tp: 1.0950,
+    pips: 10.5,
+    profit: 105.50,
+    commission: 0,
+    swap: 0,
+    comment: "Market order",
+    lots: 1.0
+  }
+];
+
 const TradeHub = () => {
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6 ml-[64px]">
@@ -62,6 +82,7 @@ const TradeHub = () => {
       </div>
       <div className="grid gap-4">
         <AccountsTable accounts={sampleAccounts} />
+        <OpenOrdersTable orders={sampleOpenOrders} />
         <Card className="w-full">
           <CardHeader>
             <CardTitle className="text-xl font-bold">Watched Accounts</CardTitle>
