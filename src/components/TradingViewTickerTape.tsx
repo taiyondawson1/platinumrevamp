@@ -11,7 +11,23 @@ const TradingViewTickerTape = () => {
       symbols: [
         {
           description: "",
+          proName: "PYTH:XAUUSD"
+        },
+        {
+          description: "",
+          proName: "GBEBROKERS:DJ30"
+        },
+        {
+          description: "",
           proName: "FX:EURUSD"
+        },
+        {
+          description: "",
+          proName: "BITSTAMP:BTCUSD"
+        },
+        {
+          description: "",
+          proName: "FX:GBPUSD"
         }
       ],
       showSymbolLogo: true,
@@ -36,7 +52,7 @@ const TradingViewTickerTape = () => {
   }, []);
 
   return (
-    <div className="fixed left-0 right-0 top-[185px] z-50">
+    <div className="fixed left-0 right-0 top-[200px] z-50">
       <div className="tradingview-widget-container">
         <div className="tradingview-widget-container__widget"></div>
         <div ref={containerRef}></div>
