@@ -19,7 +19,7 @@ const WorldClocks = () => {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {cities.map((city) => (
         <div key={city.name} className="relative w-[200px] h-[200px] mx-auto">
-          <div className="absolute inset-0 bg-black/40 border border-silver/20">
+          <div className="absolute inset-0 backdrop-blur-xl bg-black/20 border border-silver/20">
             {/* Clock Face */}
             <div className="relative w-full h-full">
               {/* Hour markers */}
