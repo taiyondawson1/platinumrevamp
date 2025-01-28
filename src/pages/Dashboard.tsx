@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import TradingViewTickerTape from "@/components/TradingViewTickerTape";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -11,8 +10,6 @@ const Dashboard = () => {
   return (
     <main className="flex-1 p-6 max-w-[1400px] mx-auto mt-[200px]">
       <div className="flex flex-col gap-8">
-        <TradingViewTickerTape />
-        
         {/* Welcome Section */}
         <section className="space-y-4">
           <h1 className="text-4xl font-bold text-softWhite">Welcome to Your Dashboard</h1>
