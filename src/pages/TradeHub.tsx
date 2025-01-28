@@ -151,7 +151,7 @@ const TradeHub = () => {
         ) : (
           <>
             <div className="space-y-3 w-full">
-              <div className="flex gap-3 justify-end w-full overflow-hidden">
+              <div className="flex gap-3 justify-start w-full overflow-hidden ml-[100px]">
                 <TechnicalAnalysisWidget />
                 <US30AnalysisWidget />
                 <BitcoinAnalysisWidget />
