@@ -11,10 +11,10 @@ const TradeHub = () => {
     {
       id: selectedAccount.id,
       name: selectedAccount.name,
-      description: "",
+      description: selectedAccount.description || "",
       balance: selectedAccount.balance,
       equity: selectedAccount.equity,
-      drawdown: 0,
+      drawdown: selectedAccount.drawdown || 0,
       profit: selectedAccount.profit,
       gain: selectedAccount.gain,
       currency: selectedAccount.currency,
@@ -25,9 +25,6 @@ const TradeHub = () => {
       }
     }
   ] : [];
-
-  // Sample empty orders array for the OpenOrdersTable
-  const emptyOrders = [];
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6 ml-[64px]">
@@ -52,14 +49,7 @@ const TradeHub = () => {
           </Card>
         )}
 
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">Open Orders</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <OpenOrdersTable orders={emptyOrders} />
-          </CardContent>
-        </Card>
+        <OpenOrdersTable orders={[]} />
       </div>
     </div>
   );
