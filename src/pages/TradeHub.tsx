@@ -170,12 +170,14 @@ const TradeHub = () => {
                 </Card>
                 {selectedAccount?.id && (
                   <Card className="tradehub-card">
-                    <CustomWidget 
-                      session={localStorage.getItem("myfxbook_session") || ""}
-                      accountId={selectedAccount.id.toString()}
-                      width={600}
-                      height={300}
-                    />
+                    <CardContent className="p-0">
+                      <CustomWidget 
+                        session={localStorage.getItem("myfxbook_session") || ""}
+                        accountId={selectedAccount.id.toString()}
+                        width={600}
+                        height={300}
+                      />
+                    </CardContent>
                   </Card>
                 )}
                 <Card className="tradehub-card">
