@@ -66,12 +66,12 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
   return (
     <Card className="w-full mt-4">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">Daily Gain</CardTitle>
+        <CardTitle className="text-xl font-bold text-softWhite">Daily Gain</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
           <div className="h-[300px] flex items-center justify-center">
-            <p className="text-muted-foreground">Loading data...</p>
+            <p className="text-softWhite">Loading data...</p>
           </div>
         ) : dailyGainData.length > 0 ? (
           <div className="h-[300px]">
@@ -81,8 +81,9 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
                 <XAxis
                   dataKey="date"
                   tickFormatter={(date) => format(parseISO(date), 'MMM dd')}
+                  stroke="#fff"
                 />
-                <YAxis />
+                <YAxis stroke="#fff" />
                 <Tooltip
                   labelFormatter={(date) => format(parseISO(date as string), 'MMM dd, yyyy')}
                   formatter={(value: number) => [`${value.toFixed(2)}%`, 'Gain']}
@@ -100,7 +101,7 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
           </div>
         ) : (
           <div className="h-[300px] flex items-center justify-center">
-            <p className="text-muted-foreground">No daily gain data available</p>
+            <p className="text-softWhite">No daily gain data available</p>
           </div>
         )}
       </CardContent>

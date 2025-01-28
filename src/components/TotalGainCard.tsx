@@ -68,19 +68,19 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">Total Gain (30 Days)</CardTitle>
+        <CardTitle className="text-xl font-bold text-softWhite">Total Gain (30 Days)</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <p className="text-center text-muted-foreground">Loading...</p>
+          <p className="text-center text-softWhite">Loading...</p>
         ) : (
           <div className="text-3xl font-bold text-center">
             {totalGain !== null ? (
-              <span className={totalGain >= 0 ? "text-green-500" : "text-red-500"}>
+              <span className="text-softWhite">
                 {totalGain >= 0 ? "+" : ""}{totalGain.toFixed(2)}%
               </span>
             ) : (
-              "N/A"
+              <span className="text-softWhite">N/A</span>
             )}
           </div>
         )}
