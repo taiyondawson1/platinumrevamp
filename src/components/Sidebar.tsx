@@ -2,7 +2,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
-  { label: "Dashboard", path: "/" },
+  { label: "Home", path: "/" },
+  { label: "Dashboard", path: "/dashboard" },
   { label: "TradeHub", path: "/tradehub" },
   { label: "Expert Advisors", path: "/expert-advisors" },
   { label: "Setfiles", path: "/setfiles" },
