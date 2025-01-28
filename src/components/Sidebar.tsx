@@ -39,7 +39,8 @@ const Sidebar = () => {
 
   return (
     <div className="fixed left-4 mt-[300px]">
-      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px]">
+      {/* Navigation Box */}
+      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] mb-4">
         <div className="space-y-1">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
@@ -58,23 +59,23 @@ const Sidebar = () => {
             );
           })}
         </div>
+      </div>
 
-        {/* Tools Section */}
-        <div className="mt-8 pt-8 border-t border-silver/20">
-          <h3 className="text-xs font-semibold text-softWhite mb-4 px-4">TOOLS</h3>
-          <div className="space-y-1">
-            {toolItems.map((tool) => (
-              <a
-                key={tool.label}
-                href={tool.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300"
-              >
-                {tool.label}
-              </a>
-            ))}
-          </div>
+      {/* Tools Box */}
+      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px]">
+        <h3 className="text-xs font-semibold text-softWhite mb-4 px-4">TOOLS</h3>
+        <div className="space-y-1">
+          {toolItems.map((tool) => (
+            <a
+              key={tool.label}
+              href={tool.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300"
+            >
+              {tool.label}
+            </a>
+          ))}
         </div>
       </div>
     </div>
