@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { MyFxBookAccountsResponse, MyFxBookAccount } from "@/types/myfxbook";
 
 interface MyFxBookResponse {
   error: boolean;
@@ -15,7 +17,43 @@ const MyFxBookLogin = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("myfxbook_session"));
+  const [accounts, setAccounts] = useState<MyFxBookAccount[]>([]);
   const { toast } = useToast();
+
+  const fetchAccounts = async () => {
+    const session = localStorage.getItem("myfxbook_session");
+    if (!session) return;
+
+    try {
+      const response = await fetch(
+        `https://www.myfxbook.com/api/get-my-accounts.json?session=${encodeURIComponent(session)}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch accounts");
+      }
+
+      const data: MyFxBookAccountsResponse = await response.json();
+
+      if (!data.error) {
+        setAccounts(data.accounts);
+      } else {
+        throw new Error(data.message || "Failed to fetch accounts");
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to fetch accounts",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchAccounts();
+    }
+  }, [isLoggedIn]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,6 +116,7 @@ const MyFxBookLogin = () => {
         });
         localStorage.removeItem("myfxbook_session");
         setIsLoggedIn(false);
+        setAccounts([]);
       } else {
         throw new Error(data.message || "Failed to logout");
       }
@@ -94,18 +133,42 @@ const MyFxBookLogin = () => {
 
   if (isLoggedIn) {
     return (
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader>
-          <CardTitle>MyFxBook Session</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card className="w-full max-w-4xl mx-auto">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>MyFxBook Accounts</CardTitle>
           <Button 
             onClick={handleLogout} 
-            className="w-full"
+            variant="destructive"
             disabled={isLoading}
           >
             {isLoading ? "Logging out..." : "Logout"}
           </Button>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Balance</TableHead>
+                <TableHead>Equity</TableHead>
+                <TableHead>Profit</TableHead>
+                <TableHead>Gain</TableHead>
+                <TableHead>Demo</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {accounts.map((account) => (
+                <TableRow key={account.id}>
+                  <TableCell>{account.name}</TableCell>
+                  <TableCell>{account.balance.toFixed(2)} {account.currency}</TableCell>
+                  <TableCell>{account.equity.toFixed(2)} {account.currency}</TableCell>
+                  <TableCell>{account.profit.toFixed(2)} {account.currency}</TableCell>
+                  <TableCell>{account.gain.toFixed(2)}%</TableCell>
+                  <TableCell>{account.demo ? "Yes" : "No"}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     );
