@@ -1,9 +1,14 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import MyFxBookLogin from "@/components/MyFxBookLogin";
+
 const TradingPage = () => {
   return (
-    <div className="flex-1">
-      <div className="p-4 ml-[240px]">
-        <h1 className="text-xl font-semibold text-softWhite mb-4">Trading</h1>
-        <p className="text-mediumGray">Trading features coming soon...</p>
+    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold tracking-tight text-white">Trading</h2>
+      </div>
+      <div className="grid gap-4">
+        <MyFxBookLogin />
       </div>
     </div>
   );
