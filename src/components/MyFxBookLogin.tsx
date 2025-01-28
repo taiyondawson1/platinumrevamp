@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useNavigate } from "react-router-dom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,7 +22,6 @@ interface MyFxBookResponse {
 }
 
 const MyFxBookLogin = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -95,9 +93,8 @@ const MyFxBookLogin = () => {
     if (isLoggedIn) {
       fetchAccounts();
       fetchWatchedAccounts();
-      navigate("/tradehub");
     }
-  }, [isLoggedIn, navigate]);
+  }, [isLoggedIn]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,7 +120,6 @@ const MyFxBookLogin = () => {
         });
         localStorage.setItem("myfxbook_session", data.session);
         setIsLoggedIn(true);
-        navigate("/tradehub");
       } else {
         if (data.message.toLowerCase().includes("max login attempts reached")) {
           setShowMaxAttemptsDialog(true);
@@ -196,30 +192,34 @@ const MyFxBookLogin = () => {
             </Button>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Balance</TableHead>
-                  <TableHead>Equity</TableHead>
-                  <TableHead>Profit</TableHead>
-                  <TableHead>Gain</TableHead>
-                  <TableHead>Demo</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {accounts.map((account) => (
-                  <TableRow key={account.id}>
-                    <TableCell>{account.name}</TableCell>
-                    <TableCell>{account.balance.toFixed(2)} {account.currency}</TableCell>
-                    <TableCell>{account.equity.toFixed(2)} {account.currency}</TableCell>
-                    <TableCell>{account.profit.toFixed(2)} {account.currency}</TableCell>
-                    <TableCell>{account.gain.toFixed(2)}%</TableCell>
-                    <TableCell>{account.demo ? "Yes" : "No"}</TableCell>
+            {accounts.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Balance</TableHead>
+                    <TableHead>Equity</TableHead>
+                    <TableHead>Profit</TableHead>
+                    <TableHead>Gain</TableHead>
+                    <TableHead>Demo</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {accounts.map((account) => (
+                    <TableRow key={account.id}>
+                      <TableCell>{account.name}</TableCell>
+                      <TableCell>{account.balance.toFixed(2)} {account.currency}</TableCell>
+                      <TableCell>{account.equity.toFixed(2)} {account.currency}</TableCell>
+                      <TableCell>{account.profit.toFixed(2)} {account.currency}</TableCell>
+                      <TableCell>{account.gain.toFixed(2)}%</TableCell>
+                      <TableCell>{account.demo ? "Yes" : "No"}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <p className="text-center text-muted-foreground py-4">No trading accounts connected</p>
+            )}
           </CardContent>
         </Card>
 
