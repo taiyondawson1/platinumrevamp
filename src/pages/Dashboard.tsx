@@ -12,7 +12,7 @@ const Dashboard = () => {
     <main className="flex-1 p-6 max-w-[1400px] mx-auto overflow-hidden">
       <div className="flex flex-col gap-8">
         {/* World Clocks */}
-        <section className="mb-8">
+        <section className="mb-8 border border-silver/20 p-8">
           <WorldClocks />
         </section>
 
