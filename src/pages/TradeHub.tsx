@@ -8,7 +8,7 @@ import CustomWidget from "@/components/CustomWidget";
 import GainWidget from "@/components/GainWidget";
 import CommunityOutlookWidget from "@/components/CommunityOutlookWidget";
 import DailyDataWidget from "@/components/DailyDataWidget";
-import TradingViewTickerTape from "@/components/TradingViewTickerTape";
+import TradingViewTickers from "@/components/TradingViewTickers";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -142,14 +142,12 @@ const TradeHub = () => {
 
   return (
     <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[304px] mx-[25%] flex flex-col items-center mt-[200px]">
-      <div className="fixed top-0 left-[304px] z-50">
-        <TradingViewTickerTape />
-      </div>
       <div className="flex items-center justify-center w-full mb-2">
         <h2 className="text-2xl font-semibold tracking-tight text-softWhite">
           TradeHub {selectedAccount ? `- ${selectedAccount.name}` : ""}
         </h2>
       </div>
+      <TradingViewTickers />
       <div className="grid gap-3 w-full">
         {isLoading ? (
           <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
