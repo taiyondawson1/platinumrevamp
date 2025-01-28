@@ -4,6 +4,15 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import type { MyFxBookAccountsResponse, MyFxBookAccount, MyFxBookWatchedAccountsResponse, MyFxBookWatchedAccount } from "@/types/myfxbook";
 
 interface MyFxBookResponse {
@@ -19,6 +28,7 @@ const MyFxBookLogin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("myfxbook_session"));
   const [accounts, setAccounts] = useState<MyFxBookAccount[]>([]);
   const [watchedAccounts, setWatchedAccounts] = useState<MyFxBookWatchedAccount[]>([]);
+  const [showMaxAttemptsDialog, setShowMaxAttemptsDialog] = useState(false);
   const { toast } = useToast();
 
   const fetchAccounts = async () => {
@@ -111,7 +121,12 @@ const MyFxBookLogin = () => {
         localStorage.setItem("myfxbook_session", data.session);
         setIsLoggedIn(true);
       } else {
-        throw new Error(data.message || "Failed to login");
+        // Check for max attempts error
+        if (data.message.toLowerCase().includes("max login attempts reached")) {
+          setShowMaxAttemptsDialog(true);
+        } else {
+          throw new Error(data.message || "Failed to login");
+        }
       }
     } catch (error) {
       toast({
@@ -241,36 +256,61 @@ const MyFxBookLogin = () => {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>MyFxBook Login</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div className="space-y-2">
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Logging in..." : "Login"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <>
+      <Card className="w-full max-w-md mx-auto">
+        <CardHeader>
+          <CardTitle>MyFxBook Login</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Login"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <AlertDialog open={showMaxAttemptsDialog} onOpenChange={setShowMaxAttemptsDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Maximum Login Attempts Reached</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have reached the maximum number of login attempts. Please try logging in directly through the MyFxBook website.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction asChild>
+              <Button
+                onClick={() => {
+                  window.open('https://www.myfxbook.com/login', '_blank');
+                  setShowMaxAttemptsDialog(false);
+                }}
+              >
+                Go to MyFxBook
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 
