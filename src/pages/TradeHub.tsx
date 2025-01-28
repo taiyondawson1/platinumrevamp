@@ -5,6 +5,7 @@ import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
 import TotalGainCard from "@/components/TotalGainCard";
 import CustomWidget from "@/components/CustomWidget";
+import GainWidget from "@/components/GainWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -153,7 +154,11 @@ const TradeHub = () => {
         ) : (
           <>
             <div className="space-y-3 w-full">
-              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg overflow-hidden">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <TotalGainCard accountId={selectedAccount?.id?.toString()} />
+                <GainWidget accountId={selectedAccount?.id?.toString()} />
+              </div>
+              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                 <Tabs defaultValue="daily" className="w-full">
                   <TabsList className="ml-4 mt-3 bg-darkBlue/60">
                     <TabsTrigger 
@@ -173,24 +178,19 @@ const TradeHub = () => {
                     <DailyGainChart accountId={selectedAccount?.id?.toString()} />
                   </TabsContent>
                   <TabsContent value="total">
-                    <TotalGainCard accountId={selectedAccount?.id?.toString()} />
-                  </TabsContent>
-                </Tabs>
-              </Card>
-              {selectedAccount?.id && (
-                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg overflow-hidden">
-                  <CardContent className="p-0">
                     <CustomWidget 
                       session={localStorage.getItem("myfxbook_session") || ""}
-                      accountId={selectedAccount.id.toString()}
+                      accountId={selectedAccount?.id?.toString()}
                       width={600}
                       height={300}
                     />
-                  </CardContent>
-                </Card>
-              )}
+                  </TabsContent>
+                </Tabs>
+              </Card>
               <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                <OpenOrdersTable orders={openTrades} />
+                <CardContent className="p-0">
+                  <OpenOrdersTable orders={openTrades} />
+                </CardContent>
               </Card>
               <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                 <CardContent className="p-0">
