@@ -8,7 +8,7 @@ import CustomWidget from "@/components/CustomWidget";
 import GainWidget from "@/components/GainWidget";
 import CommunityOutlookWidget from "@/components/CommunityOutlookWidget";
 import DailyDataWidget from "@/components/DailyDataWidget";
-import TradingViewTickers from "@/components/TradingViewTickers";
+import TradingViewTickerTape from "@/components/TradingViewTickerTape";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -69,9 +69,6 @@ const TradeHub = () => {
   const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-
-  console.log("TradeHub - Selected Account:", selectedAccount);
-  console.log("TradeHub - Session:", localStorage.getItem("myfxbook_session"));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -141,21 +138,22 @@ const TradeHub = () => {
   }, [selectedAccount?.id, toast]);
 
   return (
-    <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[304px] mx-[25%] flex flex-col items-center mt-[200px]">
-      <div className="flex items-center justify-center w-full mb-2">
-        <h2 className="text-2xl font-semibold tracking-tight text-softWhite">
-          TradeHub {selectedAccount ? `- ${selectedAccount.name}` : ""}
-        </h2>
-      </div>
-      <TradingViewTickers />
-      <div className="grid gap-3 w-full">
-        {isLoading ? (
-          <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-            <CardContent className="py-4">
-              <p className="text-center text-softWhite">Loading data...</p>
-            </CardContent>
-          </Card>
-        ) : (
+    <>
+      <TradingViewTickerTape />
+      <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[304px] mx-[25%] flex flex-col items-center mt-[200px]">
+        <div className="flex items-center justify-center w-full mb-2">
+          <h2 className="text-2xl font-semibold tracking-tight text-softWhite">
+            TradeHub {selectedAccount ? `- ${selectedAccount.name}` : ""}
+          </h2>
+        </div>
+        <div className="grid gap-3 w-full">
+          {isLoading ? (
+            <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+              <CardContent className="py-4">
+                <p className="text-center text-softWhite">Loading data...</p>
+              </CardContent>
+            </Card>
+          ) : (
           <>
             <div className="space-y-3 w-full">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -199,9 +197,10 @@ const TradeHub = () => {
               </Card>
             </div>
           </>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
