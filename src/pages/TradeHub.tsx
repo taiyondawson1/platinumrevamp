@@ -140,7 +140,7 @@ const TradeHub = () => {
   }, [selectedAccount?.id, toast]);
 
   return (
-    <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[304px] mx-[25%] flex flex-col items-center">
+    <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[304px] mx-[25%] flex flex-col items-center mt-[500px]">
       <div className="flex items-center justify-center w-full mb-2">
         <h2 className="text-2xl font-semibold tracking-tight text-softWhite">
           TradeHub {selectedAccount ? `- ${selectedAccount.name}` : ""}
