@@ -1,5 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AccountsTable from "@/components/AccountsTable";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const sampleAccounts = [
   {
@@ -36,6 +44,16 @@ const sampleAccounts = [
   }
 ];
 
+const sampleWatchedAccounts = [
+  {
+    name: "Holy Grail",
+    gain: 8.92,
+    drawdown: 53.53,
+    demo: true,
+    change: 1.53,
+  }
+];
+
 const TradeHub = () => {
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6 ml-[64px]">
@@ -44,6 +62,47 @@ const TradeHub = () => {
       </div>
       <div className="grid gap-4">
         <AccountsTable accounts={sampleAccounts} />
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold">Watched Accounts</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Gain</TableHead>
+                  <TableHead>Drawdown</TableHead>
+                  <TableHead>Change</TableHead>
+                  <TableHead>Type</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sampleWatchedAccounts.map((account, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{account.name}</TableCell>
+                    <TableCell className={account.gain >= 0 ? "text-green-500" : "text-red-500"}>
+                      {account.gain.toFixed(2)}%
+                    </TableCell>
+                    <TableCell className="text-red-500">
+                      {account.drawdown.toFixed(2)}%
+                    </TableCell>
+                    <TableCell className={account.change >= 0 ? "text-green-500" : "text-red-500"}>
+                      {account.change.toFixed(2)}%
+                    </TableCell>
+                    <TableCell>
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        account.demo ? "bg-yellow-200 text-yellow-800" : "bg-green-200 text-green-800"
+                      }`}>
+                        {account.demo ? "Demo" : "Live"}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
