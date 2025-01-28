@@ -1,6 +1,7 @@
-import { Home, Bot, Files, BookOpen, PieChart, Settings, LayoutDashboard } from "lucide-react";
+import { Home, Bot, Files, BookOpen, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -14,8 +15,11 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="fixed left-0 top-0 h-full w-[64px] bg-darkBlue/40 backdrop-blur-sm border-r border-mediumGray/20 flex flex-col py-8">
-      <div className="space-y-5">
+    <Card className="fixed left-4 top-4 w-[250px] bg-darkBlue/40 backdrop-blur-sm border-mediumGray/20">
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold text-softWhite">Contents</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
         {navItems.map((item) => {
           const isActive = window.location.pathname === item.path;
           return (
@@ -23,29 +27,24 @@ const Sidebar = () => {
               key={item.label}
               onClick={() => navigate(item.path)}
               className={cn(
-                "w-full flex items-center justify-center py-3 transition-all duration-300",
-                "hover:bg-highlightGray/5 relative group",
-                isActive && "text-softWhite bg-highlightGray/10"
+                "w-full flex items-center gap-3 px-4 py-2 rounded-md transition-all duration-300",
+                "hover:bg-highlightGray/5 text-left",
+                isActive ? "text-softWhite bg-highlightGray/10" : "text-mediumGray"
               )}
-              title={item.label}
             >
-              <div className={cn(
-                "absolute left-0 w-1 h-full transition-all duration-300 rounded-r-full",
-                isActive ? "bg-gradient-to-r from-indigo-500 to-cyan-500" : "bg-transparent",
-                "group-hover:bg-gradient-to-r group-hover:from-indigo-500/50 group-hover:to-cyan-500/50"
-              )} />
               <item.icon 
-                size={24} 
+                size={18} 
                 className={cn(
                   "transition-all duration-300",
-                  isActive ? "text-softWhite filter drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]" : "text-mediumGray"
+                  isActive ? "text-softWhite" : "text-mediumGray"
                 )}
               />
+              <span>{item.label}</span>
             </button>
           );
         })}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

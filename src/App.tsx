@@ -22,14 +22,16 @@ function App() {
         <BrowserRouter>
           <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-black">
             <Sidebar />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/trading" element={<TradingPage />} />
-              <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
-              <Route path="/setfiles" element={<SetfilesPage />} />
-              <Route path="/courses" element={<CoursesPage />} />
-              <Route path="/tradehub" element={<TradeHub />} />
-            </Routes>
+            <main className="flex-1 ml-[270px]">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/trading" element={<TradingPage />} />
+                <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
+                <Route path="/setfiles" element={<SetfilesPage />} />
+                <Route path="/courses" element={<CoursesPage />} />
+                <Route path="/tradehub" element={<TradeHub />} />
+              </Routes>
+            </main>
           </div>
         </BrowserRouter>
       </TooltipProvider>
