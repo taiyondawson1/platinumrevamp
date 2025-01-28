@@ -1,4 +1,4 @@
-import { BarChart3, Settings, Home, PieChart, Bot, Files, BookOpen, LayoutDashboard } from "lucide-react";
+import { Home, Bot, Files, BookOpen, PieChart, Settings, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
@@ -11,8 +11,6 @@ const Sidebar = () => {
     { icon: Bot, label: "Expert Advisors", path: "/expert-advisors" },
     { icon: Files, label: "Setfiles", path: "/setfiles" },
     { icon: BookOpen, label: "Courses", path: "/courses" },
-    { icon: PieChart, label: "Analytics", path: "/analytics" },
-    { icon: Settings, label: "Settings", path: "/settings" },
   ];
 
   return (
