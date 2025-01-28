@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +23,7 @@ interface MyFxBookResponse {
 }
 
 const MyFxBookLogin = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -93,8 +95,9 @@ const MyFxBookLogin = () => {
     if (isLoggedIn) {
       fetchAccounts();
       fetchWatchedAccounts();
+      navigate("/tradehub");
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,8 +123,8 @@ const MyFxBookLogin = () => {
         });
         localStorage.setItem("myfxbook_session", data.session);
         setIsLoggedIn(true);
+        navigate("/tradehub");
       } else {
-        // Check for max attempts error
         if (data.message.toLowerCase().includes("max login attempts reached")) {
           setShowMaxAttemptsDialog(true);
         } else {

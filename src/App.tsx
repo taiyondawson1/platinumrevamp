@@ -9,6 +9,7 @@ import ExpertAdvisorsPage from "@/pages/ExpertAdvisors";
 import SetfilesPage from "@/pages/Setfiles";
 import TradingPage from "@/pages/Trading";
 import CoursesPage from "@/pages/Courses";
+import TradeHub from "@/pages/TradeHub";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ function App() {
               <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
               <Route path="/setfiles" element={<SetfilesPage />} />
               <Route path="/courses" element={<CoursesPage />} />
+              <Route path="/tradehub" element={<TradeHub />} />
             </Routes>
           </div>
         </BrowserRouter>
