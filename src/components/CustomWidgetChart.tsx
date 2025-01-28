@@ -22,22 +22,22 @@ const CustomWidgetChart = ({
     height: height.toString(),
     bart: "1",
     linet: "0",
-    bgColor: "000000",
+    bgColor: "FFFFFF",
     gridColor: "BDBDBD",
     lineColor: "00CB05",
     barColor: "FF8D0A",
-    fontColor: "FFFFFF",
+    fontColor: "000000",
     title: "",
     titles: "20",
-    chartbgc: "474747"
+    chartbgc: "FFFFFF"
   }).toString()}`;
 
   console.log("CustomWidgetChart: Generated widget URL", widgetUrl);
 
   return (
-    <Card className="w-full bg-transparent">
+    <Card className="w-full bg-white relative z-50 shadow-xl">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">Performance Widget</CardTitle>
+        <CardTitle className="text-xl font-bold text-black">Performance Widget</CardTitle>
       </CardHeader>
       <CardContent className="flex justify-center items-center min-h-[300px] p-4">
         <img 
