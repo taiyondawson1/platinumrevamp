@@ -149,7 +149,7 @@ const TradeHub = () => {
           </Card>
         ) : (
           <>
-            <div className="flex gap-4">
+            <div className="flex gap-4 h-full">
               {/* Left side - Charts */}
               <div className="flex-[3] space-y-4">
                 <Card className="w-full">
@@ -177,8 +177,10 @@ const TradeHub = () => {
               </div>
               
               {/* Right side - Trade History */}
-              <div className="flex-1">
-                <HistoryTable history={tradeHistory} />
+              <div className="flex-1 h-full">
+                <Card className="h-full">
+                  <HistoryTable history={tradeHistory} />
+                </Card>
               </div>
             </div>
           </>
