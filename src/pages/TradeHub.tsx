@@ -4,7 +4,6 @@ import OpenOrdersTable from "@/components/OpenOrdersTable";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
 import TotalGainCard from "@/components/TotalGainCard";
-import CustomWidgetChart from "@/components/CustomWidgetChart";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -166,13 +165,6 @@ const TradeHub = () => {
                     </TabsContent>
                   </Tabs>
                 </Card>
-                {selectedAccount?.id && (
-                  <CustomWidgetChart 
-                    accountId={selectedAccount.id.toString()} 
-                    width={600}
-                    height={300}
-                  />
-                )}
                 <OpenOrdersTable orders={openTrades} />
               </div>
               
