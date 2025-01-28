@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import MyFxBookLogin from "@/components/MyFxBookLogin";
 
 const TradeHub = () => {
   return (
@@ -8,7 +7,7 @@ const TradeHub = () => {
         <h2 className="text-3xl font-bold tracking-tight text-white">TradeHub</h2>
       </div>
       <div className="grid gap-4">
-        <MyFxBookLogin />
+        {/* Add your TradeHub content here */}
       </div>
     </div>
   );
