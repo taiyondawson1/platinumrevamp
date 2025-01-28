@@ -152,50 +152,47 @@ const TradeHub = () => {
           </Card>
         ) : (
           <>
-            <div className="grid grid-cols-[2fr_1fr] gap-3 h-full">
-              <div className="space-y-3">
+            <div className="space-y-3 w-full">
+              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg overflow-hidden">
+                <Tabs defaultValue="daily" className="w-full">
+                  <TabsList className="ml-4 mt-3 bg-darkBlue/60">
+                    <TabsTrigger 
+                      value="daily" 
+                      className="text-softWhite data-[state=active]:bg-darkBlue/80"
+                    >
+                      Daily Gain
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="total" 
+                      className="text-softWhite data-[state=active]:bg-darkBlue/80"
+                    >
+                      Total Gain
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="daily">
+                    <DailyGainChart accountId={selectedAccount?.id?.toString()} />
+                  </TabsContent>
+                  <TabsContent value="total">
+                    <TotalGainCard accountId={selectedAccount?.id?.toString()} />
+                  </TabsContent>
+                </Tabs>
+              </Card>
+              {selectedAccount?.id && (
                 <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg overflow-hidden">
-                  <Tabs defaultValue="daily" className="w-full">
-                    <TabsList className="ml-4 mt-3 bg-darkBlue/60">
-                      <TabsTrigger 
-                        value="daily" 
-                        className="text-softWhite data-[state=active]:bg-darkBlue/80"
-                      >
-                        Daily Gain
-                      </TabsTrigger>
-                      <TabsTrigger 
-                        value="total" 
-                        className="text-softWhite data-[state=active]:bg-darkBlue/80"
-                      >
-                        Total Gain
-                      </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="daily">
-                      <DailyGainChart accountId={selectedAccount?.id?.toString()} />
-                    </TabsContent>
-                    <TabsContent value="total">
-                      <TotalGainCard accountId={selectedAccount?.id?.toString()} />
-                    </TabsContent>
-                  </Tabs>
+                  <CardContent className="p-0">
+                    <CustomWidget 
+                      session={localStorage.getItem("myfxbook_session") || ""}
+                      accountId={selectedAccount.id.toString()}
+                      width={600}
+                      height={300}
+                    />
+                  </CardContent>
                 </Card>
-                {selectedAccount?.id && (
-                  <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg overflow-hidden">
-                    <CardContent className="p-0">
-                      <CustomWidget 
-                        session={localStorage.getItem("myfxbook_session") || ""}
-                        accountId={selectedAccount.id.toString()}
-                        width={600}
-                        height={300}
-                      />
-                    </CardContent>
-                  </Card>
-                )}
-                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                  <OpenOrdersTable orders={openTrades} />
-                </Card>
-              </div>
-              
-              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg h-full">
+              )}
+              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+                <OpenOrdersTable orders={openTrades} />
+              </Card>
+              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                 <CardContent className="p-0">
                   <HistoryTable history={tradeHistory} />
                 </CardContent>
