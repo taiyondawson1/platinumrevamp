@@ -149,31 +149,38 @@ const TradeHub = () => {
           </Card>
         ) : (
           <>
-            <div className="grid grid-cols-1 gap-4">
-              <Card className="w-full">
-                <Tabs defaultValue="daily" className="w-full">
-                  <TabsList className="ml-4 mt-4">
-                    <TabsTrigger value="daily">Daily Gain</TabsTrigger>
-                    <TabsTrigger value="total">Total Gain</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="daily">
-                    <DailyGainChart accountId={selectedAccount?.id?.toString()} />
-                  </TabsContent>
-                  <TabsContent value="total">
-                    <TotalGainCard accountId={selectedAccount?.id?.toString()} />
-                  </TabsContent>
-                </Tabs>
-              </Card>
+            <div className="flex gap-4">
+              {/* Left side - Charts */}
+              <div className="flex-[3] space-y-4">
+                <Card className="w-full">
+                  <Tabs defaultValue="daily" className="w-full">
+                    <TabsList className="ml-4 mt-4">
+                      <TabsTrigger value="daily">Daily Gain</TabsTrigger>
+                      <TabsTrigger value="total">Total Gain</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="daily">
+                      <DailyGainChart accountId={selectedAccount?.id?.toString()} />
+                    </TabsContent>
+                    <TabsContent value="total">
+                      <TotalGainCard accountId={selectedAccount?.id?.toString()} />
+                    </TabsContent>
+                  </Tabs>
+                </Card>
+                {selectedAccount?.id && (
+                  <CustomWidgetChart 
+                    accountId={selectedAccount.id.toString()} 
+                    width={600}
+                    height={300}
+                  />
+                )}
+                <OpenOrdersTable orders={openTrades} />
+              </div>
+              
+              {/* Right side - Trade History */}
+              <div className="flex-1">
+                <HistoryTable history={tradeHistory} />
+              </div>
             </div>
-            {selectedAccount?.id && (
-              <CustomWidgetChart 
-                accountId={selectedAccount.id.toString()} 
-                width={600}
-                height={300}
-              />
-            )}
-            <OpenOrdersTable orders={openTrades} />
-            <HistoryTable history={tradeHistory} />
           </>
         )}
       </div>
