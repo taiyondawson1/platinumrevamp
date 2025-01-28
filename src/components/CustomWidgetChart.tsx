@@ -7,13 +7,18 @@ interface CustomWidgetChartProps {
 }
 
 const CustomWidgetChart = ({ 
-  accountId = "12345",  // Default account ID
-  width = 300,
-  height = 200 
+  accountId,
+  width = 600,  // Increased default width
+  height = 400  // Increased default height
 }: CustomWidgetChartProps) => {
-  const session = localStorage.getItem("myfxbook_session") || "DSL07vu14QxHWErTIAFrH40"; // Default session
+  const session = localStorage.getItem("myfxbook_session");
 
   console.log("CustomWidgetChart: Rendering with", { accountId, session, width, height });
+
+  if (!accountId || !session) {
+    console.log("CustomWidgetChart: Missing required props", { accountId, session });
+    return null;
+  }
 
   const widgetUrl = `https://widgets.myfxbook.com/api/get-custom-widget.png?${new URLSearchParams({
     session: session,
@@ -35,11 +40,11 @@ const CustomWidgetChart = ({
   console.log("CustomWidgetChart: Generated widget URL", widgetUrl);
 
   return (
-    <Card className="w-full bg-white relative z-50 shadow-xl">
+    <Card className="w-full bg-white">
       <CardHeader>
-        <CardTitle className="text-xl font-bold text-black">Performance Widget</CardTitle>
+        <CardTitle className="text-xl font-bold">Performance Widget</CardTitle>
       </CardHeader>
-      <CardContent className="flex justify-center items-center min-h-[300px] p-4">
+      <CardContent className="flex justify-center items-center p-4">
         <img 
           src={widgetUrl} 
           alt="MyFxBook Custom Widget" 
