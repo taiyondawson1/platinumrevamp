@@ -145,7 +145,7 @@ const TradeHub = () => {
       </div>
       <div className="grid gap-4">
         {isLoading ? (
-          <Card className="w-full">
+          <Card className="tradehub-card w-full">
             <CardContent className="py-6">
               <p className="text-center text-muted-foreground">Loading data...</p>
             </CardContent>
@@ -154,7 +154,7 @@ const TradeHub = () => {
           <>
             <div className="flex gap-4 h-full">
               <div className="flex-[3] space-y-4">
-                <Card className="w-full">
+                <Card className="tradehub-card w-full">
                   <Tabs defaultValue="daily" className="w-full">
                     <TabsList className="ml-4 mt-4">
                       <TabsTrigger value="daily">Daily Gain</TabsTrigger>
@@ -169,18 +169,22 @@ const TradeHub = () => {
                   </Tabs>
                 </Card>
                 {selectedAccount?.id && (
-                  <CustomWidget 
-                    session={localStorage.getItem("myfxbook_session") || ""}
-                    accountId={selectedAccount.id.toString()}
-                    width={600}
-                    height={300}
-                  />
+                  <Card className="tradehub-card">
+                    <CustomWidget 
+                      session={localStorage.getItem("myfxbook_session") || ""}
+                      accountId={selectedAccount.id.toString()}
+                      width={600}
+                      height={300}
+                    />
+                  </Card>
                 )}
-                <OpenOrdersTable orders={openTrades} />
+                <Card className="tradehub-card">
+                  <OpenOrdersTable orders={openTrades} />
+                </Card>
               </div>
               
               <div className="flex-1 h-full">
-                <Card className="h-full">
+                <Card className="tradehub-card h-full">
                   <HistoryTable history={tradeHistory} />
                 </Card>
               </div>

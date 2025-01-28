@@ -59,3 +59,8 @@
 .stats-grid {
   @apply grid grid-cols-2 md:grid-cols-4 gap-4;
 }
+
+.tradehub-card {
+  @apply bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm 
+         shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300;
+}
