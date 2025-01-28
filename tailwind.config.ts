@@ -30,9 +30,16 @@ export default {
       },
       colors: {
         // Base colors
-        darkBase: "#121212",
-        darkBlue: "#1A1F2C",
+        darkBase: "#000000",
+        darkBlue: "#111111",
         darkGrey: "#1A1A1A",
+        
+        // Metallic palette
+        silver: {
+          DEFAULT: "#C0C0C0",
+          light: "#D8D8D8",
+          dark: "#A0A0A0",
+        },
         
         // Clean palette
         softWhite: "#F6F6F7",
@@ -40,6 +47,13 @@ export default {
         mediumGray: "#8E9196",
         shadowGray: "#2A2A2A",
         highlightGray: "#FFFFFF10",
+        
+        // Accent colors
+        accent: {
+          blue: "#007AFF",
+          red: "#FF3B30",
+          green: "#34C759",
+        },
         
         // UI Elements
         border: "hsl(var(--border))",
