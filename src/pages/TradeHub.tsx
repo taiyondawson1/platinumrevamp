@@ -50,6 +50,7 @@ const TradeHub = () => {
 
       setIsLoading(true);
       try {
+        console.log("Fetching trades for account:", selectedAccount.id); // Add this log
         const response = await fetch(
           `https://www.myfxbook.com/api/get-open-trades.json?session=${encodeURIComponent(
             session
@@ -61,13 +62,16 @@ const TradeHub = () => {
         }
 
         const data: OpenTradesResponse = await response.json();
+        console.log("API Response:", data); // Add this log
 
         if (!data.error) {
           setOpenTrades(data.trades || []);
+          console.log("Setting trades:", data.trades); // Add this log
         } else {
           throw new Error(data.message || "Failed to fetch open trades");
         }
       } catch (error) {
+        console.error("Error fetching trades:", error); // Add this log
         toast({
           variant: "destructive",
           title: "Error",

@@ -30,6 +30,8 @@ interface OpenOrdersTableProps {
 }
 
 const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
+  console.log("OpenOrdersTable received orders:", orders); // Add this log to debug
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -51,23 +53,31 @@ const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>{order.ticket}</TableCell>
-                <TableCell>{order.symbol}</TableCell>
-                <TableCell>{order.action}</TableCell>
-                <TableCell>{order.lots}</TableCell>
-                <TableCell>{order.openPrice}</TableCell>
-                <TableCell>{order.sl}</TableCell>
-                <TableCell>{order.tp}</TableCell>
-                <TableCell className={order.profit >= 0 ? "text-green-500" : "text-red-500"}>
-                  {order.profit.toFixed(2)}
-                </TableCell>
-                <TableCell className={order.pips >= 0 ? "text-green-500" : "text-red-500"}>
-                  {order.pips.toFixed(1)}
+            {orders && orders.length > 0 ? (
+              orders.map((order) => (
+                <TableRow key={order.id}>
+                  <TableCell>{order.ticket}</TableCell>
+                  <TableCell>{order.symbol}</TableCell>
+                  <TableCell>{order.action}</TableCell>
+                  <TableCell>{order.lots}</TableCell>
+                  <TableCell>{order.openPrice}</TableCell>
+                  <TableCell>{order.sl}</TableCell>
+                  <TableCell>{order.tp}</TableCell>
+                  <TableCell className={order.profit >= 0 ? "text-green-500" : "text-red-500"}>
+                    {order.profit.toFixed(2)}
+                  </TableCell>
+                  <TableCell className={order.pips >= 0 ? "text-green-500" : "text-red-500"}>
+                    {order.pips.toFixed(1)}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={9} className="text-center py-4">
+                  No open orders found
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </CardContent>
