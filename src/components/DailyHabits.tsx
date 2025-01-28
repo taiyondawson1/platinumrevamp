@@ -30,34 +30,34 @@ const DailyHabits = () => {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent border-silver/20">
-              <TableHead className="text-mediumGray h-6 py-1">Name</TableHead>
-              <TableHead className="text-mediumGray h-6 py-1">Date</TableHead>
-              <TableHead className="text-mediumGray h-6 py-1">
+              <TableHead className="text-mediumGray h-5 py-0.5">Name</TableHead>
+              <TableHead className="text-mediumGray h-5 py-0.5">Date</TableHead>
+              <TableHead className="text-mediumGray h-5 py-0.5">
                 <PenLine className="h-4 w-4" />
                 <span className="sr-only">Journaling</span>
               </TableHead>
-              <TableHead className="text-mediumGray h-6 py-1">
+              <TableHead className="text-mediumGray h-5 py-0.5">
                 <LineChart className="h-4 w-4" />
                 <span className="sr-only">Backtesting</span>
               </TableHead>
-              <TableHead className="text-mediumGray h-6 py-1">
+              <TableHead className="text-mediumGray h-5 py-0.5">
                 <Activity className="h-4 w-4" />
                 <span className="sr-only">Exercise</span>
               </TableHead>
-              <TableHead className="text-mediumGray h-6 py-1">
+              <TableHead className="text-mediumGray h-5 py-0.5">
                 <Book className="h-4 w-4" />
                 <span className="sr-only">Reading</span>
               </TableHead>
-              <TableHead className="text-mediumGray h-6 py-1">
+              <TableHead className="text-mediumGray h-5 py-0.5">
                 <Share2 className="h-4 w-4" />
                 <span className="sr-only">Share in Discord</span>
               </TableHead>
-              <TableHead className="text-mediumGray h-6 py-1">Progress</TableHead>
+              <TableHead className="text-mediumGray h-5 py-0.5">Progress</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow className="hover:bg-black/20 border-silver/20">
-              <TableCell colSpan={8} className="text-mediumGray h-6 py-1">
+              <TableCell colSpan={8} className="text-mediumGray h-5 py-0.5">
                 <Button variant="ghost" className="w-full justify-start px-0 hover:bg-transparent hover:text-accent-blue">
                   <Plus className="h-4 w-4 mr-2" />
                   New
