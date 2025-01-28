@@ -18,7 +18,7 @@ const Dashboard = () => {
             <WorldClocks />
           </section>
           
-          <div className="lg:w-[400px]">
+          <div className="lg:w-[200px]">
             <CompoundCalculator />
           </div>
         </div>
