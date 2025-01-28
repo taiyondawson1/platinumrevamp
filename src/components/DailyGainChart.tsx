@@ -93,6 +93,7 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
                   stroke="#8884d8"
                   dot={false}
                   name="Daily Gain"
+                  style={{ stroke: '#8884d8' }}
                 />
               </LineChart>
             </ResponsiveContainer>
