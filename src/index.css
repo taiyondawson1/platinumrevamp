@@ -48,7 +48,7 @@
 
 .metric-card {
   @apply bg-black/40 p-6 border border-silver/20 
-         hover:border-silver/30 transition-all duration-300 rounded-none;
+         hover:border-silver/30 transition-all duration-300 rounded-none !important;
 }
 
 .metric-value {
@@ -61,7 +61,7 @@
 
 .chart-container {
   @apply bg-black/40 border border-silver/20 
-         hover:border-silver/30 transition-all duration-300 rounded-none;
+         hover:border-silver/30 transition-all duration-300 rounded-none !important;
 }
 
 .stats-grid {
@@ -70,5 +70,13 @@
 
 .tradehub-card {
   @apply bg-darkBlue/40 border-silver/20 backdrop-blur-sm 
-         shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 rounded-none;
+         shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 rounded-none !important;
+}
+
+/* Override any shadcn/ui card rounded corners */
+.rounded-lg, 
+.rounded-xl,
+.rounded-md,
+[class*="rounded"] {
+  border-radius: 0 !important;
 }
