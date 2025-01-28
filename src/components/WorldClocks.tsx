@@ -35,7 +35,7 @@ const WorldClocks = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-5">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-5 py-10">
       {cities.map((city) => {
         const handStyles = getHandStyles(city.timezone);
         
