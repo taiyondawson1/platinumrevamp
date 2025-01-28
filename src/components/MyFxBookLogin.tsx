@@ -4,6 +4,12 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
+interface MyFxBookResponse {
+  error: boolean;
+  message: string;
+  session: string;
+}
+
 const MyFxBookLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,7 +22,7 @@ const MyFxBookLogin = () => {
 
     try {
       const response = await fetch(
-        `https://www.myfxbook.com/api/login.xml?email=${encodeURIComponent(
+        `https://www.myfxbook.com/api/login.json?email=${encodeURIComponent(
           email
         )}&password=${encodeURIComponent(password)}`
       );
@@ -25,22 +31,16 @@ const MyFxBookLogin = () => {
         throw new Error("Failed to login");
       }
 
-      const text = await response.text();
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(text, "text/xml");
-      const error = xmlDoc.querySelector("response")?.getAttribute("error");
-      const message = xmlDoc.querySelector("response")?.getAttribute("message");
-      const session = xmlDoc.querySelector("session")?.textContent;
+      const data: MyFxBookResponse = await response.json();
 
-      if (error === "false" && session) {
+      if (!data.error && data.session) {
         toast({
           title: "Success",
           description: "Successfully logged in to MyFxBook",
         });
-        // Store the session token or handle successful login
-        localStorage.setItem("myfxbook_session", session);
+        localStorage.setItem("myfxbook_session", data.session);
       } else {
-        throw new Error(message || "Failed to login");
+        throw new Error(data.message || "Failed to login");
       }
     } catch (error) {
       toast({
