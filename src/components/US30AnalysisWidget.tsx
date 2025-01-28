@@ -37,7 +37,7 @@ const US30AnalysisWidget = () => {
   }, []);
 
   return (
-    <div className="tradingview-us30-widget">
+    <div className="tradingview-us30-widget -ml-[600px]">
       <div className="tradingview-widget-container__widget"></div>
     </div>
   );
