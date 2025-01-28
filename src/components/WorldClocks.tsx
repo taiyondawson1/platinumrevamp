@@ -15,44 +15,100 @@ const WorldClocks = () => {
     { name: 'NEWYORK', timezone: 'America/New_York' }
   ];
 
+  const getHandStyles = (timezone: string) => {
+    const localTime = new Date(formatInTimeZone(time, timezone, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"));
+    const hours = localTime.getHours() % 12;
+    const minutes = localTime.getMinutes();
+    const seconds = localTime.getSeconds();
+
+    return {
+      hours: {
+        transform: `rotate(${(hours * 30) + (minutes / 2)}deg)`,
+      },
+      minutes: {
+        transform: `rotate(${minutes * 6}deg)`,
+      },
+      seconds: {
+        transform: `rotate(${seconds * 6}deg)`,
+      },
+    };
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {cities.map((city) => (
-        <div key={city.name} className="relative w-[200px] h-[200px] mx-auto">
-          <div className="relative w-full h-full backdrop-blur-xl">
-            {/* Hour markers */}
-            {[...Array(12)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-0.5 h-3 bg-softWhite/50"
-                style={{
-                  left: '50%',
-                  top: '0',
-                  transformOrigin: '50% 100px',
-                  transform: `rotate(${i * 30}deg) translateX(-50%)`
-                }}
-              />
-            ))}
+      {cities.map((city) => {
+        const handStyles = getHandStyles(city.timezone);
+        
+        return (
+          <div key={city.name} className="relative w-[200px] h-[200px] mx-auto">
+            <div className="relative w-full h-full backdrop-blur-xl">
+              {/* Hour markers */}
+              {[...Array(12)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-0.5 h-3 bg-softWhite/50"
+                  style={{
+                    left: '50%',
+                    top: '0',
+                    transformOrigin: '50% 100px',
+                    transform: `rotate(${i * 30}deg) translateX(-50%)`
+                  }}
+                />
+              ))}
 
-            {/* Digital Time */}
-            <div className="absolute top-1/4 left-0 right-0 text-center">
-              <div className="text-2xl font-bold text-softWhite">
-                {formatInTimeZone(time, city.timezone, 'HH:mm')}
+              {/* Clock Hands */}
+              <div className="absolute inset-0">
+                {/* Hour Hand */}
+                <div
+                  className="absolute w-1 h-[40px] bg-softWhite/90 rounded-full left-1/2 bottom-1/2"
+                  style={{
+                    transformOrigin: 'bottom',
+                    ...handStyles.hours,
+                  }}
+                />
+                
+                {/* Minute Hand */}
+                <div
+                  className="absolute w-0.5 h-[60px] bg-softWhite/70 rounded-full left-1/2 bottom-1/2"
+                  style={{
+                    transformOrigin: 'bottom',
+                    ...handStyles.minutes,
+                  }}
+                />
+                
+                {/* Second Hand */}
+                <div
+                  className="absolute w-[1px] h-[70px] bg-accent-red rounded-full left-1/2 bottom-1/2"
+                  style={{
+                    transformOrigin: 'bottom',
+                    ...handStyles.seconds,
+                  }}
+                />
+                
+                {/* Center Dot */}
+                <div className="absolute w-2 h-2 bg-softWhite rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
               </div>
-              <div className="text-xs text-mediumGray mt-1">
-                {formatInTimeZone(time, city.timezone, 'EEEE • MMM dd')}
-              </div>
-            </div>
 
-            {/* City Name */}
-            <div className="absolute bottom-8 left-0 right-0 text-center">
-              <span className="text-sm font-medium text-mediumGray">
-                {city.name}
-              </span>
+              {/* Digital Time */}
+              <div className="absolute top-1/4 left-0 right-0 text-center">
+                <div className="text-2xl font-bold text-softWhite">
+                  {formatInTimeZone(time, city.timezone, 'HH:mm')}
+                </div>
+                <div className="text-xs text-mediumGray mt-1">
+                  {formatInTimeZone(time, city.timezone, 'EEEE • MMM dd')}
+                </div>
+              </div>
+
+              {/* City Name */}
+              <div className="absolute bottom-8 left-0 right-0 text-center">
+                <span className="text-sm font-medium text-mediumGray">
+                  {city.name}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
