@@ -1,12 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/lib/supabase";
+import { supabaseUrl, supabaseKey } from "@/lib/supabase";
 
 const MetaTraderConnection = () => {
   const { toast } = useToast();
-  const supabaseUrl = supabase.supabaseUrl;
-  const apiKey = supabase.supabaseKey;
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -43,12 +41,12 @@ const MetaTraderConnection = () => {
           <p className="text-sm text-softWhite">Headers:</p>
           <div className="flex items-center gap-2">
             <code className="bg-black/30 p-2 rounded text-softWhite flex-1">
-              {`apikey: ${apiKey}\nContent-Type: application/json`}
+              {`apikey: ${supabaseKey}\nContent-Type: application/json`}
             </code>
             <Button 
               variant="outline" 
               size="sm"
-              onClick={() => copyToClipboard(`apikey: ${apiKey}\nContent-Type: application/json`)}
+              onClick={() => copyToClipboard(`apikey: ${supabaseKey}\nContent-Type: application/json`)}
             >
               Copy
             </Button>
