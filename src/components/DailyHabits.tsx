@@ -144,24 +144,34 @@ const DailyHabits = () => {
               <TableHead className="text-mediumGray h-5 py-0.5">Name</TableHead>
               <TableHead className="text-mediumGray h-5 py-0.5">Date</TableHead>
               <TableHead className="text-mediumGray h-5 py-0.5">
-                <PenLine className="h-4 w-4" />
-                <span className="sr-only">Journaling</span>
+                <div className="flex flex-col items-center gap-1">
+                  <PenLine className="h-4 w-4" />
+                  <span className="text-xs">Journaling</span>
+                </div>
               </TableHead>
               <TableHead className="text-mediumGray h-5 py-0.5">
-                <LineChart className="h-4 w-4" />
-                <span className="sr-only">Backtesting</span>
+                <div className="flex flex-col items-center gap-1">
+                  <LineChart className="h-4 w-4" />
+                  <span className="text-xs">Backtesting</span>
+                </div>
               </TableHead>
               <TableHead className="text-mediumGray h-5 py-0.5">
-                <Activity className="h-4 w-4" />
-                <span className="sr-only">Exercise</span>
+                <div className="flex flex-col items-center gap-1">
+                  <Activity className="h-4 w-4" />
+                  <span className="text-xs">Exercise</span>
+                </div>
               </TableHead>
               <TableHead className="text-mediumGray h-5 py-0.5">
-                <Book className="h-4 w-4" />
-                <span className="sr-only">Reading</span>
+                <div className="flex flex-col items-center gap-1">
+                  <Book className="h-4 w-4" />
+                  <span className="text-xs">Reading</span>
+                </div>
               </TableHead>
               <TableHead className="text-mediumGray h-5 py-0.5">
-                <Share2 className="h-4 w-4" />
-                <span className="sr-only">Share in Discord</span>
+                <div className="flex flex-col items-center gap-1">
+                  <Share2 className="h-4 w-4" />
+                  <span className="text-xs">Share in Discord</span>
+                </div>
               </TableHead>
               <TableHead className="text-mediumGray h-5 py-0.5">Progress</TableHead>
             </TableRow>
