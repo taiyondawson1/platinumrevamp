@@ -12,13 +12,13 @@ const Dashboard = () => {
   return (
     <main className="flex-1 p-6 max-w-[1400px] mx-auto">
       <div className="flex flex-col gap-6">
-        {/* World Clocks Section */}
-        <div className="flex flex-col lg:flex-row gap-8">
-          <section className="border border-silver/20 lg:flex-1">
+        {/* World Clocks and Calculator Section */}
+        <div className="flex flex-col lg:flex-row">
+          <section className="flex-1 border border-silver/20 bg-darkBase/40">
             <WorldClocks />
           </section>
           
-          <div className="lg:w-[200px]">
+          <div className="w-[300px] border-l border-silver/20">
             <CompoundCalculator />
           </div>
         </div>

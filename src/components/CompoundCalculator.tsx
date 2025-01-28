@@ -21,63 +21,65 @@ const CompoundCalculator = () => {
   };
 
   return (
-    <div className="p-6 bg-darkGrey/30 rounded-lg space-y-4">
-      <h3 className="text-xl font-semibold text-softWhite mb-4">Compound Interest Calculator</h3>
-      
-      <div className="space-y-4">
-        <div>
-          <label className="text-sm text-mediumGray block mb-2">Principal Amount ($)</label>
-          <Input
-            type="number"
-            value={principal}
-            onChange={(e) => setPrincipal(e.target.value)}
-            className="bg-darkBase border-silver/20"
-          />
-        </div>
-
-        <div>
-          <label className="text-sm text-mediumGray block mb-2">Annual Interest Rate (%)</label>
-          <Input
-            type="number"
-            value={rate}
-            onChange={(e) => setRate(e.target.value)}
-            className="bg-darkBase border-silver/20"
-          />
-        </div>
-
-        <div>
-          <label className="text-sm text-mediumGray block mb-2">Time (years)</label>
-          <Input
-            type="number"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-            className="bg-darkBase border-silver/20"
-          />
-        </div>
-
-        <div>
-          <label className="text-sm text-mediumGray block mb-2">Compound Frequency (per year)</label>
-          <Input
-            type="number"
-            value={compound}
-            onChange={(e) => setCompound(e.target.value)}
-            className="bg-darkBase border-silver/20"
-          />
-        </div>
-
-        <Button 
-          onClick={calculateCompoundInterest}
-          className="w-full bg-accent-blue hover:bg-accent-blue/90"
-        >
-          Calculate
-        </Button>
-
-        {result !== null && (
-          <div className="mt-4 p-4 bg-darkBase rounded-lg">
-            <p className="text-sm text-mediumGray">Interest Earned:</p>
-            <p className="text-2xl font-bold text-accent-green">${result}</p>
+    <div className="h-full bg-darkBase/40">
+      <div className="p-4 space-y-4">
+        <h3 className="text-sm font-medium text-softWhite">Position Size Calculator</h3>
+        
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs text-mediumGray block mb-1">Principal Amount ($)</label>
+            <Input
+              type="number"
+              value={principal}
+              onChange={(e) => setPrincipal(e.target.value)}
+              className="h-8 bg-darkGrey border-silver/20 text-sm"
+            />
           </div>
-        )}
+
+          <div>
+            <label className="text-xs text-mediumGray block mb-1">Annual Interest Rate (%)</label>
+            <Input
+              type="number"
+              value={rate}
+              onChange={(e) => setRate(e.target.value)}
+              className="h-8 bg-darkGrey border-silver/20 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs text-mediumGray block mb-1">Time (years)</label>
+            <Input
+              type="number"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              className="h-8 bg-darkGrey border-silver/20 text-sm"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs text-mediumGray block mb-1">Compound Frequency</label>
+            <Input
+              type="number"
+              value={compound}
+              onChange={(e) => setCompound(e.target.value)}
+              className="h-8 bg-darkGrey border-silver/20 text-sm"
+            />
+          </div>
+
+          <Button 
+            onClick={calculateCompoundInterest}
+            className="w-full h-8 bg-accent-blue hover:bg-accent-blue/90 text-sm"
+          >
+            Calculate
+          </Button>
+
+          {result !== null && (
+            <div className="mt-2 p-2 bg-darkGrey/50">
+              <p className="text-xs text-mediumGray">Interest Earned:</p>
+              <p className="text-lg font-bold text-accent-green">${result}</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
