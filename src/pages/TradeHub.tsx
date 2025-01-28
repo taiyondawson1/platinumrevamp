@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
+import TotalGainCard from "@/components/TotalGainCard";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -146,7 +147,10 @@ const TradeHub = () => {
           </Card>
         ) : (
           <>
-            <DailyGainChart accountId={selectedAccount?.id?.toString()} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <DailyGainChart accountId={selectedAccount?.id?.toString()} />
+              <TotalGainCard accountId={selectedAccount?.id?.toString()} />
+            </div>
             <OpenOrdersTable orders={openTrades} />
             <HistoryTable history={tradeHistory} />
           </>
