@@ -8,7 +8,6 @@ import CustomWidget from "@/components/CustomWidget";
 import GainWidget from "@/components/GainWidget";
 import CommunityOutlookWidget from "@/components/CommunityOutlookWidget";
 import DailyDataWidget from "@/components/DailyDataWidget";
-import TradingViewTickers from "@/components/TradingViewTickers";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -147,7 +146,6 @@ const TradeHub = () => {
           TradeHub {selectedAccount ? `- ${selectedAccount.name}` : ""}
         </h2>
       </div>
-      <TradingViewTickers />
       <div className="grid gap-3 w-full">
         {isLoading ? (
           <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
