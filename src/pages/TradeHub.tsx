@@ -140,67 +140,60 @@ const TradeHub = () => {
   return (
     <>
       <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[304px] mx-[25%] flex flex-col items-center">
-        <div className="flex items-center justify-center w-full mb-2">
-          <h2 className="text-2xl font-semibold tracking-tight text-softWhite">
-            TradeHub {selectedAccount ? `- ${selectedAccount.name}` : ""}
-          </h2>
-        </div>
-        <div className="grid gap-3 w-full">
-          {isLoading ? (
-            <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-              <CardContent className="py-4">
-                <p className="text-center text-softWhite">Loading data...</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <>
-              <div className="space-y-3 w-full">
-                <TechnicalAnalysisWidget />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <TotalGainCard accountId={selectedAccount?.id?.toString()} />
-                  <GainWidget accountId={selectedAccount?.id?.toString()} />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                    <Tabs defaultValue="daily" className="w-full">
-                      <TabsList className="ml-4 mt-3 bg-darkBlue/60">
-                        <TabsTrigger value="daily" className="text-softWhite data-[state=active]:bg-darkBlue/80">
-                          Daily Gain
-                        </TabsTrigger>
-                        <TabsTrigger value="total" className="text-softWhite data-[state=active]:bg-darkBlue/80">
-                          Total Gain
-                        </TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="daily">
-                        <DailyGainChart accountId={selectedAccount?.id?.toString()} />
-                      </TabsContent>
-                      <TabsContent value="total">
-                        <CustomWidget 
-                          session={localStorage.getItem("myfxbook_session") || ""}
-                          accountId={selectedAccount?.id?.toString()}
-                          width={600}
-                          height={300}
-                        />
-                      </TabsContent>
-                    </Tabs>
-                  </Card>
-                </div>
-                <CommunityOutlookWidget />
-                <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
+        {isLoading ? (
+          <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+            <CardContent className="py-4">
+              <p className="text-center text-softWhite">Loading data...</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            <div className="space-y-3 w-full">
+              <TechnicalAnalysisWidget />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <TotalGainCard accountId={selectedAccount?.id?.toString()} />
+                <GainWidget accountId={selectedAccount?.id?.toString()} />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                  <CardContent className="p-0">
-                    <OpenOrdersTable orders={openTrades} />
-                  </CardContent>
-                </Card>
-                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                  <CardContent className="p-0">
-                    <HistoryTable history={tradeHistory} />
-                  </CardContent>
+                  <Tabs defaultValue="daily" className="w-full">
+                    <TabsList className="ml-4 mt-3 bg-darkBlue/60">
+                      <TabsTrigger value="daily" className="text-softWhite data-[state=active]:bg-darkBlue/80">
+                        Daily Gain
+                      </TabsTrigger>
+                      <TabsTrigger value="total" className="text-softWhite data-[state=active]:bg-darkBlue/80">
+                        Total Gain
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="daily">
+                      <DailyGainChart accountId={selectedAccount?.id?.toString()} />
+                    </TabsContent>
+                    <TabsContent value="total">
+                      <CustomWidget 
+                        session={localStorage.getItem("myfxbook_session") || ""}
+                        accountId={selectedAccount?.id?.toString()}
+                        width={600}
+                        height={300}
+                      />
+                    </TabsContent>
+                  </Tabs>
                 </Card>
               </div>
-            </>
-          )}
-        </div>
+              <CommunityOutlookWidget />
+              <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
+              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+                <CardContent className="p-0">
+                  <OpenOrdersTable orders={openTrades} />
+                </CardContent>
+              </Card>
+              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+                <CardContent className="p-0">
+                  <HistoryTable history={tradeHistory} />
+                </CardContent>
+              </Card>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
