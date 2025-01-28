@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, Info, X, Clock, CheckCircle, BarChart, Asterisk } from "lucide-react";
+import { Download, Info, X, Clock, CheckCircle, BarChart, Asterisk, ArrowLeft } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +23,7 @@ import {
 } from "@/components/ui/alert-dialog"
 
 const SetfilesPage = () => {
+  const navigate = useNavigate();
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
   const [accountBalance, setAccountBalance] = useState<number>(100000);
   const [showNewsDialog, setShowNewsDialog] = useState(false);
@@ -141,29 +143,16 @@ const SetfilesPage = () => {
   };
 
   return (
-    <div className="flex-1 p-6 ml-[240px]">
-      <div className="flex gap-4 mb-8 max-w-[900px] mx-auto">
-        {experts.map((expert) => (
-          <Button
-            key={expert.name}
-            onClick={() => handleExpertSelect(expert.name)}
-            variant="ghost"
-            className={`
-              relative flex-1 h-[48px] px-4
-              transition-all duration-300 
-              rounded-lg border 
-              ${expert.name === selectedExpert
-                ? "bg-[#383D54] text-white border-[#383D54]/20"
-                : "bg-[#1E2132]/40 text-[#9096A5] border-[#2A2F42]/20 hover:bg-[#1E2132]/60 hover:text-white"
-              }
-              group
-            `}
-          >
-            <span className="font-medium text-sm">
-              {expert.name}
-            </span>
-          </Button>
-        ))}
+    <div className="flex-1 p-6">
+      <div className="flex items-center gap-4 mb-8">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate('/expert-advisors')}
+          className="hover:bg-darkBlue/40"
+        >
+          <ArrowLeft className="h-5 w-5 text-mediumGray" />
+        </Button>
       </div>
 
       <AlertDialog>
