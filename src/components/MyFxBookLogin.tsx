@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +23,7 @@ interface MyFxBookResponse {
 }
 
 const MyFxBookLogin = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -177,6 +179,23 @@ const MyFxBookLogin = () => {
     }
   };
 
+  const handleAccountClick = (account: MyFxBookAccount) => {
+    navigate('/tradehub', { 
+      state: { 
+        selectedAccount: {
+          id: account.id,
+          name: account.name,
+          balance: account.balance,
+          equity: account.equity,
+          profit: account.profit,
+          gain: account.gain,
+          demo: account.demo,
+          currency: account.currency
+        }
+      }
+    });
+  };
+
   if (isLoggedIn) {
     return (
       <div className="space-y-6">
@@ -206,7 +225,11 @@ const MyFxBookLogin = () => {
                 </TableHeader>
                 <TableBody>
                   {accounts.map((account) => (
-                    <TableRow key={account.id}>
+                    <TableRow 
+                      key={account.id}
+                      onClick={() => handleAccountClick(account)}
+                      className="cursor-pointer hover:bg-muted/50"
+                    >
                       <TableCell>{account.name}</TableCell>
                       <TableCell>{account.balance.toFixed(2)} {account.currency}</TableCell>
                       <TableCell>{account.equity.toFixed(2)} {account.currency}</TableCell>
