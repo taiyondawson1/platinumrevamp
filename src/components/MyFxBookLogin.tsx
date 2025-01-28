@@ -246,12 +246,12 @@ const MyFxBookLogin = () => {
           </CardContent>
         </Card>
 
-        {watchedAccounts.length > 0 && (
-          <Card className="w-full max-w-4xl mx-auto">
-            <CardHeader>
-              <CardTitle>Watched Accounts</CardTitle>
-            </CardHeader>
-            <CardContent>
+        <Card className="w-full max-w-4xl mx-auto">
+          <CardHeader>
+            <CardTitle>Watched Accounts</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {watchedAccounts.length > 0 ? (
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -274,9 +274,11 @@ const MyFxBookLogin = () => {
                   ))}
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
-        )}
+            ) : (
+              <p className="text-center text-muted-foreground py-4">No watched accounts</p>
+            )}
+          </CardContent>
+        </Card>
       </div>
     );
   }
