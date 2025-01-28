@@ -10,6 +10,29 @@ const menuItems = [
   { label: "Courses", path: "/courses" },
 ];
 
+const toolItems = [
+  {
+    label: "Economic Calendar",
+    url: "https://tradingeconomics.com/calendar",
+  },
+  {
+    label: "Currency Correlations",
+    url: "https://www.myfxbook.com/forex-market/correlations",
+  },
+  {
+    label: "TradingView",
+    url: "https://www.tradingview.com",
+  },
+  {
+    label: "Watch Live News",
+    url: "https://www.youtube.com/live",
+  },
+  {
+    label: "Read News",
+    url: "https://www.forexfactory.com/news",
+  },
+];
+
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -34,6 +57,24 @@ const Sidebar = () => {
               </button>
             );
           })}
+        </div>
+
+        {/* Tools Section */}
+        <div className="mt-8 pt-8 border-t border-silver/20">
+          <h3 className="text-xs font-semibold text-softWhite mb-4 px-4">TOOLS</h3>
+          <div className="space-y-1">
+            {toolItems.map((tool) => (
+              <a
+                key={tool.label}
+                href={tool.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300"
+              >
+                {tool.label}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </div>
