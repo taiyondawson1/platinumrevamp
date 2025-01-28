@@ -66,6 +66,9 @@ const TradeHub = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  console.log("TradeHub - Selected Account:", selectedAccount);
+  console.log("TradeHub - Session:", localStorage.getItem("myfxbook_session"));
+
   useEffect(() => {
     const fetchData = async () => {
       if (!selectedAccount?.id) return;
