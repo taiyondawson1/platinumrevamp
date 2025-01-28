@@ -9,9 +9,9 @@ const TechnicalAnalysisWidget = () => {
     script.innerHTML = `
       {
         "interval": "1h",
-        "width": 425,
+        "width": "425",
         "isTransparent": true,
-        "height": 450,
+        "height": "450",
         "symbol": "OANDA:XAUUSD",
         "showIntervalTabs": true,
         "displayMode": "single",
