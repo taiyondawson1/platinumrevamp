@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
@@ -189,56 +189,9 @@ const TradeHub = () => {
                   </CardContent>
                 </Card>
               )}
-              <div className="grid grid-cols-2 gap-3">
-                {openTrades.map((order) => (
-                  <Card 
-                    key={order.id} 
-                    className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg"
-                  >
-                    <CardHeader>
-                      <CardTitle className="text-lg font-semibold">
-                        {order.symbol} - {order.action}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-mediumGray">Ticket:</span>
-                          <span>{order.ticket}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-mediumGray">Lots:</span>
-                          <span>{order.lots}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-mediumGray">Open Price:</span>
-                          <span>{order.openPrice}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-mediumGray">SL:</span>
-                          <span>{order.sl}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-mediumGray">TP:</span>
-                          <span>{order.tp}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-mediumGray">Profit:</span>
-                          <span className={order.profit >= 0 ? "text-green-500" : "text-red-500"}>
-                            {order.profit.toFixed(2)}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-mediumGray">Pips:</span>
-                          <span className={order.pips >= 0 ? "text-green-500" : "text-red-500"}>
-                            {order.pips.toFixed(1)}
-                          </span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+                <OpenOrdersTable orders={openTrades} />
+              </Card>
               <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                 <CardContent className="p-0">
                   <HistoryTable history={tradeHistory} />
