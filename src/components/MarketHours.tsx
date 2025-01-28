@@ -1,5 +1,12 @@
 import React, { useEffect, useRef } from "react";
 
+// Declare the global type
+declare global {
+  interface Window {
+    fxMarketHours: () => void;
+  }
+}
+
 const MarketHours = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
