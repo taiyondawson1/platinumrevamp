@@ -64,13 +64,13 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
   }, [accountId]);
 
   return (
-    <Card className="w-full mt-4">
+    <Card className="w-full mt-4 bg-darkBlue/40 border-mediumGray/20">
       <CardHeader>
         <CardTitle className="text-xl font-bold text-softWhite">Daily Gain</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="h-[300px] flex items-center justify-center">
+          <div className="h-[300px] flex items-center justify-center bg-darkBlue/40">
             <p className="text-softWhite">Loading data...</p>
           </div>
         ) : dailyGainData.length > 0 ? (
