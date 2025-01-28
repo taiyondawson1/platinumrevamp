@@ -39,16 +39,6 @@ const TechnicalAnalysisWidget = () => {
   return (
     <div className="tradingview-technical-widget -ml-5">
       <div className="tradingview-widget-container__widget"></div>
-      <div className="tradingview-widget-copyright">
-        <a 
-          href="https://www.tradingview.com/" 
-          rel="noopener nofollow" 
-          target="_blank"
-          className="text-accent-blue hover:underline"
-        >
-          Track all markets on TradingView
-        </a>
-      </div>
     </div>
   );
 };
