@@ -47,11 +47,20 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
         console.log("Daily Gain API Response:", data);
 
         if (!data.error && data.dailyGain) {
-          // Handle the nested array structure and parse dates correctly
-          const formattedData = data.dailyGain.flat().map((item: any) => ({
-            date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'yyyy-MM-dd'),
-            value: Number(item.value),
-          }));
+          const formattedData = data.dailyGain.flat().map((item: any) => {
+            try {
+              // Parse the date string from MM/dd/yyyy format
+              const parsedDate = parse(item.date, 'MM/dd/yyyy', new Date());
+              return {
+                date: format(parsedDate, 'yyyy-MM-dd'),
+                value: Number(item.value),
+              };
+            } catch (error) {
+              console.error("Error parsing date:", item.date, error);
+              return null;
+            }
+          }).filter((item): item is DailyGainData => item !== null);
+          
           setDailyGainData(formattedData);
         }
       } catch (error) {
@@ -81,12 +90,26 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="date"
-                  tickFormatter={(str) => format(new Date(str), 'MMM dd')}
+                  tickFormatter={(str) => {
+                    try {
+                      return format(new Date(str), 'MMM dd');
+                    } catch (error) {
+                      console.error("Error formatting tick:", str, error);
+                      return str;
+                    }
+                  }}
                   stroke="#fff"
                 />
                 <YAxis stroke="#fff" />
                 <Tooltip
-                  labelFormatter={(label) => format(new Date(label as string), 'MMM dd, yyyy')}
+                  labelFormatter={(label) => {
+                    try {
+                      return format(new Date(label as string), 'MMM dd, yyyy');
+                    } catch (error) {
+                      console.error("Error formatting tooltip label:", label, error);
+                      return label;
+                    }
+                  }}
                   formatter={(value: number) => [`${value.toFixed(2)}%`, 'Gain']}
                 />
                 <Line
