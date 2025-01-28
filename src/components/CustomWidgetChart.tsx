@@ -18,6 +18,8 @@ const CustomWidgetChart = ({
     return null;
   }
 
+  console.log("CustomWidgetChart: Rendering with", { accountId, session, width, height });
+
   const widgetUrl = `https://widgets.myfxbook.com/api/get-custom-widget.png?${new URLSearchParams({
     session: session,
     id: accountId,
@@ -38,18 +40,23 @@ const CustomWidgetChart = ({
   console.log("CustomWidgetChart: Generated widget URL", widgetUrl);
 
   return (
-    <Card className="w-full bg-black/40 p-4">
+    <Card className="w-full bg-black/40">
       <CardHeader>
         <CardTitle className="text-xl font-bold">Performance Widget</CardTitle>
       </CardHeader>
-      <CardContent className="flex justify-center items-center min-h-[300px]">
+      <CardContent className="flex justify-center items-center min-h-[300px] p-4">
         <img 
           src={widgetUrl} 
           alt="MyFxBook Custom Widget" 
           width={width} 
           height={height}
           className="rounded-lg max-w-full h-auto"
-          onError={(e) => console.error("Error loading widget image:", e)}
+          onError={(e) => {
+            console.error("Error loading widget image:", e);
+            const img = e.target as HTMLImageElement;
+            console.log("Failed URL:", img.src);
+          }}
+          onLoad={() => console.log("Widget image loaded successfully")}
         />
       </CardContent>
     </Card>
