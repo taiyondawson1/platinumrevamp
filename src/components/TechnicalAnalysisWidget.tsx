@@ -1,44 +1,43 @@
-import { useEffect } from "react";
-
-declare global {
-  interface Window {
-    TradingView?: any;
-  }
-}
+import { useEffect } from 'react';
 
 const TechnicalAnalysisWidget = () => {
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
-    script.type = "text/javascript";
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
+    script.type = 'text/javascript';
     script.async = true;
     script.innerHTML = `
       {
-        "interval": "1m",
-        "width": "100%",
+        "interval": "1h",
+        "width": "425",
         "isTransparent": true,
-        "height": "100%",
+        "height": "450",
         "symbol": "OANDA:XAUUSD",
         "showIntervalTabs": true,
+        "displayMode": "single",
         "locale": "en",
         "colorTheme": "dark"
       }
     `;
 
-    const widgetContainer = document.querySelector(".tradingview-widget-container__widget");
-    if (widgetContainer) {
-      widgetContainer.appendChild(script);
+    const container = document.querySelector('.tradingview-technical-widget');
+    if (container) {
+      const widget = document.createElement('div');
+      widget.className = 'tradingview-widget-container__widget';
+      container.appendChild(widget);
+      container.appendChild(script);
     }
 
     return () => {
-      if (widgetContainer && script) {
-        widgetContainer.removeChild(script);
+      const container = document.querySelector('.tradingview-technical-widget');
+      if (container) {
+        container.innerHTML = '';
       }
     };
   }, []);
 
   return (
-    <div className="tradingview-technical-widget min-w-[450px] h-[450px]">
+    <div className="tradingview-technical-widget">
       <div className="tradingview-widget-container__widget"></div>
     </div>
   );
