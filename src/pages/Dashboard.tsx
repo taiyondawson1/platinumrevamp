@@ -1,4 +1,3 @@
-import MyFxBookLogin from "@/components/MyFxBookLogin";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -42,7 +41,7 @@ const Dashboard = () => {
             <Button 
               variant="ghost" 
               className="group"
-              onClick={() => navigate('/trading')}
+              onClick={() => navigate('/connect-myfxbook')}
             >
               View Analytics
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -73,12 +72,6 @@ const Dashboard = () => {
             <PositionSizeCalculator />
           </div>
         </div>
-
-        {/* MyFxBook Login Section */}
-        <section>
-          <h2 className="text-2xl font-semibold text-softWhite mb-4">Connect Your Account</h2>
-          <MyFxBookLogin />
-        </section>
       </div>
     </main>
   );

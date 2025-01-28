@@ -12,6 +12,7 @@ import SetfilesPage from "@/pages/Setfiles";
 import TradingPage from "@/pages/Trading";
 import CoursesPage from "@/pages/Courses";
 import TradeHub from "@/pages/TradeHub";
+import MyFxBookLoginPage from "@/pages/MyFxBookLoginPage";
 import TradingViewTickerTape from "@/components/TradingViewTickerTape";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ function MainContent() {
             <Route path="/setfiles" element={<SetfilesPage />} />
             <Route path="/courses" element={<CoursesPage />} />
             <Route path="/tradehub" element={<TradeHub />} />
+            <Route path="/connect-myfxbook" element={<MyFxBookLoginPage />} />
           </Routes>
         </div>
       </main>
