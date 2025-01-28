@@ -1,8 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 const US30AnalysisWidget = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scriptRef = useRef<HTMLScriptElement | null>(null);
+  const widgetRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
+    if (!containerRef.current) return;
+
     const script = document.createElement('script');
+    scriptRef.current = script;
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
     script.type = 'text/javascript';
     script.async = true;
@@ -20,25 +27,32 @@ const US30AnalysisWidget = () => {
       }
     `;
 
-    const container = document.querySelector('.tradingview-us30-widget');
-    if (container) {
-      const widget = document.createElement('div');
-      widget.className = 'tradingview-widget-container__widget';
-      container.appendChild(widget);
-      container.appendChild(script);
-    }
+    const widget = document.createElement('div');
+    widgetRef.current = widget;
+    widget.className = 'tradingview-widget-container__widget';
+    containerRef.current.appendChild(widget);
+    containerRef.current.appendChild(script);
 
     return () => {
-      const container = document.querySelector('.tradingview-us30-widget');
-      if (container) {
-        container.innerHTML = '';
+      if (widgetRef.current && containerRef.current) {
+        try {
+          containerRef.current.removeChild(widgetRef.current);
+        } catch (e) {
+          console.log('Widget already removed');
+        }
+      }
+      if (scriptRef.current && containerRef.current) {
+        try {
+          containerRef.current.removeChild(scriptRef.current);
+        } catch (e) {
+          console.log('Script already removed');
+        }
       }
     };
   }, []);
 
   return (
-    <div className="tradingview-us30-widget">
-      <div className="tradingview-widget-container__widget"></div>
+    <div ref={containerRef} className="tradingview-us30-widget min-w-[425px] min-h-[450px]">
     </div>
   );
 };
