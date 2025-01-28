@@ -138,8 +138,8 @@ const TradeHub = () => {
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6 ml-[64px] mx-[25%] flex flex-col items-center">
-      <div className="flex items-center justify-between w-full">
-        <h2 className="text-3xl font-bold tracking-tight text-white">
+      <div className="flex items-center justify-center w-full">
+        <h2 className="text-3xl font-bold tracking-tight text-white text-center">
           TradeHub {selectedAccount ? `- ${selectedAccount.name}` : ""}
         </h2>
       </div>
