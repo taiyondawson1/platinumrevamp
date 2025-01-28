@@ -30,93 +30,93 @@ const PositionSizeCalculator = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-4 bg-darkBase/40 h-full overflow-auto">
-      <h3 className="text-lg font-semibold text-softWhite mb-2">Position Size Calculator</h3>
+    <div className="flex flex-col gap-2 p-3 bg-darkBase/40 h-full">
+      <h3 className="text-xs font-semibold text-softWhite mb-1">Position Size Calculator</h3>
       
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm text-mediumGray">Instrument</label>
+      <div className="space-y-2">
+        <div className="space-y-1">
+          <label className="text-[10px] text-mediumGray">Instrument</label>
           <Select value={instrument} onValueChange={setInstrument}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full h-7 text-[10px]">
               <SelectValue placeholder="Select instrument" />
             </SelectTrigger>
             <SelectContent>
               {instruments.map((inst) => (
-                <SelectItem key={inst} value={inst}>{inst}</SelectItem>
+                <SelectItem key={inst} value={inst} className="text-[10px]">{inst}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm text-mediumGray">Deposit Currency</label>
+        <div className="space-y-1">
+          <label className="text-[10px] text-mediumGray">Deposit Currency</label>
           <Select value={depositCurrency} onValueChange={setDepositCurrency}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full h-7 text-[10px]">
               <SelectValue placeholder="Select currency" />
             </SelectTrigger>
             <SelectContent>
               {currencies.map((curr) => (
-                <SelectItem key={curr} value={curr}>{curr}</SelectItem>
+                <SelectItem key={curr} value={curr} className="text-[10px]">{curr}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm text-mediumGray">Account Balance</label>
+        <div className="space-y-1">
+          <label className="text-[10px] text-mediumGray">Account Balance</label>
           <Input
             type="number"
             value={balance}
             onChange={(e) => setBalance(e.target.value)}
-            className="bg-darkGrey text-softWhite"
+            className="bg-darkGrey text-softWhite h-7 text-[10px]"
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm text-mediumGray">Stop Loss (pips)</label>
+        <div className="space-y-1">
+          <label className="text-[10px] text-mediumGray">Stop Loss (pips)</label>
           <Input
             type="number"
             value={stopLoss}
             onChange={(e) => setStopLoss(e.target.value)}
-            className="bg-darkGrey text-softWhite"
+            className="bg-darkGrey text-softWhite h-7 text-[10px]"
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm text-mediumGray">Pip Size</label>
+        <div className="space-y-1">
+          <label className="text-[10px] text-mediumGray">Pip Size</label>
           <Input
             type="number"
             value={pipSize}
             onChange={(e) => setPipSize(e.target.value)}
-            className="bg-darkGrey text-softWhite"
+            className="bg-darkGrey text-softWhite h-7 text-[10px]"
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm text-mediumGray">Risk (%)</label>
+        <div className="space-y-1">
+          <label className="text-[10px] text-mediumGray">Risk (%)</label>
           <Input
             type="number"
             value={riskPercentage}
             onChange={(e) => setRiskPercentage(e.target.value)}
-            className="bg-darkGrey text-softWhite"
+            className="bg-darkGrey text-softWhite h-7 text-[10px]"
           />
         </div>
 
         <Button 
           onClick={calculatePositionSize}
-          className="w-full bg-accent-blue hover:bg-accent-blue/90"
+          className="w-full bg-accent-blue hover:bg-accent-blue/90 h-7 text-[10px]"
         >
           Calculate
         </Button>
 
-        <div className="mt-4 p-4 border border-silver/20 space-y-2">
+        <div className="mt-2 p-2 border border-silver/20 space-y-1">
           <div>
-            <label className="text-sm text-mediumGray">Lot Size:</label>
-            <p className="text-lg font-semibold text-softWhite">{lotSize}</p>
+            <label className="text-[10px] text-mediumGray">Lot Size:</label>
+            <p className="text-xs font-semibold text-softWhite">{lotSize}</p>
           </div>
           <div>
-            <label className="text-sm text-mediumGray">Money at Risk:</label>
-            <p className="text-lg font-semibold text-softWhite">${moneyAtRisk}</p>
+            <label className="text-[10px] text-mediumGray">Money at Risk:</label>
+            <p className="text-xs font-semibold text-softWhite">${moneyAtRisk}</p>
           </div>
         </div>
       </div>
