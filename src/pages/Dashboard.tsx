@@ -14,7 +14,7 @@ const Dashboard = () => {
       <div className="flex flex-col gap-8">
         {/* World Clocks Section */}
         <div className="flex flex-col lg:flex-row gap-8">
-          <section className="mb-8 border border-silver/20 p-8 lg:flex-1">
+          <section className="mb-8 border border-silver/20 lg:flex-1">
             <WorldClocks />
           </section>
           
