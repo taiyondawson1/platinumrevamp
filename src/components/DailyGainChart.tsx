@@ -100,7 +100,7 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
             </ResponsiveContainer>
           </div>
         ) : (
-          <div className="h-[300px] flex items-center justify-center">
+          <div className="h-[300px] flex items-center justify-center bg-darkBlue/40">
             <p className="text-softWhite">No daily gain data available</p>
           </div>
         )}
