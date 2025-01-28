@@ -27,8 +27,8 @@ function MainContent() {
       {!isHomePage && <Sidebar />}
       {!isHomePage && !isSetfilesPage && <TradingViewTickerTape />}
       {!isHomePage && !isSetfilesPage && <Separator className="fixed left-0 right-0 top-[290px] z-50 bg-silver/20" />}
-      <main className={`flex-1 ${!isHomePage ? "ml-[270px] mt-[300px]" : ""} relative`}>
-        <div className="absolute inset-0 overflow-auto">
+      <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mt-[300px]" : isSetfilesPage ? "ml-[270px]" : ""} relative`}>
+        <div className={`${isSetfilesPage ? "" : "absolute inset-0"} overflow-auto`}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
