@@ -139,7 +139,7 @@ const TradeHub = () => {
 
   return (
     <>
-      <div className="fixed left-4 top-[520px] w-[250px]">
+      <div className="fixed right-4 top-[320px] w-[250px]">
         <TechnicalAnalysisWidget />
       </div>
       <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[304px] mx-[25%] flex flex-col items-center">
