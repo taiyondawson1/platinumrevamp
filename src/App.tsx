@@ -11,6 +11,7 @@ import SetfilesPage from "@/pages/Setfiles";
 import TradingPage from "@/pages/Trading";
 import CoursesPage from "@/pages/Courses";
 import TradeHub from "@/pages/TradeHub";
+import TradingViewTickerTape from "@/components/TradingViewTickerTape";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ function App() {
         <BrowserRouter>
           <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
             <Sidebar />
+            <TradingViewTickerTape />
             <main className="flex-1 ml-[270px] mt-[40px]">
               <Routes>
                 <Route path="/" element={<Home />} />
