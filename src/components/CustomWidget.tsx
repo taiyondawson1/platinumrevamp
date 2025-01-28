@@ -26,6 +26,13 @@ const CustomWidget = ({ session, accountId, width = 300, height = 200 }: CustomW
         onError={(e) => {
           console.error("Failed to load widget image");
           e.currentTarget.style.display = 'none';
+          const parent = e.currentTarget.parentElement;
+          if (parent) {
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'absolute inset-0 flex items-center justify-center text-white text-center p-4';
+            errorMessage.innerHTML = 'Widget loading blocked. Please disable your ad blocker or check security settings to view the widget.';
+            parent.appendChild(errorMessage);
+          }
         }}
       />
     </div>
