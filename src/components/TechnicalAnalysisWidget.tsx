@@ -37,7 +37,7 @@ const TechnicalAnalysisWidget = () => {
   }, []);
 
   return (
-    <div className="tradingview-technical-widget -ml-[600px]">
+    <div className="tradingview-technical-widget">
       <div className="tradingview-widget-container__widget"></div>
     </div>
   );
