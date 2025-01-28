@@ -7,6 +7,7 @@ import TotalGainCard from "@/components/TotalGainCard";
 import CustomWidget from "@/components/CustomWidget";
 import GainWidget from "@/components/GainWidget";
 import CommunityOutlookWidget from "@/components/CommunityOutlookWidget";
+import DailyDataWidget from "@/components/DailyDataWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -162,16 +163,10 @@ const TradeHub = () => {
               <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                 <Tabs defaultValue="daily" className="w-full">
                   <TabsList className="ml-4 mt-3 bg-darkBlue/60">
-                    <TabsTrigger 
-                      value="daily" 
-                      className="text-softWhite data-[state=active]:bg-darkBlue/80"
-                    >
+                    <TabsTrigger value="daily" className="text-softWhite data-[state=active]:bg-darkBlue/80">
                       Daily Gain
                     </TabsTrigger>
-                    <TabsTrigger 
-                      value="total" 
-                      className="text-softWhite data-[state=active]:bg-darkBlue/80"
-                    >
+                    <TabsTrigger value="total" className="text-softWhite data-[state=active]:bg-darkBlue/80">
                       Total Gain
                     </TabsTrigger>
                   </TabsList>
@@ -189,6 +184,7 @@ const TradeHub = () => {
                 </Tabs>
               </Card>
               <CommunityOutlookWidget />
+              <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
               <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                 <CardContent className="p-0">
                   <OpenOrdersTable orders={openTrades} />
