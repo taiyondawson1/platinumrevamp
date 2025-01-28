@@ -14,6 +14,7 @@ const CustomWidgetChart = ({
   const session = localStorage.getItem("myfxbook_session");
 
   if (!accountId || !session) {
+    console.log("CustomWidgetChart: Missing accountId or session", { accountId, session });
     return null;
   }
 
@@ -34,18 +35,21 @@ const CustomWidgetChart = ({
     chartbgc: "474747"
   }).toString()}`;
 
+  console.log("CustomWidgetChart: Generated widget URL", widgetUrl);
+
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-black/40 p-4">
       <CardHeader>
         <CardTitle className="text-xl font-bold">Performance Widget</CardTitle>
       </CardHeader>
-      <CardContent className="flex justify-center">
+      <CardContent className="flex justify-center items-center min-h-[300px]">
         <img 
           src={widgetUrl} 
           alt="MyFxBook Custom Widget" 
           width={width} 
           height={height}
-          className="rounded-lg"
+          className="rounded-lg max-w-full h-auto"
+          onError={(e) => console.error("Error loading widget image:", e)}
         />
       </CardContent>
     </Card>
