@@ -8,6 +8,7 @@ import CustomWidget from "@/components/CustomWidget";
 import GainWidget from "@/components/GainWidget";
 import CommunityOutlookWidget from "@/components/CommunityOutlookWidget";
 import DailyDataWidget from "@/components/DailyDataWidget";
+import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -157,29 +158,32 @@ const TradeHub = () => {
               <TotalGainCard accountId={selectedAccount?.id?.toString()} />
               <GainWidget accountId={selectedAccount?.id?.toString()} />
             </div>
-            <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-              <Tabs defaultValue="daily" className="w-full">
-                <TabsList className="ml-4 mt-3 bg-darkBlue/60">
-                  <TabsTrigger value="daily" className="text-softWhite data-[state=active]:bg-darkBlue/80">
-                    Daily Gain
-                  </TabsTrigger>
-                  <TabsTrigger value="total" className="text-softWhite data-[state=active]:bg-darkBlue/80">
-                    Total Gain
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent value="daily">
-                  <DailyGainChart accountId={selectedAccount?.id?.toString()} />
-                </TabsContent>
-                <TabsContent value="total">
-                  <CustomWidget 
-                    session={localStorage.getItem("myfxbook_session") || ""}
-                    accountId={selectedAccount?.id?.toString()}
-                    width={600}
-                    height={300}
-                  />
-                </TabsContent>
-              </Tabs>
-            </Card>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+                <Tabs defaultValue="daily" className="w-full">
+                  <TabsList className="ml-4 mt-3 bg-darkBlue/60">
+                    <TabsTrigger value="daily" className="text-softWhite data-[state=active]:bg-darkBlue/80">
+                      Daily Gain
+                    </TabsTrigger>
+                    <TabsTrigger value="total" className="text-softWhite data-[state=active]:bg-darkBlue/80">
+                      Total Gain
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="daily">
+                    <DailyGainChart accountId={selectedAccount?.id?.toString()} />
+                  </TabsContent>
+                  <TabsContent value="total">
+                    <CustomWidget 
+                      session={localStorage.getItem("myfxbook_session") || ""}
+                      accountId={selectedAccount?.id?.toString()}
+                      width={600}
+                      height={300}
+                    />
+                  </TabsContent>
+                </Tabs>
+              </Card>
+              <TechnicalAnalysisWidget />
+            </div>
             <CommunityOutlookWidget />
             <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
             <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">

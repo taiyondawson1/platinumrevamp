@@ -1,53 +1,53 @@
-import { useEffect, useRef } from "react";
-
-declare global {
-  interface Window {
-    TradingView: any;
-  }
-}
+import { useEffect } from 'react';
 
 const TechnicalAnalysisWidget = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js";
+    const script = document.createElement('script');
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
+    script.type = 'text/javascript';
     script.async = true;
-    script.innerHTML = JSON.stringify({
-      "interval": "15m",
-      "width": 350,
-      "isTransparent": false,
-      "height": 400,
-      "symbol": "FX:XAUUSD",
-      "showIntervalTabs": true,
-      "displayMode": "single",
-      "locale": "en",
-      "colorTheme": "dark"
-    });
+    script.innerHTML = `
+      {
+        "interval": "1h",
+        "width": 425,
+        "isTransparent": true,
+        "height": 450,
+        "symbol": "OANDA:XAUUSD",
+        "showIntervalTabs": true,
+        "displayMode": "single",
+        "locale": "en",
+        "colorTheme": "light"
+      }
+    `;
 
-    if (containerRef.current) {
-      containerRef.current.appendChild(script);
+    const container = document.querySelector('.tradingview-technical-widget');
+    if (container) {
+      const widget = document.createElement('div');
+      widget.className = 'tradingview-widget-container__widget';
+      container.appendChild(widget);
+      container.appendChild(script);
     }
 
     return () => {
-      if (containerRef.current) {
-        const scriptElement = containerRef.current.querySelector("script");
-        if (scriptElement) {
-          scriptElement.remove();
-        }
+      const container = document.querySelector('.tradingview-technical-widget');
+      if (container) {
+        container.innerHTML = '';
       }
     };
   }, []);
 
-  console.log("Technical Analysis widget container rendered");
-
   return (
-    <div className="chart-container h-[400px] w-[350px]">
-      <div 
-        ref={containerRef}
-        className="tradingview-widget-container"
-      >
-        <div className="tradingview-widget-container__widget"></div>
+    <div className="tradingview-widget-container tradingview-technical-widget tradehub-card">
+      <div className="tradingview-widget-container__widget"></div>
+      <div className="tradingview-widget-copyright">
+        <a 
+          href="https://www.tradingview.com/" 
+          rel="noopener nofollow" 
+          target="_blank"
+          className="text-accent-blue hover:underline"
+        >
+          Track all markets on TradingView
+        </a>
       </div>
     </div>
   );
