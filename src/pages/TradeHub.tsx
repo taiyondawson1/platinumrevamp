@@ -4,6 +4,7 @@ import OpenOrdersTable from "@/components/OpenOrdersTable";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
 import TotalGainCard from "@/components/TotalGainCard";
+import CustomWidget from "@/components/CustomWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -149,7 +150,6 @@ const TradeHub = () => {
         ) : (
           <>
             <div className="flex gap-4 h-full">
-              {/* Left side - Charts */}
               <div className="flex-[3] space-y-4">
                 <Card className="w-full">
                   <Tabs defaultValue="daily" className="w-full">
@@ -165,10 +165,17 @@ const TradeHub = () => {
                     </TabsContent>
                   </Tabs>
                 </Card>
+                {selectedAccount?.id && (
+                  <CustomWidget 
+                    session={localStorage.getItem("myfxbook_session") || ""}
+                    accountId={selectedAccount.id.toString()}
+                    width={600}
+                    height={300}
+                  />
+                )}
                 <OpenOrdersTable orders={openTrades} />
               </div>
               
-              {/* Right side - Trade History */}
               <div className="flex-1 h-full">
                 <Card className="h-full">
                   <HistoryTable history={tradeHistory} />
