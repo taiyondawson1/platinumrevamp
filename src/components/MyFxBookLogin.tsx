@@ -27,11 +27,51 @@ const MyFxBookLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("myfxbook_session"));
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [accounts, setAccounts] = useState<MyFxBookAccount[]>([]);
   const [watchedAccounts, setWatchedAccounts] = useState<MyFxBookWatchedAccount[]>([]);
   const [showMaxAttemptsDialog, setShowMaxAttemptsDialog] = useState(false);
   const { toast } = useToast();
+
+  // Check session on mount
+  useEffect(() => {
+    const checkSession = async () => {
+      const session = localStorage.getItem("myfxbook_session");
+      if (!session) {
+        setIsLoggedIn(false);
+        return;
+      }
+
+      // Verify the session is still valid by trying to fetch accounts
+      try {
+        const response = await fetch(
+          `https://www.myfxbook.com/api/get-my-accounts.json?session=${encodeURIComponent(session)}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Session expired");
+        }
+
+        const data: MyFxBookAccountsResponse = await response.json();
+        
+        if (!data.error) {
+          setIsLoggedIn(true);
+          setAccounts(data.accounts);
+          fetchWatchedAccounts(); // Fetch watched accounts if session is valid
+        } else {
+          // If session is invalid, clear it
+          localStorage.removeItem("myfxbook_session");
+          setIsLoggedIn(false);
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
+        localStorage.removeItem("myfxbook_session");
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkSession();
+  }, []);
 
   const fetchAccounts = async () => {
     const session = localStorage.getItem("myfxbook_session");
@@ -116,12 +156,14 @@ const MyFxBookLogin = () => {
       const data: MyFxBookResponse = await response.json();
 
       if (!data.error && data.session) {
+        localStorage.setItem("myfxbook_session", data.session);
+        setIsLoggedIn(true);
         toast({
           title: "Success",
           description: "Successfully logged in to MyFxBook",
         });
-        localStorage.setItem("myfxbook_session", data.session);
-        setIsLoggedIn(true);
+        fetchAccounts();
+        fetchWatchedAccounts();
       } else {
         if (data.message.toLowerCase().includes("max login attempts reached")) {
           setShowMaxAttemptsDialog(true);
@@ -157,14 +199,14 @@ const MyFxBookLogin = () => {
       const data: MyFxBookResponse = await response.json();
 
       if (!data.error) {
-        toast({
-          title: "Success",
-          description: data.message || "Successfully logged out",
-        });
         localStorage.removeItem("myfxbook_session");
         setIsLoggedIn(false);
         setAccounts([]);
         setWatchedAccounts([]);
+        toast({
+          title: "Success",
+          description: data.message || "Successfully logged out",
+        });
       } else {
         throw new Error(data.message || "Failed to logout");
       }
