@@ -9,7 +9,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="flex-1 p-6 max-w-[1400px] mx-auto">
+    <main className="flex-1 p-6 max-w-[1400px] mx-auto mt-[200px]">
       <div className="flex flex-col gap-8">
         <TradingViewTickerTape />
         
