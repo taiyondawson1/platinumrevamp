@@ -35,7 +35,7 @@ const CustomWidgetChart = ({
   console.log("CustomWidgetChart: Generated widget URL", widgetUrl);
 
   return (
-    <Card className="w-full bg-black/40">
+    <Card className="w-full bg-transparent">
       <CardHeader>
         <CardTitle className="text-xl font-bold">Performance Widget</CardTitle>
       </CardHeader>
