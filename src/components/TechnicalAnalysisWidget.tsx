@@ -1,11 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-declare global {
-  interface Window {
-    TradingView?: any;
-  }
-}
-
+// Remove duplicate declaration since it's already in TradingChart.tsx
 const TechnicalAnalysisWidget = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const scriptRef = useRef<HTMLScriptElement | null>(null);
@@ -14,6 +9,13 @@ const TechnicalAnalysisWidget = () => {
   useEffect(() => {
     if (!containerRef.current) return;
 
+    // Create widget container first
+    const widget = document.createElement('div');
+    widgetRef.current = widget;
+    widget.className = 'tradingview-widget-container__widget';
+    containerRef.current.appendChild(widget);
+
+    // Then create and add script
     const script = document.createElement('script');
     scriptRef.current = script;
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js';
@@ -32,27 +34,12 @@ const TechnicalAnalysisWidget = () => {
         "colorTheme": "dark"
       }
     `;
-
-    const widget = document.createElement('div');
-    widgetRef.current = widget;
-    widget.className = 'tradingview-widget-container__widget';
-    containerRef.current.appendChild(widget);
     containerRef.current.appendChild(script);
 
     return () => {
-      if (widgetRef.current && containerRef.current) {
-        try {
-          containerRef.current.removeChild(widgetRef.current);
-        } catch (e) {
-          console.log('Widget already removed');
-        }
-      }
-      if (scriptRef.current && containerRef.current) {
-        try {
-          containerRef.current.removeChild(scriptRef.current);
-        } catch (e) {
-          console.log('Script already removed');
-        }
+      if (containerRef.current) {
+        // Clear the container instead of trying to remove individual nodes
+        containerRef.current.innerHTML = '';
       }
     };
   }, []);

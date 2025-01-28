@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 declare global {
   interface Window {
-    TradingView: any;
+    TradingView: any;  // Changed from TradingView? to TradingView to match the pattern
   }
 }
 
