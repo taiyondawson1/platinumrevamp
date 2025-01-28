@@ -1,5 +1,3 @@
-import MyFxBookLogin from "@/components/MyFxBookLogin";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -8,66 +6,59 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="flex-1 p-6 max-w-[1400px] mx-auto">
-      <div className="flex flex-col gap-8">
-        {/* Welcome Section */}
-        <section className="space-y-4">
-          <h1 className="text-4xl font-bold text-softWhite">Welcome to TradeHub</h1>
-          <p className="text-mediumGray text-lg max-w-2xl">
-            Your all-in-one platform for trading analysis, expert advisors, and market insights.
-            Connect your MyFxBook account to get started.
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+      <div className="max-w-4xl mx-auto space-y-12">
+        {/* Hero Section */}
+        <section className="space-y-6">
+          <h1 className="text-6xl font-bold text-softWhite leading-tight">
+            Transform Your Trading with <span className="text-primary">TradeHub</span>
+          </h1>
+          <p className="text-xl text-mediumGray max-w-2xl mx-auto">
+            Advanced trading analytics, expert advisors, and comprehensive market insights
+            all in one powerful platform.
           </p>
-        </section>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="tradehub-card p-6 space-y-4">
-            <h3 className="text-xl font-semibold text-softWhite">Expert Advisors</h3>
-            <p className="text-mediumGray">Access and manage your automated trading strategies.</p>
+          <div className="flex gap-4 justify-center">
             <Button 
-              variant="ghost" 
+              size="lg"
+              onClick={() => navigate('/dashboard')}
               className="group"
-              onClick={() => navigate('/expert-advisors')}
             >
-              Explore EAs
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              Get Started
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-          </Card>
-
-          <Card className="tradehub-card p-6 space-y-4">
-            <h3 className="text-xl font-semibold text-softWhite">Trading Analysis</h3>
-            <p className="text-mediumGray">View detailed analytics and performance metrics.</p>
             <Button 
-              variant="ghost" 
-              className="group"
-              onClick={() => navigate('/trading')}
-            >
-              View Analytics
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Card>
-
-          <Card className="tradehub-card p-6 space-y-4">
-            <h3 className="text-xl font-semibold text-softWhite">Learning Resources</h3>
-            <p className="text-mediumGray">Access educational content and trading courses.</p>
-            <Button 
-              variant="ghost" 
-              className="group"
+              size="lg"
+              variant="outline"
               onClick={() => navigate('/courses')}
             >
-              Start Learning
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              Learn More
             </Button>
-          </Card>
-        </div>
-
-        {/* MyFxBook Login Section */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold text-softWhite">Connect Your Account</h2>
-          <MyFxBookLogin />
+          </div>
         </section>
+
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+          <div className="space-y-3">
+            <h3 className="text-xl font-semibold text-softWhite">Real-Time Analytics</h3>
+            <p className="text-mediumGray">
+              Track your trading performance with advanced metrics and insights.
+            </p>
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-xl font-semibold text-softWhite">Expert Advisors</h3>
+            <p className="text-mediumGray">
+              Automate your trading strategies with powerful expert advisors.
+            </p>
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-xl font-semibold text-softWhite">Market Education</h3>
+            <p className="text-mediumGray">
+              Access comprehensive trading courses and resources.
+            </p>
+          </div>
+        </div>
       </div>
-    </main>
+    </div>
   );
 };
 

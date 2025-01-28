@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Sidebar from "@/components/Sidebar";
 import Home from "@/pages/Home";
+import Dashboard from "@/pages/Dashboard";
 import ExpertAdvisorsPage from "@/pages/ExpertAdvisors";
 import SetfilesPage from "@/pages/Setfiles";
 import TradingPage from "@/pages/Trading";
@@ -25,6 +26,7 @@ function App() {
             <main className="flex-1 ml-[270px] mt-[300px]">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/trading" element={<TradingPage />} />
                 <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
                 <Route path="/setfiles" element={<SetfilesPage />} />
