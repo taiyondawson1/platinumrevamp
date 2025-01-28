@@ -7,6 +7,7 @@ import TotalGainCard from "@/components/TotalGainCard";
 import CustomWidgetChart from "@/components/CustomWidgetChart";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface OpenTrade {
   id: number;
@@ -148,9 +149,21 @@ const TradeHub = () => {
           </Card>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <DailyGainChart accountId={selectedAccount?.id?.toString()} />
-              <TotalGainCard accountId={selectedAccount?.id?.toString()} />
+            <div className="grid grid-cols-1 gap-4">
+              <Card className="w-full">
+                <Tabs defaultValue="daily" className="w-full">
+                  <TabsList className="ml-4 mt-4">
+                    <TabsTrigger value="daily">Daily Gain</TabsTrigger>
+                    <TabsTrigger value="total">Total Gain</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="daily">
+                    <DailyGainChart accountId={selectedAccount?.id?.toString()} />
+                  </TabsContent>
+                  <TabsContent value="total">
+                    <TotalGainCard accountId={selectedAccount?.id?.toString()} />
+                  </TabsContent>
+                </Tabs>
+              </Card>
             </div>
             {selectedAccount?.id && (
               <CustomWidgetChart 
