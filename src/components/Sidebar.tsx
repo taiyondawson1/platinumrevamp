@@ -1,50 +1,41 @@
-import { Home, Bot, Files, BookOpen, LayoutDashboard } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+const menuItems = [
+  { label: "Dashboard", path: "/" },
+  { label: "TradeHub", path: "/tradehub" },
+  { label: "Expert Advisors", path: "/expert-advisors" },
+  { label: "Setfiles", path: "/setfiles" },
+  { label: "Courses", path: "/courses" },
+];
 
 const Sidebar = () => {
+  const location = useLocation();
   const navigate = useNavigate();
-  
-  const navItems = [
-    { icon: Home, label: "Dashboard", path: "/" },
-    { icon: LayoutDashboard, label: "TradeHub", path: "/tradehub" },
-    { icon: Bot, label: "Expert Advisors", path: "/expert-advisors" },
-    { icon: Files, label: "Setfiles", path: "/setfiles" },
-    { icon: BookOpen, label: "Courses", path: "/courses" },
-  ];
 
   return (
-    <Card className="fixed left-4 top-4 w-[250px] bg-darkBlue/40 backdrop-blur-sm border-mediumGray/20">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold text-softWhite">Contents</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-2">
-        {navItems.map((item) => {
-          const isActive = window.location.pathname === item.path;
-          return (
-            <button
-              key={item.label}
-              onClick={() => navigate(item.path)}
-              className={cn(
-                "w-full flex items-center gap-3 px-4 py-2 rounded-md transition-all duration-300 text-xs",
-                "hover:bg-highlightGray/5 text-left",
-                isActive ? "text-softWhite bg-highlightGray/10" : "text-mediumGray"
-              )}
-            >
-              <item.icon 
-                size={18} 
+    <div className="fixed left-4 mt-[300px]">
+      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px]">
+        <div className="space-y-1">
+          {menuItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <button
+                key={item.label}
+                onClick={() => navigate(item.path)}
                 className={cn(
-                  "transition-all duration-300",
-                  isActive ? "text-softWhite" : "text-mediumGray"
+                  "w-full flex items-center gap-3 px-4 py-2 rounded-md transition-all duration-300 text-xs",
+                  "hover:bg-highlightGray/5 text-left",
+                  isActive ? "text-softWhite bg-highlightGray/10" : "text-mediumGray"
                 )}
-              />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </CardContent>
-    </Card>
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 };
 
