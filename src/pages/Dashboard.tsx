@@ -12,13 +12,16 @@ const Dashboard = () => {
   return (
     <main className="flex-1 p-6 max-w-[1400px] mx-auto overflow-hidden">
       <div className="flex flex-col gap-8">
-        {/* World Clocks and Calculator Section */}
-        <section className="mb-8 border border-silver/20 p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* World Clocks Section */}
+        <div className="flex flex-col lg:flex-row gap-8">
+          <section className="mb-8 border border-silver/20 p-8 lg:flex-1">
             <WorldClocks />
+          </section>
+          
+          <div className="lg:w-[400px]">
             <CompoundCalculator />
           </div>
-        </section>
+        </div>
 
         {/* Welcome Section */}
         <section className="space-y-4">
