@@ -8,7 +8,7 @@ const DailyHabits = () => {
   const [activeTab, setActiveTab] = useState('today');
 
   return (
-    <div className="chart-container p-6">
+    <div className="border border-silver/20 p-6">
       <div className="flex flex-col gap-4">
         <div className="flex justify-between items-center">
           <Button variant="outline" className="bg-accent-blue/10 hover:bg-accent-blue/20 text-softWhite">
