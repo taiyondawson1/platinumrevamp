@@ -153,8 +153,10 @@ const TradeHub = () => {
             <div className="space-y-3 w-full">
               <div className="flex gap-3 justify-center flex-wrap">
                 <TechnicalAnalysisWidget />
-                <US30AnalysisWidget />
-                <BitcoinAnalysisWidget />
+                <div className="flex gap-3">
+                  <US30AnalysisWidget />
+                  <BitcoinAnalysisWidget />
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <TotalGainCard accountId={selectedAccount?.id?.toString()} />
