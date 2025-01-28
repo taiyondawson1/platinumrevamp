@@ -33,8 +33,22 @@ export interface MyFxBookAccount {
   server: MyFxBookServer;
 }
 
+export interface MyFxBookWatchedAccount {
+  name: string;
+  gain: number;
+  drawdown: number;
+  demo: boolean;
+  change: number;
+}
+
 export interface MyFxBookAccountsResponse {
   error: boolean;
   message: string;
   accounts: MyFxBookAccount[];
+}
+
+export interface MyFxBookWatchedAccountsResponse {
+  error: boolean;
+  message: string;
+  accounts: MyFxBookWatchedAccount[];
 }
