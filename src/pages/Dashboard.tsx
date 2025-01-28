@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import WorldClocks from "@/components/WorldClocks";
 import PositionSizeCalculator from "@/components/PositionSizeCalculator";
 import DailyHabits from "@/components/DailyHabits";
-import ToolsBox from "@/components/ToolsBox";
+import ToolsBar from "@/components/ToolsBar";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -21,6 +21,9 @@ const Dashboard = () => {
             Connect your MyFxBook account to get started.
           </p>
         </section>
+
+        {/* Tools Bar */}
+        <ToolsBar />
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -63,9 +66,6 @@ const Dashboard = () => {
             </Button>
           </Card>
         </div>
-
-        {/* Tools Box */}
-        <ToolsBox />
 
         {/* World Clocks and Position Size Calculator Section */}
         <div className="flex flex-col lg:flex-row h-[340px]">
