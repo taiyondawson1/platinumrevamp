@@ -16,7 +16,7 @@ const TechnicalAnalysisWidget = () => {
         "showIntervalTabs": true,
         "displayMode": "single",
         "locale": "en",
-        "colorTheme": "light"
+        "colorTheme": "dark"
       }
     `;
 
