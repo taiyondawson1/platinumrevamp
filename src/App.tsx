@@ -22,10 +22,10 @@ function MainContent() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
-      <Sidebar />
+      {!isHomePage && <Sidebar />}
       {!isHomePage && <TradingViewTickerTape />}
       {!isHomePage && <Separator className="fixed left-0 right-0 top-[290px] z-50 bg-silver/20" />}
-      <main className={`flex-1 ${!isHomePage ? "ml-[270px] mt-[300px]" : "ml-[270px]"} relative`}>
+      <main className={`flex-1 ${!isHomePage ? "ml-[270px] mt-[300px]" : ""} relative`}>
         <div className="absolute inset-0 overflow-auto">
           <Routes>
             <Route path="/" element={<Home />} />
