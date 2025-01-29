@@ -56,6 +56,17 @@ const TradingViewTickerTape = () => {
       <div className="max-w-[1900px] mx-auto pr-[44px] relative">
         <div className="absolute left-[44px] -top-[90px]">
           <h1 className="text-[40px] font-bold text-softWhite">PlatinumAI</h1>
+          <div className="text-sm text-silver mt-2 space-x-4">
+            <span className="underline hover:text-softWhite transition-colors cursor-pointer">TradeHub</span>
+            <span className="text-silver">•</span>
+            <span className="underline hover:text-softWhite transition-colors cursor-pointer">Expert Advisors</span>
+            <span className="text-silver">•</span>
+            <span className="underline hover:text-softWhite transition-colors cursor-pointer">Account Overview</span>
+            <span className="text-silver">•</span>
+            <span className="underline hover:text-softWhite transition-colors cursor-pointer">Habits</span>
+            <span className="text-silver">•</span>
+            <span className="underline hover:text-softWhite transition-colors cursor-pointer">Strategies</span>
+          </div>
         </div>
         <div className="tradingview-widget-container ml-[44px]">
           <div className="tradingview-widget-container__widget"></div>
