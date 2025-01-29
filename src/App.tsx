@@ -36,12 +36,9 @@ function MainContent() {
             </div>
           )}
           {!isHomePage && !isSetfilesPage && (
-            <>
-              <div className="fixed right-[44px] top-[180px] z-[50] h-[1px] w-[44px] bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey" />
-              <Separator 
-                className="fixed left-[44px] right-[44px] top-[180px] z-[50] h-[1px] bg-silver/20" 
-              />
-            </>
+            <div className="fixed max-w-[1900px] mx-auto left-[270px] right-0 top-[180px] z-[50] px-[44px]">
+              <Separator className="h-[1px] bg-silver/20" />
+            </div>
           )}
           <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-0 mt-[200px]" : ""}`}>
             <div className="overflow-auto">
