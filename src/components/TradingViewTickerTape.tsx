@@ -53,9 +53,11 @@ const TradingViewTickerTape = () => {
 
   return (
     <div className="fixed left-0 right-0 top-[135px] z-50">
-      <div className="tradingview-widget-container">
-        <div className="tradingview-widget-container__widget"></div>
-        <div ref={containerRef}></div>
+      <div className="max-w-[1400px] mx-auto px-4">
+        <div className="tradingview-widget-container ml-[270px]">
+          <div className="tradingview-widget-container__widget"></div>
+          <div ref={containerRef}></div>
+        </div>
       </div>
     </div>
   );
