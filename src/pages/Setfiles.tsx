@@ -54,8 +54,6 @@ const SetfilesPage = () => {
     return defaultRiskLevels;
   };
 
-  const riskLevels = getRiskLevels();
-
   const getRiskLevelProfitPercentage = (risk: string): number => {
     switch (risk) {
       case "Ultrasoft":
@@ -155,6 +153,24 @@ const SetfilesPage = () => {
         </Button>
       </div>
 
+      <div className="flex justify-between items-center mb-8">
+        <div className="flex gap-2 bg-darkBlue/40 p-1 rounded-lg">
+          {experts.map((expert) => (
+            <Button
+              key={expert.name}
+              onClick={() => handleExpertSelect(expert.name)}
+              className={`px-6 py-2 h-10 transition-all duration-300 ${
+                expert.name === selectedExpert
+                  ? "bg-[#00ADB5] text-white hover:bg-[#00ADB5]/90 animate-[scale-in_0.2s_ease-out]"
+                  : "bg-darkBlue/40 text-mediumGray hover:bg-darkBlue/60 hover:text-softWhite"
+              }`}
+            >
+              <span className="animate-[fade-in_0.3s_ease-out]">{expert.name}</span>
+            </Button>
+          ))}
+        </div>
+      </div>
+
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Alert 
@@ -213,7 +229,7 @@ const SetfilesPage = () => {
 
         <div className="flex justify-between items-center mb-8">
           <div className="flex gap-2 bg-darkBlue/40 p-1 rounded-lg">
-            {riskLevels.map((risk) => (
+            {getRiskLevels().map((risk) => (
               <Button
                 key={risk}
                 onClick={() => handleRiskSelect(risk)}
