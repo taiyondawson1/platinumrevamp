@@ -37,7 +37,7 @@ function MainContent() {
           )}
           {!isHomePage && !isSetfilesPage && (
             <Separator 
-              className="fixed left-[44px] right-[44px] top-[180px] z-[50] h-[1px] bg-silver/20 mr-[44px]" 
+              className="fixed left-[44px] right-[44px] top-[180px] z-[50] h-[1px] bg-silver/20 mr-[-40px]" 
             />
           )}
           <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-0 mt-[200px]" : ""}`}>
