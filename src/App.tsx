@@ -26,19 +26,19 @@ function MainContent() {
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
       {!isHomePage && !isSetfilesPage && <Sidebar />}
       <div className="flex-1 flex">
-        <div className="flex-1 relative">
+        <div className="flex-1">
           {!isHomePage && !isSetfilesPage && (
-            <div className="fixed top-0 left-[270px] right-[100px] z-[100]">
+            <div className="fixed top-0 left-[270px] right-[100px] z-[50]">
               <TradingViewTickerTape />
             </div>
           )}
           {!isHomePage && !isSetfilesPage && (
             <Separator 
-              className="fixed left-[44px] right-[100px] top-[180px] z-[100] h-[1px] bg-silver/20" 
+              className="fixed left-[44px] right-[100px] top-[180px] z-[50] h-[1px] bg-silver/20" 
             />
           )}
           <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-[20px] mt-[200px]" : ""}`}>
-            <div className={`${isSetfilesPage ? "" : ""} overflow-auto`}>
+            <div className="overflow-auto">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/dashboard" element={<Dashboard />} />
@@ -53,7 +53,7 @@ function MainContent() {
           </main>
         </div>
         {!isHomePage && !isSetfilesPage && (
-          <div className="w-[100px] fixed right-0 top-0 bottom-0 bg-black/40 border-l border-silver/20">
+          <div className="w-[100px] fixed right-0 top-0 bottom-0 bg-black/40 border-l border-silver/20 z-[100]">
             {/* Right container content will go here */}
           </div>
         )}
