@@ -38,7 +38,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed left-4 mt-[220px]">
+    <div className="fixed left-4 mt-[220px] h-[calc(100vh-240px)] flex flex-col">
       {/* Navigation Box */}
       <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] mb-4">
         <div className="space-y-1">
@@ -62,7 +62,7 @@ const Sidebar = () => {
       </div>
 
       {/* Tools Box */}
-      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px]">
+      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] flex-1">
         <h3 className="text-xs font-semibold text-softWhite mb-4 px-4">TOOLS</h3>
         <div className="space-y-1">
           {toolItems.map((tool) => (
