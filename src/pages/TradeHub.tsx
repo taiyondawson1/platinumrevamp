@@ -10,7 +10,6 @@ import DailyDataWidget from "@/components/DailyDataWidget";
 import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
 import US30AnalysisWidget from "@/components/US30AnalysisWidget";
 import BitcoinAnalysisWidget from "@/components/BitcoinAnalysisWidget";
-import EquityChart from "@/components/EquityChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -69,7 +68,7 @@ const TradeHub = () => {
   const location = useLocation();
   const selectedAccount = location.state?.selectedAccount;
   const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
-  const [openTrades, setOpenTrades] = useState<OpenTrade[]>([]); // Added missing state
+  const [openTrades, setOpenTrades] = useState<OpenTrade[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -162,7 +161,6 @@ const TradeHub = () => {
                   <TotalGainCard accountId={selectedAccount?.id?.toString()} />
                   <GainWidget accountId={selectedAccount?.id?.toString()} />
                 </div>
-                <EquityChart accountId={selectedAccount?.id?.toString()} />
                 <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                   <CardContent className="p-0">
                     <HistoryTable history={tradeHistory} />
