@@ -55,7 +55,7 @@ const TradingViewTickerTape = () => {
     <div className="fixed left-0 right-0 top-[135px] z-50">
       <div className="max-w-[1900px] mx-auto pr-[44px] relative">
         <div className="absolute left-[44px] -top-[50px]">
-          <h1 className="text-[40px] font-bold text-softWhite">A</h1>
+          <h1 className="text-[40px] font-bold text-softWhite">PlatinumAI</h1>
         </div>
         <div className="tradingview-widget-container ml-[44px]">
           <div className="tradingview-widget-container__widget"></div>
