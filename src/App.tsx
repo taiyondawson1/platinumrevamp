@@ -26,12 +26,12 @@ function MainContent() {
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
       {!isHomePage && !isSetfilesPage && <Sidebar />}
       <div className="flex-1 flex relative">
-        {/* Right edge container */}
+        {/* Right edge container - aligned with separator */}
         <div className="fixed right-0 top-0 bottom-0 w-[30px] bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[60]" />
         
         <div className="flex-1">
           {!isHomePage && !isSetfilesPage && (
-            <div className="fixed top-0 left-0 right-[30px] bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[50] h-[220px]" />
+            <div className="fixed top-0 left-0 right-[30px] bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[50] h-[180px]" />
           )}
           {!isHomePage && !isSetfilesPage && (
             <div className="fixed top-0 left-[270px] right-[30px] z-[51]">
