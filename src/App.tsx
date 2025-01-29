@@ -53,7 +53,7 @@ function MainContent() {
           </main>
         </div>
         {!isHomePage && !isSetfilesPage && (
-          <div className="w-[100px] fixed right-0 top-0 bottom-0 bg-black/40 border-l border-silver/20 z-[100]">
+          <div className="w-[100px] fixed right-0 top-0 bottom-0 bg-black/40 border-l border-silver/20 z-[1000]">
             {/* Right container content will go here */}
           </div>
         )}
