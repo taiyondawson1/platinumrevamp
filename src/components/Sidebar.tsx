@@ -1,13 +1,14 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { Home, LayoutDashboard, BarChart, Robot, FileText, BookOpen } from "lucide-react";
 
 const menuItems = [
-  { label: "Home", path: "/" },
-  { label: "Dashboard", path: "/dashboard" },
-  { label: "TradeHub", path: "/tradehub" },
-  { label: "Expert Advisors", path: "/expert-advisors" },
-  { label: "Setfiles", path: "/setfiles" },
-  { label: "Courses", path: "/courses" },
+  { label: "Home", path: "/", icon: Home },
+  { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+  { label: "TradeHub", path: "/tradehub", icon: BarChart },
+  { label: "Expert Advisors", path: "/expert-advisors", icon: Robot },
+  { label: "Setfiles", path: "/setfiles", icon: FileText },
+  { label: "Courses", path: "/courses", icon: BookOpen },
 ];
 
 const toolItems = [
@@ -44,6 +45,7 @@ const Sidebar = () => {
         <div className="space-y-1">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
+            const Icon = item.icon;
             return (
               <button
                 key={item.label}
@@ -54,6 +56,7 @@ const Sidebar = () => {
                   isActive ? "text-softWhite bg-highlightGray/10" : "text-mediumGray"
                 )}
               >
+                <Icon className="w-4 h-4" />
                 {item.label}
               </button>
             );
