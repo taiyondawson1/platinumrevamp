@@ -11,7 +11,7 @@ const ExpertAdvisors = () => {
   const experts = [
     {
       name: "PlatinumAi: Stealth",
-      description: "Minimal manual intervention required, with a \"one shot, one entry at a time\" approach.",
+      description: "Our most advanced bot. Use with caution.",
       subtitle: "Ideal for personal capital, optimized for prop firm capital.",
       presets: "7 presets available",
       path: "/expert-advisors/platinumai-stealth",
@@ -19,7 +19,7 @@ const ExpertAdvisors = () => {
     },
     {
       name: "PlatinumAi: Infinity",
-      description: "Our most advanced bot. Use with caution.",
+      description: "Minimal manual intervention required, with a \"one shot, one entry at a time\" approach.",
       presets: "5 presets available",
       path: "/expert-advisors/platinumai-infinity",
       image: null
@@ -92,8 +92,14 @@ const ExpertAdvisors = () => {
                       size="sm"
                       className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 text-softWhite px-3 
                                shadow-embossed hover:shadow-embossed-hover transition-all duration-300
-                               border border-[#00ADB5]/30 hover:border-[#00ADB5]/40 text-xs h-7"
+                               border border-[#00ADB5]/30 hover:border-[#00ADB5]/40 text-xs h-7
+                               relative overflow-hidden group"
                     >
+                      {/* Gold shine animation for download button */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
+                                    bg-gradient-to-r from-transparent via-[#ffd70022] to-transparent
+                                    translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000
+                                    pointer-events-none" />
                       <Download className="w-3.5 h-3.5 mr-1" />
                       Download
                     </Button>
