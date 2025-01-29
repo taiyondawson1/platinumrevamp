@@ -1,12 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Home, LayoutDashboard, BarChart, Robot, FileText, BookOpen } from "lucide-react";
+import { Home, LayoutDashboard, BarChart, Bot, FileText, BookOpen } from "lucide-react";
 
 const menuItems = [
   { label: "Home", path: "/", icon: Home },
   { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
   { label: "TradeHub", path: "/tradehub", icon: BarChart },
-  { label: "Expert Advisors", path: "/expert-advisors", icon: Robot },
+  { label: "Expert Advisors", path: "/expert-advisors", icon: Bot },
   { label: "Setfiles", path: "/setfiles", icon: FileText },
   { label: "Courses", path: "/courses", icon: BookOpen },
 ];
