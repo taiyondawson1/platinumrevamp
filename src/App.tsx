@@ -39,7 +39,7 @@ function MainContent() {
             <>
               <div className="fixed right-[44px] top-[180px] z-[50] h-[1px] w-[44px] bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey" />
               <Separator 
-                className="fixed left-[44px] right-[44px] top-[180px] z-[50] h-[1px] bg-silver/20 mr-[5000px]" 
+                className="fixed left-[44px] right-[44px] top-[180px] z-[50] h-[1px] bg-silver/20" 
               />
             </>
           )}
