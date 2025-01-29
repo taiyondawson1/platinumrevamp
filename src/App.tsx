@@ -31,7 +31,10 @@ function MainContent() {
         
         <div className="flex-1">
           {!isHomePage && !isSetfilesPage && (
-            <div className="fixed top-0 left-[270px] right-[30px] z-[50]">
+            <div className="fixed top-0 left-0 right-[30px] bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[50] h-[220px]" />
+          )}
+          {!isHomePage && !isSetfilesPage && (
+            <div className="fixed top-0 left-[270px] right-[30px] z-[51]">
               <TradingViewTickerTape />
             </div>
           )}
