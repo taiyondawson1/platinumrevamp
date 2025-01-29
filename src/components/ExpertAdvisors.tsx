@@ -11,15 +11,15 @@ const ExpertAdvisors = () => {
   const experts = [
     {
       name: "PlatinumAi: Stealth",
-      description: "Our most advanced bot. Use with caution.",
+      description: "Minimal manual intervention required, with a \"one shot, one entry at a time\" approach.",
+      subtitle: "Ideal for personal capital, optimized for prop firm capital.",
       presets: "7 presets available",
       path: "/expert-advisors/platinumai-stealth",
       image: null
     },
     {
       name: "PlatinumAi: Infinity",
-      description: "Minimal manual intervention required, with a \"one shot, one entry at a time\" approach.",
-      subtitle: "Ideal for personal capital, optimized for prop firm capital.",
+      description: "Our most advanced bot. Use with caution.",
       presets: "5 presets available",
       path: "/expert-advisors/platinumai-infinity",
       image: null
