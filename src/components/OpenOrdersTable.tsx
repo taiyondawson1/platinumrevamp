@@ -8,29 +8,32 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-interface OpenOrder {
-  id: number;
-  ticket: number;
+interface Sizing {
+  type: string;
+  value: string;
+}
+
+interface OpenTrade {
+  openTime: string;
   symbol: string;
   action: string;
-  openTime: string;
+  sizing: Sizing;
   openPrice: number;
-  sl: number;
   tp: number;
-  pips: number;
-  profit: number;
-  commission: number;
-  swap: number;
+  sl: number;
   comment: string;
-  lots: number;
+  profit: number;
+  pips: number;
+  swap: number;
+  magic: number;
 }
 
 interface OpenOrdersTableProps {
-  orders: OpenOrder[];
+  orders: OpenTrade[];
 }
 
 const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
-  console.log("OpenOrdersTable received orders:", orders); // Add this log to debug
+  console.log("OpenOrdersTable received orders:", orders);
 
   return (
     <Card className="w-full">
@@ -41,10 +44,10 @@ const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Ticket</TableHead>
+              <TableHead>Time</TableHead>
               <TableHead>Symbol</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Lots</TableHead>
+              <TableHead>Size</TableHead>
               <TableHead>Open Price</TableHead>
               <TableHead>SL</TableHead>
               <TableHead>TP</TableHead>
@@ -54,12 +57,12 @@ const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
           </TableHeader>
           <TableBody>
             {orders && orders.length > 0 ? (
-              orders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell>{order.ticket}</TableCell>
+              orders.map((order, index) => (
+                <TableRow key={`${order.symbol}-${order.openTime}-${index}`}>
+                  <TableCell>{order.openTime}</TableCell>
                   <TableCell>{order.symbol}</TableCell>
                   <TableCell>{order.action}</TableCell>
-                  <TableCell>{order.lots}</TableCell>
+                  <TableCell>{order.sizing.value}</TableCell>
                   <TableCell>{order.openPrice}</TableCell>
                   <TableCell>{order.sl}</TableCell>
                   <TableCell>{order.tp}</TableCell>
