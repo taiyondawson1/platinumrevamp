@@ -28,7 +28,7 @@ function MainContent() {
       {!isHomePage && !isSetfilesPage && <TradingViewTickerTape />}
       {!isHomePage && !isSetfilesPage && (
         <Separator 
-          className="fixed left-[44px] right-[60px] top-[180px] z-[100] h-[1px] bg-silver/20" 
+          className="fixed left-[44px] right-[120px] top-[180px] z-[100] h-[1px] bg-silver/20" 
         />
       )}
       <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-[20px] mt-[200px]" : ""} relative`}>
