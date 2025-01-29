@@ -90,9 +90,9 @@ const ExpertAdvisors = () => {
                     <Button
                       onClick={() => handleDownload(expert.name)}
                       size="sm"
-                      className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 text-softWhite px-3 
+                      className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 
                                shadow-embossed hover:shadow-embossed-hover transition-all duration-300
-                               border border-[#00ADB5]/30 hover:border-[#00ADB5]/40 text-xs h-7
+                               border border-[#FFD700]/30 hover:border-[#FFD700]/40 text-xs h-7
                                relative overflow-hidden group"
                     >
                       {/* Gold shine animation for download button */}
