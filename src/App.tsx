@@ -25,7 +25,10 @@ function MainContent() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
       {!isHomePage && !isSetfilesPage && <Sidebar />}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex relative">
+        {/* Right edge container */}
+        <div className="fixed right-0 top-0 bottom-0 w-[30px] bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[60]" />
+        
         <div className="flex-1">
           {!isHomePage && !isSetfilesPage && (
             <div className="fixed top-0 left-[270px] right-[10600px] z-[50]">
