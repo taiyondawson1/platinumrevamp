@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { format, parse } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface EquityChartProps {
   accountId?: string;
@@ -16,6 +17,7 @@ interface EquityData {
 const EquityChart = ({ accountId }: EquityChartProps) => {
   const [equityData, setEquityData] = useState<EquityData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [startingEquity, setStartingEquity] = useState(10000);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -33,11 +35,6 @@ const EquityChart = ({ accountId }: EquityChartProps) => {
       }
 
       try {
-        // Get dates for last 30 days
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - 30);
-
         const response = await fetch(
           `https://www.myfxbook.com/api/get-history.json?session=${encodeURIComponent(
             session
@@ -60,16 +57,38 @@ const EquityChart = ({ accountId }: EquityChartProps) => {
               return dateA.getTime() - dateB.getTime();
             });
 
-          let runningEquity = 10000; // Starting equity (you might want to fetch this from account info)
-          const equityPoints = sortedTrades.map((trade: any) => {
-            runningEquity += trade.profit;
-            return {
-              date: format(parse(trade.closeTime, 'MM/dd/yyyy HH:mm', new Date()), 'yyyy-MM-dd'),
-              equity: runningEquity
-            };
-          });
+          // Get the first trade's date for starting equity
+          if (sortedTrades.length > 0) {
+            const firstTrade = sortedTrades[0];
+            setStartingEquity(10000); // You might want to fetch this from account info
+          }
 
-          setEquityData(equityPoints);
+          // Generate daily equity points
+          const firstDate = parse(sortedTrades[0].openTime, 'MM/dd/yyyy HH:mm', new Date());
+          const lastDate = new Date();
+          const dailyEquityPoints: EquityData[] = [];
+          let currentDate = firstDate;
+          let runningEquity = startingEquity;
+
+          while (currentDate <= lastDate) {
+            const dateStr = format(currentDate, 'yyyy-MM-dd');
+            const dayTrades = sortedTrades.filter(trade => 
+              format(parse(trade.closeTime, 'MM/dd/yyyy HH:mm', new Date()), 'yyyy-MM-dd') === dateStr
+            );
+
+            dayTrades.forEach((trade: any) => {
+              runningEquity += trade.profit;
+            });
+
+            dailyEquityPoints.push({
+              date: dateStr,
+              equity: runningEquity
+            });
+
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+
+          setEquityData(dailyEquityPoints);
         }
       } catch (error) {
         console.error("Error fetching history data:", error);
@@ -84,7 +103,22 @@ const EquityChart = ({ accountId }: EquityChartProps) => {
     };
 
     fetchEquityData();
-  }, [accountId, toast]);
+  }, [accountId, toast, startingEquity]);
+
+  // Calculate Y-axis domain with 5% increments
+  const calculateYAxisDomain = () => {
+    if (equityData.length === 0) return [0, 100];
+    
+    const minEquity = Math.min(...equityData.map(d => d.equity));
+    const maxEquity = Math.max(...equityData.map(d => d.equity));
+    const range = maxEquity - minEquity;
+    const increment = (range / 5);
+    
+    return [
+      Math.floor(minEquity - increment),
+      Math.ceil(maxEquity + increment)
+    ];
+  };
 
   return (
     <Card className="w-full mt-4 bg-darkBlue/40 border-mediumGray/20">
@@ -97,30 +131,47 @@ const EquityChart = ({ accountId }: EquityChartProps) => {
             <p className="text-softWhite">Loading data...</p>
           </div>
         ) : equityData.length > 0 ? (
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={equityData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={(str) => format(new Date(str), 'MMM dd')}
-                  stroke="#fff"
-                />
-                <YAxis stroke="#fff" />
-                <Tooltip
-                  labelFormatter={(label) => format(new Date(label as string), 'MMM dd, yyyy')}
-                  formatter={(value: number) => [`$${value.toFixed(2)}`, 'Equity']}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="equity"
-                  stroke="#4CAF50"
-                  dot={false}
-                  name="Equity"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <ScrollArea className="h-[300px] w-full" orientation="horizontal">
+            <div style={{ width: `${Math.max(800, equityData.length * 50)}px`, height: "300px" }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={equityData}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={(str) => format(new Date(str), 'MMM dd')}
+                    stroke="#fff"
+                    interval={Math.floor(equityData.length / 10)}
+                  />
+                  <YAxis
+                    stroke="#fff"
+                    domain={calculateYAxisDomain()}
+                    ticks={Array.from({ length: 6 }, (_, i) => {
+                      const [min, max] = calculateYAxisDomain();
+                      return min + ((max - min) / 5) * i;
+                    })}
+                    tickFormatter={(value) => `${((value / startingEquity - 1) * 100).toFixed(1)}%`}
+                  />
+                  <Tooltip
+                    labelFormatter={(label) => format(new Date(label as string), 'MMM dd, yyyy')}
+                    formatter={(value: number) => [
+                      `$${value.toFixed(2)} (${((value / startingEquity - 1) * 100).toFixed(1)}%)`,
+                      'Equity'
+                    ]}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="equity"
+                    stroke="#4CAF50"
+                    dot={false}
+                    name="Equity"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </ScrollArea>
         ) : (
           <div className="h-[300px] flex items-center justify-center bg-darkBlue/40">
             <p className="text-softWhite">No equity data available</p>
