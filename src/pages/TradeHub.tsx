@@ -69,6 +69,7 @@ const TradeHub = () => {
   const location = useLocation();
   const selectedAccount = location.state?.selectedAccount;
   const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
+  const [openTrades, setOpenTrades] = useState<OpenTrade[]>([]); // Added missing state
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
