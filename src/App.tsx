@@ -37,8 +37,10 @@ function MainContent() {
           )}
           {!isHomePage && !isSetfilesPage && (
             <div className="fixed left-[270px] right-0 top-[180px] z-[50]">
-              <div className="max-w-[1900px] mx-auto px-[44px]">
-                <Separator className="h-[1px] bg-silver/20" />
+              <div className="max-w-[1900px] mx-auto">
+                <div className="pl-[44px] pr-[44px]">
+                  <Separator className="h-[1px] bg-silver/20" />
+                </div>
               </div>
             </div>
           )}
