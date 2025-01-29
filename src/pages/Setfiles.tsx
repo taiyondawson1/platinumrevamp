@@ -27,13 +27,9 @@ const SetfilesPage = () => {
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
   const [accountBalance, setAccountBalance] = useState<number>(100000);
   const [showNewsDialog, setShowNewsDialog] = useState(false);
-  const [selectedExpert, setSelectedExpert] = useState<string>("PlatinumAi: Pulse");
+  const [selectedExpert, setSelectedExpert] = useState<string>("PlatinumAi: Stealth");
 
   const experts = [
-    {
-      name: "PlatinumAi: Pulse",
-      description: "Advanced mean reversion strategy"
-    },
     {
       name: "PlatinumAi: Stealth",
       description: "High-performance trading system"
@@ -223,7 +219,7 @@ const SetfilesPage = () => {
             </AlertDialogContent>
           </AlertDialog>
 
-          <div className="max-w-[900px] mx-auto border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)] animate-[fade-in_0.3s_ease-out]">
+          <div className="max-w-[900px] mx-auto border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px rgba(0,0,0,0.3)] animate-[fade-in_0.3s_ease-out]">
             <div className="mb-8">
               <h1 className="text-2xl font-semibold text-softWhite tracking-tight mb-1">Setfiles</h1>
               <p className="text-mediumGray text-sm font-normal">Official Setfiles released by PlatinumAi</p>
