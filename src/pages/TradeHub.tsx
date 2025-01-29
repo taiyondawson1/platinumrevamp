@@ -196,9 +196,9 @@ const TradeHub = () => {
                       </TabsContent>
                     </Tabs>
                   </Card>
+                  <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
                 </div>
                 <CommunityOutlookWidget />
-                <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
               </div>
             </div>
           </>
