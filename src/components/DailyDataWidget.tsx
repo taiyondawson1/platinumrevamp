@@ -45,10 +45,10 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
       }
 
       try {
-        // Get dates for last 30 days
+        // Get dates for last 12 days instead of 30
         const endDate = new Date();
         const startDate = new Date();
-        startDate.setDate(startDate.getDate() - 30);
+        startDate.setDate(startDate.getDate() - 12);
 
         const response = await fetch(
           `https://www.myfxbook.com/api/get-data-daily.json?session=${encodeURIComponent(
@@ -64,11 +64,13 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
         console.log("Daily Data Response:", responseData);
 
         if (!responseData.error) {
-          // Flatten the nested array and format dates
-          const formattedData = responseData.dataDaily.flat().map(item => ({
-            ...item,
-            date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'MMM dd, yyyy')
-          }));
+          // Flatten the nested array and format dates, limit to 12 rows
+          const formattedData = responseData.dataDaily.flat()
+            .map(item => ({
+              ...item,
+              date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'MMM dd, yyyy')
+            }))
+            .slice(0, 12); // Limit to 12 rows
           setData(formattedData);
         } else {
           throw new Error(responseData.message || "Failed to fetch daily data");
@@ -89,7 +91,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
   }, [accountId, toast]);
 
   return (
-    <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+    <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg w-1/2 mx-auto">
       <CardHeader>
         <CardTitle className="text-lg font-semibold">Daily Trading Data</CardTitle>
       </CardHeader>
