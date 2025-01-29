@@ -111,13 +111,34 @@ const EquityChart = ({ accountId }: EquityChartProps) => {
     
     const minEquity = Math.min(...equityData.map(d => d.equity));
     const maxEquity = Math.max(...equityData.map(d => d.equity));
-    const range = maxEquity - minEquity;
-    const increment = (range / 5);
     
+    // Calculate percentage range
+    const minPercent = ((minEquity / startingEquity) - 1) * 100;
+    const maxPercent = ((maxEquity / startingEquity) - 1) * 100;
+    
+    // Round to nearest 5% below and above
+    const minRounded = Math.floor(minPercent / 5) * 5;
+    const maxRounded = Math.ceil(maxPercent / 5) * 5;
+    
+    // Convert percentages back to absolute values
     return [
-      Math.floor(minEquity - increment),
-      Math.ceil(maxEquity + increment)
+      startingEquity * (1 + minRounded / 100),
+      startingEquity * (1 + maxRounded / 100)
     ];
+  };
+
+  // Generate ticks for Y-axis in 5% increments
+  const generateYAxisTicks = () => {
+    const [min, max] = calculateYAxisDomain();
+    const minPercent = ((min / startingEquity) - 1) * 100;
+    const maxPercent = ((max / startingEquity) - 1) * 100;
+    const ticks = [];
+    
+    for (let i = minPercent; i <= maxPercent; i += 5) {
+      ticks.push(startingEquity * (1 + i / 100));
+    }
+    
+    return ticks;
   };
 
   return (
@@ -131,7 +152,7 @@ const EquityChart = ({ accountId }: EquityChartProps) => {
             <p className="text-softWhite">Loading data...</p>
           </div>
         ) : equityData.length > 0 ? (
-          <ScrollArea className="h-[300px] w-full" orientation="horizontal">
+          <ScrollArea className="h-[300px] w-full">
             <div style={{ width: `${Math.max(800, equityData.length * 50)}px`, height: "300px" }}>
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
@@ -148,10 +169,7 @@ const EquityChart = ({ accountId }: EquityChartProps) => {
                   <YAxis
                     stroke="#fff"
                     domain={calculateYAxisDomain()}
-                    ticks={Array.from({ length: 6 }, (_, i) => {
-                      const [min, max] = calculateYAxisDomain();
-                      return min + ((max - min) / 5) * i;
-                    })}
+                    ticks={generateYAxisTicks()}
                     tickFormatter={(value) => `${((value / startingEquity - 1) * 100).toFixed(1)}%`}
                   />
                   <Tooltip
