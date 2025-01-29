@@ -38,7 +38,7 @@ const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">Open Orders</CardTitle>
+        <CardTitle className="text-xl font-bold">Open Trades</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -77,7 +77,7 @@ const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
             ) : (
               <TableRow>
                 <TableCell colSpan={9} className="text-center py-4">
-                  No open orders found
+                  No open trades found
                 </TableCell>
               </TableRow>
             )}
