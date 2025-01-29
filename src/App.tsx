@@ -28,7 +28,7 @@ function MainContent() {
       <div className="flex-1 flex">
         <div className="flex-1">
           {!isHomePage && !isSetfilesPage && (
-            <div className="fixed top-0 left-[270px] right-[600px] z-[50]">
+            <div className="fixed top-0 left-[270px] right-[10600px] z-[50]">
               <TradingViewTickerTape />
             </div>
           )}
