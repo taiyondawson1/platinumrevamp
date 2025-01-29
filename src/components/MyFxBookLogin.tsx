@@ -138,6 +138,52 @@ const MyFxBookLogin = () => {
     }
   }, [isLoggedIn]);
 
+  // Add new state for polling
+  const [isPolling, setIsPolling] = useState(false);
+
+  // Function to check if session is valid
+  const checkSessionValidity = async () => {
+    try {
+      const response = await fetch(
+        `https://www.myfxbook.com/api/get-my-accounts.json?session=${encodeURIComponent(localStorage.getItem("myfxbook_session") || "")}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Session invalid");
+      }
+
+      const data: MyFxBookAccountsResponse = await response.json();
+      
+      if (!data.error) {
+        setIsLoggedIn(true);
+        setAccounts(data.accounts);
+        fetchWatchedAccounts();
+        setIsPolling(false); // Stop polling once logged in
+        toast({
+          title: "Success",
+          description: "Successfully logged in to MyFxBook",
+        });
+      }
+    } catch (error) {
+      console.error("Error checking session:", error);
+    }
+  };
+
+  // Start polling when max attempts reached
+  useEffect(() => {
+    let pollInterval: NodeJS.Timeout;
+
+    if (isPolling) {
+      pollInterval = setInterval(checkSessionValidity, 5000); // Check every 5 seconds
+    }
+
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
+  }, [isPolling]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -167,6 +213,7 @@ const MyFxBookLogin = () => {
       } else {
         if (data.message.toLowerCase().includes("max login attempts reached")) {
           setShowMaxAttemptsDialog(true);
+          setIsPolling(true); // Start polling when max attempts reached
         } else {
           throw new Error(data.message || "Failed to login");
         }
