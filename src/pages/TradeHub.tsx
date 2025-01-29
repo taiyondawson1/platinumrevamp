@@ -141,7 +141,7 @@ const TradeHub = () => {
 
   return (
     <>
-      <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[25px] mr-[25px] mx-auto flex flex-col items-center max-w-[100vw] overflow-x-hidden mt-0">
+      <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[25px] mr-[25px] mx-auto flex flex-col items-center max-w-[100vw] overflow-x-hidden mt-[50px]">
         {isLoading ? (
           <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
             <CardContent className="py-4">
@@ -156,7 +156,7 @@ const TradeHub = () => {
                 <US30AnalysisWidget />
                 <BitcoinAnalysisWidget />
               </div>
-              <div className="mt-[50px] space-y-3"> {/* Added margin-top here */}
+              <div className="mt-[50px] space-y-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <TotalGainCard accountId={selectedAccount?.id?.toString()} />
                   <GainWidget accountId={selectedAccount?.id?.toString()} />
