@@ -39,7 +39,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed left-4 mt-[220px] h-[calc(100vh-240px)] flex flex-col">
+    <div className="fixed left-[44px] mt-[220px] h-[calc(100vh-240px)] flex flex-col">
       {/* Navigation Box */}
       <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] mb-4">
         <div className="space-y-1">
