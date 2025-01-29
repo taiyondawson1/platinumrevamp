@@ -81,8 +81,8 @@ const ExpertAdvisors = () => {
                     <p className="text-xs text-mediumGray/80 mt-1 leading-relaxed">{expert.subtitle}</p>
                   )}
                 </div>
-                <div className="flex items-center justify-between pt-1.5">
-                  <div className="text-xs text-mediumGray flex items-center">
+                <div className="flex flex-col items-center justify-center gap-2 pt-1.5">
+                  <div className="text-xs text-mediumGray flex items-center mb-2">
                     <span className="inline-block mr-1">📄</span>
                     {expert.presets}
                   </div>
