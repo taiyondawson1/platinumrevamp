@@ -37,7 +37,7 @@ function MainContent() {
               className="fixed left-[44px] right-0 top-[180px] z-[50] h-[1px] bg-silver/20" 
             />
           )}
-          <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-[320px] mt-[200px]" : ""}`}>
+          <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-[20px] mt-[200px]" : ""}`}>
             <div className="overflow-auto">
               <Routes>
                 <Route path="/" element={<Home />} />
