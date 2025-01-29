@@ -45,6 +45,11 @@ function MainContent() {
           </Routes>
         </div>
       </main>
+      {!isHomePage && !isSetfilesPage && (
+        <div className="w-[100px] bg-black/40 border-l border-silver/20">
+          {/* Right container content will go here */}
+        </div>
+      )}
     </div>
   );
 }
