@@ -58,7 +58,7 @@ const ExpertAdvisors = () => {
                      hover:border-mediumGray/30 transition-all duration-300
                      shadow-[0_4px_20px_rgb(0,0,0,0.1)]"
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-center justify-center gap-3">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500/10 to-cyan-500/10 
                             flex items-center justify-center p-2 border border-mediumGray/10">
                 {expert.image ? (
@@ -67,7 +67,7 @@ const ExpertAdvisors = () => {
                   <div className="w-8 h-8 bg-gradient-to-br from-purple-500/40 to-cyan-500/40" />
                 )}
               </div>
-              <div className="flex-1 space-y-1.5">
+              <div className="flex-1 space-y-1.5 text-center">
                 <div>
                   <h2 className="text-base font-medium text-softWhite">{expert.name}</h2>
                   <p className="text-sm text-mediumGray leading-relaxed">{expert.description}</p>
