@@ -66,7 +66,7 @@ const Sidebar = () => {
 
       {/* Tools Box */}
       <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] flex-1 rounded-md">
-        <h3 className="text-xs font-semibold text-softWhite mb-4 px-4">TOOLS</h3>
+        <h3 className="text-xs font-semibold text-softWhite mb-4 px-4 underline">TOOLS</h3>
         <div className="space-y-1">
           {toolItems.map((tool) => (
             <a
