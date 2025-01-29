@@ -45,10 +45,10 @@ const ExpertAdvisors = () => {
       <h1 className="text-xl font-semibold text-softWhite mb-4">Expert Advisors</h1>
       
       <div className="grid gap-3 relative">
-        {/* Left fade gradient */}
+        {/* Left fade gradient - made more subtle and removed shadow */}
         <div className="absolute left-0 top-0 w-16 h-full bg-gradient-to-r from-darkBase to-transparent z-10" />
         
-        {/* Right fade gradient */}
+        {/* Right fade gradient - made more subtle and removed shadow */}
         <div className="absolute right-0 top-0 w-16 h-full bg-gradient-to-l from-darkBase to-transparent z-10" />
         
         {experts.map((expert) => (
@@ -56,7 +56,7 @@ const ExpertAdvisors = () => {
             key={expert.name}
             className="group bg-darkBlue/40 backdrop-blur-sm p-3 border border-mediumGray/20 
                      hover:border-mediumGray/30 transition-all duration-300
-                     shadow-[0_4px_20px_rgb(0,0,0,0.1)] relative overflow-hidden"
+                     relative overflow-hidden"
           >
             {/* Shiny gold reflective effect */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
