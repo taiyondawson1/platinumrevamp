@@ -39,15 +39,7 @@
 @layer base {
   * {
     @apply border-border;
-    box-sizing: border-box;
   }
-  
-  html, body {
-    @apply overflow-x-hidden;
-    margin: 0;
-    padding: 0;
-  }
-  
   body {
     @apply bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey text-foreground font-['Inter'];
     min-height: 100vh;
