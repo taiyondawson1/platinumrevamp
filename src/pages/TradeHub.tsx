@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import OpenOrdersTable from "@/components/OpenOrdersTable";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
 import TotalGainCard from "@/components/TotalGainCard";
@@ -11,6 +10,7 @@ import DailyDataWidget from "@/components/DailyDataWidget";
 import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
 import US30AnalysisWidget from "@/components/US30AnalysisWidget";
 import BitcoinAnalysisWidget from "@/components/BitcoinAnalysisWidget";
+import EquityChart from "@/components/EquityChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -68,7 +68,6 @@ interface HistoryResponse {
 const TradeHub = () => {
   const location = useLocation();
   const selectedAccount = location.state?.selectedAccount;
-  const [openTrades, setOpenTrades] = useState<OpenTrade[]>([]);
   const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -162,11 +161,7 @@ const TradeHub = () => {
                   <TotalGainCard accountId={selectedAccount?.id?.toString()} />
                   <GainWidget accountId={selectedAccount?.id?.toString()} />
                 </div>
-                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                  <CardContent className="p-0">
-                    <OpenOrdersTable orders={openTrades} />
-                  </CardContent>
-                </Card>
+                <EquityChart accountId={selectedAccount?.id?.toString()} />
                 <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                   <CardContent className="p-0">
                     <HistoryTable history={tradeHistory} />
