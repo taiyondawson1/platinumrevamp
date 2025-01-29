@@ -36,8 +36,10 @@ function MainContent() {
             </div>
           )}
           {!isHomePage && !isSetfilesPage && (
-            <div className="fixed max-w-[1900px] mx-auto left-[270px] right-0 top-[180px] z-[50] px-[44px]">
-              <Separator className="h-[1px] bg-silver/20" />
+            <div className="fixed left-[270px] right-0 top-[180px] z-[50]">
+              <div className="max-w-[1900px] mx-auto px-[44px]">
+                <Separator className="h-[1px] bg-silver/20" />
+              </div>
             </div>
           )}
           <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-0 mt-[200px]" : ""}`}>
