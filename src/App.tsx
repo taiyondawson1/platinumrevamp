@@ -25,31 +25,39 @@ function MainContent() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
       {!isHomePage && !isSetfilesPage && <Sidebar />}
-      {!isHomePage && !isSetfilesPage && <TradingViewTickerTape />}
-      {!isHomePage && !isSetfilesPage && (
-        <Separator 
-          className="fixed left-[44px] right-[120px] top-[180px] z-[100] h-[1px] bg-silver/20" 
-        />
-      )}
-      <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-[20px] mt-[200px]" : ""} relative`}>
-        <div className={`${isSetfilesPage ? "" : "absolute inset-0"} overflow-auto`}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/trading" element={<TradingPage />} />
-            <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
-            <Route path="/setfiles" element={<SetfilesPage />} />
-            <Route path="/courses" element={<CoursesPage />} />
-            <Route path="/tradehub" element={<TradeHub />} />
-            <Route path="/connect-myfxbook" element={<MyFxBookLoginPage />} />
-          </Routes>
+      <div className="flex-1 relative flex">
+        <div className="flex-1 relative">
+          {!isHomePage && !isSetfilesPage && (
+            <div className="fixed top-0 left-[270px] right-[100px] z-[100]">
+              <TradingViewTickerTape />
+            </div>
+          )}
+          {!isHomePage && !isSetfilesPage && (
+            <Separator 
+              className="fixed left-[44px] right-[100px] top-[180px] z-[100] h-[1px] bg-silver/20" 
+            />
+          )}
+          <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-[20px] mt-[200px]" : ""} relative`}>
+            <div className={`${isSetfilesPage ? "" : "absolute inset-0"} overflow-auto`}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/trading" element={<TradingPage />} />
+                <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
+                <Route path="/setfiles" element={<SetfilesPage />} />
+                <Route path="/courses" element={<CoursesPage />} />
+                <Route path="/tradehub" element={<TradeHub />} />
+                <Route path="/connect-myfxbook" element={<MyFxBookLoginPage />} />
+              </Routes>
+            </div>
+          </main>
         </div>
-      </main>
-      {!isHomePage && !isSetfilesPage && (
-        <div className="w-[100px] bg-black/40 border-l border-silver/20">
-          {/* Right container content will go here */}
-        </div>
-      )}
+        {!isHomePage && !isSetfilesPage && (
+          <div className="w-[100px] bg-black/40 border-l border-silver/20">
+            {/* Right container content will go here */}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
