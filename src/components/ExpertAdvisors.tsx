@@ -10,14 +10,6 @@ const ExpertAdvisors = () => {
 
   const experts = [
     {
-      name: "PlatinumAi: Pulse",
-      image: "/lovable-uploads/12df9962-125a-4b67-8df4-2d76c0473e9d.png",
-      description: "Cutting-edge EA utilizing mean reversion strategies to capitalize on consolidating market periods.",
-      subtitle: "Perfect for passing prop firm challenges and managing funded accounts.",
-      presets: "8 presets available",
-      path: "/expert-advisors/platinumai-pulse"
-    },
-    {
       name: "PlatinumAi: Stealth",
       description: "Our most advanced bot. Use with caution.",
       presets: "7 presets available",
