@@ -28,7 +28,7 @@ function MainContent() {
       <div className="flex-1 flex relative">
         <div className="flex-1">
           {!isHomePage && !isSetfilesPage && (
-            <div className="fixed top-0 left-0 right-0 bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[50] h-[180px]" />
+            <div className="fixed top-0 left-0 right-0 bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[50] h-[200px]" />
           )}
           {!isHomePage && !isSetfilesPage && (
             <div className="fixed top-0 left-[270px] right-0 z-[51]">
@@ -36,11 +36,11 @@ function MainContent() {
             </div>
           )}
           {!isHomePage && !isSetfilesPage && (
-            <div className="fixed left-0 right-0 top-[180px] z-[50] px-[44px]">
+            <div className="fixed left-0 right-0 top-[200px] z-[50] px-[44px]">
               <Separator className="h-[1px] bg-silver/20" />
             </div>
           )}
-          <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-0 mt-[200px]" : ""}`}>
+          <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-0 mt-[220px]" : ""}`}>
             <div className="overflow-auto">
               <Routes>
                 <Route path="/" element={<Home />} />
