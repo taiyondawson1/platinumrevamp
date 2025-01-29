@@ -91,7 +91,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
   }, [accountId, toast]);
 
   return (
-    <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg w-1/2 mx-auto">
+    <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg w-full">
       <CardHeader>
         <CardTitle className="text-lg font-semibold">Daily Trading Data</CardTitle>
       </CardHeader>
