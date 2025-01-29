@@ -1,6 +1,5 @@
 import { ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 const tools = [
   {
@@ -39,22 +38,21 @@ const ToolsBar = () => {
           href={tool.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="block group h-full"
+          className="block group"
         >
-          <Button
-            variant="outline"
-            className="w-full h-full min-h-[120px] p-6 flex flex-col items-start justify-between gap-4 text-left tradehub-card hover:border-silver/40 transition-all duration-300"
-          >
-            <div className="space-y-2">
-              <h3 className="text-softWhite font-medium group-hover:text-accent-blue transition-colors">
-                {tool.name}
-              </h3>
-              <p className="text-sm text-mediumGray">
-                {tool.description}
-              </p>
+          <Card className="tradehub-card h-full p-4 hover:border-silver/40 transition-all duration-300">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-softWhite font-medium mb-2 group-hover:text-accent-blue transition-colors">
+                  {tool.name}
+                </h3>
+                <p className="text-sm text-mediumGray">
+                  {tool.description}
+                </p>
+              </div>
+              <ExternalLink className="h-4 w-4 text-mediumGray group-hover:text-accent-blue transition-colors" />
             </div>
-            <ExternalLink className="h-4 w-4 text-mediumGray group-hover:text-accent-blue transition-colors" />
-          </Button>
+          </Card>
         </a>
       ))}
     </div>
