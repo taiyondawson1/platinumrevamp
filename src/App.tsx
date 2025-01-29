@@ -26,7 +26,7 @@ function MainContent() {
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
       {!isHomePage && !isSetfilesPage && <Sidebar />}
       {!isHomePage && !isSetfilesPage && <TradingViewTickerTape />}
-      {!isHomePage && !isSetfilesPage && <Separator className="fixed left-0 right-0 top-[180px] z-50 bg-silver/20" />}
+      {!isHomePage && !isSetfilesPage && <Separator className="fixed left-[44px] right-0 top-[180px] z-50 bg-silver/20" />}
       <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mt-[200px]" : ""} relative`}>
         <div className={`${isSetfilesPage ? "" : "absolute inset-0"} overflow-auto`}>
           <Routes>
