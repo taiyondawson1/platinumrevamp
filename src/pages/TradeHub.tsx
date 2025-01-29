@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import OpenOrdersTable from "@/components/OpenOrdersTable";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
 import TotalGainCard from "@/components/TotalGainCard";
@@ -14,23 +13,6 @@ import BitcoinAnalysisWidget from "@/components/BitcoinAnalysisWidget";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-
-interface OpenTrade {
-  id: number;
-  ticket: number;
-  symbol: string;
-  action: string;
-  openTime: string;
-  openPrice: number;
-  sl: number;
-  tp: number;
-  pips: number;
-  profit: number;
-  commission: number;
-  swap: number;
-  comment: string;
-  lots: number;
-}
 
 interface TradeHistory {
   openTime: string;
@@ -52,12 +34,6 @@ interface TradeHistory {
   commission: number;
 }
 
-interface OpenTradesResponse {
-  error: boolean;
-  message: string;
-  trades: OpenTrade[];
-}
-
 interface HistoryResponse {
   error: boolean;
   message: string;
@@ -67,7 +43,6 @@ interface HistoryResponse {
 const TradeHub = () => {
   const location = useLocation();
   const selectedAccount = location.state?.selectedAccount;
-  const [openTrades, setOpenTrades] = useState<OpenTrade[]>([]);
   const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -88,21 +63,6 @@ const TradeHub = () => {
 
       setIsLoading(true);
       try {
-        // Fetch open trades
-        console.log("Fetching trades for account:", selectedAccount.id);
-        const openTradesResponse = await fetch(
-          `https://www.myfxbook.com/api/get-open-trades.json?session=${encodeURIComponent(
-            session
-          )}&id=${encodeURIComponent(selectedAccount.id)}`
-        );
-
-        if (!openTradesResponse.ok) {
-          throw new Error("Failed to fetch open trades");
-        }
-
-        const openTradesData: OpenTradesResponse = await openTradesResponse.json();
-        console.log("Open Trades API Response:", openTradesData);
-
         // Fetch trade history
         console.log("Fetching trade history for account:", selectedAccount.id);
         const historyResponse = await fetch(
@@ -118,11 +78,10 @@ const TradeHub = () => {
         const historyData: HistoryResponse = await historyResponse.json();
         console.log("History API Response:", historyData);
 
-        if (!openTradesData.error && !historyData.error) {
-          setOpenTrades(openTradesData.trades || []);
+        if (!historyData.error) {
           setTradeHistory(historyData.history || []);
         } else {
-          throw new Error(openTradesData.message || historyData.message || "Failed to fetch data");
+          throw new Error(historyData.message || "Failed to fetch data");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -161,11 +120,6 @@ const TradeHub = () => {
                   <TotalGainCard accountId={selectedAccount?.id?.toString()} />
                   <GainWidget accountId={selectedAccount?.id?.toString()} />
                 </div>
-                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                  <CardContent className="p-0">
-                    <OpenOrdersTable orders={openTrades} />
-                  </CardContent>
-                </Card>
                 <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                   <CardContent className="p-0">
                     <HistoryTable history={tradeHistory} />
