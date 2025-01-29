@@ -28,13 +28,13 @@ function MainContent() {
       <div className="flex-1 flex">
         <div className="flex-1">
           {!isHomePage && !isSetfilesPage && (
-            <div className="fixed top-0 left-[270px] right-[100px] z-[50]">
+            <div className="fixed top-0 left-[270px] right-0 z-[50]">
               <TradingViewTickerTape />
             </div>
           )}
           {!isHomePage && !isSetfilesPage && (
             <Separator 
-              className="fixed left-[44px] right-[100px] top-[180px] z-[50] h-[1px] bg-silver/20" 
+              className="fixed left-[44px] right-0 top-[180px] z-[50] h-[1px] bg-silver/20" 
             />
           )}
           <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-[20px] mt-[200px]" : ""}`}>
@@ -52,11 +52,6 @@ function MainContent() {
             </div>
           </main>
         </div>
-        {!isHomePage && !isSetfilesPage && (
-          <div className="w-[100px] fixed right-0 top-0 bottom-0 bg-black/40 border-l border-silver/20 z-[1000]">
-            {/* Right container content will go here */}
-          </div>
-        )}
       </div>
     </div>
   );
