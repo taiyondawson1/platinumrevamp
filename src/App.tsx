@@ -27,23 +27,23 @@ function MainContent() {
       {!isHomePage && !isSetfilesPage && <Sidebar />}
       <div className="flex-1 flex relative">
         {/* Right edge container - aligned with separator */}
-        <div className="fixed right-0 top-0 bottom-0 w-[30px] bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[60]" />
+        <div className="fixed right-0 top-0 bottom-0 w-[40px] bg-transparent z-[60]" />
         
         <div className="flex-1">
           {!isHomePage && !isSetfilesPage && (
-            <div className="fixed top-0 left-0 right-[30px] bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[50] h-[180px]" />
+            <div className="fixed top-0 left-0 right-[40px] bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[50] h-[180px]" />
           )}
           {!isHomePage && !isSetfilesPage && (
-            <div className="fixed top-0 left-[270px] right-[30px] z-[51]">
+            <div className="fixed top-0 left-[270px] right-[40px] z-[51]">
               <TradingViewTickerTape />
             </div>
           )}
           {!isHomePage && !isSetfilesPage && (
             <Separator 
-              className="fixed left-[44px] right-[30px] top-[180px] z-[50] h-[1px] bg-silver/20" 
+              className="fixed left-[44px] right-[40px] top-[180px] z-[50] h-[1px] bg-silver/20" 
             />
           )}
-          <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-[30px] mt-[200px]" : ""}`}>
+          <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-[40px] mt-[200px]" : ""}`}>
             <div className="overflow-auto">
               <Routes>
                 <Route path="/" element={<Home />} />
