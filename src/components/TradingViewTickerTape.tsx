@@ -66,8 +66,6 @@ const TradingViewTickerTape = () => {
             <span className="underline hover:text-softWhite transition-colors cursor-pointer">Habits</span>
             <span className="text-silver">•</span>
             <span className="underline hover:text-softWhite transition-colors cursor-pointer">Strategies</span>
-            <span className="text-silver">•</span>
-            <span className="underline hover:text-softWhite transition-colors cursor-pointer">TOOLS</span>
           </div>
         </div>
         <div className="tradingview-widget-container ml-[44px]">
