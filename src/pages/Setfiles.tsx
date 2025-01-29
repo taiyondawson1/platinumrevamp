@@ -153,7 +153,7 @@ const SetfilesPage = () => {
         </Button>
       </div>
 
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-center items-center mb-8">
         <div className="flex gap-2 bg-darkBlue/40 p-1 rounded-lg">
           {experts.map((expert) => (
             <Button
