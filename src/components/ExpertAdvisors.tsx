@@ -64,16 +64,8 @@ const ExpertAdvisors = () => {
                           translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000
                           pointer-events-none" />
             
-            <div className="flex items-center justify-center gap-3 relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500/10 to-cyan-500/10 
-                            flex items-center justify-center p-2 border border-mediumGray/10">
-                {expert.image ? (
-                  <img src={expert.image} alt={expert.name} className="w-10 h-10" />
-                ) : (
-                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500/40 to-cyan-500/40" />
-                )}
-              </div>
-              <div className="flex-1 space-y-1.5 text-center">
+            <div className="flex flex-col items-center justify-center gap-3 relative">
+              <div className="space-y-1.5 text-center">
                 <div>
                   <h2 className="text-base font-medium text-softWhite">{expert.name}</h2>
                   <p className="text-sm text-mediumGray leading-relaxed">{expert.description}</p>
