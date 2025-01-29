@@ -23,9 +23,9 @@ function MainContent() {
   const isSetfilesPage = location.pathname === "/setfiles";
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
+    <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey overflow-x-hidden">
       {!isHomePage && !isSetfilesPage && <Sidebar />}
-      <div className="flex-1 flex relative">
+      <div className="flex-1 flex relative box-border">
         <div className="flex-1">
           {!isHomePage && !isSetfilesPage && (
             <div className="fixed top-0 left-0 right-0 bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[50] h-[180px]" />
@@ -40,8 +40,8 @@ function MainContent() {
               className="fixed left-[44px] right-0 top-[180px] z-[50] h-[1px] bg-silver/20" 
             />
           )}
-          <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-0 mt-[200px]" : ""}`}>
-            <div className="overflow-auto">
+          <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] pr-6 mt-[200px] max-w-[2000px]" : ""}`}>
+            <div className="overflow-x-hidden px-6">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/dashboard" element={<Dashboard />} />
