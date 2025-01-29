@@ -41,24 +41,30 @@ const ExpertAdvisors = () => {
   };
 
   return (
-    <div className="p-4 ml-[64px]">
+    <div className="p-4 ml-[64px] relative">
       <h1 className="text-xl font-semibold text-softWhite mb-4">Expert Advisors</h1>
       
-      <div className="grid gap-3">
+      <div className="grid gap-3 relative">
+        {/* Left fade gradient */}
+        <div className="absolute left-0 top-0 w-16 h-full bg-gradient-to-r from-darkBase to-transparent z-10" />
+        
+        {/* Right fade gradient */}
+        <div className="absolute right-0 top-0 w-16 h-full bg-gradient-to-l from-darkBase to-transparent z-10" />
+        
         {experts.map((expert) => (
           <div 
             key={expert.name}
-            className="bg-darkBlue/40 backdrop-blur-sm rounded-lg p-3 border border-mediumGray/20 
+            className="bg-darkBlue/40 backdrop-blur-sm p-3 border border-mediumGray/20 
                      hover:border-mediumGray/30 transition-all duration-300
                      shadow-[0_4px_20px_rgb(0,0,0,0.1)]"
           >
             <div className="flex items-start gap-3">
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500/10 to-cyan-500/10 
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500/10 to-cyan-500/10 
                             flex items-center justify-center p-2 border border-mediumGray/10">
                 {expert.image ? (
                   <img src={expert.image} alt={expert.name} className="w-10 h-10" />
                 ) : (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500/40 to-cyan-500/40" />
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500/40 to-cyan-500/40" />
                 )}
               </div>
               <div className="flex-1 space-y-1.5">
