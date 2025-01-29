@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import OpenOrdersTable from "@/components/OpenOrdersTable";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
 import TotalGainCard from "@/components/TotalGainCard";
@@ -67,8 +68,8 @@ interface HistoryResponse {
 const TradeHub = () => {
   const location = useLocation();
   const selectedAccount = location.state?.selectedAccount;
-  const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
   const [openTrades, setOpenTrades] = useState<OpenTrade[]>([]);
+  const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -161,6 +162,11 @@ const TradeHub = () => {
                   <TotalGainCard accountId={selectedAccount?.id?.toString()} />
                   <GainWidget accountId={selectedAccount?.id?.toString()} />
                 </div>
+                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+                  <CardContent className="p-0">
+                    <OpenOrdersTable orders={openTrades} />
+                  </CardContent>
+                </Card>
                 <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
                   <CardContent className="p-0">
                     <HistoryTable history={tradeHistory} />
