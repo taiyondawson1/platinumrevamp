@@ -281,10 +281,8 @@ const TradeHub = () => {
             </div>
             <div>
               <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
-                <h3 className="text-lg font-semibold text-[#E2E8F0] mb-4">Trade History</h3>
-                <div className="space-y-2">
-                  <HistoryTable history={tradeHistory.slice(0, 10)} />
-                </div>
+                <h3 className="text-lg font-semibold text-[#E2E8F0] mb-4">Open Orders</h3>
+                <OpenOrdersTable orders={openTrades} />
               </Card>
             </div>
           </div>
@@ -317,10 +315,10 @@ const TradeHub = () => {
             </Card>
           </div>
 
-          {/* Orders Tables */}
+          {/* History Table */}
           <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
-            <h3 className="text-lg font-semibold text-[#E2E8F0] mb-4">Open Orders</h3>
-            <OpenOrdersTable orders={openTrades} />
+            <h3 className="text-lg font-semibold text-[#E2E8F0] mb-4">Trade History</h3>
+            <HistoryTable history={tradeHistory} />
           </Card>
         </div>
       )}
