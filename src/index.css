@@ -47,6 +47,12 @@
   }
 
   /* Custom Scrollbar Styling */
+  .daily-data-widget ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -90,4 +96,3 @@
          shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 rounded-lg 
          hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] !important;
 }
-
