@@ -1,9 +1,9 @@
-
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
+import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 interface OpenTrade {
@@ -57,6 +57,8 @@ interface HistoryResponse {
 }
 
 const TradeHub = () => {
+  const location = useLocation();
+  const selectedAccount = location.state?.selectedAccount;
   const [openTrades, setOpenTrades] = useState<OpenTrade[]>([]);
   const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,14 +81,14 @@ const TradeHub = () => {
 
     // Calculate percentage gain
     const totalProfit = recentProfit;
-    const percentageGain = ((recentProfit / 1) * 100);
+    const percentageGain = ((recentProfit / (selectedAccount?.balance || 1)) * 100);
 
     // Calculate floating P/L and count open orders
     const floatingPL = opens.reduce((sum, trade) => sum + trade.profit + trade.swap, 0);
     const openOrdersCount = opens.length;
 
     // Calculate maximum drawdown over the last 5 days
-    let maxBalance = 0;
+    let maxBalance = selectedAccount?.balance || 0;
     let maxDrawdown = 0;
     
     recentTrades.forEach(trade => {
@@ -139,6 +141,8 @@ const TradeHub = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!selectedAccount?.id) return;
+
       const session = localStorage.getItem("myfxbook_session");
       if (!session) {
         toast({
@@ -152,8 +156,11 @@ const TradeHub = () => {
       setIsLoading(true);
       try {
         // Fetch open trades
+        console.log("Fetching trades for account:", selectedAccount.id);
         const openTradesResponse = await fetch(
-          `https://www.myfxbook.com/api/get-open-trades.json?session=${encodeURIComponent(session)}`
+          `https://www.myfxbook.com/api/get-open-trades.json?session=${encodeURIComponent(
+            session
+          )}&id=${encodeURIComponent(selectedAccount.id)}`
         );
 
         if (!openTradesResponse.ok) {
@@ -164,8 +171,11 @@ const TradeHub = () => {
         console.log("Open Trades API Response:", openTradesData);
 
         // Fetch trade history
+        console.log("Fetching trade history for account:", selectedAccount.id);
         const historyResponse = await fetch(
-          `https://www.myfxbook.com/api/get-history.json?session=${encodeURIComponent(session)}`
+          `https://www.myfxbook.com/api/get-history.json?session=${encodeURIComponent(
+            session
+          )}&id=${encodeURIComponent(selectedAccount.id)}`
         );
 
         if (!historyResponse.ok) {
@@ -194,7 +204,7 @@ const TradeHub = () => {
     };
 
     fetchData();
-  }, [toast]);
+  }, [selectedAccount?.id, toast]);
 
   const metrics = calculateRecentMetrics(tradeHistory, openTrades);
   const tradingMetrics = calculateTradingMetrics(tradeHistory);
@@ -238,7 +248,7 @@ const TradeHub = () => {
                 <div>
                   <p className="text-sm text-[#8E9196]">Closed drawdown 5 days ago</p>
                   <p className="text-2xl font-semibold text-[#D946EF]">{metrics.maxDrawdown.toFixed(2)}%</p>
-                  <p className="text-sm text-[#8E9196]">${(metrics.maxDrawdown * 1 / 100).toFixed(2)}</p>
+                  <p className="text-sm text-[#8E9196]">${(metrics.maxDrawdown * (selectedAccount?.balance || 0) / 100).toFixed(2)}</p>
                 </div>
               </div>
             </Card>
@@ -266,7 +276,7 @@ const TradeHub = () => {
             <div className="md:col-span-2">
               <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
                 <h3 className="text-lg font-semibold text-[#E2E8F0] mb-4">Last 30 days</h3>
-                <DailyGainChart accountId={undefined} />
+                <DailyGainChart accountId={selectedAccount?.id?.toString()} />
               </Card>
             </div>
             <div>
