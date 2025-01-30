@@ -61,20 +61,6 @@
   }
 }
 
-.metric-card {
-  @apply bg-black/40 p-6 border border-silver/20 
-         hover:border-silver/30 transition-all duration-300 rounded-none 
-         backdrop-blur-sm shadow-lg !important;
-}
-
-.metric-value {
-  @apply text-3xl font-bold mb-2 text-softWhite;
-}
-
-.metric-label {
-  @apply text-mediumGray text-sm font-medium;
-}
-
 .chart-container {
   @apply bg-black/40 border border-silver/20 
          hover:border-silver/30 transition-all duration-300 rounded-none 
