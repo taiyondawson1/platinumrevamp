@@ -99,7 +99,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-[10px]">Date</TableHead>
+                <TableHead className="text-[10px] whitespace-nowrap min-w-[100px]">Date</TableHead>
                 <TableHead className="text-[10px]">Balance</TableHead>
                 <TableHead className="text-[10px]">Pips</TableHead>
                 <TableHead className="text-[10px]">Lots</TableHead>
@@ -111,7 +111,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
             <TableBody>
               {data.map((item, index) => (
                 <TableRow key={index}>
-                  <TableCell className="text-[10px]">{item.date}</TableCell>
+                  <TableCell className="text-[10px] whitespace-nowrap">{item.date}</TableCell>
                   <TableCell className="text-[10px]">${item.balance.toFixed(2)}</TableCell>
                   <TableCell className="text-[10px]">{item.pips.toFixed(1)}</TableCell>
                   <TableCell className="text-[10px]">{item.lots.toFixed(2)}</TableCell>
