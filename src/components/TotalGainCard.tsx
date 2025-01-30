@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
 interface TotalGainCardProps {
@@ -67,7 +67,13 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
   }, [accountId, toast]);
 
   return (
-    <div className="w-full bg-gradient-to-b from-[#1D1F33] to-[#141522]/40 border-0 backdrop-blur-sm shadow-[inset_0_2px_6px_rgba(255,255,255,0.2)] rounded-lg p-4">
+    <div className={cn(
+      "w-full bg-gradient-to-b from-[#1D1F33] to-[#141522]/40",
+      "border-0",
+      "backdrop-blur-sm",
+      "shadow-[inset_0_2px_6px_rgba(255,255,255,0.2)]",
+      "p-4 rounded-lg"
+    )}>
       <div className="flex flex-col items-center justify-center">
         <div className="text-xl font-bold text-center text-softWhite/70">
           Total Gain (30 Days)
@@ -76,13 +82,13 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
           {isLoading ? (
             <p className="text-center text-softWhite">Loading...</p>
           ) : (
-            <div className="text-3xl font-bold text-center">
+            <div className="text-3xl font-bold text-center text-softWhite">
               {totalGain !== null ? (
-                <span className="text-softWhite">
+                <span>
                   {totalGain >= 0 ? "+" : ""}{totalGain.toFixed(2)}%
                 </span>
               ) : (
-                <span className="text-softWhite">N/A</span>
+                <span>N/A</span>
               )}
             </div>
           )}
