@@ -1,5 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import MyFxBookLogin from "@/components/MyFxBookLogin";
 
 const TradingPage = () => {
   return (
@@ -8,7 +6,6 @@ const TradingPage = () => {
         <h2 className="text-3xl font-bold tracking-tight text-white">Trading</h2>
       </div>
       <div className="grid gap-4">
-        <MyFxBookLogin />
       </div>
     </div>
   );
