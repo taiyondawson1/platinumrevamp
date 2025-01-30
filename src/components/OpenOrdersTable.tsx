@@ -41,7 +41,7 @@ const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
   };
 
   return (
-    <Card className="w-full bg-[#141522]/40 border-[#2A2D3E]">
+    <Card className="w-full bg-[#141522]/40 !rounded-none shadow-[inset_0px_2px_4px_rgba(255,255,255,0.1),inset_0px_-2px_4px_rgba(0,0,0,0.2)]">
       <CardHeader>
         <CardTitle className="text-xl font-bold text-[#E2E8F0]">Open Trades</CardTitle>
       </CardHeader>
