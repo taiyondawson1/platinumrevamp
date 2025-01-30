@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
@@ -108,6 +107,30 @@ const TradeHub = () => {
     };
   };
 
+  // Calculate trading metrics from history
+  const calculateTradingMetrics = (history: TradeHistory[]) => {
+    if (!history.length) return { avgWin: 0, avgLoss: 0, winRate: 0 };
+
+    const winningTrades = history.filter(trade => trade.profit > 0);
+    const losingTrades = history.filter(trade => trade.profit < 0);
+
+    const avgWin = winningTrades.length > 0
+      ? winningTrades.reduce((sum, trade) => sum + trade.profit, 0) / winningTrades.length
+      : 0;
+
+    const avgLoss = losingTrades.length > 0
+      ? losingTrades.reduce((sum, trade) => sum + trade.profit, 0) / losingTrades.length
+      : 0;
+
+    const winRate = (winningTrades.length / history.length) * 100;
+
+    return {
+      avgWin,
+      avgLoss,
+      winRate
+    };
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (!selectedAccount?.id) return;
@@ -176,6 +199,7 @@ const TradeHub = () => {
   }, [selectedAccount?.id, toast]);
 
   const metrics = calculateRecentMetrics(tradeHistory, openTrades);
+  const tradingMetrics = calculateTradingMetrics(tradeHistory);
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 bg-[#0A0B0F] min-h-screen">
@@ -262,19 +286,25 @@ const TradeHub = () => {
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-[#E2E8F0]">Average Win</h3>
-                <span className="text-2xl font-bold text-[#22C55E]">£20</span>
+                <span className="text-2xl font-bold text-[#22C55E]">
+                  ${tradingMetrics.avgWin.toFixed(2)}
+                </span>
               </div>
             </Card>
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-[#E2E8F0]">Average Loss</h3>
-                <span className="text-2xl font-bold text-[#EF4444]">-£183</span>
+                <span className="text-2xl font-bold text-[#EF4444]">
+                  ${tradingMetrics.avgLoss.toFixed(2)}
+                </span>
               </div>
             </Card>
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-[#E2E8F0]">Win Rate</h3>
-                <span className="text-2xl font-bold text-[#22C55E]">76%</span>
+                <span className="text-2xl font-bold text-[#22C55E]">
+                  {tradingMetrics.winRate.toFixed(1)}%
+                </span>
               </div>
             </Card>
           </div>
