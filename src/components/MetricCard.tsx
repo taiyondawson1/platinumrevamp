@@ -15,8 +15,7 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
       "shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)]",
       "hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)]",
       "transition-shadow duration-200",
-      "border-0 outline-0 ring-0",
-      "!border-transparent",
+      "border-[0px] outline-none ring-0",
       className
     )}>
       <div className="flex flex-col items-center justify-center">
