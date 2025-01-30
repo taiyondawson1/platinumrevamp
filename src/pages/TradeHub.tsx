@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
@@ -147,13 +148,13 @@ const TradeHub = () => {
       </CardContent>
     </Card>
   ) : (
-    <>
-      <div className="flex gap-3 justify-start w-full overflow-x-auto">
+    <div className="w-full min-h-screen overflow-y-auto">
+      <div className="flex gap-3 justify-start w-full overflow-x-auto pb-4">
         <TechnicalAnalysisWidget />
         <US30AnalysisWidget />
         <BitcoinAnalysisWidget />
       </div>
-      <div className="mt-[50px] space-y-4">
+      <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TotalGainCard accountId={selectedAccount?.id?.toString()} />
           <GainWidget accountId={selectedAccount?.id?.toString()} />
@@ -196,7 +197,7 @@ const TradeHub = () => {
         </div>
         <CommunityOutlookWidget />
       </div>
-    </>
+    </div>
   );
 };
 
