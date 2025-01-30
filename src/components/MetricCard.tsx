@@ -9,7 +9,7 @@ interface MetricCardProps {
   variant?: "primary" | "secondary";
 }
 
-const MetricCard = ({ label, value, trend, className, variant = "primary" }: MetricCardProps) => {
+const MetricCard = ({ label, value, className, variant = "primary" }: MetricCardProps) => {
   const baseStyles = "w-full p-4";
   
   const variantStyles = {
@@ -26,9 +26,9 @@ const MetricCard = ({ label, value, trend, className, variant = "primary" }: Met
       <div className="flex flex-col items-center justify-center">
         <div className="text-lg text-softWhite/70 font-medium">{label}</div>
         <div className="text-2xl font-bold text-softWhite mt-1">
-          {typeof value === 'number' ? (value >= 0 ? "+" : "") + value.toFixed(2) + "%" : value}
+          {typeof value === 'number' ? `$${value}` : value}
         </div>
-        <div className="text-sm text-softWhite/50 mt-1">$1,234.56</div>
+        <div className="text-sm text-softWhite/50 mt-1">${selectedAccount?.balance?.toFixed(2) || '0.00'}</div>
       </div>
     </div>
   );

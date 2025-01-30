@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import HistoryTable from "@/components/HistoryTable";
@@ -7,6 +6,7 @@ import DailyDataWidget from "@/components/DailyDataWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import MetricCard from "@/components/MetricCard";
 
 interface OpenTrade {
   openTime: string;
@@ -323,33 +323,24 @@ const TradeHub = () => {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex flex-col items-center justify-center">
-                <p className="text-sm text-[#8E9196]">Average Win</p>
-                <span className="text-2xl font-bold text-[#22C55E]">
-                  ${Math.abs(tradingMetrics.avgWin).toFixed(2)}
-                </span>
-                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
-              </div>
-            </Card>
-            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex flex-col items-center justify-center">
-                <p className="text-sm text-[#8E9196]">Average Loss</p>
-                <span className="text-2xl font-bold text-[#EF4444]">
-                  ${Math.abs(tradingMetrics.avgLoss).toFixed(2)}
-                </span>
-                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
-              </div>
-            </Card>
-            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex flex-col items-center justify-center">
-                <p className="text-sm text-[#8E9196]">Win Rate</p>
-                <span className="text-2xl font-bold text-[#22C55E]">
-                  {tradingMetrics.winRate.toFixed(1)}%
-                </span>
-                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
-              </div>
-            </Card>
+            <MetricCard
+              label="Average Win"
+              value={Math.abs(tradingMetrics.avgWin).toFixed(2)}
+              variant="primary"
+              className="text-[#22C55E]"
+            />
+            <MetricCard
+              label="Average Loss"
+              value={Math.abs(tradingMetrics.avgLoss).toFixed(2)}
+              variant="secondary"
+              className="text-[#EF4444]"
+            />
+            <MetricCard
+              label="Win Rate"
+              value={`${tradingMetrics.winRate.toFixed(1)}%`}
+              variant="secondary"
+              className="text-[#22C55E]"
+            />
           </div>
 
           {/* New Stats Cards */}
