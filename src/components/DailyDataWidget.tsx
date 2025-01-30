@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -115,7 +116,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
               {data.map((item, index) => (
                 <TableRow key={index}>
                   <TableCell className="text-[14px] whitespace-nowrap">{item.date}</TableCell>
-                  <TableCell className="text-[14px] text-[#22c55e]">
+                  <TableCell className="text-[14px] text-[#E2E8F0]">
                     ${item.balance.toFixed(2)}
                   </TableCell>
                   <TableCell className="text-[14px]">{item.lots.toFixed(2)}</TableCell>
