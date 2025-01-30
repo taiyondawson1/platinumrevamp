@@ -142,7 +142,7 @@ const TradeHub = () => {
   }, [selectedAccount?.id, toast]);
 
   return (
-    <div className="absolute inset-0 min-h-screen w-full bg-background" style={{ marginTop: "135px" }}>
+    <div className="w-full bg-background">
       <div className="h-full overflow-y-auto">
         <div className="space-y-3 p-4 md:p-6 mx-auto">
           {isLoading ? (
