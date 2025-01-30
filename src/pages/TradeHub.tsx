@@ -272,18 +272,18 @@ const TradeHub = () => {
             </Card>
           </div>
 
-          {/* Chart Section */}
+          {/* Chart and Daily Data Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="md:col-span-3">
+            <div className="md:col-span-2">
               <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
                 <DailyGainChart accountId={selectedAccount?.id?.toString()} />
               </Card>
             </div>
-          </div>
-
-          {/* Daily Data Widget */}
-          <div>
-            <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
+            <div className="md:col-span-1">
+              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg h-full">
+                <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
+              </Card>
+            </div>
           </div>
 
           {/* Bottom Stats Cards */}
