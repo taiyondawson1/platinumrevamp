@@ -1,3 +1,4 @@
+
 import {
   Table,
   TableBody,
@@ -29,11 +30,12 @@ interface OpenTrade {
 }
 
 interface OpenOrdersTableProps {
+  accountId: string;
   orders: OpenTrade[];
 }
 
-const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
-  console.log("OpenOrdersTable received orders:", orders);
+const OpenOrdersTable = ({ orders = [], accountId }: OpenOrdersTableProps) => {
+  console.log("OpenOrdersTable received orders:", orders, "for account:", accountId);
 
   return (
     <Card className="w-full">

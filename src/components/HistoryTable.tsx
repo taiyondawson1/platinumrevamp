@@ -1,3 +1,4 @@
+
 import {
   Table,
   TableBody,
@@ -28,11 +29,12 @@ interface TradeHistory {
 }
 
 interface HistoryTableProps {
+  accountId: string;
   history: TradeHistory[];
 }
 
-const HistoryTable = ({ history = [] }: HistoryTableProps) => {
-  console.log("HistoryTable received history:", history);
+const HistoryTable = ({ history = [], accountId }: HistoryTableProps) => {
+  console.log("HistoryTable received history:", history, "for account:", accountId);
 
   return (
     <div className="w-full mt-4">
