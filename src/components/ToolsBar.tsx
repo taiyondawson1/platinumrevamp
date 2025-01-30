@@ -44,7 +44,7 @@ const ToolsBar = () => {
       {tools.map((tool, index) => (
         <Card
           key={index}
-          className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm p-4 cursor-pointer hover:bg-darkBlue/60 transition-colors shadow-lg hover:shadow-xl"
+          className="!rounded-none bg-darkBlue/40 border-[#1D1D1D] backdrop-blur-sm p-4 cursor-pointer hover:bg-darkBlue/60 transition-colors shadow-lg hover:shadow-xl"
           onClick={() => navigate(tool.path)}
         >
           <div className="flex flex-col items-center text-center gap-2">
