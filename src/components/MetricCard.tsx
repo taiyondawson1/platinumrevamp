@@ -11,8 +11,10 @@ interface MetricCardProps {
 const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
   return (
     <div className={cn(
-      "w-full bg-darkBlue/40 rounded-none border-0",
-      "transition-all duration-200",
+      "w-full bg-darkBlue/40",
+      "shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)]",
+      "hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)]",
+      "transition-shadow duration-200",
       className
     )}>
       <div className="flex flex-col items-center justify-center">
