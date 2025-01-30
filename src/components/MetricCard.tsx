@@ -9,6 +9,32 @@ interface MetricCardProps {
 }
 
 const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
+  // Helper function to determine if the value should show a dollar sign
+  const shouldShowDollar = (label: string): boolean => {
+    const dollarLabels = [
+      'Average Win', 'Average Loss', 'Total Results', 
+      'Total Balance', 'Float', 'Last Trade Take'
+    ];
+    return dollarLabels.includes(label);
+  };
+
+  // Helper function to format the value based on the label
+  const formatValue = (value: string | number, label: string): string => {
+    if (typeof value === 'number') {
+      if (shouldShowDollar(label)) {
+        return `$${Math.abs(value).toFixed(2)}`;
+      }
+      // Add percentage sign for percentage values
+      if (label.toLowerCase().includes('rate') || 
+          label.toLowerCase().includes('drawdown') || 
+          label.includes('5 days ago')) {
+        return `${value.toFixed(2)}%`;
+      }
+      return value.toFixed(2);
+    }
+    return value;
+  };
+
   return (
     <div className={cn(
       "w-full bg-darkBlue/40",
@@ -24,9 +50,8 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
       <div className="flex flex-col items-center justify-center py-2">
         <div className="text-sm text-softWhite/70 font-medium">{label}</div>
         <div className="text-lg font-bold text-softWhite">
-          {typeof value === 'number' ? (value >= 0 ? "+" : "") + value.toFixed(2) + "%" : value}
+          {formatValue(value, label)}
         </div>
-        <div className="text-xs text-softWhite/50">$1,234.56</div>
       </div>
     </div>
   );
