@@ -60,18 +60,18 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
         console.log("Daily Data Response:", responseData);
 
         if (!responseData.error) {
+          // Process and sort the data
           const formattedData = responseData.dataDaily
             .flat()
-            .map(item => {
-              const parsedDate = parse(item.date, 'MM/dd/yyyy', new Date());
-              return {
-                ...item,
-                parsedDate,
-                date: format(parsedDate, 'MMM dd, yyyy')
-              };
-            })
+            .map(item => ({
+              ...item,
+              parsedDate: parse(item.date, 'MM/dd/yyyy', new Date())
+            }))
             .sort((a, b) => b.parsedDate.getTime() - a.parsedDate.getTime())
-            .map(({ parsedDate, ...rest }) => rest);
+            .map(({ parsedDate, ...rest }) => ({
+              ...rest,
+              date: format(parsedDate, 'MMM dd, yyyy')
+            }));
 
           setData(formattedData);
         } else {
@@ -102,9 +102,9 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
 
   return (
     <div className="w-full">
-      <div className="max-h-[400px] overflow-y-auto no-scrollbar">
+      <div className="max-h-[400px] overflow-y-auto scrollbar-hide">
         <Table>
-          <TableHeader>
+          <TableHeader className="sticky top-0 bg-background z-10">
             <TableRow>
               <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px] text-white">Date</TableHead>
               <TableHead className="text-[15px] font-bold text-white">Balance</TableHead>
