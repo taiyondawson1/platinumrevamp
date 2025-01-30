@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
@@ -8,9 +9,6 @@ import CustomWidget from "@/components/CustomWidget";
 import GainWidget from "@/components/GainWidget";
 import CommunityOutlookWidget from "@/components/CommunityOutlookWidget";
 import DailyDataWidget from "@/components/DailyDataWidget";
-import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
-import US30AnalysisWidget from "@/components/US30AnalysisWidget";
-import BitcoinAnalysisWidget from "@/components/BitcoinAnalysisWidget";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -152,11 +150,6 @@ const TradeHub = () => {
         ) : (
           <>
             <div className="space-y-3 w-full">
-              <div className="flex gap-3 justify-start w-full overflow-hidden ml-[100px] -mt-[100px]">
-                <TechnicalAnalysisWidget />
-                <US30AnalysisWidget />
-                <BitcoinAnalysisWidget />
-              </div>
               <div className="mt-[50px] space-y-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <TotalGainCard accountId={selectedAccount?.id?.toString()} />
