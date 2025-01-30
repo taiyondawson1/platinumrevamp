@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -62,9 +61,11 @@
 }
 
 .metric-card {
-  @apply bg-black/40 p-6 border border-silver/20 
+  @apply bg-black/40 p-6 relative
          hover:border-silver/30 transition-all duration-300 rounded-lg 
          backdrop-blur-sm shadow-lg !important;
+  border: 1px solid transparent;
+  border-image: linear-gradient(to bottom, rgba(192, 192, 192, 0.2), transparent) 1;
 }
 
 .metric-value {
@@ -90,4 +91,3 @@
          shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 rounded-lg 
          hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] !important;
 }
-
