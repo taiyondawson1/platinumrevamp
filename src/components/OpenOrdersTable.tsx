@@ -1,98 +1,91 @@
-
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-interface Sizing {
-  type: string;
-  value: string;
-}
+const OpenOrdersTable = () => {
+  const orders = [
+    {
+      id: 1,
+      pair: "EUR/USD",
+      type: "Buy",
+      openPrice: 1.0921,
+      lots: 0.1,
+      sl: 1.0900,
+      tp: 1.0950,
+      profit: 25.50
+    },
+    {
+      id: 2,
+      pair: "GBP/USD",
+      type: "Sell",
+      openPrice: 1.3000,
+      lots: 0.2,
+      sl: 1.3050,
+      tp: 1.2950,
+      profit: -15.00
+    },
+    {
+      id: 3,
+      pair: "USD/JPY",
+      type: "Buy",
+      openPrice: 110.50,
+      lots: 0.1,
+      sl: 110.00,
+      tp: 111.00,
+      profit: 10.00
+    },
+    {
+      id: 4,
+      pair: "AUD/USD",
+      type: "Sell",
+      openPrice: 0.7500,
+      lots: 0.5,
+      sl: 0.7550,
+      tp: 0.7450,
+      profit: -20.00
+    },
+  ];
 
-interface OpenTrade {
-  openTime: string;
-  symbol: string;
-  action: string;
-  sizing: Sizing;
-  openPrice: number;
-  tp: number;
-  sl: number;
-  comment: string;
-  profit: number;
-  pips: number;
-  swap: number;
-  magic: number;
-}
-
-interface OpenOrdersTableProps {
-  orders: OpenTrade[];
-}
-
-const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
-  console.log("OpenOrdersTable received orders:", orders);
-
-  const calculateTotalProfit = (order: OpenTrade) => {
-    return order.profit + order.swap;
+  const getOrderTypeColor = (type: string) => {
+    return type === "Buy" ? "text-green-500" : "text-red-500";
   };
 
   return (
-    <Card className="w-full bg-[#141522]/40 !rounded-none shadow-[inset_0px_2px_4px_rgba(255,255,255,0.1),inset_0px_-2px_4px_rgba(0,0,0,0.2)]">
+    <Card className="w-full bg-[#141522]/40 border-[#2A2D3E]">
       <CardHeader>
         <CardTitle className="text-xl font-bold text-[#E2E8F0]">Open Trades</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
-            <TableRow className="border-[#2A2D3E]">
-              <TableHead>Time</TableHead>
-              <TableHead>Symbol</TableHead>
+            <TableRow>
+              <TableHead>Pair</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Size</TableHead>
               <TableHead>Open Price</TableHead>
+              <TableHead>Lots</TableHead>
               <TableHead>SL</TableHead>
               <TableHead>TP</TableHead>
-              <TableHead>Swap</TableHead>
               <TableHead>Profit</TableHead>
-              <TableHead>Total</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders && orders.length > 0 ? (
-              orders.map((order, index) => (
-                <TableRow 
-                  key={`${order.symbol}-${order.openTime}-${index}`}
-                  className="border-[#2A2D3E]"
-                >
-                  <TableCell className="text-[#E2E8F0]">{order.openTime}</TableCell>
-                  <TableCell className="text-[#E2E8F0]">{order.symbol}</TableCell>
-                  <TableCell className="text-[#E2E8F0]">{order.action}</TableCell>
-                  <TableCell className="text-[#E2E8F0]">{order.sizing.value}</TableCell>
-                  <TableCell className="text-[#E2E8F0]">{order.openPrice.toFixed(2)}</TableCell>
-                  <TableCell className="text-[#E2E8F0]">{order.sl.toFixed(2)}</TableCell>
-                  <TableCell className="text-[#E2E8F0]">{order.tp.toFixed(2)}</TableCell>
-                  <TableCell className={`${order.swap >= 0 ? "text-green-500" : "text-red-500"}`}>
-                    {order.swap.toFixed(2)}
-                  </TableCell>
-                  <TableCell className={`${order.profit >= 0 ? "text-green-500" : "text-red-500"}`}>
-                    {order.profit.toFixed(2)}
-                  </TableCell>
-                  <TableCell className={`${calculateTotalProfit(order) >= 0 ? "text-green-500" : "text-red-500"}`}>
-                    {calculateTotalProfit(order).toFixed(2)}
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={10} className="text-center py-4 text-[#E2E8F0]">
-                  No open trades found
+            {orders.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell>{order.pair}</TableCell>
+                <TableCell>
+                  <span className={getOrderTypeColor(order.type)}>{order.type}</span>
                 </TableCell>
+                <TableCell>{order.openPrice}</TableCell>
+                <TableCell>{order.lots}</TableCell>
+                <TableCell>{order.sl}</TableCell>
+                <TableCell>{order.tp}</TableCell>
+                <TableCell>{order.profit}</TableCell>
               </TableRow>
-            )}
+            ))}
           </TableBody>
         </Table>
       </CardContent>
