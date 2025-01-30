@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import HistoryTable from "@/components/HistoryTable";
@@ -324,7 +325,7 @@ const TradeHub = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
               <div className="flex flex-col items-center justify-center">
-                <p className="text-sm text-[#8E9196]">Profitable Trade Average</p>
+                <p className="text-sm text-[#8E9196]">Average Win</p>
                 <span className="text-2xl font-bold text-[#22C55E]">
                   ${Math.abs(tradingMetrics.avgWin).toFixed(2)}
                 </span>
