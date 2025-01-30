@@ -269,7 +269,7 @@ const MyFxBookLogin = () => {
   };
 
   const handleAccountClick = (account: MyFxBookAccount) => {
-    navigate('/blank', { 
+    navigate('/tradehub', { 
       state: { 
         selectedAccount: {
           id: account.id,

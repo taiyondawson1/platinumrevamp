@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,7 +13,6 @@ import TradingPage from "@/pages/Trading";
 import CoursesPage from "@/pages/Courses";
 import TradeHub from "@/pages/TradeHub";
 import MyFxBookLoginPage from "@/pages/MyFxBookLoginPage";
-import BlankPage from "@/pages/BlankPage";
 import TradingViewTickerTape from "@/components/TradingViewTickerTape";
 
 const queryClient = new QueryClient();
@@ -23,15 +21,6 @@ function MainContent() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const isSetfilesPage = location.pathname === "/setfiles";
-  const isBlankPage = location.pathname === "/blank";
-
-  if (isBlankPage) {
-    return (
-      <Routes>
-        <Route path="/blank" element={<BlankPage />} />
-      </Routes>
-    );
-  }
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
