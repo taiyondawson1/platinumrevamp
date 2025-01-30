@@ -46,10 +46,14 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
       }
 
       try {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 12);
+
         const response = await fetch(
           `https://www.myfxbook.com/api/get-data-daily.json?session=${encodeURIComponent(
             session
-          )}&id=${encodeURIComponent(accountId)}`
+          )}&id=${encodeURIComponent(accountId)}&start=${startDate.toISOString().split('T')[0]}&end=${endDate.toISOString().split('T')[0]}`
         );
 
         if (!response.ok) {
@@ -60,19 +64,12 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
         console.log("Daily Data Response:", responseData);
 
         if (!responseData.error) {
-          // Process and sort the data
-          const formattedData = responseData.dataDaily
-            .flat()
+          const formattedData = responseData.dataDaily.flat()
             .map(item => ({
               ...item,
-              parsedDate: parse(item.date, 'MM/dd/yyyy', new Date())
+              date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'MMM dd, yyyy')
             }))
-            .sort((a, b) => b.parsedDate.getTime() - a.parsedDate.getTime())
-            .map(({ parsedDate, ...rest }) => ({
-              ...rest,
-              date: format(parsedDate, 'MMM dd, yyyy')
-            }));
-
+            .slice(0, 12);
           setData(formattedData);
         } else {
           throw new Error(responseData.message || "Failed to fetch daily data");
@@ -92,44 +89,43 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
     fetchData();
   }, [accountId, toast]);
 
-  if (isLoading) {
-    return <p className="text-center text-muted-foreground py-4">Loading data...</p>;
-  }
-
-  if (!data.length) {
-    return <p className="text-center text-muted-foreground py-4">No data available</p>;
-  }
-
   return (
     <div className="w-full">
-      <div className="max-h-[400px] overflow-y-auto scrollbar-hide">
-        <Table>
-          <TableHeader className="sticky top-0 bg-background z-10">
-            <TableRow>
-              <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px] text-white">Date</TableHead>
-              <TableHead className="text-[15px] font-bold text-white">Balance</TableHead>
-              <TableHead className="text-[15px] font-bold text-white">Pips</TableHead>
-              <TableHead className="text-[10px]">Lots</TableHead>
-              <TableHead className="text-[10px]">Floating P/L</TableHead>
-              <TableHead className="text-[10px]">Profit</TableHead>
-              <TableHead className="text-[10px]">Growth</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell className="text-[10px] whitespace-nowrap">{item.date}</TableCell>
-                <TableCell className="text-[10px]">${item.balance.toFixed(2)}</TableCell>
-                <TableCell className="text-[10px]">{item.pips.toFixed(1)}</TableCell>
-                <TableCell className="text-[10px]">{item.lots.toFixed(2)}</TableCell>
-                <TableCell className="text-[10px]">${item.floatingPL.toFixed(2)}</TableCell>
-                <TableCell className="text-[10px]">${item.profit.toFixed(2)}</TableCell>
-                <TableCell className="text-[10px]">{item.growthEquity.toFixed(2)}%</TableCell>
+      <h3 className="text-lg font-semibold mb-4">Daily Trading Data</h3>
+      {isLoading ? (
+        <p className="text-center text-muted-foreground py-4">Loading data...</p>
+      ) : data.length > 0 ? (
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px] text-white">Date</TableHead>
+                <TableHead className="text-[15px] font-bold text-white">Balance</TableHead>
+                <TableHead className="text-[15px] font-bold text-white">Pips</TableHead>
+                <TableHead className="text-[10px]">Lots</TableHead>
+                <TableHead className="text-[10px]">Floating P/L</TableHead>
+                <TableHead className="text-[10px]">Profit</TableHead>
+                <TableHead className="text-[10px]">Growth</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {data.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell className="text-[10px] whitespace-nowrap">{item.date}</TableCell>
+                  <TableCell className="text-[10px]">${item.balance.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">{item.pips.toFixed(1)}</TableCell>
+                  <TableCell className="text-[10px]">{item.lots.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">${item.floatingPL.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">${item.profit.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">{item.growthEquity.toFixed(2)}%</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <p className="text-center text-muted-foreground py-4">No data available</p>
+      )}
     </div>
   );
 };
