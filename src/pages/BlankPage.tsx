@@ -1,7 +1,7 @@
 
 const BlankPage = () => {
   return (
-    <div></div>
+    <div className="w-full h-screen bg-[#090A14]"></div>
   );
 };
 
