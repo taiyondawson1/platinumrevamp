@@ -1,6 +1,8 @@
+
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import HistoryTable from "@/components/HistoryTable";
+import DailyGainChart from "@/components/DailyGainChart";
 import DailyDataWidget from "@/components/DailyDataWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -63,24 +65,30 @@ const TradeHub = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  // Calculate metrics for the last 5 days
   const calculateRecentMetrics = (history: TradeHistory[], opens: OpenTrade[]) => {
     const fiveDaysAgo = new Date();
     fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
 
+    // Filter trades from last 5 days
     const recentTrades = history.filter(trade => 
       new Date(trade.closeTime) >= fiveDaysAgo
     );
 
+    // Calculate total profit/loss for recent trades
     const recentProfit = recentTrades.reduce((sum, trade) => 
       sum + trade.profit + trade.interest + trade.commission, 0
     );
 
+    // Calculate percentage gain
     const totalProfit = recentProfit;
     const percentageGain = ((recentProfit / (selectedAccount?.balance || 1)) * 100);
 
+    // Calculate floating P/L and count open orders
     const floatingPL = opens.reduce((sum, trade) => sum + trade.profit + trade.swap, 0);
     const openOrdersCount = opens.length;
 
+    // Calculate maximum drawdown over the last 5 days
     let maxBalance = selectedAccount?.balance || 0;
     let maxDrawdown = 0;
     
@@ -100,6 +108,7 @@ const TradeHub = () => {
     };
   };
 
+  // Calculate all-time trading metrics from history
   const calculateTradingMetrics = (history: TradeHistory[]) => {
     if (!history.length) return { avgWin: 0, avgLoss: 0, winRate: 0 };
 
@@ -147,6 +156,7 @@ const TradeHub = () => {
 
       setIsLoading(true);
       try {
+        // Fetch open trades
         console.log("Fetching trades for account:", selectedAccount.id);
         const openTradesResponse = await fetch(
           `https://www.myfxbook.com/api/get-open-trades.json?session=${encodeURIComponent(
@@ -161,6 +171,7 @@ const TradeHub = () => {
         const openTradesData: OpenTradesResponse = await openTradesResponse.json();
         console.log("Open Trades API Response:", openTradesData);
 
+        // Fetch trade history
         console.log("Fetching trade history for account:", selectedAccount.id);
         const historyResponse = await fetch(
           `https://www.myfxbook.com/api/get-history.json?session=${encodeURIComponent(
@@ -259,6 +270,16 @@ const TradeHub = () => {
                 </div>
               </div>
             </Card>
+          </div>
+
+          {/* Chart Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="md:col-span-3">
+              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
+                <h3 className="text-lg font-semibold text-[#E2E8F0] mb-4">Last 30 days</h3>
+                <DailyGainChart accountId={selectedAccount?.id?.toString()} />
+              </Card>
+            </div>
           </div>
 
           {/* Daily Data Widget */}
