@@ -93,6 +93,10 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
     fetchData();
   }, [accountId, toast]);
 
+  const getValueColor = (value: number) => {
+    return value >= 0 ? 'text-[#22c55e]' : 'text-[#ea384c]';
+  };
+
   return (
     <div className="w-full">
       {isLoading ? (
@@ -105,22 +109,24 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
                 <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px] text-white">Date</TableHead>
                 <TableHead className="text-[15px] font-bold text-white">Balance</TableHead>
                 <TableHead className="text-[15px] font-bold text-white">Profit</TableHead>
-                <TableHead className="text-[10px]">Lots</TableHead>
-                <TableHead className="text-[10px]">Floating P/L</TableHead>
-                <TableHead className="text-[10px]">Profit</TableHead>
-                <TableHead className="text-[10px]">Growth</TableHead>
+                <TableHead className="text-[15px] font-bold text-white">Lots</TableHead>
+                <TableHead className="text-[15px] font-bold text-white">Floating P/L</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {data.map((item, index) => (
                 <TableRow key={index}>
-                  <TableCell className="text-[10px] whitespace-nowrap">{item.date}</TableCell>
-                  <TableCell className="text-[10px]">${item.balance.toFixed(2)}</TableCell>
-                  <TableCell className="text-[10px]">${item.profit.toFixed(2)}</TableCell>
-                  <TableCell className="text-[10px]">{item.lots.toFixed(2)}</TableCell>
-                  <TableCell className="text-[10px]">${item.floatingPL.toFixed(2)}</TableCell>
-                  <TableCell className="text-[10px]">${item.profit.toFixed(2)}</TableCell>
-                  <TableCell className="text-[10px]">{item.growthEquity.toFixed(2)}%</TableCell>
+                  <TableCell className="text-[14px] whitespace-nowrap">{item.date}</TableCell>
+                  <TableCell className={`text-[14px] ${getValueColor(item.balance)}`}>
+                    ${item.balance.toFixed(2)}
+                  </TableCell>
+                  <TableCell className={`text-[14px] ${getValueColor(item.profit)}`}>
+                    ${item.profit.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="text-[14px]">{item.lots.toFixed(2)}</TableCell>
+                  <TableCell className={`text-[14px] ${getValueColor(item.floatingPL)}`}>
+                    ${item.floatingPL.toFixed(2)}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
