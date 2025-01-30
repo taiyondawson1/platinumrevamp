@@ -45,7 +45,10 @@ const Sidebar = () => {
   }
 
   return (
-    <div className="fixed left-[44px] top-[270px] h-[calc(100vh-290px)] flex flex-col z-[55]">
+    <div className={cn(
+      "fixed left-[44px] top-[270px] h-[calc(100vh-290px)] flex flex-col",
+      location.pathname !== "/tradehub" && "z-[55]"
+    )}>
       {/* Navigation Box */}
       <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] mb-4 rounded-md">
         <div className="space-y-1">

@@ -148,7 +148,7 @@ const TradeHub = () => {
       </CardContent>
     </Card>
   ) : (
-    <div className="w-full min-h-screen overflow-y-auto">
+    <div className="relative pt-6 px-6 min-h-screen w-full overflow-y-auto">
       <div className="flex gap-3 justify-start w-full overflow-x-auto pb-4">
         <TechnicalAnalysisWidget />
         <US30AnalysisWidget />
