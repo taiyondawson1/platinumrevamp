@@ -11,7 +11,7 @@ import CustomWidget from "@/components/CustomWidget";
 
 const BlankPage = () => {
   return (
-    <div className="w-full h-screen bg-[#090A14] space-y-3 px-[50px] py-4 md:px-[50px] md:py-6">
+    <div className="w-full h-screen bg-[#090A14] space-y-3 px-[200px] py-4 md:px-[200px] md:py-6">
       <div className="space-y-3 w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <Card className="bg-[#090A14] border border-white/5 shadow-lg">
