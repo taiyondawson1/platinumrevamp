@@ -63,7 +63,7 @@
 
 .metric-card {
   @apply bg-black/40 p-6 border border-silver/20 
-         hover:border-silver/30 transition-all duration-300 rounded-sm 
+         hover:border-silver/30 transition-all duration-300 rounded-none 
          backdrop-blur-sm shadow-lg !important;
 }
 
@@ -77,7 +77,7 @@
 
 .chart-container {
   @apply bg-black/40 border border-silver/20 
-         hover:border-silver/30 transition-all duration-300 rounded-sm 
+         hover:border-silver/30 transition-all duration-300 rounded-none 
          backdrop-blur-sm shadow-lg !important;
 }
 
