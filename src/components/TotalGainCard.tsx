@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 
 interface TotalGainCardProps {
@@ -67,34 +67,28 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
   }, [accountId, toast]);
 
   return (
-    <div className={cn(
-      "w-full bg-gradient-to-b from-[#1D1F33] to-[#141522]/40",
-      "border-0",
-      "backdrop-blur-sm",
-      "shadow-[inset_0_2px_6px_rgba(255,255,255,0.2)]",
-      "p-4 rounded-lg"
-    )}>
-      <div className="flex flex-col items-center justify-center">
-        <div className="text-xl font-bold text-center text-softWhite/70">
+    <Card className="w-full bg-[#1A1F2C] border-0 shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),inset_0_-2px_4px_rgba(0,0,0,0.3)] rounded-none">
+      <CardHeader className="flex items-center justify-center">
+        <CardTitle className="text-xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-[#8E9196] to-[#59595b] shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
           Total Gain (30 Days)
-        </div>
-        <div className="mt-4">
-          {isLoading ? (
-            <p className="text-center text-softWhite">Loading...</p>
-          ) : (
-            <div className="text-3xl font-bold text-center text-softWhite">
-              {totalGain !== null ? (
-                <span>
-                  {totalGain >= 0 ? "+" : ""}{totalGain.toFixed(2)}%
-                </span>
-              ) : (
-                <span>N/A</span>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex items-center justify-center">
+        {isLoading ? (
+          <p className="text-center text-softWhite">Loading...</p>
+        ) : (
+          <div className="text-3xl font-bold text-center">
+            {totalGain !== null ? (
+              <span className="text-softWhite bg-clip-text text-transparent bg-gradient-to-b from-[#ffffff] to-[#a8a8a8] shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
+                {totalGain >= 0 ? "+" : ""}{totalGain.toFixed(2)}%
+              </span>
+            ) : (
+              <span className="text-softWhite">N/A</span>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
