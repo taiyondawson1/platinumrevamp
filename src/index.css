@@ -87,6 +87,6 @@
 
 .tradehub-card {
   @apply bg-darkBlue/40 border-silver/20 backdrop-blur-sm 
-         shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 rounded-lg 
+         shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 rounded-none 
          hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] !important;
 }
