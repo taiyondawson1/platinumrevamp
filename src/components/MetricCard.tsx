@@ -11,9 +11,9 @@ interface MetricCardProps {
 const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
   return (
     <div className={cn(
-      "w-full bg-darkBlue/40 border-mediumGray/20 !rounded-none p-4",
-      "shadow-[inset_-2px_-2px_4px_rgba(255,255,255,0.1),inset_2px_2px_4px_rgba(0,0,0,0.2)]",
-      "hover:shadow-[inset_-3px_-3px_6px_rgba(255,255,255,0.1),inset_3px_3px_6px_rgba(0,0,0,0.2)]",
+      "w-full bg-darkBlue/40 !rounded-none p-4",
+      "shadow-[inset_-4px_-4px_8px_rgba(255,255,255,0.1),inset_4px_4px_8px_rgba(0,0,0,0.3)]",
+      "hover:shadow-[inset_-6px_-6px_12px_rgba(255,255,255,0.1),inset_6px_6px_12px_rgba(0,0,0,0.3)]",
       "transition-shadow duration-200",
       className
     )}>
@@ -29,4 +29,3 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
 };
 
 export default MetricCard;
-
