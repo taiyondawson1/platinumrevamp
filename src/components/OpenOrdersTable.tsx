@@ -1,3 +1,4 @@
+
 import {
   Table,
   TableBody,
@@ -35,15 +36,19 @@ interface OpenOrdersTableProps {
 const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
   console.log("OpenOrdersTable received orders:", orders);
 
+  const calculateTotalProfit = (order: OpenTrade) => {
+    return order.profit + order.swap;
+  };
+
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-[#141522]/40 border-[#2A2D3E]">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">Open Trades</CardTitle>
+        <CardTitle className="text-xl font-bold text-[#E2E8F0]">Open Trades</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="border-[#2A2D3E]">
               <TableHead>Time</TableHead>
               <TableHead>Symbol</TableHead>
               <TableHead>Type</TableHead>
@@ -51,32 +56,39 @@ const OpenOrdersTable = ({ orders = [] }: OpenOrdersTableProps) => {
               <TableHead>Open Price</TableHead>
               <TableHead>SL</TableHead>
               <TableHead>TP</TableHead>
+              <TableHead>Swap</TableHead>
               <TableHead>Profit</TableHead>
-              <TableHead>Pips</TableHead>
+              <TableHead>Total</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {orders && orders.length > 0 ? (
               orders.map((order, index) => (
-                <TableRow key={`${order.symbol}-${order.openTime}-${index}`}>
-                  <TableCell>{order.openTime}</TableCell>
-                  <TableCell>{order.symbol}</TableCell>
-                  <TableCell>{order.action}</TableCell>
-                  <TableCell>{order.sizing.value}</TableCell>
-                  <TableCell>{order.openPrice}</TableCell>
-                  <TableCell>{order.sl}</TableCell>
-                  <TableCell>{order.tp}</TableCell>
-                  <TableCell className={order.profit >= 0 ? "text-green-500" : "text-red-500"}>
+                <TableRow 
+                  key={`${order.symbol}-${order.openTime}-${index}`}
+                  className="border-[#2A2D3E]"
+                >
+                  <TableCell className="text-[#E2E8F0]">{order.openTime}</TableCell>
+                  <TableCell className="text-[#E2E8F0]">{order.symbol}</TableCell>
+                  <TableCell className="text-[#E2E8F0]">{order.action}</TableCell>
+                  <TableCell className="text-[#E2E8F0]">{order.sizing.value}</TableCell>
+                  <TableCell className="text-[#E2E8F0]">{order.openPrice.toFixed(2)}</TableCell>
+                  <TableCell className="text-[#E2E8F0]">{order.sl.toFixed(2)}</TableCell>
+                  <TableCell className="text-[#E2E8F0]">{order.tp.toFixed(2)}</TableCell>
+                  <TableCell className={`${order.swap >= 0 ? "text-green-500" : "text-red-500"}`}>
+                    {order.swap.toFixed(2)}
+                  </TableCell>
+                  <TableCell className={`${order.profit >= 0 ? "text-green-500" : "text-red-500"}`}>
                     {order.profit.toFixed(2)}
                   </TableCell>
-                  <TableCell className={order.pips >= 0 ? "text-green-500" : "text-red-500"}>
-                    {order.pips.toFixed(1)}
+                  <TableCell className={`${calculateTotalProfit(order) >= 0 ? "text-green-500" : "text-red-500"}`}>
+                    {calculateTotalProfit(order).toFixed(2)}
                   </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={9} className="text-center py-4">
+                <TableCell colSpan={10} className="text-center py-4 text-[#E2E8F0]">
                   No open trades found
                 </TableCell>
               </TableRow>
