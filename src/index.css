@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -56,13 +57,13 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-silver/30 hover:bg-silver/40 transition-colors rounded-none;
+    @apply bg-silver/30 hover:bg-silver/40 transition-colors rounded-full;
   }
 }
 
 .metric-card {
-  @apply bg-black/40 p-6 border border-silver/20 rounded-none
-         hover:border-silver/30 transition-all duration-300 
+  @apply bg-black/40 p-6 border border-silver/20 
+         hover:border-silver/30 transition-all duration-300 rounded-none 
          backdrop-blur-sm shadow-lg !important;
 }
 
@@ -75,8 +76,8 @@
 }
 
 .chart-container {
-  @apply bg-black/40 border border-silver/20 rounded-none
-         hover:border-silver/30 transition-all duration-300
+  @apply bg-black/40 border border-silver/20 
+         hover:border-silver/30 transition-all duration-300 rounded-none 
          backdrop-blur-sm shadow-lg !important;
 }
 
