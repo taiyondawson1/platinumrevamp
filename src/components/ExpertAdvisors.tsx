@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Download } from "lucide-react";
@@ -45,10 +46,10 @@ const ExpertAdvisors = () => {
       <h1 className="text-xl font-semibold text-softWhite mb-4">Expert Advisors</h1>
       
       <div className="grid gap-3 relative">
-        {/* Left fade gradient - made more subtle and removed shadow */}
+        {/* Left fade gradient */}
         <div className="absolute left-0 top-0 w-16 h-full bg-gradient-to-r from-darkBase to-transparent z-10" />
         
-        {/* Right fade gradient - made more subtle and removed shadow */}
+        {/* Right fade gradient */}
         <div className="absolute right-0 top-0 w-16 h-full bg-gradient-to-l from-darkBase to-transparent z-10" />
         
         {experts.map((expert) => (
@@ -56,7 +57,7 @@ const ExpertAdvisors = () => {
             key={expert.name}
             className="group bg-darkBlue/40 backdrop-blur-sm p-3 border border-mediumGray/20 
                      hover:border-mediumGray/30 transition-all duration-300
-                     relative overflow-hidden"
+                     relative overflow-hidden !rounded-none"
           >
             {/* Shiny gold reflective effect */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
@@ -85,9 +86,8 @@ const ExpertAdvisors = () => {
                       className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 
                                shadow-embossed hover:shadow-embossed-hover transition-all duration-300
                                border border-[#FFD700]/30 hover:border-[#FFD700]/40 text-xs h-7
-                               relative overflow-hidden group"
+                               relative overflow-hidden group !rounded-none"
                     >
-                      {/* Gold shine animation for download button */}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
                                     bg-gradient-to-r from-transparent via-[#ffd70022] to-transparent
                                     translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000
@@ -100,7 +100,7 @@ const ExpertAdvisors = () => {
                       variant="outline"
                       size="sm"
                       className="border-mediumGray/20 hover:bg-mediumGray/10 text-mediumGray 
-                               hover:text-softWhite transition-colors duration-300 text-xs h-7"
+                               hover:text-softWhite transition-colors duration-300 text-xs h-7 !rounded-none"
                     >
                       Setup guide
                     </Button>
