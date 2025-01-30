@@ -110,7 +110,17 @@ const TradeHub = () => {
 
   // Calculate all-time trading metrics from history
   const calculateTradingMetrics = (history: TradeHistory[]) => {
-    if (!history.length) return { avgWin: 0, avgLoss: 0, winRate: 0 };
+    if (!history.length) return {
+      avgWin: 0,
+      avgLoss: 0,
+      winRate: 0,
+      totalProfit: 0,
+      totalBalance: 0,
+      profitFactor: 0,
+      maxClosedDrawdown: 0,
+      totalOrders: 0,
+      lastTradeTake: 0
+    };
 
     const winningTrades = history.filter(trade => 
       (trade.profit + trade.interest + trade.commission) > 0
@@ -119,24 +129,45 @@ const TradeHub = () => {
       (trade.profit + trade.interest + trade.commission) <= 0
     );
 
-    const avgWin = winningTrades.length > 0
-      ? winningTrades.reduce((sum, trade) => 
-          sum + trade.profit + trade.interest + trade.commission, 0
-        ) / winningTrades.length
-      : 0;
+    const totalWinnings = winningTrades.reduce((sum, trade) => 
+      sum + trade.profit + trade.interest + trade.commission, 0
+    );
 
-    const avgLoss = losingTrades.length > 0
-      ? losingTrades.reduce((sum, trade) => 
-          sum + trade.profit + trade.interest + trade.commission, 0
-        ) / losingTrades.length
-      : 0;
+    const totalLosses = Math.abs(losingTrades.reduce((sum, trade) => 
+      sum + trade.profit + trade.interest + trade.commission, 0
+    ));
 
-    const winRate = (winningTrades.length / history.length) * 100;
+    const profitFactor = totalLosses === 0 ? totalWinnings : totalWinnings / totalLosses;
+
+    let maxBalance = selectedAccount?.balance || 0;
+    let maxDrawdown = 0;
+    
+    history.forEach(trade => {
+      const tradeResult = trade.profit + trade.interest + trade.commission;
+      maxBalance = Math.max(maxBalance, maxBalance + tradeResult);
+      const drawdown = ((maxBalance - (maxBalance + tradeResult)) / maxBalance) * 100;
+      maxDrawdown = Math.max(maxDrawdown, drawdown);
+    });
+
+    const lastTrade = history[0];
+    const lastTradeTake = lastTrade ? lastTrade.profit + lastTrade.interest + lastTrade.commission : 0;
 
     return {
-      avgWin,
-      avgLoss,
-      winRate
+      avgWin: winningTrades.length > 0
+        ? totalWinnings / winningTrades.length
+        : 0,
+      avgLoss: losingTrades.length > 0
+        ? totalLosses / losingTrades.length
+        : 0,
+      winRate: (winningTrades.length / history.length) * 100,
+      totalProfit: history.reduce((sum, trade) => 
+        sum + trade.profit + trade.interest + trade.commission, 0
+      ),
+      totalBalance: selectedAccount?.balance || 0,
+      profitFactor,
+      maxClosedDrawdown: maxDrawdown,
+      totalOrders: history.length,
+      lastTradeTake
     };
   };
 
@@ -272,23 +303,7 @@ const TradeHub = () => {
             </Card>
           </div>
 
-          {/* Chart and Daily Data Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="md:col-span-2">
-              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg" style={{ height: '400px' }}>
-                <DailyGainChart accountId={selectedAccount?.id?.toString()} />
-              </Card>
-            </div>
-            <div className="md:col-span-1">
-              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg" style={{ height: '400px' }}>
-                <ScrollArea className="h-full pr-4">
-                  <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
-                </ScrollArea>
-              </Card>
-            </div>
-          </div>
-
-          {/* Bottom Stats Cards */}
+          {/* Bottom Stats Cards - First Row */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
               <div className="flex justify-between items-center mb-4">
@@ -311,6 +326,62 @@ const TradeHub = () => {
                 <h3 className="text-lg font-semibold text-[#E2E8F0]">Win Rate</h3>
                 <span className="text-2xl font-bold text-[#22C55E]">
                   {tradingMetrics.winRate.toFixed(1)}%
+                </span>
+              </div>
+            </Card>
+          </div>
+
+          {/* Bottom Stats Cards - Second Row */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-[#E2E8F0]">Total Results</h3>
+                <span className={`text-2xl font-bold ${tradingMetrics.totalProfit >= 0 ? 'text-[#22C55E]' : 'text-[#EF4444]'}`}>
+                  ${tradingMetrics.totalProfit.toFixed(2)}
+                </span>
+              </div>
+            </Card>
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-[#E2E8F0]">Total Balance</h3>
+                <span className="text-2xl font-bold text-[#22C55E]">
+                  ${tradingMetrics.totalBalance.toFixed(2)}
+                </span>
+              </div>
+            </Card>
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-[#E2E8F0]">Profit Factor</h3>
+                <span className="text-2xl font-bold text-[#22C55E]">
+                  {tradingMetrics.profitFactor.toFixed(2)}
+                </span>
+              </div>
+            </Card>
+          </div>
+
+          {/* Bottom Stats Cards - Third Row */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-[#E2E8F0]">Max Closed Drawdown</h3>
+                <span className="text-2xl font-bold text-[#EF4444]">
+                  {tradingMetrics.maxClosedDrawdown.toFixed(2)}%
+                </span>
+              </div>
+            </Card>
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-[#E2E8F0]">Total Orders</h3>
+                <span className="text-2xl font-bold text-[#8B5CF6]">
+                  {tradingMetrics.totalOrders}
+                </span>
+              </div>
+            </Card>
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-[#E2E8F0]">Last Trade Take</h3>
+                <span className={`text-2xl font-bold ${tradingMetrics.lastTradeTake >= 0 ? 'text-[#22C55E]' : 'text-[#EF4444]'}`}>
+                  ${tradingMetrics.lastTradeTake.toFixed(2)}
                 </span>
               </div>
             </Card>
