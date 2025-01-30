@@ -67,9 +67,11 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
   }, [accountId, toast]);
 
   return (
-    <Card className="w-full bg-transparent border-0 shadow-none">
+    <Card className="w-full bg-[#1A1F2C] border-0 shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),inset_0_-2px_4px_rgba(0,0,0,0.3)] rounded-none">
       <CardHeader className="flex items-center justify-center">
-        <CardTitle className="text-xl font-bold text-softWhite text-center">Total Gain (30 Days)</CardTitle>
+        <CardTitle className="text-xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-[#8E9196] to-[#59595b] shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
+          Total Gain (30 Days)
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex items-center justify-center">
         {isLoading ? (
@@ -77,7 +79,7 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
         ) : (
           <div className="text-3xl font-bold text-center">
             {totalGain !== null ? (
-              <span className="text-softWhite">
+              <span className="text-softWhite bg-clip-text text-transparent bg-gradient-to-b from-[#ffffff] to-[#a8a8a8] shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
                 {totalGain >= 0 ? "+" : ""}{totalGain.toFixed(2)}%
               </span>
             ) : (
