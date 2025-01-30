@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,7 +21,6 @@ function MainContent() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const isSetfilesPage = location.pathname === "/setfiles";
-  const isTradeHub = location.pathname === "/tradehub";
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
@@ -37,7 +35,7 @@ function MainContent() {
               <TradingViewTickerTape />
             </div>
           )}
-          {!isHomePage && !isSetfilesPage && !isTradeHub && (
+          {!isHomePage && !isSetfilesPage && (
             <div className="fixed left-0 right-0 top-[230px] z-[50] px-[44px]">
               <Separator className="h-[1px] bg-silver/20" />
             </div>

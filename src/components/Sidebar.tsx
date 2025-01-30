@@ -1,4 +1,3 @@
-
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Home, LayoutDashboard, BarChart, Bot, FileText, BookOpen } from "lucide-react";
@@ -38,17 +37,9 @@ const toolItems = [
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
-  // If we're on the TradeHub page, don't render the sidebar
-  if (location.pathname === "/tradehub") {
-    return null;
-  }
 
   return (
-    <div className={cn(
-      "fixed left-[44px] top-[270px] h-[calc(100vh-290px)] flex flex-col",
-      location.pathname !== "/tradehub" && "z-[55]"
-    )}>
+    <div className="fixed left-[44px] top-[270px] h-[calc(100vh-290px)] flex flex-col z-[55]">
       {/* Navigation Box */}
       <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] mb-4 rounded-md">
         <div className="space-y-1">
