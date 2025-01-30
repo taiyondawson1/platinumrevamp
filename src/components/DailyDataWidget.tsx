@@ -99,9 +99,9 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px]">Date</TableHead>
-                <TableHead className="text-[15px] font-bold">Balance</TableHead>
-                <TableHead className="text-[15px] font-bold">Pips</TableHead>
+                <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px] text-white">Date</TableHead>
+                <TableHead className="text-[15px] font-bold text-white">Balance</TableHead>
+                <TableHead className="text-[15px] font-bold text-white">Pips</TableHead>
                 <TableHead className="text-[10px]">Lots</TableHead>
                 <TableHead className="text-[10px]">Floating P/L</TableHead>
                 <TableHead className="text-[10px]">Profit</TableHead>
