@@ -11,11 +11,11 @@ interface MetricCardProps {
 const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
   return (
     <div className={cn(
-      "w-full bg-darkBlue/40",
-      "shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)]",
-      "hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)]",
-      "transition-shadow duration-200",
-      "p-4 rounded-none",
+      "w-full bg-gradient-to-b from-[#1D1F33] to-[#141522]/40",
+      "border-0",
+      "backdrop-blur-sm",
+      "shadow-[inset_0_2px_6px_rgba(255,255,255,0.2)]",
+      "p-4 rounded-lg",
       className
     )}>
       <div className="flex flex-col items-center justify-center">
@@ -30,4 +30,3 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
 };
 
 export default MetricCard;
-
