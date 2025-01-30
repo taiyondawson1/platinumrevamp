@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { format, parse } from "date-fns";
@@ -48,7 +48,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
       try {
         const endDate = new Date();
         const startDate = new Date();
-        startDate.setDate(startDate.getDate() - 12);
+        startDate.setDate(startDate.getDate() - 30); // Increased to fetch more history
 
         const response = await fetch(
           `https://www.myfxbook.com/api/get-data-daily.json?session=${encodeURIComponent(
@@ -68,8 +68,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
             .map(item => ({
               ...item,
               date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'MMM dd, yyyy')
-            }))
-            .slice(0, 12);
+            }));
           setData(formattedData);
         } else {
           throw new Error(responseData.message || "Failed to fetch daily data");
@@ -91,13 +90,12 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
 
   return (
     <div className="w-full">
-      <h3 className="text-lg font-semibold mb-4">Daily Trading Data</h3>
       {isLoading ? (
         <p className="text-center text-muted-foreground py-4">Loading data...</p>
       ) : data.length > 0 ? (
-        <div className="overflow-x-auto">
+        <div className="relative overflow-auto" style={{ maxHeight: "480px" }}>
           <Table>
-            <TableHeader>
+            <TableHeader className="sticky top-0 bg-[#141522] z-10">
               <TableRow>
                 <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px] text-white">Date</TableHead>
                 <TableHead className="text-[15px] font-bold text-white">Balance</TableHead>
