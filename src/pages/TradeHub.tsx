@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import HistoryTable from "@/components/HistoryTable";
@@ -65,24 +66,30 @@ const TradeHub = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  // Calculate metrics for the last 5 days
   const calculateRecentMetrics = (history: TradeHistory[], opens: OpenTrade[]) => {
     const fiveDaysAgo = new Date();
     fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
 
+    // Filter trades from last 5 days
     const recentTrades = history.filter(trade => 
       new Date(trade.closeTime) >= fiveDaysAgo
     );
 
+    // Calculate total profit/loss for recent trades
     const recentProfit = recentTrades.reduce((sum, trade) => 
       sum + trade.profit + trade.interest + trade.commission, 0
     );
 
+    // Calculate percentage gain
     const totalProfit = recentProfit;
     const percentageGain = ((recentProfit / (selectedAccount?.balance || 1)) * 100);
 
+    // Calculate floating P/L and count open orders
     const floatingPL = opens.reduce((sum, trade) => sum + trade.profit + trade.swap, 0);
     const openOrdersCount = opens.length;
 
+    // Calculate maximum drawdown over the last 5 days
     let maxBalance = selectedAccount?.balance || 0;
     let maxDrawdown = 0;
     
@@ -102,6 +109,7 @@ const TradeHub = () => {
     };
   };
 
+  // Calculate all-time trading metrics from history
   const calculateTradingMetrics = (history: TradeHistory[]) => {
     if (!history.length) return { 
       avgWin: 0, 
@@ -142,10 +150,12 @@ const TradeHub = () => {
 
     const winRate = (winningTrades.length / history.length) * 100;
 
+    // Calculate total results (sum of all trades)
     const totalResults = history.reduce((sum, trade) => 
       sum + trade.profit + trade.interest + trade.commission, 0
     );
 
+    // Get the last trade's profit
     const lastTradeTake = history.length > 0 
       ? history[0].profit + history[0].interest + history[0].commission
       : 0;
@@ -179,6 +189,7 @@ const TradeHub = () => {
 
       setIsLoading(true);
       try {
+        // Fetch open trades
         console.log("Fetching trades for account:", selectedAccount.id);
         const openTradesResponse = await fetch(
           `https://www.myfxbook.com/api/get-open-trades.json?session=${encodeURIComponent(
@@ -193,6 +204,7 @@ const TradeHub = () => {
         const openTradesData: OpenTradesResponse = await openTradesResponse.json();
         console.log("Open Trades API Response:", openTradesData);
 
+        // Fetch trade history
         console.log("Fetching trade history for account:", selectedAccount.id);
         const historyResponse = await fetch(
           `https://www.myfxbook.com/api/get-history.json?session=${encodeURIComponent(
@@ -241,6 +253,7 @@ const TradeHub = () => {
         </Card>
       ) : (
         <div className="space-y-4">
+          {/* Top Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-gradient-to-b from-[#1D1F33] to-[#141522]/40 border-0 p-4 backdrop-blur-sm rounded-lg shadow-[inset_0_2px_6px_rgba(255,255,255,0.2)]">
               <div className="flex items-center space-x-4">
@@ -283,7 +296,7 @@ const TradeHub = () => {
                 </div>
                 <div>
                   <p className="text-sm text-[#8E9196]">Float</p>
-                  <p className={`text-2xl font-semibold ${metrics.floatingPL >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  <p className={`text-2xl font-semibold text-[#8B5CF6] ${metrics.floatingPL >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                     ${metrics.floatingPL.toFixed(2)}
                   </p>
                   <p className="text-sm text-[#8E9196]">{metrics.openOrdersCount} orders</p>
@@ -292,21 +305,23 @@ const TradeHub = () => {
             </Card>
           </div>
 
+          {/* Chart and Daily Data Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2">
               <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg" style={{ height: '400px' }}>
-                <DailyGainChart />
+                <DailyGainChart accountId={selectedAccount?.id?.toString()} />
               </Card>
             </div>
             <div className="md:col-span-1">
               <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg" style={{ height: '400px' }}>
                 <ScrollArea className="h-full pr-4">
-                  <DailyDataWidget />
+                  <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
                 </ScrollArea>
               </Card>
             </div>
           </div>
 
+          {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
               <div className="flex flex-col items-center justify-center">
@@ -337,6 +352,7 @@ const TradeHub = () => {
             </Card>
           </div>
 
+          {/* New Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
               <div className="flex flex-col items-center justify-center">
@@ -394,6 +410,7 @@ const TradeHub = () => {
             </Card>
           </div>
 
+          {/* History Table */}
           <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
             <HistoryTable history={tradeHistory} />
           </Card>
