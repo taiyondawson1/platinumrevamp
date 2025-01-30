@@ -142,68 +142,70 @@ const TradeHub = () => {
   }, [selectedAccount?.id, toast]);
 
   return (
-    <div className="relative min-h-screen w-full bg-background overflow-y-auto">
-      <div className="space-y-3 p-4 md:p-6 mx-auto">
-        {isLoading ? (
-          <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-            <CardContent className="py-4">
-              <p className="text-center text-softWhite">Loading data...</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <>
-            <div className="space-y-3 w-full">
-              <div className="flex gap-3 justify-start w-full overflow-x-auto">
-                <TechnicalAnalysisWidget />
-                <US30AnalysisWidget />
-                <BitcoinAnalysisWidget />
-              </div>
-              <div className="mt-6 space-y-3">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <TotalGainCard accountId={selectedAccount?.id?.toString()} />
-                  <GainWidget accountId={selectedAccount?.id?.toString()} />
+    <div className="absolute inset-0 min-h-screen w-full bg-background" style={{ marginTop: "135px" }}>
+      <div className="h-full overflow-y-auto">
+        <div className="space-y-3 p-4 md:p-6 mx-auto">
+          {isLoading ? (
+            <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+              <CardContent className="py-4">
+                <p className="text-center text-softWhite">Loading data...</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              <div className="space-y-3 w-full">
+                <div className="flex gap-3 justify-start w-full overflow-x-auto">
+                  <TechnicalAnalysisWidget />
+                  <US30AnalysisWidget />
+                  <BitcoinAnalysisWidget />
                 </div>
-                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                  <CardContent className="p-0">
-                    <OpenOrdersTable orders={openTrades} />
-                  </CardContent>
-                </Card>
-                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                  <CardContent className="p-0">
-                    <HistoryTable history={tradeHistory} />
-                  </CardContent>
-                </Card>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="mt-6 space-y-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <TotalGainCard accountId={selectedAccount?.id?.toString()} />
+                    <GainWidget accountId={selectedAccount?.id?.toString()} />
+                  </div>
                   <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                    <Tabs defaultValue="daily" className="w-full">
-                      <TabsList className="ml-4 mt-3 bg-darkBlue/60">
-                        <TabsTrigger value="daily" className="text-softWhite data-[state=active]:bg-darkBlue/80">
-                          Daily Gain
-                        </TabsTrigger>
-                        <TabsTrigger value="total" className="text-softWhite data-[state=active]:bg-darkBlue/80">
-                          Total Gain
-                        </TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="daily">
-                        <DailyGainChart accountId={selectedAccount?.id?.toString()} />
-                      </TabsContent>
-                      <TabsContent value="total">
-                        <CustomWidget 
-                          session={localStorage.getItem("myfxbook_session") || ""}
-                          accountId={selectedAccount?.id?.toString()}
-                          width={600}
-                          height={300}
-                        />
-                      </TabsContent>
-                    </Tabs>
+                    <CardContent className="p-0">
+                      <OpenOrdersTable orders={openTrades} />
+                    </CardContent>
                   </Card>
-                  <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
+                  <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+                    <CardContent className="p-0">
+                      <HistoryTable history={tradeHistory} />
+                    </CardContent>
+                  </Card>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
+                      <Tabs defaultValue="daily" className="w-full">
+                        <TabsList className="ml-4 mt-3 bg-darkBlue/60">
+                          <TabsTrigger value="daily" className="text-softWhite data-[state=active]:bg-darkBlue/80">
+                            Daily Gain
+                          </TabsTrigger>
+                          <TabsTrigger value="total" className="text-softWhite data-[state=active]:bg-darkBlue/80">
+                            Total Gain
+                          </TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="daily">
+                          <DailyGainChart accountId={selectedAccount?.id?.toString()} />
+                        </TabsContent>
+                        <TabsContent value="total">
+                          <CustomWidget 
+                            session={localStorage.getItem("myfxbook_session") || ""}
+                            accountId={selectedAccount?.id?.toString()}
+                            width={600}
+                            height={300}
+                          />
+                        </TabsContent>
+                      </Tabs>
+                    </Card>
+                    <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
+                  </div>
+                  <CommunityOutlookWidget />
                 </div>
-                <CommunityOutlookWidget />
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
