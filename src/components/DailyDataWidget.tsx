@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -98,25 +99,25 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Balance</TableHead>
-                <TableHead>Pips</TableHead>
-                <TableHead>Lots</TableHead>
-                <TableHead>Floating P/L</TableHead>
-                <TableHead>Profit</TableHead>
-                <TableHead>Growth</TableHead>
+                <TableHead className="text-[10px]">Date</TableHead>
+                <TableHead className="text-[10px]">Balance</TableHead>
+                <TableHead className="text-[10px]">Pips</TableHead>
+                <TableHead className="text-[10px]">Lots</TableHead>
+                <TableHead className="text-[10px]">Floating P/L</TableHead>
+                <TableHead className="text-[10px]">Profit</TableHead>
+                <TableHead className="text-[10px]">Growth</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {data.map((item, index) => (
                 <TableRow key={index}>
-                  <TableCell>{item.date}</TableCell>
-                  <TableCell>${item.balance.toFixed(2)}</TableCell>
-                  <TableCell>{item.pips.toFixed(1)}</TableCell>
-                  <TableCell>{item.lots.toFixed(2)}</TableCell>
-                  <TableCell>${item.floatingPL.toFixed(2)}</TableCell>
-                  <TableCell>${item.profit.toFixed(2)}</TableCell>
-                  <TableCell>{item.growthEquity.toFixed(2)}%</TableCell>
+                  <TableCell className="text-[10px]">{item.date}</TableCell>
+                  <TableCell className="text-[10px]">${item.balance.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">{item.pips.toFixed(1)}</TableCell>
+                  <TableCell className="text-[10px]">{item.lots.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">${item.floatingPL.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">${item.profit.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">{item.growthEquity.toFixed(2)}%</TableCell>
                 </TableRow>
               ))}
             </TableBody>
