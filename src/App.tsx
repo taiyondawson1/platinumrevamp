@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +14,7 @@ import TradingPage from "@/pages/Trading";
 import CoursesPage from "@/pages/Courses";
 import TradeHub from "@/pages/TradeHub";
 import MyFxBookLoginPage from "@/pages/MyFxBookLoginPage";
+import BlankPage from "@/pages/BlankPage";
 import TradingViewTickerTape from "@/components/TradingViewTickerTape";
 
 const queryClient = new QueryClient();
@@ -51,6 +53,7 @@ function MainContent() {
                 <Route path="/courses" element={<CoursesPage />} />
                 <Route path="/tradehub" element={<TradeHub />} />
                 <Route path="/connect-myfxbook" element={<MyFxBookLoginPage />} />
+                <Route path="/blank" element={<BlankPage />} />
               </Routes>
             </div>
           </main>
