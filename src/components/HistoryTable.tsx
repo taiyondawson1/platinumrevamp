@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface TradeHistory {
   openTime: string;
@@ -39,9 +38,9 @@ const HistoryTable = ({ history = [] }: HistoryTableProps) => {
   return (
     <div className="w-full mt-4">
       <h3 className="text-xl font-bold mb-4 text-softWhite">Trade History</h3>
-      <div className="max-h-[600px]">
+      <div className="relative overflow-auto" style={{ maxHeight: "480px" }}>
         <Table>
-          <TableHeader className="sticky top-0 bg-[#141522]/95 z-10">
+          <TableHeader className="sticky top-0 bg-[#141522] z-10">
             <TableRow>
               <TableHead>Open Time</TableHead>
               <TableHead>Close Time</TableHead>
@@ -54,33 +53,31 @@ const HistoryTable = ({ history = [] }: HistoryTableProps) => {
               <TableHead>Comment</TableHead>
             </TableRow>
           </TableHeader>
-          <ScrollArea className="h-[480px]">
-            <TableBody>
-              {history && history.length > 0 ? (
-                history.map((trade, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{trade.openTime}</TableCell>
-                    <TableCell>{trade.closeTime}</TableCell>
-                    <TableCell>{trade.symbol}</TableCell>
-                    <TableCell>{trade.action}</TableCell>
-                    <TableCell>{trade.sizing.value}</TableCell>
-                    <TableCell>{trade.openPrice}</TableCell>
-                    <TableCell>{trade.closePrice}</TableCell>
-                    <TableCell className={trade.profit >= 0 ? "text-green-500" : "text-red-500"}>
-                      {trade.profit.toFixed(2)}
-                    </TableCell>
-                    <TableCell>{trade.comment}</TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={9} className="text-center py-4">
-                    No trade history found
+          <TableBody>
+            {history && history.length > 0 ? (
+              history.map((trade, index) => (
+                <TableRow key={index}>
+                  <TableCell>{trade.openTime}</TableCell>
+                  <TableCell>{trade.closeTime}</TableCell>
+                  <TableCell>{trade.symbol}</TableCell>
+                  <TableCell>{trade.action}</TableCell>
+                  <TableCell>{trade.sizing.value}</TableCell>
+                  <TableCell>{trade.openPrice}</TableCell>
+                  <TableCell>{trade.closePrice}</TableCell>
+                  <TableCell className={trade.profit >= 0 ? "text-green-500" : "text-red-500"}>
+                    {trade.profit.toFixed(2)}
                   </TableCell>
+                  <TableCell>{trade.comment}</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </ScrollArea>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={9} className="text-center py-4">
+                  No trade history found
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
         </Table>
       </div>
     </div>
