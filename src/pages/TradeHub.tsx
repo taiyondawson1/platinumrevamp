@@ -254,7 +254,7 @@ const TradeHub = () => {
         <div className="space-y-4">
           {/* Top Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="bg-[#141522]/40 border-0 p-4 backdrop-blur-sm rounded-lg">
+            <Card className="bg-gradient-to-b from-[#1D1F33] to-[#141522]/40 border-0 p-4 backdrop-blur-sm rounded-lg shadow-[inset_0_2px_6px_rgba(255,255,255,0.2)]">
               <div className="flex items-center space-x-4">
                 <div className="p-2 rounded-lg bg-[#1D1F33]">
                   <svg className="w-6 h-6 text-[#0EA5E9]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
