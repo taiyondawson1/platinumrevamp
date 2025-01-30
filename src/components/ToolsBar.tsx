@@ -1,59 +1,58 @@
-import { ExternalLink } from "lucide-react";
+
 import { Card } from "@/components/ui/card";
+import { CalendarDays, ArrowLeftRight, LineChart, Radio, Newspaper } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const tools = [
   {
-    name: "Economic Calendar",
-    url: "https://tradingeconomics.com/calendar",
-    description: "View upcoming economic events"
+    icon: <CalendarDays className="h-6 w-6" />,
+    title: "Economic Calendar",
+    description: "View upcoming economic events",
+    path: "/calendar"
   },
   {
-    name: "Currency Correlations",
-    url: "https://www.myfxbook.com/forex-market/correlations",
-    description: "Analyze currency pair correlations"
+    icon: <ArrowLeftRight className="h-6 w-6" />,
+    title: "Currency Correlations",
+    description: "Analyze currency pair correlations",
+    path: "/correlations"
   },
   {
-    name: "TradingView",
-    url: "https://www.tradingview.com",
-    description: "Advanced charting platform"
+    icon: <LineChart className="h-6 w-6" />,
+    title: "TradingView",
+    description: "Advanced charting platform",
+    path: "/charts"
   },
   {
-    name: "Watch Live News",
-    url: "https://www.youtube.com/live",
-    description: "Stay updated with live market news"
+    icon: <Radio className="h-6 w-6" />,
+    title: "Watch Live News",
+    description: "Stay updated with live market news",
+    path: "/live-news"
   },
   {
-    name: "Read News",
-    url: "https://www.forexfactory.com/news",
-    description: "Latest forex market news"
+    icon: <Newspaper className="h-6 w-6" />,
+    title: "Read News",
+    description: "Latest forex market news",
+    path: "/news"
   }
 ];
 
 const ToolsBar = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
-      {tools.map((tool) => (
-        <a
-          key={tool.name}
-          href={tool.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block group"
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      {tools.map((tool, index) => (
+        <Card
+          key={index}
+          className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm p-4 cursor-pointer hover:bg-darkBlue/60 transition-colors"
+          onClick={() => navigate(tool.path)}
         >
-          <Card className="tradehub-card h-full p-4 hover:border-silver/40 transition-all duration-300">
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="text-softWhite font-medium mb-2 group-hover:text-accent-blue transition-colors">
-                  {tool.name}
-                </h3>
-                <p className="text-sm text-mediumGray">
-                  {tool.description}
-                </p>
-              </div>
-              <ExternalLink className="h-4 w-4 text-mediumGray group-hover:text-accent-blue transition-colors" />
-            </div>
-          </Card>
-        </a>
+          <div className="flex flex-col items-center text-center gap-2">
+            <div className="text-softWhite">{tool.icon}</div>
+            <h3 className="text-lg font-semibold text-softWhite">{tool.title}</h3>
+            <p className="text-sm text-mediumGray">{tool.description}</p>
+          </div>
+        </Card>
       ))}
     </div>
   );
