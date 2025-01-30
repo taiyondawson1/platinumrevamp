@@ -10,11 +10,11 @@ interface MetricCardProps {
 }
 
 const MetricCard = ({ label, value, trend, className, variant = "primary" }: MetricCardProps) => {
-  const baseStyles = "w-full p-4 transition-shadow duration-200";
+  const baseStyles = "w-full p-4";
   
   const variantStyles = {
-    primary: "bg-darkBlue/40 shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)] hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)] backdrop-blur-sm",
-    secondary: "bg-transparent border border-[#2C2F33]"
+    primary: "bg-gradient-to-b from-[#1D1F33] to-[#141522]/40 border-0 backdrop-blur-sm shadow-[inset_0_2px_6px_rgba(255,255,255,0.2)]",
+    secondary: "bg-[#141522]/40 border-[#2A2D3E]"
   };
 
   return (
