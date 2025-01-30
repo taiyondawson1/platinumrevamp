@@ -13,7 +13,6 @@ const MetricCard = ({ label, value, trend, className, subValue }: MetricCardProp
   return (
     <div className={cn(
       "w-full bg-gradient-to-b from-[#1D1F33] to-[#141522]/40",
-      "border-0",
       "backdrop-blur-sm",
       "shadow-[inset_0_2px_6px_rgba(255,255,255,0.2)]",
       "p-4 rounded-lg",
