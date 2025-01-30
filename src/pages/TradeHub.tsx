@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
@@ -141,8 +142,8 @@ const TradeHub = () => {
   }, [selectedAccount?.id, toast]);
 
   return (
-    <>
-      <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[25px] mr-[25px] mx-auto flex flex-col items-center max-w-[100vw] overflow-x-hidden mt-[50px]">
+    <div className="relative min-h-screen w-full bg-background overflow-y-auto">
+      <div className="space-y-3 p-4 md:p-6 mx-auto">
         {isLoading ? (
           <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
             <CardContent className="py-4">
@@ -152,12 +153,12 @@ const TradeHub = () => {
         ) : (
           <>
             <div className="space-y-3 w-full">
-              <div className="flex gap-3 justify-start w-full overflow-hidden ml-[100px] -mt-[100px]">
+              <div className="flex gap-3 justify-start w-full overflow-x-auto">
                 <TechnicalAnalysisWidget />
                 <US30AnalysisWidget />
                 <BitcoinAnalysisWidget />
               </div>
-              <div className="mt-[50px] space-y-3">
+              <div className="mt-6 space-y-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <TotalGainCard accountId={selectedAccount?.id?.toString()} />
                   <GainWidget accountId={selectedAccount?.id?.toString()} />
@@ -204,7 +205,7 @@ const TradeHub = () => {
           </>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
