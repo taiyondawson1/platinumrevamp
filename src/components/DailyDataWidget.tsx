@@ -1,18 +1,17 @@
 
 import React from 'react';
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Card } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card } from "@/components/ui/card";
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 
-interface DailyData {
+export interface DailyData {
   date: string;
   symbol: string;
   profit: number;
 }
 
-// Mock data fetching function - replace with actual API call when ready
-const fetchDailyData = async (): Promise<DailyData[]> => {
+export const fetchDailyData = async (): Promise<DailyData[]> => {
   // Simulated API response
   return [
     { date: '2024-01-30', symbol: 'EURUSD', profit: 120.50 },
@@ -21,7 +20,7 @@ const fetchDailyData = async (): Promise<DailyData[]> => {
   ];
 };
 
-const DailyDataWidget = () => {
+const DailyDataWidget: React.FC = () => {
   const { data = [] } = useQuery({
     queryKey: ['dailyData'],
     queryFn: fetchDailyData
