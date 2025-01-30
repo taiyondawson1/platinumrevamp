@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import HistoryTable from "@/components/HistoryTable";
@@ -210,7 +211,7 @@ const TradeHub = () => {
   const tradingMetrics = calculateTradingMetrics(tradeHistory);
 
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 bg-[#0A0B0F] min-h-screen">
+    <div className="flex-1 space-y-4 px-[100px] py-4 md:py-8 bg-[#0A0B0F] min-h-screen">
       {isLoading ? (
         <Card className="bg-[#141522]/40 border-[#2A2D3E] backdrop-blur-sm shadow-lg rounded-lg">
           <div className="py-4">
