@@ -23,6 +23,15 @@ function MainContent() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const isSetfilesPage = location.pathname === "/setfiles";
+  const isBlankPage = location.pathname === "/blank";
+
+  if (isBlankPage) {
+    return (
+      <Routes>
+        <Route path="/blank" element={<BlankPage />} />
+      </Routes>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
@@ -53,7 +62,6 @@ function MainContent() {
                 <Route path="/courses" element={<CoursesPage />} />
                 <Route path="/tradehub" element={<TradeHub />} />
                 <Route path="/connect-myfxbook" element={<MyFxBookLoginPage />} />
-                <Route path="/blank" element={<BlankPage />} />
               </Routes>
             </div>
           </main>
