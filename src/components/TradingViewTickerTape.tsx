@@ -8,6 +8,8 @@ const TradingViewTickerTape = () => {
   const isTradeHub = location.pathname === "/tradehub";
 
   useEffect(() => {
+    if (isTradeHub) return; // Don't create the widget if we're on TradeHub
+
     const script = document.createElement("script");
     script.src = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
     script.async = true;
@@ -53,7 +55,11 @@ const TradingViewTickerTape = () => {
         }
       }
     };
-  }, []);
+  }, [isTradeHub]);
+
+  if (isTradeHub) {
+    return null;
+  }
 
   return (
     <div className="fixed left-0 right-0 top-[135px] z-50">
