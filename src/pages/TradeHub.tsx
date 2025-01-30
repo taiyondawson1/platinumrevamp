@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import HistoryTable from "@/components/HistoryTable";
@@ -316,7 +317,6 @@ const TradeHub = () => {
 
           {/* History Table */}
           <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-[#E2E8F0] mb-4">Trade History</h3>
             <HistoryTable history={tradeHistory} />
           </Card>
         </div>
