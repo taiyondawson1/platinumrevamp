@@ -1,59 +1,135 @@
 
-import React from 'react';
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card } from "@/components/ui/card";
-import { useQuery } from '@tanstack/react-query';
-import { format } from 'date-fns';
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
+import { format, parse } from "date-fns";
 
-export interface DailyData {
+interface DailyData {
   date: string;
-  symbol: string;
+  balance: number;
+  pips: number;
+  lots: number;
+  floatingPL: number;
   profit: number;
+  growthEquity: number;
+  floatingPips: number;
 }
 
-export const fetchDailyData = async (): Promise<DailyData[]> => {
-  // Simulated API response
-  return [
-    { date: '2024-01-30', symbol: 'EURUSD', profit: 120.50 },
-    { date: '2024-01-29', symbol: 'GBPUSD', profit: 85.75 },
-    { date: '2024-01-28', symbol: 'USDJPY', profit: -45.20 },
-  ];
-};
+interface DailyDataResponse {
+  error: boolean;
+  message: string;
+  dataDaily: DailyData[][];
+}
 
-const DailyDataWidget: React.FC = () => {
-  const { data = [] } = useQuery({
-    queryKey: ['dailyData'],
-    queryFn: async () => {
-      return await fetchDailyData();
-    }
-  });
+interface DailyDataWidgetProps {
+  accountId?: string;
+}
+
+const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
+  const [data, setData] = useState<DailyData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!accountId) return;
+
+      const session = localStorage.getItem("myfxbook_session");
+      if (!session) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "No active session found. Please login again.",
+        });
+        return;
+      }
+
+      try {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 30);
+
+        const response = await fetch(
+          `https://www.myfxbook.com/api/get-data-daily.json?session=${encodeURIComponent(
+            session
+          )}&id=${encodeURIComponent(accountId)}&start=${startDate.toISOString().split('T')[0]}&end=${endDate.toISOString().split('T')[0]}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch daily data");
+        }
+
+        const responseData: DailyDataResponse = await response.json();
+        console.log("Daily Data Response:", responseData);
+
+        if (!responseData.error) {
+          const formattedData = responseData.dataDaily.flat()
+            .map(item => ({
+              ...item,
+              date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'MMM dd, yyyy')
+            }))
+            .sort((a, b) => {
+              const dateA = parse(a.date, 'MMM dd, yyyy', new Date());
+              const dateB = parse(b.date, 'MMM dd, yyyy', new Date());
+              return dateB.getTime() - dateA.getTime(); // Sort in descending order
+            });
+          setData(formattedData);
+        } else {
+          throw new Error(responseData.message || "Failed to fetch daily data");
+        }
+      } catch (error) {
+        console.error("Error fetching daily data:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error instanceof Error ? error.message : "Failed to fetch daily data",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [accountId, toast]);
 
   return (
-    <Card className="w-full h-[400px]">
-      <ScrollArea className="h-full daily-data-widget">
-        <div className="p-4">
-          <h2 className="text-xl font-semibold mb-4">Daily Trading Data</h2>
-          <table className="w-full">
-            <thead>
-              <tr className="text-left">
-                <th className="pb-2">Date</th>
-                <th className="pb-2">Symbol</th>
-                <th className="pb-2">Profit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((item: DailyData, index: number) => (
-                <tr key={index} className="border-t border-border">
-                  <td className="py-2">{format(new Date(item.date), 'MMM dd')}</td>
-                  <td className="py-2">{item.symbol}</td>
-                  <td className="py-2">${item.profit.toFixed(2)}</td>
-                </tr>
+    <div className="w-full">
+      {isLoading ? (
+        <p className="text-center text-muted-foreground py-4">Loading data...</p>
+      ) : data.length > 0 ? (
+        <div className="relative overflow-auto" style={{ maxHeight: "480px" }}>
+          <Table>
+            <TableHeader className="sticky top-0 bg-[#141522] z-10">
+              <TableRow>
+                <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px] text-white">Date</TableHead>
+                <TableHead className="text-[15px] font-bold text-white">Balance</TableHead>
+                <TableHead className="text-[15px] font-bold text-white">Profit</TableHead>
+                <TableHead className="text-[10px]">Lots</TableHead>
+                <TableHead className="text-[10px]">Floating P/L</TableHead>
+                <TableHead className="text-[10px]">Profit</TableHead>
+                <TableHead className="text-[10px]">Growth</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell className="text-[10px] whitespace-nowrap">{item.date}</TableCell>
+                  <TableCell className="text-[10px]">${item.balance.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">${item.profit.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">{item.lots.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">${item.floatingPL.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">${item.profit.toFixed(2)}</TableCell>
+                  <TableCell className="text-[10px]">{item.growthEquity.toFixed(2)}%</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
-      </ScrollArea>
-    </Card>
+      ) : (
+        <p className="text-center text-muted-foreground py-4">No data available</p>
+      )}
+    </div>
   );
 };
 
