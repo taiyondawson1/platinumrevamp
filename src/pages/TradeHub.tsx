@@ -1,58 +1,11 @@
 
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import OpenOrdersTable from "@/components/OpenOrdersTable";
-import HistoryTable from "@/components/HistoryTable";
-import DailyGainChart from "@/components/DailyGainChart";
-import TotalGainCard from "@/components/TotalGainCard";
-import CustomWidget from "@/components/CustomWidget";
-import GainWidget from "@/components/GainWidget";
-import CommunityOutlookWidget from "@/components/CommunityOutlookWidget";
-import DailyDataWidget from "@/components/DailyDataWidget";
-import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
-import US30AnalysisWidget from "@/components/US30AnalysisWidget";
-import BitcoinAnalysisWidget from "@/components/BitcoinAnalysisWidget";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-
-interface OpenTrade {
-  openTime: string;
-  symbol: string;
-  action: string;
-  sizing: {
-    type: string;
-    value: string;
-  };
-  openPrice: number;
-  tp: number;
-  sl: number;
-  comment: string;
-  profit: number;
-  pips: number;
-  swap: number;
-  magic: number;
-}
-
-interface TradeHistory {
-  openTime: string;
-  closeTime: string;
-  symbol: string;
-  action: string;
-  sizing: {
-    type: string;
-    value: string;
-  };
-  openPrice: number;
-  closePrice: number;
-  tp: number;
-  sl: number;
-  comment: string;
-  pips: number;
-  profit: number;
-  interest: number;
-  commission: number;
-}
+import LoadingCard from "@/components/LoadingCard";
+import TradeAnalytics from "@/components/TradeAnalytics";
+import TradeMetrics from "@/components/TradeMetrics";
+import { OpenTrade, TradeHistory } from "@/types/trades";
 
 interface OpenTradesResponse {
   error: boolean;
@@ -146,62 +99,16 @@ const TradeHub = () => {
       <div className="h-full overflow-y-auto">
         <div className="space-y-3 p-4 md:p-6 mx-auto">
           {isLoading ? (
-            <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-              <CardContent className="py-4">
-                <p className="text-center text-softWhite">Loading data...</p>
-              </CardContent>
-            </Card>
+            <LoadingCard />
           ) : (
             <>
               <div className="space-y-3 w-full">
-                <div className="flex gap-3 justify-start w-full overflow-x-auto">
-                  <TechnicalAnalysisWidget />
-                  <US30AnalysisWidget />
-                  <BitcoinAnalysisWidget />
-                </div>
-                <div className="mt-6 space-y-3">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <TotalGainCard accountId={selectedAccount?.id?.toString()} />
-                    <GainWidget accountId={selectedAccount?.id?.toString()} />
-                  </div>
-                  <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                    <CardContent className="p-0">
-                      <OpenOrdersTable orders={openTrades} />
-                    </CardContent>
-                  </Card>
-                  <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                    <CardContent className="p-0">
-                      <HistoryTable history={tradeHistory} />
-                    </CardContent>
-                  </Card>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                      <Tabs defaultValue="daily" className="w-full">
-                        <TabsList className="ml-4 mt-3 bg-darkBlue/60">
-                          <TabsTrigger value="daily" className="text-softWhite data-[state=active]:bg-darkBlue/80">
-                            Daily Gain
-                          </TabsTrigger>
-                          <TabsTrigger value="total" className="text-softWhite data-[state=active]:bg-darkBlue/80">
-                            Total Gain
-                          </TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="daily">
-                          <DailyGainChart accountId={selectedAccount?.id?.toString()} />
-                        </TabsContent>
-                        <TabsContent value="total">
-                          <CustomWidget 
-                            session={localStorage.getItem("myfxbook_session") || ""}
-                            accountId={selectedAccount?.id?.toString()}
-                            width={600}
-                            height={300}
-                          />
-                        </TabsContent>
-                      </Tabs>
-                    </Card>
-                    <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
-                  </div>
-                  <CommunityOutlookWidget />
-                </div>
+                <TradeAnalytics />
+                <TradeMetrics 
+                  accountId={selectedAccount?.id?.toString()}
+                  openTrades={openTrades}
+                  tradeHistory={tradeHistory}
+                />
               </div>
             </>
           )}
