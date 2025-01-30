@@ -94,7 +94,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
       {isLoading ? (
         <p className="text-center text-muted-foreground py-4">Loading data...</p>
       ) : data.length > 0 ? (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto scrollbar-none">
           <Table>
             <TableHeader>
               <TableRow>
