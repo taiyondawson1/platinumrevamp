@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 
 const TradingViewTickerTape = () => {
@@ -53,9 +52,9 @@ const TradingViewTickerTape = () => {
   }, []);
 
   return (
-    <div>
+    <div className="fixed left-0 right-0 top-[135px] z-50">
       <div className="max-w-[1900px] mx-auto pr-[44px] relative">
-        <div className="ml-[44px]">
+        <div className="absolute left-[44px] -top-[90px]">
           <h1 className="text-[40px] font-bold text-softWhite">PlatinumAI</h1>
           <div className="text-sm text-silver mt-2 space-x-4">
             <span className="underline hover:text-softWhite transition-colors cursor-pointer">TradeHub</span>
