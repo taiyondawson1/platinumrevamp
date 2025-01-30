@@ -91,7 +91,6 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
 
   return (
     <div className="w-full">
-      <h3 className="text-lg font-semibold mb-4">Daily Trading Data</h3>
       {isLoading ? (
         <p className="text-center text-muted-foreground py-4">Loading data...</p>
       ) : data.length > 0 ? (
