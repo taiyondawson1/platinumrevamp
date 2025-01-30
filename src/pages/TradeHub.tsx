@@ -107,19 +107,27 @@ const TradeHub = () => {
     };
   };
 
-  // Calculate trading metrics from history
+  // Calculate all-time trading metrics from history
   const calculateTradingMetrics = (history: TradeHistory[]) => {
     if (!history.length) return { avgWin: 0, avgLoss: 0, winRate: 0 };
 
-    const winningTrades = history.filter(trade => trade.profit > 0);
-    const losingTrades = history.filter(trade => trade.profit < 0);
+    const winningTrades = history.filter(trade => 
+      (trade.profit + trade.interest + trade.commission) > 0
+    );
+    const losingTrades = history.filter(trade => 
+      (trade.profit + trade.interest + trade.commission) <= 0
+    );
 
     const avgWin = winningTrades.length > 0
-      ? winningTrades.reduce((sum, trade) => sum + trade.profit, 0) / winningTrades.length
+      ? winningTrades.reduce((sum, trade) => 
+          sum + trade.profit + trade.interest + trade.commission, 0
+        ) / winningTrades.length
       : 0;
 
     const avgLoss = losingTrades.length > 0
-      ? losingTrades.reduce((sum, trade) => sum + trade.profit, 0) / losingTrades.length
+      ? losingTrades.reduce((sum, trade) => 
+          sum + trade.profit + trade.interest + trade.commission, 0
+        ) / losingTrades.length
       : 0;
 
     const winRate = (winningTrades.length / history.length) * 100;
@@ -287,7 +295,7 @@ const TradeHub = () => {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-[#E2E8F0]">Average Win</h3>
                 <span className="text-2xl font-bold text-[#22C55E]">
-                  ${tradingMetrics.avgWin.toFixed(2)}
+                  ${Math.abs(tradingMetrics.avgWin).toFixed(2)}
                 </span>
               </div>
             </Card>
