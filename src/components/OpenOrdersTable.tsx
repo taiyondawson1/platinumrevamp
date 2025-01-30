@@ -1,3 +1,4 @@
+
 import {
   Card,
   CardContent,
@@ -55,7 +56,7 @@ const OpenOrdersTable = () => {
   };
 
   return (
-    <Card className="w-full bg-[#141522]/40 border-[#2A2D3E]">
+    <Card className="w-full bg-[#141522]/40 backdrop-blur-sm border border-[#2A2D3E]">
       <CardHeader>
         <CardTitle className="text-xl font-bold text-[#E2E8F0]">Open Trades</CardTitle>
       </CardHeader>
