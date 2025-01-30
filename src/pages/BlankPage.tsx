@@ -13,7 +13,21 @@ import { useParams, useLocation } from "react-router-dom";
 const BlankPage = () => {
   const { accountId } = useParams();
   const location = useLocation();
-  const selectedAccountId = accountId || location.state?.selectedAccount?.id;
+  const selectedAccountId = accountId || (location.state?.selectedAccount && location.state.selectedAccount.id);
+
+  console.log('Account ID from params:', accountId);
+  console.log('Location state:', location.state);
+  console.log('Selected Account ID:', selectedAccountId);
+
+  // Check if there's a valid session
+  const session = localStorage.getItem("myfxbook_session");
+  if (!session) {
+    return (
+      <div className="w-full min-h-screen bg-[#090A14] flex items-center justify-center">
+        <p className="text-softWhite">Please login to view account stats.</p>
+      </div>
+    );
+  }
 
   if (!selectedAccountId) {
     return (
@@ -55,7 +69,7 @@ const BlankPage = () => {
             </TabsContent>
             <TabsContent value="total" className="p-4">
               <CustomWidget 
-                session={localStorage.getItem("myfxbook_session") || ""}
+                session={session}
                 width={600}
                 height={300}
                 accountId={selectedAccountId}
