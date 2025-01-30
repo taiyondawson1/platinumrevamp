@@ -46,7 +46,6 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
       }
 
       try {
-        // Remove date range to fetch all history
         const response = await fetch(
           `https://www.myfxbook.com/api/get-data-daily.json?session=${encodeURIComponent(
             session
@@ -61,17 +60,19 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
         console.log("Daily Data Response:", responseData);
 
         if (!responseData.error) {
+          // Parse dates and format them consistently
           const formattedData = responseData.dataDaily.flat()
             .map(item => ({
               ...item,
+              // Store the parsed date temporarily for sorting
+              parsedDate: parse(item.date, 'MM/dd/yyyy', new Date()),
               date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'MMM dd, yyyy')
             }))
-            // Sort by date in descending order (most recent first)
-            .sort((a, b) => {
-              const dateA = parse(a.date, 'MMM dd, yyyy', new Date());
-              const dateB = parse(b.date, 'MMM dd, yyyy', new Date());
-              return dateB.getTime() - dateA.getTime();
-            });
+            // Sort by the parsed date in descending order (most recent first)
+            .sort((a, b) => b.parsedDate.getTime() - a.parsedDate.getTime())
+            // Remove the temporary parsedDate field
+            .map(({ parsedDate, ...rest }) => rest);
+
           setData(formattedData);
         } else {
           throw new Error(responseData.message || "Failed to fetch daily data");
@@ -96,7 +97,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
       {isLoading ? (
         <p className="text-center text-muted-foreground py-4">Loading data...</p>
       ) : data.length > 0 ? (
-        <div className="max-h-[400px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="max-h-[400px] overflow-y-auto no-scrollbar">
           <Table>
             <TableHeader>
               <TableRow>
