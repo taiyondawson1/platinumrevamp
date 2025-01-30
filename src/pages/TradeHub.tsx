@@ -323,27 +323,30 @@ const TradeHub = () => {
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#E2E8F0]">Average Win</h3>
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-sm text-[#8E9196]">Average Win</p>
                 <span className="text-2xl font-bold text-[#22C55E]">
                   ${Math.abs(tradingMetrics.avgWin).toFixed(2)}
                 </span>
+                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
               </div>
             </Card>
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#E2E8F0]">Average Loss</h3>
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-sm text-[#8E9196]">Average Loss</p>
                 <span className="text-2xl font-bold text-[#EF4444]">
                   ${Math.abs(tradingMetrics.avgLoss).toFixed(2)}
                 </span>
+                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
               </div>
             </Card>
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#E2E8F0]">Win Rate</h3>
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-sm text-[#8E9196]">Win Rate</p>
                 <span className="text-2xl font-bold text-[#22C55E]">
                   {tradingMetrics.winRate.toFixed(1)}%
                 </span>
+                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
               </div>
             </Card>
           </div>
@@ -351,51 +354,57 @@ const TradeHub = () => {
           {/* New Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#E2E8F0]">Total Results</h3>
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-sm text-[#8E9196]">Total Results</p>
                 <span className={`text-2xl font-bold ${tradingMetrics.totalResults >= 0 ? 'text-[#22C55E]' : 'text-[#EF4444]'}`}>
                   ${tradingMetrics.totalResults.toFixed(2)}
                 </span>
+                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
               </div>
             </Card>
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#E2E8F0]">Total Balance</h3>
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-sm text-[#8E9196]">Total Balance</p>
                 <span className="text-2xl font-bold text-[#22C55E]">
                   ${tradingMetrics.totalBalance.toFixed(2)}
                 </span>
+                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
               </div>
             </Card>
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#E2E8F0]">Profit Factor</h3>
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-sm text-[#8E9196]">Profit Factor</p>
                 <span className="text-2xl font-bold text-[#22C55E]">
                   {tradingMetrics.profitFactor.toFixed(2)}
                 </span>
+                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
               </div>
             </Card>
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#E2E8F0]">Max Closed DD</h3>
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-sm text-[#8E9196]">Max Closed DD</p>
                 <span className="text-2xl font-bold text-[#EF4444]">
                   {tradingMetrics.maxClosedDrawdown.toFixed(2)}%
                 </span>
+                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
               </div>
             </Card>
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#E2E8F0]">Total Orders</h3>
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-sm text-[#8E9196]">Total Orders</p>
                 <span className="text-2xl font-bold text-[#0EA5E9]">
                   {tradingMetrics.totalOrders}
                 </span>
+                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
               </div>
             </Card>
             <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#E2E8F0]">Last Trade Take</h3>
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-sm text-[#8E9196]">Last Trade Take</p>
                 <span className={`text-2xl font-bold ${tradingMetrics.lastTradeTake >= 0 ? 'text-[#22C55E]' : 'text-[#EF4444]'}`}>
                   ${tradingMetrics.lastTradeTake.toFixed(2)}
                 </span>
+                <p className="text-sm text-[#8E9196]/50">${selectedAccount?.balance?.toFixed(2) || '0.00'}</p>
               </div>
             </Card>
           </div>
