@@ -15,10 +15,13 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
       "shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)]",
       "hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)]",
       "transition-shadow duration-200",
-      "rounded-xl", // Added rounded corners
+      "rounded-xl",
+      "border border-white/5",
+      "bg-gradient-to-b from-white/10 to-transparent",
+      "backdrop-blur-sm",
       className
     )}>
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center p-4">
         <div className="text-lg text-softWhite/70 font-medium">{label}</div>
         <div className="text-2xl font-bold text-softWhite mt-1">
           {typeof value === 'number' ? (value >= 0 ? "+" : "") + value.toFixed(2) + "%" : value}
