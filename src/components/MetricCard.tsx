@@ -11,7 +11,7 @@ interface MetricCardProps {
 const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
   return (
     <div className={cn(
-      "w-full bg-darkBlue/40 rounded-none",
+      "w-full bg-darkBlue/40 rounded-none border-0",
       "transition-all duration-200",
       className
     )}>
@@ -27,4 +27,3 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
 };
 
 export default MetricCard;
-
