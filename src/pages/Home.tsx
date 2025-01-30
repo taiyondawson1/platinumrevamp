@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +22,7 @@ const Home = () => {
             <Button 
               size="lg"
               onClick={() => navigate('/dashboard')}
-              className="group"
+              className="group !rounded-none"
             >
               Get Started
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -30,6 +31,7 @@ const Home = () => {
               size="lg"
               variant="outline"
               onClick={() => navigate('/courses')}
+              className="!rounded-none"
             >
               Learn More
             </Button>
