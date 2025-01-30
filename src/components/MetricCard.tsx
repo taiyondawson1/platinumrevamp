@@ -28,7 +28,6 @@ const MetricCard = ({ label, value, className, variant = "primary" }: MetricCard
         <div className="text-2xl font-bold text-softWhite mt-1">
           {typeof value === 'number' ? `$${value}` : value}
         </div>
-        <div className="text-sm text-softWhite/50 mt-1">${selectedAccount?.balance?.toFixed(2) || '0.00'}</div>
       </div>
     </div>
   );
