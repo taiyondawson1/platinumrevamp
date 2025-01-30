@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,26 +22,28 @@ function MainContent() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const isSetfilesPage = location.pathname === "/setfiles";
+  const isTradeHubPage = location.pathname === "/tradehub";
+  const hideHeader = isHomePage || isSetfilesPage || isTradeHubPage;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
-      {!isHomePage && !isSetfilesPage && <Sidebar />}
+      {!hideHeader && <Sidebar />}
       <div className="flex-1 flex relative">
         <div className="flex-1">
-          {!isHomePage && !isSetfilesPage && (
+          {!hideHeader && (
             <div className="fixed top-0 left-0 right-0 bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[50] h-[230px]" />
           )}
-          {!isHomePage && !isSetfilesPage && (
+          {!hideHeader && (
             <div className="fixed top-0 left-[270px] right-0 z-[51]">
               <TradingViewTickerTape />
             </div>
           )}
-          {!isHomePage && !isSetfilesPage && (
+          {!hideHeader && (
             <div className="fixed left-0 right-0 top-[230px] z-[50] px-[44px]">
               <Separator className="h-[1px] bg-silver/20" />
             </div>
           )}
-          <main className={`flex-1 ${!isHomePage && !isSetfilesPage ? "ml-[270px] mr-0 mt-[250px]" : ""}`}>
+          <main className={`flex-1 ${!hideHeader ? "ml-[270px] mr-0 mt-[250px]" : ""}`}>
             <div className="overflow-auto">
               <Routes>
                 <Route path="/" element={<Home />} />
