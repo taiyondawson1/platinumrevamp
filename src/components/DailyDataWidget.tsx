@@ -48,7 +48,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
       try {
         const endDate = new Date();
         const startDate = new Date();
-        startDate.setDate(startDate.getDate() - 30); // Increased to fetch more history
+        startDate.setDate(startDate.getDate() - 30);
 
         const response = await fetch(
           `https://www.myfxbook.com/api/get-data-daily.json?session=${encodeURIComponent(
@@ -68,7 +68,12 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
             .map(item => ({
               ...item,
               date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'MMM dd, yyyy')
-            }));
+            }))
+            .sort((a, b) => {
+              const dateA = parse(a.date, 'MMM dd, yyyy', new Date());
+              const dateB = parse(b.date, 'MMM dd, yyyy', new Date());
+              return dateB.getTime() - dateA.getTime(); // Sort in descending order
+            });
           setData(formattedData);
         } else {
           throw new Error(responseData.message || "Failed to fetch daily data");
