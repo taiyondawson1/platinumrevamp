@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
-import OpenOrdersTable from "@/components/OpenOrdersTable";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
+import DailyDataWidget from "@/components/DailyDataWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -279,6 +279,11 @@ const TradeHub = () => {
                 <DailyGainChart accountId={selectedAccount?.id?.toString()} />
               </Card>
             </div>
+          </div>
+
+          {/* Daily Data Widget */}
+          <div>
+            <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
           </div>
 
           {/* Bottom Stats Cards */}
