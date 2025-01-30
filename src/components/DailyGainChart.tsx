@@ -128,7 +128,7 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
                 formatter={(value: number) => [`${value.toFixed(2)}%`, 'Gain']}
                 contentStyle={{
                   backgroundColor: '#1A1F2C',
-                  border: '1px solid #403E43',
+                  border: 'none',
                   borderRadius: '6px',
                   color: '#fff'
                 }}
