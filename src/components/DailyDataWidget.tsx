@@ -99,7 +99,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
               <TableRow>
                 <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px] text-white">Date</TableHead>
                 <TableHead className="text-[15px] font-bold text-white">Balance</TableHead>
-                <TableHead className="text-[15px] font-bold text-white">Pips</TableHead>
+                <TableHead className="text-[15px] font-bold text-white">Profit</TableHead>
                 <TableHead className="text-[10px]">Lots</TableHead>
                 <TableHead className="text-[10px]">Floating P/L</TableHead>
                 <TableHead className="text-[10px]">Profit</TableHead>
@@ -111,7 +111,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
                 <TableRow key={index}>
                   <TableCell className="text-[10px] whitespace-nowrap">{item.date}</TableCell>
                   <TableCell className="text-[10px]">${item.balance.toFixed(2)}</TableCell>
-                  <TableCell className="text-[10px]">{item.pips.toFixed(1)}</TableCell>
+                  <TableCell className="text-[10px]">${item.profit.toFixed(2)}</TableCell>
                   <TableCell className="text-[10px]">{item.lots.toFixed(2)}</TableCell>
                   <TableCell className="text-[10px]">${item.floatingPL.toFixed(2)}</TableCell>
                   <TableCell className="text-[10px]">${item.profit.toFixed(2)}</TableCell>
