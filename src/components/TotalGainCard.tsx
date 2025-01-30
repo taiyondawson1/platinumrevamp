@@ -67,13 +67,13 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
   }, [accountId, toast]);
 
   return (
-    <Card className="w-full bg-[#1A1F2C] border-0 shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),inset_0_-2px_4px_rgba(0,0,0,0.3)] rounded-none">
-      <CardHeader className="flex items-center justify-center">
-        <CardTitle className="text-xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-[#8E9196] to-[#59595b] shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
+    <div className="w-full bg-[#1A1F2C] shadow-[inset_0_2px_4px_rgba(255,255,255,0.1),inset_0_-2px_4px_rgba(0,0,0,0.3)] rounded-none">
+      <div className="flex items-center justify-center p-4">
+        <h3 className="text-xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-[#8E9196] to-[#59595b] shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
           Total Gain (30 Days)
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="flex items-center justify-center">
+        </h3>
+      </div>
+      <div className="flex items-center justify-center p-4">
         {isLoading ? (
           <p className="text-center text-softWhite">Loading...</p>
         ) : (
@@ -87,8 +87,8 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
             )}
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
