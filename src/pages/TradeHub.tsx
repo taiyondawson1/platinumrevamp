@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
@@ -141,7 +142,7 @@ const TradeHub = () => {
   }, [selectedAccount?.id, toast]);
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6 overflow-y-auto h-screen">
+    <div className="flex-1 p-8 pt-6">
       {isLoading ? (
         <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
           <CardContent className="py-4">
