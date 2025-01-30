@@ -65,6 +65,49 @@ const TradeHub = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  // Calculate metrics for the last 5 days
+  const calculateRecentMetrics = (history: TradeHistory[], opens: OpenTrade[]) => {
+    const fiveDaysAgo = new Date();
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+
+    // Filter trades from last 5 days
+    const recentTrades = history.filter(trade => 
+      new Date(trade.closeTime) >= fiveDaysAgo
+    );
+
+    // Calculate total profit/loss for recent trades
+    const recentProfit = recentTrades.reduce((sum, trade) => 
+      sum + trade.profit + trade.interest + trade.commission, 0
+    );
+
+    // Calculate percentage gain
+    const totalProfit = recentProfit;
+    const percentageGain = ((recentProfit / (selectedAccount?.balance || 1)) * 100);
+
+    // Calculate floating P/L and count open orders
+    const floatingPL = opens.reduce((sum, trade) => sum + trade.profit + trade.swap, 0);
+    const openOrdersCount = opens.length;
+
+    // Calculate maximum drawdown over the last 5 days
+    let maxBalance = selectedAccount?.balance || 0;
+    let maxDrawdown = 0;
+    
+    recentTrades.forEach(trade => {
+      const tradeResult = trade.profit + trade.interest + trade.commission;
+      maxBalance = Math.max(maxBalance, maxBalance + tradeResult);
+      const drawdown = ((maxBalance - (maxBalance + tradeResult)) / maxBalance) * 100;
+      maxDrawdown = Math.max(maxDrawdown, drawdown);
+    });
+
+    return {
+      percentageGain,
+      totalProfit,
+      maxDrawdown,
+      floatingPL,
+      openOrdersCount
+    };
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (!selectedAccount?.id) return;
@@ -132,6 +175,8 @@ const TradeHub = () => {
     fetchData();
   }, [selectedAccount?.id, toast]);
 
+  const metrics = calculateRecentMetrics(tradeHistory, openTrades);
+
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 bg-[#0A0B0F] min-h-screen">
       {isLoading ? (
@@ -153,8 +198,10 @@ const TradeHub = () => {
                 </div>
                 <div>
                   <p className="text-sm text-[#8E9196]">Result 5 days ago</p>
-                  <p className="text-2xl font-semibold text-[#0EA5E9]">0.00%</p>
-                  <p className="text-sm text-[#22C55E]">+$4</p>
+                  <p className="text-2xl font-semibold text-[#0EA5E9]">{metrics.percentageGain.toFixed(2)}%</p>
+                  <p className={`text-sm ${metrics.totalProfit >= 0 ? 'text-[#22C55E]' : 'text-red-500'}`}>
+                    {metrics.totalProfit >= 0 ? '+' : ''}{metrics.totalProfit.toFixed(2)}$
+                  </p>
                 </div>
               </div>
             </Card>
@@ -168,8 +215,8 @@ const TradeHub = () => {
                 </div>
                 <div>
                   <p className="text-sm text-[#8E9196]">Closed drawdown 5 days ago</p>
-                  <p className="text-2xl font-semibold text-[#D946EF]">0.00%</p>
-                  <p className="text-sm text-[#8E9196]">$0</p>
+                  <p className="text-2xl font-semibold text-[#D946EF]">{metrics.maxDrawdown.toFixed(2)}%</p>
+                  <p className="text-sm text-[#8E9196]">${(metrics.maxDrawdown * (selectedAccount?.balance || 0) / 100).toFixed(2)}</p>
                 </div>
               </div>
             </Card>
@@ -183,8 +230,10 @@ const TradeHub = () => {
                 </div>
                 <div>
                   <p className="text-sm text-[#8E9196]">Float</p>
-                  <p className="text-2xl font-semibold text-[#8B5CF6]">£0</p>
-                  <p className="text-sm text-[#8E9196]">0 orders</p>
+                  <p className={`text-2xl font-semibold text-[#8B5CF6] ${metrics.floatingPL >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    ${metrics.floatingPL.toFixed(2)}
+                  </p>
+                  <p className="text-sm text-[#8E9196]">{metrics.openOrdersCount} orders</p>
                 </div>
               </div>
             </Card>
