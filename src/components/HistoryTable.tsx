@@ -36,7 +36,7 @@ const HistoryTable = ({ history = [] }: HistoryTableProps) => {
   console.log("HistoryTable received history:", history);
 
   return (
-    <div className="w-full mt-4 bg-[#141522]/40 backdrop-blur-sm border border-[#2A2D3E] p-4 rounded">
+    <div className="w-full mt-4">
       <h3 className="text-xl font-bold mb-4 text-softWhite">Trade History</h3>
       <div className="relative overflow-auto" style={{ maxHeight: "480px" }}>
         <Table>
