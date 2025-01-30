@@ -80,11 +80,7 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
           <p className="text-softWhite">Loading data...</p>
         </div>
       ) : dailyGainData.length > 0 ? (
-        <div className="h-[300px] relative">
-          <div className="absolute inset-0 pointer-events-none" style={{
-            background: 'linear-gradient(to bottom, transparent 90%, rgba(26, 31, 44, 1))',
-            zIndex: 10
-          }} />
+        <div className="h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart 
               data={dailyGainData} 
