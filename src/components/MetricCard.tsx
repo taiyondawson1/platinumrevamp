@@ -42,7 +42,6 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
       "hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)]",
       "transition-shadow duration-200",
       "rounded-xl",
-      "border border-white/5",
       "bg-gradient-to-b from-white/10 to-transparent",
       "backdrop-blur-sm",
       className
