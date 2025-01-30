@@ -1,3 +1,4 @@
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -27,12 +28,12 @@ const Dashboard = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="tradehub-card p-6 space-y-4">
+          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-6 space-y-4">
             <h3 className="text-xl font-semibold text-softWhite">Expert Advisors</h3>
             <p className="text-mediumGray">Access and manage your automated trading strategies.</p>
             <Button 
               variant="ghost" 
-              className="group"
+              className="group !rounded-none"
               onClick={() => navigate('/expert-advisors')}
             >
               Explore EAs
@@ -40,12 +41,12 @@ const Dashboard = () => {
             </Button>
           </Card>
 
-          <Card className="tradehub-card p-6 space-y-4">
+          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-6 space-y-4">
             <h3 className="text-xl font-semibold text-softWhite">Trading Analysis</h3>
             <p className="text-mediumGray">View detailed analytics and performance metrics.</p>
             <Button 
               variant="ghost" 
-              className="group"
+              className="group !rounded-none"
               onClick={() => navigate('/connect-myfxbook')}
             >
               View Analytics
@@ -53,12 +54,12 @@ const Dashboard = () => {
             </Button>
           </Card>
 
-          <Card className="tradehub-card p-6 space-y-4">
+          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-6 space-y-4">
             <h3 className="text-xl font-semibold text-softWhite">Learning Resources</h3>
             <p className="text-mediumGray">Access educational content and trading courses.</p>
             <Button 
               variant="ghost" 
-              className="group"
+              className="group !rounded-none"
               onClick={() => navigate('/courses')}
             >
               Start Learning
@@ -69,11 +70,11 @@ const Dashboard = () => {
 
         {/* World Clocks and Position Size Calculator Section */}
         <div className="flex flex-col lg:flex-row h-[340px]">
-          <section className="flex-1 border border-silver/20 bg-darkBase/40">
+          <section className="flex-1 border border-silver/20 bg-darkBase/40 !rounded-none">
             <WorldClocks />
           </section>
           
-          <div className="w-[325px] border-l border-silver/20">
+          <div className="w-[325px] border-l border-silver/20 !rounded-none">
             <PositionSizeCalculator />
           </div>
         </div>
