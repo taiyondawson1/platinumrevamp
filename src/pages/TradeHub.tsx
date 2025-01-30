@@ -1,17 +1,9 @@
+
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import OpenOrdersTable from "@/components/OpenOrdersTable";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
-import TotalGainCard from "@/components/TotalGainCard";
-import CustomWidget from "@/components/CustomWidget";
-import GainWidget from "@/components/GainWidget";
-import CommunityOutlookWidget from "@/components/CommunityOutlookWidget";
-import DailyDataWidget from "@/components/DailyDataWidget";
-import TechnicalAnalysisWidget from "@/components/TechnicalAnalysisWidget";
-import US30AnalysisWidget from "@/components/US30AnalysisWidget";
-import BitcoinAnalysisWidget from "@/components/BitcoinAnalysisWidget";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -141,70 +133,111 @@ const TradeHub = () => {
   }, [selectedAccount?.id, toast]);
 
   return (
-    <>
-      <div className="flex-1 space-y-3 p-4 md:p-6 pt-4 ml-[25px] mr-[25px] mx-auto flex flex-col items-center max-w-[100vw] overflow-x-hidden mt-[50px]">
-        {isLoading ? (
-          <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-            <CardContent className="py-4">
-              <p className="text-center text-softWhite">Loading data...</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <>
-            <div className="space-y-3 w-full">
-              <div className="flex gap-3 justify-start w-full overflow-hidden ml-[100px] -mt-[100px]">
-                <TechnicalAnalysisWidget />
-                <US30AnalysisWidget />
-                <BitcoinAnalysisWidget />
-              </div>
-              <div className="mt-[50px] space-y-3">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <TotalGainCard accountId={selectedAccount?.id?.toString()} />
-                  <GainWidget accountId={selectedAccount?.id?.toString()} />
+    <div className="flex-1 space-y-4 p-4 md:p-8 bg-[#0A0B0F] min-h-screen">
+      {isLoading ? (
+        <Card className="bg-[#141522]/40 border-[#2A2D3E] backdrop-blur-sm shadow-lg">
+          <div className="py-4">
+            <p className="text-center text-[#E2E8F0]">Loading data...</p>
+          </div>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {/* Top Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 backdrop-blur-sm">
+              <div className="flex items-center space-x-4">
+                <div className="p-2 rounded-lg bg-[#1D1F33]">
+                  <svg className="w-6 h-6 text-[#0EA5E9]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
                 </div>
-                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                  <CardContent className="p-0">
-                    <OpenOrdersTable orders={openTrades} />
-                  </CardContent>
-                </Card>
-                <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                  <CardContent className="p-0">
-                    <HistoryTable history={tradeHistory} />
-                  </CardContent>
-                </Card>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg">
-                    <Tabs defaultValue="daily" className="w-full">
-                      <TabsList className="ml-4 mt-3 bg-darkBlue/60">
-                        <TabsTrigger value="daily" className="text-softWhite data-[state=active]:bg-darkBlue/80">
-                          Daily Gain
-                        </TabsTrigger>
-                        <TabsTrigger value="total" className="text-softWhite data-[state=active]:bg-darkBlue/80">
-                          Total Gain
-                        </TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="daily">
-                        <DailyGainChart accountId={selectedAccount?.id?.toString()} />
-                      </TabsContent>
-                      <TabsContent value="total">
-                        <CustomWidget 
-                          session={localStorage.getItem("myfxbook_session") || ""}
-                          accountId={selectedAccount?.id?.toString()}
-                          width={600}
-                          height={300}
-                        />
-                      </TabsContent>
-                    </Tabs>
-                  </Card>
-                  <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
+                <div>
+                  <p className="text-sm text-[#8E9196]">Result 5 days ago</p>
+                  <p className="text-2xl font-semibold text-[#0EA5E9]">0.00%</p>
+                  <p className="text-sm text-[#22C55E]">+$4</p>
                 </div>
-                <CommunityOutlookWidget />
               </div>
+            </Card>
+            
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 backdrop-blur-sm">
+              <div className="flex items-center space-x-4">
+                <div className="p-2 rounded-lg bg-[#1D1F33]">
+                  <svg className="w-6 h-6 text-[#D946EF]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm text-[#8E9196]">Closed drawdown 5 days ago</p>
+                  <p className="text-2xl font-semibold text-[#D946EF]">0.00%</p>
+                  <p className="text-sm text-[#8E9196]">$0</p>
+                </div>
+              </div>
+            </Card>
+            
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 backdrop-blur-sm">
+              <div className="flex items-center space-x-4">
+                <div className="p-2 rounded-lg bg-[#1D1F33]">
+                  <svg className="w-6 h-6 text-[#8B5CF6]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm text-[#8E9196]">Float</p>
+                  <p className="text-2xl font-semibold text-[#8B5CF6]">£0</p>
+                  <p className="text-sm text-[#8E9196]">0 orders</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Chart Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="md:col-span-2">
+              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
+                <h3 className="text-lg font-semibold text-[#E2E8F0] mb-4">Last 30 days</h3>
+                <DailyGainChart accountId={selectedAccount?.id?.toString()} />
+              </Card>
             </div>
-          </>
-        )}
-      </div>
-    </>
+            <div>
+              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
+                <h3 className="text-lg font-semibold text-[#E2E8F0] mb-4">Trade History</h3>
+                <div className="space-y-2">
+                  <HistoryTable history={tradeHistory.slice(0, 10)} />
+                </div>
+              </Card>
+            </div>
+          </div>
+
+          {/* Bottom Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-[#E2E8F0]">Average Win</h3>
+                <span className="text-2xl font-bold text-[#22C55E]">£20</span>
+              </div>
+            </Card>
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-[#E2E8F0]">Average Loss</h3>
+                <span className="text-2xl font-bold text-[#EF4444]">-£183</span>
+              </div>
+            </Card>
+            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-[#E2E8F0]">Win Rate</h3>
+                <span className="text-2xl font-bold text-[#22C55E]">76%</span>
+              </div>
+            </Card>
+          </div>
+
+          {/* Orders Tables */}
+          <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4">
+            <h3 className="text-lg font-semibold text-[#E2E8F0] mb-4">Open Orders</h3>
+            <OpenOrdersTable orders={openTrades} />
+          </Card>
+        </div>
+      )}
+    </div>
   );
 };
 
