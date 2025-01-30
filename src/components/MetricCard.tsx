@@ -21,12 +21,12 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
       "backdrop-blur-sm",
       className
     )}>
-      <div className="flex flex-col items-center justify-center p-4">
-        <div className="text-lg text-softWhite/70 font-medium">{label}</div>
-        <div className="text-2xl font-bold text-softWhite mt-1">
+      <div className="flex flex-col items-center justify-center py-2">
+        <div className="text-sm text-softWhite/70 font-medium">{label}</div>
+        <div className="text-lg font-bold text-softWhite">
           {typeof value === 'number' ? (value >= 0 ? "+" : "") + value.toFixed(2) + "%" : value}
         </div>
-        <div className="text-sm text-softWhite/50 mt-1">$1,234.56</div>
+        <div className="text-xs text-softWhite/50">$1,234.56</div>
       </div>
     </div>
   );
