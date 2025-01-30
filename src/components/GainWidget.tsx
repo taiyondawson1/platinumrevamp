@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
@@ -66,7 +67,7 @@ const GainWidget = ({ accountId }: GainWidgetProps) => {
   }, [accountId, toast]);
 
   return (
-    <Card className="w-full bg-darkBlue/40 border-mediumGray/20">
+    <Card className="w-full bg-darkBlue/40 border-mediumGray/20 rounded-none">
       <CardHeader className="flex items-center justify-center">
         <CardTitle className="text-xl font-bold text-softWhite text-center">Total Gain (1 Year)</CardTitle>
       </CardHeader>

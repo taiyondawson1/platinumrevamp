@@ -1,3 +1,4 @@
+
 interface CustomWidgetProps {
   session?: string;
   accountId?: string;
@@ -18,7 +19,7 @@ const CustomWidget = ({ session, accountId, width = 300, height = 200 }: CustomW
   console.log("Widget URL:", widgetUrl);
 
   return (
-    <div className="tradehub-card w-full h-full min-h-[200px] rounded-lg overflow-hidden bg-darkBlue/40 border border-mediumGray/20">
+    <div className="tradehub-card w-full h-full min-h-[200px] overflow-hidden bg-darkBlue/40 border border-mediumGray/20 rounded-none">
       <img 
         src={widgetUrl} 
         alt="MyFxBook Custom Widget"

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -91,7 +92,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
   }, [accountId, toast]);
 
   return (
-    <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg w-full">
+    <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg w-full rounded-none">
       <CardHeader>
         <CardTitle className="text-lg font-semibold">Daily Trading Data</CardTitle>
       </CardHeader>
