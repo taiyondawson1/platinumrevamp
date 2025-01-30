@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { BookOpen } from "lucide-react";
@@ -39,6 +38,7 @@ const CoursesPage = () => {
 
   return (
     <div className="p-4 ml-[240px]">
+      <h1 className="text-xl font-semibold text-softWhite mb-4">Expert Advisor Courses</h1>
       <div className="grid gap-3">
         {courses.map((course) => (
           <div 
