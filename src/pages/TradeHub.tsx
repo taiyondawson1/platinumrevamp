@@ -271,7 +271,7 @@ const TradeHub = () => {
               </div>
             </Card>
             
-            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 backdrop-blur-sm rounded-lg">
+            <Card className="bg-[#141522]/40 border-0 p-4 backdrop-blur-sm rounded-lg">
               <div className="flex items-center space-x-4">
                 <div className="p-2 rounded-lg bg-[#1D1F33]">
                   <svg className="w-6 h-6 text-[#D946EF]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -286,7 +286,7 @@ const TradeHub = () => {
               </div>
             </Card>
             
-            <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 backdrop-blur-sm rounded-lg">
+            <Card className="bg-[#141522]/40 border-0 p-4 backdrop-blur-sm rounded-lg">
               <div className="flex items-center space-x-4">
                 <div className="p-2 rounded-lg bg-[#1D1F33]">
                   <svg className="w-6 h-6 text-[#8B5CF6]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
