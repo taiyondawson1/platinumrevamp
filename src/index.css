@@ -39,7 +39,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border rounded-none;
   }
   body {
     @apply bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey text-foreground font-['Inter'];
@@ -57,7 +57,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-silver/30 hover:bg-silver/40 transition-colors rounded-full;
+    @apply bg-silver/30 hover:bg-silver/40 transition-colors rounded-none;
   }
 }
 
