@@ -73,8 +73,8 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
   }, [accountId]);
 
   return (
-    <div className="w-full mt-4">
-      <h2 className="text-lg font-medium text-softWhite px-4 mb-4">Last 30 days</h2>
+    <div className="w-full mt-4 px-[100px]">
+      <h2 className="text-lg font-medium text-softWhite mb-4">Last 30 days</h2>
       {isLoading ? (
         <div className="h-[300px] flex items-center justify-center">
           <p className="text-softWhite">Loading data...</p>
@@ -84,7 +84,7 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart 
               data={dailyGainData} 
-              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              margin={{ top: 5, right: 0, left: 20, bottom: 5 }}
             >
               <CartesianGrid 
                 strokeDasharray="3 3" 
