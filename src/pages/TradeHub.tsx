@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import HistoryTable from "@/components/HistoryTable";
@@ -276,7 +275,6 @@ const TradeHub = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-3">
               <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-[#E2E8F0] mb-4">Last 30 days</h3>
                 <DailyGainChart accountId={selectedAccount?.id?.toString()} />
               </Card>
             </div>
