@@ -10,10 +10,10 @@ interface MetricCardProps {
 }
 
 const MetricCard = ({ label, value, className, variant = "primary" }: MetricCardProps) => {
-  const baseStyles = "w-full p-4";
+  const baseStyles = "w-full p-4 rounded-xl";
   
   const variantStyles = {
-    primary: "bg-gradient-to-b from-[#1D1F33] to-[#141522]/40 border-0 backdrop-blur-sm shadow-[inset_0_2px_6px_rgba(255,255,255,0.2)]",
+    primary: "bg-gradient-to-b from-[#1D1F33] to-[#141522] border border-[#2A2D3E]/50 shadow-lg",
     secondary: "bg-[#141522]/40 border-[#2A2D3E]"
   };
 
@@ -21,6 +21,7 @@ const MetricCard = ({ label, value, className, variant = "primary" }: MetricCard
     <div className={cn(
       baseStyles,
       variantStyles[variant],
+      "hover:border-[#2A2D3E] transition-colors duration-200",
       className
     )}>
       <div className="flex flex-col items-center justify-center">
@@ -34,3 +35,4 @@ const MetricCard = ({ label, value, className, variant = "primary" }: MetricCard
 };
 
 export default MetricCard;
+
