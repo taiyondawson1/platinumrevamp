@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -46,7 +45,6 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
       }
 
       try {
-        // Get dates for last 12 days instead of 30
         const endDate = new Date();
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - 12);
@@ -65,13 +63,12 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
         console.log("Daily Data Response:", responseData);
 
         if (!responseData.error) {
-          // Flatten the nested array and format dates, limit to 12 rows
           const formattedData = responseData.dataDaily.flat()
             .map(item => ({
               ...item,
               date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'MMM dd, yyyy')
             }))
-            .slice(0, 12); // Limit to 12 rows
+            .slice(0, 12);
           setData(formattedData);
         } else {
           throw new Error(responseData.message || "Failed to fetch daily data");
@@ -92,47 +89,43 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
   }, [accountId, toast]);
 
   return (
-    <Card className="bg-darkBlue/40 border-mediumGray/20 backdrop-blur-sm shadow-lg w-full rounded-none">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold">Daily Trading Data</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <p className="text-center text-muted-foreground py-4">Loading data...</p>
-        ) : data.length > 0 ? (
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Balance</TableHead>
-                  <TableHead>Pips</TableHead>
-                  <TableHead>Lots</TableHead>
-                  <TableHead>Floating P/L</TableHead>
-                  <TableHead>Profit</TableHead>
-                  <TableHead>Growth</TableHead>
+    <div className="w-full">
+      <h3 className="text-lg font-semibold mb-4">Daily Trading Data</h3>
+      {isLoading ? (
+        <p className="text-center text-muted-foreground py-4">Loading data...</p>
+      ) : data.length > 0 ? (
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Balance</TableHead>
+                <TableHead>Pips</TableHead>
+                <TableHead>Lots</TableHead>
+                <TableHead>Floating P/L</TableHead>
+                <TableHead>Profit</TableHead>
+                <TableHead>Growth</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.date}</TableCell>
+                  <TableCell>${item.balance.toFixed(2)}</TableCell>
+                  <TableCell>{item.pips.toFixed(1)}</TableCell>
+                  <TableCell>{item.lots.toFixed(2)}</TableCell>
+                  <TableCell>${item.floatingPL.toFixed(2)}</TableCell>
+                  <TableCell>${item.profit.toFixed(2)}</TableCell>
+                  <TableCell>{item.growthEquity.toFixed(2)}%</TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{item.date}</TableCell>
-                    <TableCell>${item.balance.toFixed(2)}</TableCell>
-                    <TableCell>{item.pips.toFixed(1)}</TableCell>
-                    <TableCell>{item.lots.toFixed(2)}</TableCell>
-                    <TableCell>${item.floatingPL.toFixed(2)}</TableCell>
-                    <TableCell>${item.profit.toFixed(2)}</TableCell>
-                    <TableCell>{item.growthEquity.toFixed(2)}%</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        ) : (
-          <p className="text-center text-muted-foreground py-4">No data available</p>
-        )}
-      </CardContent>
-    </Card>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <p className="text-center text-muted-foreground py-4">No data available</p>
+      )}
+    </div>
   );
 };
 
