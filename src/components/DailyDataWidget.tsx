@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -108,24 +107,20 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
               <TableRow>
                 <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px] text-white">Date</TableHead>
                 <TableHead className="text-[15px] font-bold text-white">Balance</TableHead>
-                <TableHead className="text-[15px] font-bold text-white">Profit</TableHead>
                 <TableHead className="text-[15px] font-bold text-white">Lots</TableHead>
-                <TableHead className="text-[15px] font-bold text-white">Floating P/L</TableHead>
+                <TableHead className="text-[15px] font-bold text-white">Profit</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {data.map((item, index) => (
                 <TableRow key={index}>
                   <TableCell className="text-[14px] whitespace-nowrap">{item.date}</TableCell>
-                  <TableCell className={`text-[14px] ${getValueColor(item.balance)}`}>
+                  <TableCell className="text-[14px] text-[#22c55e]">
                     ${item.balance.toFixed(2)}
                   </TableCell>
+                  <TableCell className="text-[14px]">{item.lots.toFixed(2)}</TableCell>
                   <TableCell className={`text-[14px] ${getValueColor(item.profit)}`}>
                     ${item.profit.toFixed(2)}
-                  </TableCell>
-                  <TableCell className="text-[14px]">{item.lots.toFixed(2)}</TableCell>
-                  <TableCell className={`text-[14px] ${getValueColor(item.floatingPL)}`}>
-                    ${item.floatingPL.toFixed(2)}
                   </TableCell>
                 </TableRow>
               ))}
