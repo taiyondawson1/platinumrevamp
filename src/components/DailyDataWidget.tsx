@@ -1,11 +1,31 @@
+
 import React from 'react';
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card } from "@/components/ui/card"
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 
+interface DailyData {
+  date: string;
+  symbol: string;
+  profit: number;
+}
+
+// Mock data fetching function - replace with actual API call when ready
+const fetchDailyData = async (): Promise<DailyData[]> => {
+  // Simulated API response
+  return [
+    { date: '2024-01-30', symbol: 'EURUSD', profit: 120.50 },
+    { date: '2024-01-29', symbol: 'GBPUSD', profit: 85.75 },
+    { date: '2024-01-28', symbol: 'USDJPY', profit: -45.20 },
+  ];
+};
+
 const DailyDataWidget = () => {
-  const { data } = useQuery(['dailyData'], fetchDailyData);
+  const { data = [] } = useQuery({
+    queryKey: ['dailyData'],
+    queryFn: fetchDailyData
+  });
 
   return (
     <Card className="w-full h-[400px]">
@@ -21,7 +41,7 @@ const DailyDataWidget = () => {
               </tr>
             </thead>
             <tbody>
-              {data?.map((item, index) => (
+              {data.map((item: DailyData, index: number) => (
                 <tr key={index} className="border-t border-border">
                   <td className="py-2">{format(new Date(item.date), 'MMM dd')}</td>
                   <td className="py-2">{item.symbol}</td>
