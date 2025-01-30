@@ -39,7 +39,7 @@
 
 @layer base {
   * {
-    @apply border-border rounded-none;
+    @apply border-border;
   }
   body {
     @apply bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey text-foreground font-['Inter'];
@@ -62,8 +62,8 @@
 }
 
 .metric-card {
-  @apply bg-black/40 p-6 border border-silver/20 
-         hover:border-silver/30 transition-all duration-300 rounded-none 
+  @apply bg-black/40 p-6 border border-silver/20 rounded-none
+         hover:border-silver/30 transition-all duration-300 
          backdrop-blur-sm shadow-lg !important;
 }
 
@@ -76,8 +76,8 @@
 }
 
 .chart-container {
-  @apply bg-black/40 border border-silver/20 
-         hover:border-silver/30 transition-all duration-300 rounded-none 
+  @apply bg-black/40 border border-silver/20 rounded-none
+         hover:border-silver/30 transition-all duration-300
          backdrop-blur-sm shadow-lg !important;
 }
 
@@ -90,3 +90,4 @@
          shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 rounded-lg 
          hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] !important;
 }
+
