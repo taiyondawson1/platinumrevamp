@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { format, parse } from "date-fns";
 
@@ -50,7 +49,6 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
         if (!data.error && data.dailyGain) {
           const formattedData = data.dailyGain.flat().map((item: any) => {
             try {
-              // Parse the date string from MM/dd/yyyy format
               const parsedDate = parse(item.date, 'MM/dd/yyyy', new Date());
               return {
                 date: format(parsedDate, 'yyyy-MM-dd'),
@@ -75,90 +73,87 @@ const DailyGainChart = ({ accountId }: DailyGainProps) => {
   }, [accountId]);
 
   return (
-    <Card className="w-full mt-4 bg-[#1A1F2C] border-[#403E43]/20">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium text-softWhite">Last 30 days</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <div className="h-[300px] flex items-center justify-center">
-            <p className="text-softWhite">Loading data...</p>
-          </div>
-        ) : dailyGainData.length > 0 ? (
-          <div className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart 
-                data={dailyGainData} 
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid 
-                  strokeDasharray="3 3" 
-                  vertical={false}
-                  stroke="#403E43"
-                  opacity={0.4}
-                />
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={(str) => {
-                    try {
-                      return format(new Date(str), 'dd MMM');
-                    } catch (error) {
-                      console.error("Error formatting tick:", str, error);
-                      return str;
-                    }
-                  }}
-                  stroke="#8E9196"
-                  tickLine={false}
-                  axisLine={false}
-                  dy={10}
-                />
-                <YAxis 
-                  stroke="#8E9196"
-                  tickLine={false}
-                  axisLine={false}
-                  dx={-10}
-                  tickFormatter={(value) => `${value}k`}
-                />
-                <Tooltip
-                  labelFormatter={(label) => {
-                    try {
-                      return format(new Date(label as string), 'dd MMM, yyyy');
-                    } catch (error) {
-                      console.error("Error formatting tooltip label:", label, error);
-                      return label;
-                    }
-                  }}
-                  formatter={(value: number) => [`${value.toFixed(2)}%`, 'Gain']}
-                  contentStyle={{
-                    backgroundColor: '#1A1F2C',
-                    border: '1px solid #403E43',
-                    borderRadius: '6px',
-                    color: '#fff'
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#0EA5E9"
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={{ 
-                    r: 4, 
-                    fill: "#0EA5E9",
-                    stroke: "#0EA5E9" 
-                  }}
-                  name="Daily Gain"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        ) : (
-          <div className="h-[300px] flex items-center justify-center">
-            <p className="text-softWhite">No daily gain data available</p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+    <div className="w-full mt-4">
+      <h2 className="text-lg font-medium text-softWhite px-4 mb-4">Last 30 days</h2>
+      {isLoading ? (
+        <div className="h-[300px] flex items-center justify-center">
+          <p className="text-softWhite">Loading data...</p>
+        </div>
+      ) : dailyGainData.length > 0 ? (
+        <div className="h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart 
+              data={dailyGainData} 
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid 
+                strokeDasharray="3 3" 
+                vertical={false}
+                stroke="#403E43"
+                opacity={0.4}
+              />
+              <XAxis
+                dataKey="date"
+                tickFormatter={(str) => {
+                  try {
+                    return format(new Date(str), 'dd MMM');
+                  } catch (error) {
+                    console.error("Error formatting tick:", str, error);
+                    return str;
+                  }
+                }}
+                stroke="#8E9196"
+                tickLine={false}
+                axisLine={false}
+                dy={10}
+              />
+              <YAxis 
+                stroke="#8E9196"
+                tickLine={false}
+                axisLine={false}
+                dx={-10}
+                tickFormatter={(value) => `${value}k`}
+                ticks={[-2, -1, 0, 1, 2, 3, 4]}
+              />
+              <Tooltip
+                labelFormatter={(label) => {
+                  try {
+                    return format(new Date(label as string), 'dd MMM, yyyy');
+                  } catch (error) {
+                    console.error("Error formatting tooltip label:", label, error);
+                    return label;
+                  }
+                }}
+                formatter={(value: number) => [`${value.toFixed(2)}%`, 'Gain']}
+                contentStyle={{
+                  backgroundColor: '#1A1F2C',
+                  border: '1px solid #403E43',
+                  borderRadius: '6px',
+                  color: '#fff'
+                }}
+              />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#0EA5E9"
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ 
+                  r: 4, 
+                  fill: "#0EA5E9",
+                  stroke: "#0EA5E9" 
+                }}
+                name="Daily Gain"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      ) : (
+        <div className="h-[300px] flex items-center justify-center">
+          <p className="text-softWhite">No daily gain data available</p>
+        </div>
+      )}
+    </div>
   );
 };
 
