@@ -10,7 +10,7 @@ interface MetricCardProps {
 
 const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
   return (
-    <div className={cn("w-full bg-darkBlue/40 border-mediumGray/20 rounded-none p-4", className)}>
+    <div className={cn("w-full bg-darkBlue/40 border-mediumGray/20 !rounded-none p-4", className)}>
       <div className="flex flex-col items-center justify-center">
         <div className="text-lg text-softWhite/70 font-medium">{label}</div>
         <div className="text-2xl font-bold text-softWhite mt-1">

@@ -67,7 +67,7 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
   }, [accountId, toast]);
 
   return (
-    <Card className="w-full bg-darkBlue/40 border-mediumGray/20 rounded-none">
+    <Card className="w-full bg-darkBlue/40 border-mediumGray/20 !rounded-none">
       <CardHeader className="flex items-center justify-center">
         <CardTitle className="text-xl font-bold text-softWhite text-center">Total Gain (30 Days)</CardTitle>
       </CardHeader>

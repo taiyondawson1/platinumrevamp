@@ -10,7 +10,7 @@ const StatsGrid = () => {
   return (
     <div className="stats-grid">
       {stats.map((stat) => (
-        <div key={stat.label} className="w-full bg-darkBlue/40 border-mediumGray/20 rounded-none p-4">
+        <div key={stat.label} className="w-full bg-darkBlue/40 border-mediumGray/20 !rounded-none p-4">
           <div className="flex flex-col items-center justify-center">
             <div className="text-lg text-softWhite/70 font-medium">{stat.label}</div>
             <div className="text-2xl font-bold text-softWhite mt-1">{stat.value}</div>
