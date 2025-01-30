@@ -60,17 +60,17 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
         console.log("Daily Data Response:", responseData);
 
         if (!responseData.error) {
-          // Parse dates and format them consistently
-          const formattedData = responseData.dataDaily.flat()
-            .map(item => ({
-              ...item,
-              // Store the parsed date temporarily for sorting
-              parsedDate: parse(item.date, 'MM/dd/yyyy', new Date()),
-              date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'MMM dd, yyyy')
-            }))
-            // Sort by the parsed date in descending order (most recent first)
+          const formattedData = responseData.dataDaily
+            .flat()
+            .map(item => {
+              const parsedDate = parse(item.date, 'MM/dd/yyyy', new Date());
+              return {
+                ...item,
+                parsedDate,
+                date: format(parsedDate, 'MMM dd, yyyy')
+              };
+            })
             .sort((a, b) => b.parsedDate.getTime() - a.parsedDate.getTime())
-            // Remove the temporary parsedDate field
             .map(({ parsedDate, ...rest }) => rest);
 
           setData(formattedData);
@@ -92,42 +92,44 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
     fetchData();
   }, [accountId, toast]);
 
+  if (isLoading) {
+    return <p className="text-center text-muted-foreground py-4">Loading data...</p>;
+  }
+
+  if (!data.length) {
+    return <p className="text-center text-muted-foreground py-4">No data available</p>;
+  }
+
   return (
     <div className="w-full">
-      {isLoading ? (
-        <p className="text-center text-muted-foreground py-4">Loading data...</p>
-      ) : data.length > 0 ? (
-        <div className="max-h-[400px] overflow-y-auto no-scrollbar">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px] text-white">Date</TableHead>
-                <TableHead className="text-[15px] font-bold text-white">Balance</TableHead>
-                <TableHead className="text-[15px] font-bold text-white">Pips</TableHead>
-                <TableHead className="text-[10px]">Lots</TableHead>
-                <TableHead className="text-[10px]">Floating P/L</TableHead>
-                <TableHead className="text-[10px]">Profit</TableHead>
-                <TableHead className="text-[10px]">Growth</TableHead>
+      <div className="max-h-[400px] overflow-y-auto no-scrollbar">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-[15px] font-bold whitespace-nowrap min-w-[100px] text-white">Date</TableHead>
+              <TableHead className="text-[15px] font-bold text-white">Balance</TableHead>
+              <TableHead className="text-[15px] font-bold text-white">Pips</TableHead>
+              <TableHead className="text-[10px]">Lots</TableHead>
+              <TableHead className="text-[10px]">Floating P/L</TableHead>
+              <TableHead className="text-[10px]">Profit</TableHead>
+              <TableHead className="text-[10px]">Growth</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell className="text-[10px] whitespace-nowrap">{item.date}</TableCell>
+                <TableCell className="text-[10px]">${item.balance.toFixed(2)}</TableCell>
+                <TableCell className="text-[10px]">{item.pips.toFixed(1)}</TableCell>
+                <TableCell className="text-[10px]">{item.lots.toFixed(2)}</TableCell>
+                <TableCell className="text-[10px]">${item.floatingPL.toFixed(2)}</TableCell>
+                <TableCell className="text-[10px]">${item.profit.toFixed(2)}</TableCell>
+                <TableCell className="text-[10px]">{item.growthEquity.toFixed(2)}%</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell className="text-[10px] whitespace-nowrap">{item.date}</TableCell>
-                  <TableCell className="text-[10px]">${item.balance.toFixed(2)}</TableCell>
-                  <TableCell className="text-[10px]">{item.pips.toFixed(1)}</TableCell>
-                  <TableCell className="text-[10px]">{item.lots.toFixed(2)}</TableCell>
-                  <TableCell className="text-[10px]">${item.floatingPL.toFixed(2)}</TableCell>
-                  <TableCell className="text-[10px]">${item.profit.toFixed(2)}</TableCell>
-                  <TableCell className="text-[10px]">{item.growthEquity.toFixed(2)}%</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      ) : (
-        <p className="text-center text-muted-foreground py-4">No data available</p>
-      )}
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };
