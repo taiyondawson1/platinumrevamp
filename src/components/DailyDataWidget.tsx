@@ -46,14 +46,11 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
       }
 
       try {
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - 12);
-
+        // Remove date range to fetch all history
         const response = await fetch(
           `https://www.myfxbook.com/api/get-data-daily.json?session=${encodeURIComponent(
             session
-          )}&id=${encodeURIComponent(accountId)}&start=${startDate.toISOString().split('T')[0]}&end=${endDate.toISOString().split('T')[0]}`
+          )}&id=${encodeURIComponent(accountId)}`
         );
 
         if (!response.ok) {
@@ -69,7 +66,12 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
               ...item,
               date: format(parse(item.date, 'MM/dd/yyyy', new Date()), 'MMM dd, yyyy')
             }))
-            .slice(0, 12);
+            // Sort by date in descending order (most recent first)
+            .sort((a, b) => {
+              const dateA = parse(a.date, 'MMM dd, yyyy', new Date());
+              const dateB = parse(b.date, 'MMM dd, yyyy', new Date());
+              return dateB.getTime() - dateA.getTime();
+            });
           setData(formattedData);
         } else {
           throw new Error(responseData.message || "Failed to fetch daily data");
@@ -94,7 +96,7 @@ const DailyDataWidget = ({ accountId }: DailyDataWidgetProps) => {
       {isLoading ? (
         <p className="text-center text-muted-foreground py-4">Loading data...</p>
       ) : data.length > 0 ? (
-        <div className="overflow-x-auto scrollbar-none">
+        <div className="max-h-[400px] overflow-y-auto scrollbar-none">
           <Table>
             <TableHeader>
               <TableRow>
