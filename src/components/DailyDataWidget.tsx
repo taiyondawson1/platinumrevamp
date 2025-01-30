@@ -23,7 +23,9 @@ export const fetchDailyData = async (): Promise<DailyData[]> => {
 const DailyDataWidget: React.FC = () => {
   const { data = [] } = useQuery({
     queryKey: ['dailyData'],
-    queryFn: fetchDailyData
+    queryFn: async () => {
+      return await fetchDailyData();
+    }
   });
 
   return (
