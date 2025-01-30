@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import HistoryTable from "@/components/HistoryTable";
@@ -6,6 +5,7 @@ import DailyGainChart from "@/components/DailyGainChart";
 import DailyDataWidget from "@/components/DailyDataWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface OpenTrade {
   openTime: string;
@@ -275,13 +275,15 @@ const TradeHub = () => {
           {/* Chart and Daily Data Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2">
-              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
+              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg" style={{ height: '400px' }}>
                 <DailyGainChart accountId={selectedAccount?.id?.toString()} />
               </Card>
             </div>
             <div className="md:col-span-1">
-              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg h-full">
-                <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
+              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg" style={{ height: '400px' }}>
+                <ScrollArea className="h-full pr-4">
+                  <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
+                </ScrollArea>
               </Card>
             </div>
           </div>
