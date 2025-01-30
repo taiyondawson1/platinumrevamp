@@ -8,20 +8,31 @@ import GainWidget from "@/components/GainWidget";
 import DailyDataWidget from "@/components/DailyDataWidget";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CustomWidget from "@/components/CustomWidget";
+import { useParams } from "react-router-dom";
 
 const BlankPage = () => {
+  const { accountId } = useParams();
+
+  if (!accountId) {
+    return (
+      <div className="w-full min-h-screen bg-[#090A14] flex items-center justify-center">
+        <p className="text-softWhite">Please select an account to view stats.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full min-h-screen bg-[#090A14] space-y-4 px-[200px] py-6">
       {/* Top Row - 3 Small Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-[#14151F] border border-white/5 shadow-lg rounded-xl">
-          <TotalGainCard />
+          <TotalGainCard accountId={accountId} />
         </Card>
         <Card className="bg-[#14151F] border border-white/5 shadow-lg rounded-xl">
-          <GainWidget />
+          <GainWidget accountId={accountId} />
         </Card>
         <Card className="bg-[#14151F] border border-white/5 shadow-lg rounded-xl">
-          <DailyDataWidget />
+          <DailyDataWidget accountId={accountId} />
         </Card>
       </div>
 
@@ -38,20 +49,21 @@ const BlankPage = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="daily" className="p-4">
-              <DailyGainChart />
+              <DailyGainChart accountId={accountId} />
             </TabsContent>
             <TabsContent value="total" className="p-4">
               <CustomWidget 
                 session={localStorage.getItem("myfxbook_session") || ""}
                 width={600}
                 height={300}
+                accountId={accountId}
               />
             </TabsContent>
           </Tabs>
         </Card>
         <Card className="bg-[#14151F] border border-white/5 shadow-lg rounded-xl overflow-hidden">
           <CardContent className="p-0">
-            <HistoryTable history={[]} />
+            <HistoryTable accountId={accountId} history={[]} />
           </CardContent>
         </Card>
       </div>
@@ -59,7 +71,7 @@ const BlankPage = () => {
       {/* Bottom Row - Full Width Table */}
       <Card className="bg-[#14151F] border border-white/5 shadow-lg rounded-xl">
         <CardContent className="p-0">
-          <OpenOrdersTable orders={[]} />
+          <OpenOrdersTable accountId={accountId} orders={[]} />
         </CardContent>
       </Card>
     </div>
