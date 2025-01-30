@@ -31,6 +31,7 @@ const MyFxBookLogin = () => {
   const [accounts, setAccounts] = useState<MyFxBookAccount[]>([]);
   const [watchedAccounts, setWatchedAccounts] = useState<MyFxBookWatchedAccount[]>([]);
   const [showMaxAttemptsDialog, setShowMaxAttemptsDialog] = useState(false);
+  const [isPolling, setIsPolling] = useState(false);
   const { toast } = useToast();
 
   // Check session on mount
@@ -137,9 +138,6 @@ const MyFxBookLogin = () => {
       fetchWatchedAccounts();
     }
   }, [isLoggedIn]);
-
-  // Add new state for polling
-  const [isPolling, setIsPolling] = useState(false);
 
   // Function to check if session is valid
   const checkSessionValidity = async () => {
