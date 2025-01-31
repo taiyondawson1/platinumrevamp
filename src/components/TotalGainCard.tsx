@@ -123,7 +123,15 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
                 tickLine={false}
                 axisLine={false}
                 dx={-10}
-                tickFormatter={(value) => `${value}%`}
+                tickFormatter={(value) => ({
+                  value: `${value}%`,
+                  props: {
+                    style: {
+                      fill: value >= 0 ? '#39FF14' : '#FF1744',
+                      filter: `drop-shadow(0 0 2px ${value >= 0 ? '#39FF14' : '#FF1744'})`
+                    }
+                  }
+                })}
               />
               <Tooltip
                 contentStyle={{
@@ -132,12 +140,20 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
                   borderRadius: '6px',
                   color: '#fff'
                 }}
-                formatter={(value: number) => [`${value.toFixed(2)}%`, 'Gain']}
+                formatter={(value: number) => [
+                  <span style={{
+                    color: value >= 0 ? '#39FF14' : '#FF1744',
+                    textShadow: `0 0 5px ${value >= 0 ? '#39FF14' : '#FF1744'}`
+                  }}>
+                    {`${value.toFixed(2)}%`}
+                  </span>,
+                  'Gain'
+                ]}
               />
               <Area
                 type="monotone"
                 dataKey="value"
-                stroke="#0EA5E9"
+                stroke={gainData[gainData.length - 1]?.value >= 0 ? "#39FF14" : "#FF1744"}
                 fillOpacity={1}
                 fill="url(#gainGradient)"
               />
