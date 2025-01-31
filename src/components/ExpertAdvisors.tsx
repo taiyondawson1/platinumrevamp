@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Download } from "lucide-react";
@@ -36,24 +37,20 @@ const ExpertAdvisors = () => {
 
       const { data, error } = await supabase.storage
         .from('expert-advisors')
-        .download(filename);
+        .createSignedUrl(filename, 60); // Create a signed URL valid for 60 seconds
 
       if (error) {
         throw error;
       }
 
-      // Create a URL for the downloaded file
-      const url = window.URL.createObjectURL(data);
-      
       // Create a temporary link element
       const link = document.createElement('a');
-      link.href = url;
+      link.href = data.signedUrl;
       link.download = filename;
       
       // Append to document, click, and cleanup
       document.body.appendChild(link);
       link.click();
-      window.URL.revokeObjectURL(url);
       document.body.removeChild(link);
 
       toast({
