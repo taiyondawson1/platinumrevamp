@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import Sidebar from "@/components/Sidebar";
 import Home from "@/pages/Home";
@@ -15,15 +15,44 @@ import CoursesPage from "@/pages/Courses";
 import TradeHub from "@/pages/TradeHub";
 import MyFxBookLoginPage from "@/pages/MyFxBookLoginPage";
 import TradingViewTickerTape from "@/components/TradingViewTickerTape";
+import Login from "@/pages/Login";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 const queryClient = new QueryClient();
+
+function PrivateRoute({ children }: { children: React.ReactNode }) {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (isAuthenticated === null) {
+    return null; // or a loading spinner
+  }
+
+  return isAuthenticated ? children : <Navigate to="/login" />;
+}
 
 function MainContent() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const isSetfilesPage = location.pathname === "/setfiles";
   const isTradeHubPage = location.pathname === "/tradehub";
-  const hideHeader = isHomePage || isSetfilesPage || isTradeHubPage;
+  const isLoginPage = location.pathname === "/login";
+  const hideHeader = isHomePage || isSetfilesPage || isTradeHubPage || isLoginPage;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
@@ -46,14 +75,15 @@ function MainContent() {
           <main className={`flex-1 ${!hideHeader ? "ml-[270px] mr-0 mt-[250px]" : ""}`}>
             <div className="overflow-auto">
               <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/trading" element={<TradingPage />} />
-                <Route path="/expert-advisors" element={<ExpertAdvisorsPage />} />
-                <Route path="/setfiles" element={<SetfilesPage />} />
-                <Route path="/courses" element={<CoursesPage />} />
-                <Route path="/tradehub" element={<TradeHub />} />
-                <Route path="/connect-myfxbook" element={<MyFxBookLoginPage />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
+                <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+                <Route path="/trading" element={<PrivateRoute><TradingPage /></PrivateRoute>} />
+                <Route path="/expert-advisors" element={<PrivateRoute><ExpertAdvisorsPage /></PrivateRoute>} />
+                <Route path="/setfiles" element={<PrivateRoute><SetfilesPage /></PrivateRoute>} />
+                <Route path="/courses" element={<PrivateRoute><CoursesPage /></PrivateRoute>} />
+                <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
+                <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
               </Routes>
             </div>
           </main>
