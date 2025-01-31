@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -19,6 +18,10 @@ export default {
       },
     },
     extend: {
+      animation: {
+        "spin-reverse": "spin 2s linear infinite reverse",
+        "spin-slow": "spin 3s linear infinite",
+      },
       keyframes: {
         "scale-in": {
           "0%": { transform: "scale(0.95)", opacity: "0" },
