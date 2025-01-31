@@ -41,7 +41,7 @@ const SetfilesPage = () => {
   ];
 
   const defaultRiskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
-  const stealthPhases = ["Phase 1", "Phase 2"];
+  const stealthPhases = ["XAUUSD", "US30"];
   const infinityLevels = ["Trend", "Consolodation (XAUUSD)", "Consolodation (US30)", "STRIKER"];
 
   const getRiskLevels = () => {
@@ -60,9 +60,9 @@ const SetfilesPage = () => {
         return 1.0;
       case "Aggressive":
         return 2.5;
-      case "Phase 1":
+      case "XAUUSD":
         return 0.5; // Example value for Phase 1
-      case "Phase 2":
+      case "US30":
         return 1.5; // Example value for Phase 2
       default:
         return 1.0;
@@ -79,9 +79,9 @@ const SetfilesPage = () => {
         return 2.3;
       case "Aggressive":
         return 4.5;
-      case "Phase 1":
+      case "XAUUSD":
         return 1.0; // Example value for Phase 1
-      case "Phase 2":
+      case "US30":
         return 2.0; // Example value for Phase 2
       default:
         return 2.3;
@@ -105,15 +105,15 @@ const SetfilesPage = () => {
     console.log("Selected expert:", expert);
     setSelectedExpert(expert);
     // Reset risk selection when switching experts
-    setSelectedRisk(expert === "PlatinumAi: Stealth" ? "Phase 1" : "Balanced");
+    setSelectedRisk(expert === "PlatinumAi: Stealth" ? "XAUUSD" : "Balanced");
   };
 
   const getRiskDescription = (risk: string) => {
     if (selectedExpert === "PlatinumAi: Stealth") {
-      if (risk === "Phase 1") {
+      if (risk === "XAUUSD") {
         return "Phase 1 approach with XAUUSD trading.";
       }
-      if (risk === "Phase 2") {
+      if (risk === "US30") {
         return "Phase 2 approach with US30 trading.";
       }
     }
@@ -131,7 +131,7 @@ const SetfilesPage = () => {
       return "US30";
     }
     if (selectedExpert === "PlatinumAi: Stealth") {
-      return selectedRisk === "Phase 1" ? "XAUUSD" : "US30";
+      return selectedRisk === "XAUUSD" ? "XAUUSD" : "US30";
     }
     return "XAUUSD";
   };
@@ -233,7 +233,7 @@ const SetfilesPage = () => {
                     onClick={() => handleRiskSelect(risk)}
                     className={`px-6 py-2 h-10 transition-all duration-300 ${
                       risk === selectedRisk
-                        ? risk === "Conservative" || risk === "Phase 1" 
+                        ? risk === "Conservative" || risk === "XAUUSD" 
                           ? "bg-[#0EA5E9] text-white hover:bg-[#0EA5E9]/90 animate-[scale-in_0.2s_ease-out]"
                           : "bg-[#00ADB5] text-white hover:bg-[#00ADB5]/90 animate-[scale-in_0.2s_ease-out]"
                         : "bg-darkBlue/40 text-mediumGray hover:bg-darkBlue/60 hover:text-softWhite"
@@ -263,7 +263,7 @@ const SetfilesPage = () => {
                     <span className={`${
                       selectedRisk === "Aggressive" 
                         ? "bg-red-500/20 text-red-300"
-                        : selectedRisk === "Conservative" || selectedRisk === "Phase 1" || selectedRisk === "Phase 2" 
+                        : selectedRisk === "Conservative" || selectedRisk === "XAUUSD" || selectedRisk === "US30" 
                         ? "bg-blue-500/20 text-blue-300"
                         : selectedRisk === "Ultrasoft"
                         ? "bg-green-500/20 text-green-300"
@@ -272,7 +272,7 @@ const SetfilesPage = () => {
                       <Asterisk className="w-3 h-3" />
                       {selectedRisk === "Aggressive" 
                         ? "High Risk" 
-                        : selectedRisk === "Conservative" || selectedRisk === "Phase 1" || selectedRisk === "Phase 2" 
+                        : selectedRisk === "Conservative" || selectedRisk === "XAUUSD" || selectedRisk === "US30" 
                           ? "Low Risk" 
                           : selectedRisk === "Ultrasoft" 
                             ? "Minimal Risk" 
@@ -281,11 +281,11 @@ const SetfilesPage = () => {
                     <span className="text-softWhite text-sm font-semibold tracking-tight">Risk Level</span>
                   </div>
                   <p className="text-mediumGray text-sm font-normal">
-                    {selectedExpert === "PlatinumAi: Stealth" && selectedRisk === "Phase 1"
+                    {selectedExpert === "PlatinumAi: Stealth" && selectedRisk === "XAUUSD"
                       ? "Phase 1 approach with XAUUSD trading."
                       : `${selectedRisk.toLowerCase()} approach with ${
                           selectedRisk === "Aggressive" ? "high" :
-                          selectedRisk === "Conservative" || selectedRisk === "Phase 1" ? "low" :
+                          selectedRisk === "Conservative" || selectedRisk === "XAUUSD" || selectedRisk === "US30" ? "low" :
                           selectedRisk === "Ultrasoft" ? "minimal" : "moderate"
                         } risk`
                     }
