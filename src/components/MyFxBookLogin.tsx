@@ -32,6 +32,7 @@ const MyFxBookLogin = () => {
   const [watchedAccounts, setWatchedAccounts] = useState<MyFxBookWatchedAccount[]>([]);
   const [showMaxAttemptsDialog, setShowMaxAttemptsDialog] = useState(false);
   const [isPolling, setIsPolling] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const { toast } = useToast();
 
   // Function to check if session is valid
@@ -204,8 +205,9 @@ const MyFxBookLogin = () => {
           title: "Success",
           description: "Successfully logged in to MyFxBook",
         });
-        fetchAccounts();
-        fetchWatchedAccounts();
+        await fetchAccounts();
+        await fetchWatchedAccounts();
+        setIsTransitioning(true);
       } else {
         if (data.message.toLowerCase().includes("max login attempts reached")) {
           setShowMaxAttemptsDialog(true);
@@ -281,6 +283,26 @@ const MyFxBookLogin = () => {
       }
     });
   };
+
+  useEffect(() => {
+    if (isTransitioning) {
+      const timer = setTimeout(() => {
+        navigate('/tradehub');
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isTransitioning, navigate]);
+
+  if (isTransitioning) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center space-y-4">
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto"></div>
+          <p className="text-lg text-softWhite">Redirecting to Trade Hub...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoggedIn) {
     return (
