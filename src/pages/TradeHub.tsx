@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
@@ -66,7 +67,7 @@ const TradeHub = () => {
   const [openTrades, setOpenTrades] = useState<OpenTrade[]>([]);
   const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true); // Changed to true for default dark mode
   const { toast } = useToast();
 
   // Calculate metrics for the last 5 days
@@ -179,6 +180,8 @@ const TradeHub = () => {
   useEffect(() => {
     // Update body class when dark mode changes
     document.body.classList.toggle('dark', isDarkMode);
+    // Initialize dark mode on component mount
+    document.body.classList.add('dark');
     return () => {
       document.body.classList.remove('dark');
     };
