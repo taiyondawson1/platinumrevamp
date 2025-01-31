@@ -25,7 +25,8 @@ const ExpertAdvisors = () => {
       description: "Minimal manual intervention required, with a \"one shot, one entry at a time\" approach.",
       presets: "5 presets available",
       path: "/expert-advisors/platinumai-infinity",
-      filename: "platinumai-infinity.ex4"
+      filename: "PlatinumAi Infinity.ex4",
+      downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Infinity.ex4"
     },
   ];
 
