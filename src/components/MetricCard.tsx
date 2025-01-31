@@ -45,7 +45,28 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
     return !isNaN(numValue) && numValue >= 0;
   };
 
-  const valueColor = isPositiveValue(value) ? '#39FF14' : '#FF1744';
+  // Helper function to determine color based on label and value
+  const getValueColor = (label: string, value: string | number): string => {
+    // Always show these in neon green if positive
+    if (label === 'Average Win') {
+      return '#39FF14';
+    }
+
+    // Show these in standard green if positive
+    if (['Total Balance', 'Max Closed DD'].includes(label)) {
+      return isPositiveValue(value) ? '#34C759' : '#FF1744';
+    }
+
+    // Show these in neon green/red based on value
+    if (['Total Results', 'Last Trade Take'].includes(label)) {
+      return isPositiveValue(value) ? '#39FF14' : '#FF1744';
+    }
+
+    // Default color logic for other metrics
+    return isPositiveValue(value) ? '#39FF14' : '#FF1744';
+  };
+
+  const valueColor = getValueColor(label, value);
 
   return (
     <div className={cn(
@@ -65,7 +86,7 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
           className="text-lg font-bold"
           style={{ 
             color: valueColor,
-            textShadow: `0 0 5px ${valueColor}`,
+            textShadow: valueColor === '#39FF14' ? `0 0 5px ${valueColor}` : 'none',
           }}
         >
           {formatValue(value, label)}
