@@ -41,7 +41,7 @@ const SetfilesPage = () => {
   ];
 
   const defaultRiskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
-  const stealthPhases = ["Phase 1", "Phase 2", "Live"];
+  const stealthPhases = ["Phase 1", "Phase 2"];
   const infinityLevels = ["Trend", "Consolodation (XAUUSD)", "Consolodation (US30)", "STRIKER"];
 
   const getRiskLevels = () => {
@@ -64,8 +64,6 @@ const SetfilesPage = () => {
         return 0.5; // Example value for Phase 1
       case "Phase 2":
         return 1.5; // Example value for Phase 2
-      case "Live":
-        return 2.0; // Example value for Live
       default:
         return 1.0;
     }
@@ -85,8 +83,6 @@ const SetfilesPage = () => {
         return 1.0; // Example value for Phase 1
       case "Phase 2":
         return 2.0; // Example value for Phase 2
-      case "Live":
-        return 3.0; // Example value for Live
       default:
         return 2.3;
     }
@@ -263,7 +259,7 @@ const SetfilesPage = () => {
                     <span className={`${
                       selectedRisk === "Aggressive" 
                         ? "bg-red-500/20 text-red-300"
-                        : selectedRisk === "Conservative" || selectedRisk === "Phase 1" || selectedRisk === "Phase 2" || selectedRisk === "Live" 
+                        : selectedRisk === "Conservative" || selectedRisk === "Phase 1" || selectedRisk === "Phase 2" 
                         ? "bg-blue-500/20 text-blue-300"
                         : selectedRisk === "Ultrasoft"
                         ? "bg-green-500/20 text-green-300"
@@ -272,7 +268,7 @@ const SetfilesPage = () => {
                       <Asterisk className="w-3 h-3" />
                       {selectedRisk === "Aggressive" 
                         ? "High Risk" 
-                        : selectedRisk === "Conservative" || selectedRisk === "Phase 1" || selectedRisk === "Phase 2" || selectedRisk === "Live" 
+                        : selectedRisk === "Conservative" || selectedRisk === "Phase 1" || selectedRisk === "Phase 2" 
                           ? "Low Risk" 
                           : selectedRisk === "Ultrasoft" 
                             ? "Minimal Risk" 
