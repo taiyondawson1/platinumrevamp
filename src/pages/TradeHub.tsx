@@ -1,9 +1,6 @@
-<lov-code>
+
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
 import HistoryTable from "@/components/HistoryTable";
-import DailyGainChart from "@/components/DailyGainChart";
-import DailyDataWidget from "@/components/DailyDataWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -245,4 +242,62 @@ const TradeHub = () => {
   const tradingMetrics = calculateTradingMetrics(tradeHistory);
 
   return (
-    <div className="flex-
+    <div className="flex flex-col w-full min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
+      <div className="p-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <MetricCard
+            label="Average Win"
+            value={tradingMetrics.avgWin}
+            className="hover:scale-105 transition-transform duration-300"
+          />
+          <MetricCard
+            label="Total Balance"
+            value={tradingMetrics.totalBalance}
+            className="hover:scale-105 transition-transform duration-300"
+          />
+          <MetricCard
+            label="Max Closed DD"
+            value={tradingMetrics.maxClosedDrawdown}
+            className="hover:scale-105 transition-transform duration-300"
+          />
+          <MetricCard
+            label="Last Trade Take"
+            value={tradingMetrics.lastTradeTake}
+            className="hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <MetricCard
+            label="Win Rate"
+            value={tradingMetrics.winRate}
+            className="hover:scale-105 transition-transform duration-300"
+          />
+          <MetricCard
+            label="Profit Factor"
+            value={tradingMetrics.profitFactor}
+            className="hover:scale-105 transition-transform duration-300"
+          />
+          <MetricCard
+            label="Total Orders"
+            value={tradingMetrics.totalOrders}
+            className="hover:scale-105 transition-transform duration-300"
+          />
+          <MetricCard
+            label="Floating P/L"
+            value={metrics.floatingPL}
+            className="hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+
+        <ScrollArea className="h-[500px] w-full rounded-lg bg-gray-800/50 backdrop-blur-sm border border-gray-700">
+          <div className="p-4">
+            <HistoryTable history={tradeHistory} />
+          </div>
+        </ScrollArea>
+      </div>
+    </div>
+  );
+};
+
+export default TradeHub;
