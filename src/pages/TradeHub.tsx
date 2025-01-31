@@ -1,6 +1,7 @@
-
 import { useEffect, useState } from "react";
 import HistoryTable from "@/components/HistoryTable";
+import DailyGainChart from "@/components/DailyGainChart";
+import DailyDataWidget from "@/components/DailyDataWidget";
 import { useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -242,59 +243,59 @@ const TradeHub = () => {
   const tradingMetrics = calculateTradingMetrics(tradeHistory);
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
-      <div className="p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <MetricCard
-            label="Average Win"
-            value={tradingMetrics.avgWin}
-            className="hover:scale-105 transition-transform duration-300"
-          />
-          <MetricCard
-            label="Total Balance"
-            value={tradingMetrics.totalBalance}
-            className="hover:scale-105 transition-transform duration-300"
-          />
-          <MetricCard
-            label="Max Closed DD"
-            value={tradingMetrics.maxClosedDrawdown}
-            className="hover:scale-105 transition-transform duration-300"
-          />
-          <MetricCard
-            label="Last Trade Take"
-            value={tradingMetrics.lastTradeTake}
-            className="hover:scale-105 transition-transform duration-300"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <MetricCard
-            label="Win Rate"
-            value={tradingMetrics.winRate}
-            className="hover:scale-105 transition-transform duration-300"
-          />
-          <MetricCard
-            label="Profit Factor"
-            value={tradingMetrics.profitFactor}
-            className="hover:scale-105 transition-transform duration-300"
-          />
-          <MetricCard
-            label="Total Orders"
-            value={tradingMetrics.totalOrders}
-            className="hover:scale-105 transition-transform duration-300"
-          />
-          <MetricCard
-            label="Floating P/L"
-            value={metrics.floatingPL}
-            className="hover:scale-105 transition-transform duration-300"
-          />
-        </div>
-
-        <ScrollArea className="h-[500px] w-full rounded-lg bg-gray-800/50 backdrop-blur-sm border border-gray-700">
-          <div className="p-4">
-            <HistoryTable history={tradeHistory} />
+    <div className="flex flex-col w-full min-h-screen bg-[#F6F6F7]">
+      <div className="p-8 max-w-[3840px] mx-auto w-full">
+        {/* Metrics Section */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+          <div className="group relative p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
+            <h3 className="text-[#403E43] text-sm font-medium mb-2">Average Win</h3>
+            <span className="text-2xl font-bold text-[#222222]">${tradingMetrics.avgWin.toFixed(2)}</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
           </div>
-        </ScrollArea>
+
+          <div className="group relative p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
+            <h3 className="text-[#403E43] text-sm font-medium mb-2">Win Rate</h3>
+            <span className="text-2xl font-bold text-[#222222]">{tradingMetrics.winRate.toFixed(2)}%</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
+          </div>
+
+          <div className="group relative p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
+            <h3 className="text-[#403E43] text-sm font-medium mb-2">Total Balance</h3>
+            <span className="text-2xl font-bold text-[#222222]">${tradingMetrics.totalBalance.toFixed(2)}</span>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
+          </div>
+
+          <div className="group relative p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
+            <h3 className="text-[#403E43] text-sm font-medium mb-2">Floating P/L</h3>
+            <span className={`text-2xl font-bold ${metrics.floatingPL >= 0 ? 'text-[#34C759]' : 'text-[#FF3B30]'}`}>
+              ${metrics.floatingPL.toFixed(2)}
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
+          </div>
+        </div>
+
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          <div className="bg-white rounded-xl p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-[#222222] mb-4">Performance Chart</h2>
+            <DailyGainChart accountId={selectedAccount?.id} />
+          </div>
+          
+          <div className="bg-white rounded-xl p-6 shadow-sm">
+            <h2 className="text-xl font-semibold text-[#222222] mb-4">Daily Statistics</h2>
+            <DailyDataWidget accountId={selectedAccount?.id} />
+          </div>
+        </div>
+
+        {/* History Table */}
+        <div className="bg-white rounded-xl shadow-sm">
+          <ScrollArea className="h-[500px] w-full rounded-xl">
+            <div className="p-6">
+              <h2 className="text-xl font-semibold text-[#222222] mb-6">Trading History</h2>
+              <HistoryTable history={tradeHistory} />
+            </div>
+          </ScrollArea>
+        </div>
       </div>
     </div>
   );
