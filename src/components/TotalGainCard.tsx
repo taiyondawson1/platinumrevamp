@@ -85,16 +85,16 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
   }, [accountId, toast]);
 
   return (
-    <div className="w-full bg-darkBlue/40 shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)] hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)] transition-shadow duration-200 rounded-xl bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm">
-      <div className="flex items-center justify-center p-4">
-        <h3 className="text-sm text-softWhite/70 font-medium">
+    <div className="rounded-xl bg-[#141522]/40 shadow-[inset_0_1px_4px_rgba(255,255,255,0.1)] hover:shadow-[inset_0_2px_8px_rgba(255,255,255,0.1)] transition-all duration-200 border border-white/5">
+      <div className="flex items-center justify-center p-4 border-b border-white/5">
+        <h3 className="text-sm text-white/70 font-medium">
           Total Gain (30 Days)
         </h3>
       </div>
       <div className="p-4 h-[300px]">
         {isLoading ? (
           <div className="h-full flex items-center justify-center">
-            <p className="text-center text-softWhite">Loading...</p>
+            <p className="text-center text-white/70">Loading...</p>
           </div>
         ) : gainData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
@@ -145,7 +145,7 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
           </ResponsiveContainer>
         ) : (
           <div className="h-full flex items-center justify-center">
-            <p className="text-center text-softWhite">No gain data available</p>
+            <p className="text-center text-white/70">No gain data available</p>
           </div>
         )}
       </div>
