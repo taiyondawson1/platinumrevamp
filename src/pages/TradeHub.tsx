@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
 import DailyDataWidget from "@/components/DailyDataWidget";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Moon, Sun } from "lucide-react";
 import MetricCard from "@/components/MetricCard";
 
 interface OpenTrade {
@@ -60,10 +62,12 @@ interface HistoryResponse {
 
 const TradeHub = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const selectedAccount = location.state?.selectedAccount;
   const [openTrades, setOpenTrades] = useState<OpenTrade[]>([]);
   const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const { toast } = useToast();
 
   // Calculate metrics for the last 5 days
@@ -174,6 +178,14 @@ const TradeHub = () => {
   };
 
   useEffect(() => {
+    // Update body class when dark mode changes
+    document.body.classList.toggle('dark', isDarkMode);
+    return () => {
+      document.body.classList.remove('dark');
+    };
+  }, [isDarkMode]);
+
+  useEffect(() => {
     const fetchData = async () => {
       if (!selectedAccount?.id) return;
 
@@ -244,30 +256,53 @@ const TradeHub = () => {
   const tradingMetrics = calculateTradingMetrics(tradeHistory);
 
   return (
-    <div className="flex-1 space-y-6 p-8 bg-[#FFFFFF] min-h-screen max-w-[2160px] mx-auto">
+    <div className={`flex-1 space-y-6 p-8 min-h-screen max-w-[2160px] mx-auto ${isDarkMode ? 'bg-[#121212] text-white' : 'bg-[#FFFFFF] text-black'}`}>
+      <div className="flex justify-between items-center mb-6">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate('/dashboard')}
+          className="hover:bg-gray-100 dark:hover:bg-gray-800"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          className="hover:bg-gray-100 dark:hover:bg-gray-800"
+        >
+          {isDarkMode ? (
+            <Sun className="h-5 w-5" />
+          ) : (
+            <Moon className="h-5 w-5" />
+          )}
+        </Button>
+      </div>
+
       {isLoading ? (
         <div className="h-32 flex items-center justify-center">
-          <p className="text-black text-lg">Loading data...</p>
+          <p className="text-lg">Loading data...</p>
         </div>
       ) : (
         <div className="space-y-6">
           {/* Top Stats Grid */}
           <div className="grid grid-cols-3 gap-6 animate-fade-in">
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Last 5 Days Result</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className="font-medium mb-2">Last 5 Days Result</h3>
+              <p className="text-2xl font-bold">
                 {metrics.percentageGain.toFixed(2)}%
               </p>
             </div>
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Maximum Drawdown</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className="font-medium mb-2">Maximum Drawdown</h3>
+              <p className="text-2xl font-bold">
                 {metrics.maxDrawdown.toFixed(2)}%
               </p>
             </div>
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Floating P/L</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className="font-medium mb-2">Floating P/L</h3>
+              <p className="text-2xl font-bold">
                 ${metrics.floatingPL.toFixed(2)}
               </p>
             </div>
@@ -275,10 +310,10 @@ const TradeHub = () => {
 
           {/* Chart and Daily Data Section */}
           <div className="grid grid-cols-3 gap-6">
-            <div className="col-span-2 bg-[#F6F6F7] p-6 rounded-lg shadow-lg border border-[#E5E5E5]">
+            <div className={`col-span-2 ${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} p-6 rounded-lg shadow-lg border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
               <DailyGainChart accountId={selectedAccount?.id?.toString()} />
             </div>
-            <div className="bg-[#F6F6F7] p-6 rounded-lg shadow-lg border border-[#E5E5E5]">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} p-6 rounded-lg shadow-lg border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
               <ScrollArea className="h-[400px]">
                 <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
               </ScrollArea>
@@ -352,7 +387,7 @@ const TradeHub = () => {
           </div>
 
           {/* History Table */}
-          <div className="bg-[#F6F6F7] p-6 rounded-lg shadow-lg border border-[#E5E5E5]">
+          <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} p-6 rounded-lg shadow-lg border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
             <HistoryTable history={tradeHistory} />
           </div>
         </div>
@@ -362,3 +397,4 @@ const TradeHub = () => {
 };
 
 export default TradeHub;
+
