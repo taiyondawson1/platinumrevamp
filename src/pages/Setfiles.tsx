@@ -1,10 +1,10 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Download, Info, X, Clock, CheckCircle, Asterisk, ArrowLeft, BarChart } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +25,7 @@ import {
 
 const SetfilesPage = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
   const [accountBalance, setAccountBalance] = useState<number>(100000);
   const [showNewsDialog, setShowNewsDialog] = useState(false);
@@ -49,6 +50,43 @@ const SetfilesPage = () => {
     if (selectedExpert === "PlatinumAi: Stealth") return stealthPhases;
     if (selectedExpert === "PlatinumAi: Infinity") return infinityLevels;
     return defaultRiskLevels;
+  };
+
+  const handleDownload = () => {
+    try {
+      let downloadUrl = "";
+      
+      // Set download URL based on selected risk and expert
+      if (selectedExpert === "PlatinumAi: Infinity" && selectedRisk === "AUDNZD") {
+        downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//AUDNZD.set";
+      }
+      
+      if (downloadUrl) {
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `${selectedRisk}.set`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        toast({
+          title: "Download Started",
+          description: `Downloading ${selectedRisk} setfile...`,
+        });
+      } else {
+        toast({
+          title: "Download Not Available",
+          description: "This setfile is not available for download yet.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Download Failed",
+        description: "There was an error downloading the setfile. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const getSymbolForSelectedRisk = () => {
@@ -147,7 +185,6 @@ const SetfilesPage = () => {
   const handleExpertSelect = (expert: string) => {
     console.log("Selected expert:", expert);
     setSelectedExpert(expert);
-    // Reset risk selection when switching experts
     setSelectedRisk(expert === "PlatinumAi: Stealth" ? "XAUUSD" : "Balanced");
   };
 
@@ -258,7 +295,10 @@ const SetfilesPage = () => {
                   </Button>
                 ))}
               </div>
-              <Button className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 h-10 px-6 whitespace-nowrap">
+              <Button 
+                className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 h-10 px-6 whitespace-nowrap"
+                onClick={handleDownload}
+              >
                 <Download className="w-5 h-5 mr-2" />
                 Download Setfile
               </Button>
