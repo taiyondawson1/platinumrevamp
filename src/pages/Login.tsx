@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import { UserPlus } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -74,9 +75,20 @@ const Login = () => {
                 className="bg-darkGrey border-silver/20"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Logging in..." : "Login"}
-            </Button>
+            <div className="space-y-2">
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "Logging in..." : "Login"}
+              </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                className="w-full mt-2"
+                onClick={() => navigate("/register")}
+              >
+                <UserPlus className="mr-2 h-4 w-4" />
+                Create Account
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>
