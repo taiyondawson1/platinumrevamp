@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
@@ -289,20 +288,20 @@ const TradeHub = () => {
           {/* Top Stats Grid */}
           <div className="grid grid-cols-3 gap-6 animate-fade-in">
             <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
-              <h3 className="font-medium mb-2">Last 5 Days Result</h3>
-              <p className="text-2xl font-bold">
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Last 5 Days Result</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 {metrics.percentageGain.toFixed(2)}%
               </p>
             </div>
             <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
-              <h3 className="font-medium mb-2">Maximum Drawdown</h3>
-              <p className="text-2xl font-bold">
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Maximum Drawdown</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 {metrics.maxDrawdown.toFixed(2)}%
               </p>
             </div>
             <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
-              <h3 className="font-medium mb-2">Floating P/L</h3>
-              <p className="text-2xl font-bold">
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Floating P/L</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 ${metrics.floatingPL.toFixed(2)}
               </p>
             </div>
@@ -322,21 +321,21 @@ const TradeHub = () => {
 
           {/* Trading Metrics Grid */}
           <div className="grid grid-cols-3 gap-6 animate-fade-in">
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Average Win</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Average Win</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 ${Math.abs(tradingMetrics.avgWin).toFixed(2)}
               </p>
             </div>
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Average Loss</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Average Loss</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 ${Math.abs(tradingMetrics.avgLoss).toFixed(2)}
               </p>
             </div>
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Win Rate</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Win Rate</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 {tradingMetrics.winRate.toFixed(1)}%
               </p>
             </div>
@@ -344,21 +343,21 @@ const TradeHub = () => {
 
           {/* Additional Metrics Grid */}
           <div className="grid grid-cols-3 gap-6 animate-fade-in">
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Total Results</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Total Results</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 ${tradingMetrics.totalResults.toFixed(2)}
               </p>
             </div>
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Total Balance</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Total Balance</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 ${tradingMetrics.totalBalance.toFixed(2)}
               </p>
             </div>
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Profit Factor</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Profit Factor</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 {tradingMetrics.profitFactor.toFixed(2)}
               </p>
             </div>
@@ -366,21 +365,21 @@ const TradeHub = () => {
 
           {/* Final Metrics Grid */}
           <div className="grid grid-cols-3 gap-6 animate-fade-in">
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Max Closed DD</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Max Closed DD</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 {tradingMetrics.maxClosedDrawdown.toFixed(2)}%
               </p>
             </div>
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Total Orders</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Total Orders</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 {tradingMetrics.totalOrders}
               </p>
             </div>
-            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
-              <h3 className="text-black font-medium mb-2">Last Trade</h3>
-              <p className="text-2xl font-bold text-black">
+            <div className={`${isDarkMode ? 'bg-[#1E1E1E]' : 'bg-[#F6F6F7]'} hover:${isDarkMode ? 'bg-[#252525]' : 'bg-[#FFFFFF]'} transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border ${isDarkMode ? 'border-[#333333]' : 'border-[#E5E5E5]'}`}>
+              <h3 className={`font-medium mb-2 ${isDarkMode ? 'text-white/70' : 'text-black'}`}>Last Trade</h3>
+              <p className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>
                 ${tradingMetrics.lastTradeTake.toFixed(2)}
               </p>
             </div>
@@ -397,4 +396,3 @@ const TradeHub = () => {
 };
 
 export default TradeHub;
-
