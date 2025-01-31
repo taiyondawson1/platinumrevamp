@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, Info, X, Clock, CheckCircle, BarChart, Asterisk, ArrowLeft } from "lucide-react";
+import { Download, Info, X, Clock, CheckCircle, Asterisk, ArrowLeft } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -225,8 +225,8 @@ const SetfilesPage = () => {
               <p className="text-mediumGray text-sm font-normal">Official Setfiles released by PlatinumAi</p>
             </div>
 
-            <div className="flex justify-between items-center mb-8">
-              <div className="flex gap-2 bg-darkBlue/40 p-1 rounded-lg">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+              <div className="flex flex-wrap gap-2 bg-darkBlue/40 p-1 rounded-lg">
                 {getRiskLevels().map((risk) => (
                   <Button
                     key={risk}
@@ -239,11 +239,11 @@ const SetfilesPage = () => {
                         : "bg-darkBlue/40 text-mediumGray hover:bg-darkBlue/60 hover:text-softWhite"
                     }`}
                   >
-                    <span className="animate-[fade-in_0.3s_ease-out]">{risk}</span>
+                    <span className="animate-[fade-in_0.3s_ease-out] whitespace-nowrap">{risk}</span>
                   </Button>
                 ))}
               </div>
-              <Button className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 h-10 px-6">
+              <Button className="bg-[#00ADB5] hover:bg-[#00ADB5]/90 h-10 px-6 whitespace-nowrap">
                 <Download className="w-5 h-5 mr-2" />
                 Download Setfile
               </Button>
