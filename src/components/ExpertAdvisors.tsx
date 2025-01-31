@@ -17,7 +17,8 @@ const ExpertAdvisors = () => {
       subtitle: "Ideal for personal capital, optimized for prop firm capital.",
       presets: "7 presets available",
       path: "/expert-advisors/platinumai-stealth",
-      filename: "platinumai-stealth.ex4"
+      filename: "PlatinumAI Stealth.ex4",
+      downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20Stealth.ex4"
     },
     {
       name: "PlatinumAi: Infinity",
@@ -28,34 +29,42 @@ const ExpertAdvisors = () => {
     },
   ];
 
-  const handleDownload = async (expertName: string, filename: string) => {
+  const handleDownload = async (expert: typeof experts[0]) => {
     try {
       toast({
         title: "Starting Download",
-        description: `Downloading ${expertName}...`,
+        description: `Downloading ${expert.name}...`,
       });
 
-      const { data, error } = await supabase.storage
-        .from('expert-advisors')
-        .createSignedUrl(filename, 60); // Create a signed URL valid for 60 seconds
+      // If we have a direct download URL, use it
+      if (expert.downloadUrl) {
+        const link = document.createElement('a');
+        link.href = expert.downloadUrl;
+        link.download = expert.filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        // Fall back to signed URL for other files
+        const { data, error } = await supabase.storage
+          .from('expert-advisors')
+          .createSignedUrl(expert.filename, 60);
 
-      if (error) {
-        throw error;
+        if (error) {
+          throw error;
+        }
+
+        const link = document.createElement('a');
+        link.href = data.signedUrl;
+        link.download = expert.filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-
-      // Create a temporary link element
-      const link = document.createElement('a');
-      link.href = data.signedUrl;
-      link.download = filename;
-      
-      // Append to document, click, and cleanup
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
 
       toast({
         title: "Download Complete",
-        description: `Successfully downloaded ${expertName}`,
+        description: `Successfully downloaded ${expert.name}`,
       });
     } catch (error) {
       console.error('Download error:', error);
@@ -114,7 +123,7 @@ const ExpertAdvisors = () => {
                   </div>
                   <div className="flex gap-2">
                     <Button
-                      onClick={() => handleDownload(expert.name, expert.filename)}
+                      onClick={() => handleDownload(expert)}
                       size="sm"
                       className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 
                                shadow-embossed hover:shadow-embossed-hover transition-all duration-300
@@ -149,3 +158,4 @@ const ExpertAdvisors = () => {
 };
 
 export default ExpertAdvisors;
+
