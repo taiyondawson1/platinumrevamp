@@ -88,7 +88,7 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
   return (
     <div className="w-full bg-[#1A1F2C] rounded-none">
       <div className="flex items-center justify-center p-4">
-        <h3 className="text-xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-[#8E9196] to-[#59595b] shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
+        <h3 className="text-sm text-softWhite/70 font-medium">
           Total Gain (30 Days)
         </h3>
       </div>
