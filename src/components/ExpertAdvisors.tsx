@@ -1,7 +1,7 @@
-
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Download } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 const ExpertAdvisors = () => {
   const { toast } = useToast();
@@ -16,22 +16,58 @@ const ExpertAdvisors = () => {
       subtitle: "Ideal for personal capital, optimized for prop firm capital.",
       presets: "7 presets available",
       path: "/expert-advisors/platinumai-stealth",
-      image: null
+      filename: "platinumai-stealth.ex4"
     },
     {
       name: "PlatinumAi: Infinity",
       description: "Minimal manual intervention required, with a \"one shot, one entry at a time\" approach.",
       presets: "5 presets available",
       path: "/expert-advisors/platinumai-infinity",
-      image: null
+      filename: "platinumai-infinity.ex4"
     },
   ];
 
-  const handleDownload = (expertName: string) => {
-    toast({
-      title: "Starting Download",
-      description: `Downloading ${expertName}...`,
-    });
+  const handleDownload = async (expertName: string, filename: string) => {
+    try {
+      toast({
+        title: "Starting Download",
+        description: `Downloading ${expertName}...`,
+      });
+
+      const { data, error } = await supabase.storage
+        .from('expert-advisors')
+        .download(filename);
+
+      if (error) {
+        throw error;
+      }
+
+      // Create a URL for the downloaded file
+      const url = window.URL.createObjectURL(data);
+      
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      
+      // Append to document, click, and cleanup
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+
+      toast({
+        title: "Download Complete",
+        description: `Successfully downloaded ${expertName}`,
+      });
+    } catch (error) {
+      console.error('Download error:', error);
+      toast({
+        title: "Download Failed",
+        description: "There was an error downloading the file. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSetupGuide = (expertName: string) => {
@@ -81,7 +117,7 @@ const ExpertAdvisors = () => {
                   </div>
                   <div className="flex gap-2">
                     <Button
-                      onClick={() => handleDownload(expert.name)}
+                      onClick={() => handleDownload(expert.name, expert.filename)}
                       size="sm"
                       className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 
                                shadow-embossed hover:shadow-embossed-hover transition-all duration-300
