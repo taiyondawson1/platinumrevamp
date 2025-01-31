@@ -1,5 +1,5 @@
+
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
 import DailyDataWidget from "@/components/DailyDataWidget";
@@ -244,110 +244,117 @@ const TradeHub = () => {
   const tradingMetrics = calculateTradingMetrics(tradeHistory);
 
   return (
-    <div className="flex-1 space-y-4 px-[200px] py-4 md:py-8 bg-[#0A0B0F] min-h-screen">
+    <div className="flex-1 space-y-6 p-8 bg-[#FFFFFF] min-h-screen max-w-[2160px] mx-auto">
       {isLoading ? (
-        <Card className="bg-[#141522]/40 border-[#2A2D3E] backdrop-blur-sm shadow-lg rounded-lg">
-          <div className="py-4">
-            <p className="text-center text-[#E2E8F0]">Loading data...</p>
-          </div>
-        </Card>
+        <div className="h-32 flex items-center justify-center">
+          <p className="text-black text-lg">Loading data...</p>
+        </div>
       ) : (
-        <div className="space-y-4">
-          {/* Top Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MetricCard
-              label="Result 5 days ago"
-              value={`${metrics.percentageGain.toFixed(2)}%`}
-              className="p-4"
-            />
-            <MetricCard
-              label="Closed drawdown 5 days ago"
-              value={`${metrics.maxDrawdown.toFixed(2)}%`}
-              className="p-4"
-            />
-            <MetricCard
-              label="Float"
-              value={`$${metrics.floatingPL.toFixed(2)}`}
-              className="p-4"
-            />
+        <div className="space-y-6">
+          {/* Top Stats Grid */}
+          <div className="grid grid-cols-3 gap-6 animate-fade-in">
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Last 5 Days Result</h3>
+              <p className="text-2xl font-bold text-black">
+                {metrics.percentageGain.toFixed(2)}%
+              </p>
+            </div>
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Maximum Drawdown</h3>
+              <p className="text-2xl font-bold text-black">
+                {metrics.maxDrawdown.toFixed(2)}%
+              </p>
+            </div>
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Floating P/L</h3>
+              <p className="text-2xl font-bold text-black">
+                ${metrics.floatingPL.toFixed(2)}
+              </p>
+            </div>
           </div>
 
           {/* Chart and Daily Data Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="md:col-span-2">
-              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg" style={{ height: '400px' }}>
-                <DailyGainChart accountId={selectedAccount?.id?.toString()} />
-              </Card>
+          <div className="grid grid-cols-3 gap-6">
+            <div className="col-span-2 bg-[#F6F6F7] p-6 rounded-lg shadow-lg border border-[#E5E5E5]">
+              <DailyGainChart accountId={selectedAccount?.id?.toString()} />
             </div>
-            <div className="md:col-span-1">
-              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg" style={{ height: '400px' }}>
-                <ScrollArea className="h-full pr-4">
-                  <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
-                </ScrollArea>
-              </Card>
+            <div className="bg-[#F6F6F7] p-6 rounded-lg shadow-lg border border-[#E5E5E5]">
+              <ScrollArea className="h-[400px]">
+                <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
+              </ScrollArea>
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MetricCard
-              label="Average Win"
-              value={`$${Math.abs(tradingMetrics.avgWin).toFixed(2)}`}
-              className="p-4"
-            />
-            <MetricCard
-              label="Average Loss"
-              value={`$${Math.abs(tradingMetrics.avgLoss).toFixed(2)}`}
-              className="p-4"
-            />
-            <MetricCard
-              label="Win Rate"
-              value={`${tradingMetrics.winRate.toFixed(1)}%`}
-              className="p-4"
-            />
+          {/* Trading Metrics Grid */}
+          <div className="grid grid-cols-3 gap-6 animate-fade-in">
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Average Win</h3>
+              <p className="text-2xl font-bold text-black">
+                ${Math.abs(tradingMetrics.avgWin).toFixed(2)}
+              </p>
+            </div>
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Average Loss</h3>
+              <p className="text-2xl font-bold text-black">
+                ${Math.abs(tradingMetrics.avgLoss).toFixed(2)}
+              </p>
+            </div>
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Win Rate</h3>
+              <p className="text-2xl font-bold text-black">
+                {tradingMetrics.winRate.toFixed(1)}%
+              </p>
+            </div>
           </div>
 
-          {/* New Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MetricCard
-              label="Total Results"
-              value={`$${tradingMetrics.totalResults.toFixed(2)}`}
-              className="p-4"
-            />
-            <MetricCard
-              label="Total Balance"
-              value={`$${tradingMetrics.totalBalance.toFixed(2)}`}
-              className="p-4"
-            />
-            <MetricCard
-              label="Profit Factor"
-              value={tradingMetrics.profitFactor.toFixed(2)}
-              className="p-4"
-            />
+          {/* Additional Metrics Grid */}
+          <div className="grid grid-cols-3 gap-6 animate-fade-in">
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Total Results</h3>
+              <p className="text-2xl font-bold text-black">
+                ${tradingMetrics.totalResults.toFixed(2)}
+              </p>
+            </div>
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Total Balance</h3>
+              <p className="text-2xl font-bold text-black">
+                ${tradingMetrics.totalBalance.toFixed(2)}
+              </p>
+            </div>
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Profit Factor</h3>
+              <p className="text-2xl font-bold text-black">
+                {tradingMetrics.profitFactor.toFixed(2)}
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MetricCard
-              label="Max Closed DD"
-              value={`${tradingMetrics.maxClosedDrawdown.toFixed(2)}%`}
-              className="p-4"
-            />
-            <MetricCard
-              label="Total Orders"
-              value={tradingMetrics.totalOrders.toString()}
-              className="p-4"
-            />
-            <MetricCard
-              label="Last Trade Take"
-              value={`$${tradingMetrics.lastTradeTake.toFixed(2)}`}
-              className="p-4"
-            />
+          {/* Final Metrics Grid */}
+          <div className="grid grid-cols-3 gap-6 animate-fade-in">
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Max Closed DD</h3>
+              <p className="text-2xl font-bold text-black">
+                {tradingMetrics.maxClosedDrawdown.toFixed(2)}%
+              </p>
+            </div>
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Total Orders</h3>
+              <p className="text-2xl font-bold text-black">
+                {tradingMetrics.totalOrders}
+              </p>
+            </div>
+            <div className="bg-[#F6F6F7] hover:bg-[#FFFFFF] transition-all duration-300 p-6 rounded-lg shadow-lg hover:shadow-xl border border-[#E5E5E5]">
+              <h3 className="text-black font-medium mb-2">Last Trade</h3>
+              <p className="text-2xl font-bold text-black">
+                ${tradingMetrics.lastTradeTake.toFixed(2)}
+              </p>
+            </div>
           </div>
 
           {/* History Table */}
-          <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
+          <div className="bg-[#F6F6F7] p-6 rounded-lg shadow-lg border border-[#E5E5E5]">
             <HistoryTable history={tradeHistory} />
-          </Card>
+          </div>
         </div>
       )}
     </div>
