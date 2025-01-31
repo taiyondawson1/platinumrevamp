@@ -34,7 +34,6 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
 
       setIsLoading(true);
       try {
-        // Get dates for last 30 days
         const endDate = new Date();
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - 30);
@@ -155,3 +154,4 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
 };
 
 export default TotalGainCard;
+
