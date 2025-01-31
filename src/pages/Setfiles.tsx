@@ -42,7 +42,7 @@ const SetfilesPage = () => {
 
   const defaultRiskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
   const stealthPhases = ["XAUUSD", "US30"];
-  const infinityLevels = ["Trend", "Consolodation (XAUUSD)", "Consolodation (US30)", "STRIKER"];
+  const infinityLevels = ["Trend", "Consolodation (XAUUSD)", "Consolodation (US30)", "HEDGE MODE"];
 
   const getRiskLevels = () => {
     if (selectedExpert === "PlatinumAi: Stealth") return stealthPhases;
@@ -311,7 +311,7 @@ const SetfilesPage = () => {
                 <div className="p-4">
                   <div className="flex items-center gap-2 mb-4">
                     <span className="bg-white/20 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {selectedExpert === "PlatinumAi: Stealth" ? "15 MIN" : "5 MIN"}
+                      <Clock className="w-3 h-3" /> 1 MIN
                     </span>
                     <span className="text-softWhite text-sm font-semibold tracking-tight">Timeframe</span>
                   </div>
