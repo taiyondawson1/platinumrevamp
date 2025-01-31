@@ -85,31 +85,31 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
   }, [accountId, toast]);
 
   return (
-    <div className="rounded-xl bg-[#141522]/40 shadow-[inset_0_1px_4px_rgba(255,255,255,0.1)] hover:shadow-[inset_0_2px_8px_rgba(255,255,255,0.1)] transition-all duration-200 border border-white/5">
-      <div className="flex items-center justify-center p-4 border-b border-white/5">
-        <h3 className="text-sm text-white/70 font-medium">
+    <div className="rounded-xl bg-[#141522]/40 shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)] hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)] transition-all duration-300 border border-white/[0.08] backdrop-blur-md">
+      <div className="flex items-center justify-between p-4 border-b border-white/[0.08]">
+        <h3 className="text-sm text-softWhite/60 font-medium">
           Total Gain (30 Days)
         </h3>
       </div>
-      <div className="p-4 h-[300px]">
+      <div className="p-6 h-[300px]">
         {isLoading ? (
           <div className="h-full flex items-center justify-center">
-            <p className="text-center text-white/70">Loading...</p>
+            <p className="text-center text-softWhite/60">Loading...</p>
           </div>
         ) : gainData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={gainData}>
               <defs>
                 <linearGradient id="gainGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#39FF14" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#39FF14" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               <CartesianGrid 
                 strokeDasharray="3 3" 
                 vertical={false}
                 stroke="#403E43"
-                opacity={0.4}
+                opacity={0.2}
               />
               <XAxis 
                 dataKey="date"
@@ -141,9 +141,11 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#1A1F2C',
-                  border: '1px solid #403E43',
-                  borderRadius: '6px',
+                  backgroundColor: 'rgba(20, 21, 34, 0.9)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '8px',
+                  backdropFilter: 'blur(8px)',
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                   color: '#fff'
                 }}
                 formatter={(value: number) => [
@@ -160,6 +162,7 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
                 type="monotone"
                 dataKey="value"
                 stroke={gainData[gainData.length - 1]?.value >= 0 ? "#39FF14" : "#FF1744"}
+                strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#gainGradient)"
               />
@@ -167,7 +170,7 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
           </ResponsiveContainer>
         ) : (
           <div className="h-full flex items-center justify-center">
-            <p className="text-center text-white/70">No gain data available</p>
+            <p className="text-center text-softWhite/60">No gain data available</p>
           </div>
         )}
       </div>

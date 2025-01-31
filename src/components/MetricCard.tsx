@@ -73,17 +73,20 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
       "w-full bg-[#141522]/40",
       "shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)]",
       "hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)]",
-      "transition-shadow duration-200",
+      "transition-all duration-300",
       "rounded-xl",
-      "bg-gradient-to-b from-white/10 to-transparent",
-      "border border-white/5",
-      "backdrop-blur-sm",
+      "bg-gradient-to-b from-white/[0.06] to-transparent",
+      "border border-white/[0.08]",
+      "backdrop-blur-md",
+      "group",
       className
     )}>
-      <div className="flex flex-col items-center justify-center py-2">
-        <div className="text-sm text-softWhite/70 font-medium">{label}</div>
+      <div className="flex flex-col items-center justify-center py-3 px-4">
+        <div className="text-sm text-softWhite/60 font-medium group-hover:text-softWhite/80 transition-colors">
+          {label}
+        </div>
         <div 
-          className="text-lg font-bold"
+          className="text-xl font-bold mt-1"
           style={{ 
             color: valueColor,
             textShadow: valueColor === '#39FF14' ? `0 0 5px ${valueColor}` : 'none',
