@@ -109,8 +109,13 @@ const SetfilesPage = () => {
   };
 
   const getRiskDescription = (risk: string) => {
-    if (selectedExpert === "PlatinumAi: Stealth" && risk === "Phase 1") {
-      return "Phase 1 approach with 1.5% risk.";
+    if (selectedExpert === "PlatinumAi: Stealth") {
+      if (risk === "Phase 1") {
+        return "Phase 1 approach with XAUUSD trading.";
+      }
+      if (risk === "Phase 2") {
+        return "Phase 2 approach with US30 trading.";
+      }
     }
     return risk === "Balanced" 
       ? "A balanced approach offering higher potential returns while maintaining reasonable risk control."
@@ -118,10 +123,6 @@ const SetfilesPage = () => {
       ? "A conservative approach focused on capital preservation with moderate returns."
       : risk === "Ultrasoft"
       ? "The safest approach with minimal risk and steady, smaller returns."
-      : risk === "Phase 1"
-      ? "Phase 1 approach with controlled risk."
-      : risk === "Phase 2"
-      ? "Intermediate phase with moderate risk."
       : "An aggressive approach targeting maximum returns with higher risk tolerance.";
   };
 
@@ -129,7 +130,10 @@ const SetfilesPage = () => {
     if (selectedExpert === "PlatinumAi: Infinity" && (selectedRisk === "Trend" || selectedRisk === "Consolodation (US30)")) {
       return "US30";
     }
-    return selectedExpert === "PlatinumAi: Stealth" ? "US30" : "XAUUSD";
+    if (selectedExpert === "PlatinumAi: Stealth") {
+      return selectedRisk === "Phase 1" ? "XAUUSD" : "US30";
+    }
+    return "XAUUSD";
   };
 
   return (
@@ -278,7 +282,7 @@ const SetfilesPage = () => {
                   </div>
                   <p className="text-mediumGray text-sm font-normal">
                     {selectedExpert === "PlatinumAi: Stealth" && selectedRisk === "Phase 1"
-                      ? "Phase 1 approach with 1.5% risk."
+                      ? "Phase 1 approach with XAUUSD trading."
                       : `${selectedRisk.toLowerCase()} approach with ${
                           selectedRisk === "Aggressive" ? "high" :
                           selectedRisk === "Conservative" || selectedRisk === "Phase 1" ? "low" :
