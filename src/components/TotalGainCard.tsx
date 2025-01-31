@@ -86,7 +86,7 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
   }, [accountId, toast]);
 
   return (
-    <div className="w-full bg-[#1A1F2C] rounded-none">
+    <div className="w-full bg-darkBlue/40 shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)] hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)] transition-shadow duration-200 rounded-xl bg-gradient-to-b from-white/10 to-transparent backdrop-blur-sm">
       <div className="flex items-center justify-center p-4">
         <h3 className="text-sm text-softWhite/70 font-medium">
           Total Gain (30 Days)
