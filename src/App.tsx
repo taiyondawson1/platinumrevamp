@@ -16,6 +16,7 @@ import TradeHub from "@/pages/TradeHub";
 import MyFxBookLoginPage from "@/pages/MyFxBookLoginPage";
 import TradingViewTickerTape from "@/components/TradingViewTickerTape";
 import Login from "@/pages/Login";
+import Register from "@/pages/Register";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -52,7 +53,8 @@ function MainContent() {
   const isSetfilesPage = location.pathname === "/setfiles";
   const isTradeHubPage = location.pathname === "/tradehub";
   const isLoginPage = location.pathname === "/login";
-  const hideHeader = isHomePage || isSetfilesPage || isTradeHubPage || isLoginPage;
+  const isRegisterPage = location.pathname === "/register";
+  const hideHeader = isHomePage || isSetfilesPage || isTradeHubPage || isLoginPage || isRegisterPage;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
@@ -76,6 +78,7 @@ function MainContent() {
             <div className="overflow-auto">
               <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
                 <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
                 <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
                 <Route path="/trading" element={<PrivateRoute><TradingPage /></PrivateRoute>} />
