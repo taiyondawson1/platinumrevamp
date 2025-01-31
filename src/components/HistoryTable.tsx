@@ -57,22 +57,22 @@ const HistoryTable = ({ history = [] }: HistoryTableProps) => {
             {history && history.length > 0 ? (
               history.map((trade, index) => (
                 <TableRow key={index}>
-                  <TableCell>{trade.openTime}</TableCell>
-                  <TableCell>{trade.closeTime}</TableCell>
-                  <TableCell>{trade.symbol}</TableCell>
-                  <TableCell>{trade.action}</TableCell>
-                  <TableCell>{trade.sizing.value}</TableCell>
-                  <TableCell>{trade.openPrice}</TableCell>
-                  <TableCell>{trade.closePrice}</TableCell>
-                  <TableCell className={trade.profit >= 0 ? "text-green-500" : "text-red-500"}>
+                  <TableCell className="dark:text-white text-[#000000e6]">{trade.openTime}</TableCell>
+                  <TableCell className="dark:text-white text-[#000000e6]">{trade.closeTime}</TableCell>
+                  <TableCell className="dark:text-white text-[#000000e6]">{trade.symbol}</TableCell>
+                  <TableCell className="dark:text-white text-[#000000e6]">{trade.action}</TableCell>
+                  <TableCell className="dark:text-white text-[#000000e6]">{trade.sizing.value}</TableCell>
+                  <TableCell className="dark:text-white text-[#000000e6]">{trade.openPrice}</TableCell>
+                  <TableCell className="dark:text-white text-[#000000e6]">{trade.closePrice}</TableCell>
+                  <TableCell className={`${trade.profit >= 0 ? "text-green-500" : "text-red-500"}`}>
                     {trade.profit.toFixed(2)}
                   </TableCell>
-                  <TableCell>{trade.comment}</TableCell>
+                  <TableCell className="dark:text-white text-[#000000e6]">{trade.comment}</TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={9} className="text-center py-4">
+                <TableCell colSpan={9} className="text-center py-4 dark:text-white text-[#000000e6]">
                   No trade history found
                 </TableCell>
               </TableRow>
