@@ -75,4 +75,3 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
 };
 
 export default MetricCard;
-

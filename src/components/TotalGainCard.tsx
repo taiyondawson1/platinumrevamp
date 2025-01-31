@@ -123,15 +123,21 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
                 tickLine={false}
                 axisLine={false}
                 dx={-10}
-                tickFormatter={(value) => ({
-                  value: `${value}%`,
-                  props: {
-                    style: {
-                      fill: value >= 0 ? '#39FF14' : '#FF1744',
-                      filter: `drop-shadow(0 0 2px ${value >= 0 ? '#39FF14' : '#FF1744'})`
-                    }
-                  }
-                })}
+                tickFormatter={(value) => `${value}%`}
+                tick={({ x, y, payload }) => (
+                  <text
+                    x={x}
+                    y={y}
+                    dy={3}
+                    fill={payload.value >= 0 ? '#39FF14' : '#FF1744'}
+                    style={{
+                      filter: `drop-shadow(0 0 2px ${payload.value >= 0 ? '#39FF14' : '#FF1744'})`
+                    }}
+                    textAnchor="end"
+                  >
+                    {`${payload.value}%`}
+                  </text>
+                )}
               />
               <Tooltip
                 contentStyle={{
@@ -170,4 +176,3 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
 };
 
 export default TotalGainCard;
-
