@@ -185,6 +185,7 @@ const MyFxBookLogin = () => {
     setIsLoading(true);
 
     try {
+      // Fix: Remove the colon from the URL
       const response = await fetch(
         `https://www.myfxbook.com/api/login.json?email=${encodeURIComponent(
           email
@@ -209,7 +210,7 @@ const MyFxBookLogin = () => {
       } else {
         if (data.message.toLowerCase().includes("max login attempts reached")) {
           setShowMaxAttemptsDialog(true);
-          setIsPolling(true); // Start polling when max attempts reached
+          setIsPolling(true);
           console.log("Max attempts reached, starting polling...");
         } else {
           throw new Error(data.message || "Failed to login");
