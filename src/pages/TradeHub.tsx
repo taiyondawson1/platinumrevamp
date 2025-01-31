@@ -1,5 +1,5 @@
-
 import { useEffect, useState } from "react";
+import { Card } from "@/components/ui/card";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
 import DailyDataWidget from "@/components/DailyDataWidget";
@@ -244,60 +244,112 @@ const TradeHub = () => {
   const tradingMetrics = calculateTradingMetrics(tradeHistory);
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-[#F6F6F7]">
-      <div className="p-8 max-w-[3840px] mx-auto w-full">
-        {/* Metrics Section */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-          <div className="group relative p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-            <h3 className="text-black text-sm font-medium mb-2">Average Win</h3>
-            <span className="text-2xl font-bold text-black">${tradingMetrics.avgWin.toFixed(2)}</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
+    <div className="flex-1 space-y-4 px-[200px] py-4 md:py-8 bg-[#0A0B0F] min-h-screen">
+      {isLoading ? (
+        <Card className="bg-[#141522]/40 border-[#2A2D3E] backdrop-blur-sm shadow-lg rounded-lg">
+          <div className="py-4">
+            <p className="text-center text-[#E2E8F0]">Loading data...</p>
+          </div>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {/* Top Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <MetricCard
+              label="Result 5 days ago"
+              value={`${metrics.percentageGain.toFixed(2)}%`}
+              className="p-4"
+            />
+            <MetricCard
+              label="Closed drawdown 5 days ago"
+              value={`${metrics.maxDrawdown.toFixed(2)}%`}
+              className="p-4"
+            />
+            <MetricCard
+              label="Float"
+              value={`$${metrics.floatingPL.toFixed(2)}`}
+              className="p-4"
+            />
           </div>
 
-          <div className="group relative p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-            <h3 className="text-black text-sm font-medium mb-2">Win Rate</h3>
-            <span className="text-2xl font-bold text-black">{tradingMetrics.winRate.toFixed(2)}%</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
-          </div>
-
-          <div className="group relative p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-            <h3 className="text-black text-sm font-medium mb-2">Total Balance</h3>
-            <span className="text-2xl font-bold text-black">${tradingMetrics.totalBalance.toFixed(2)}</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
-          </div>
-
-          <div className="group relative p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100">
-            <h3 className="text-black text-sm font-medium mb-2">Floating P/L</h3>
-            <span className={`text-2xl font-bold ${metrics.floatingPL >= 0 ? 'text-[#34C759]' : 'text-[#FF3B30]'}`}>
-              ${metrics.floatingPL.toFixed(2)}
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300" />
-          </div>
-        </div>
-
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-black mb-4">Performance Chart</h2>
-            <DailyGainChart accountId={selectedAccount?.id} />
-          </div>
-          
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <h2 className="text-xl font-semibold text-black mb-4">Daily Statistics</h2>
-            <DailyDataWidget accountId={selectedAccount?.id} />
-          </div>
-        </div>
-
-        {/* History Table */}
-        <div className="bg-white rounded-xl shadow-sm">
-          <ScrollArea className="h-[500px] w-full rounded-xl">
-            <div className="p-6">
-              <h2 className="text-xl font-semibold text-black mb-6">Trading History</h2>
-              <HistoryTable history={tradeHistory} />
+          {/* Chart and Daily Data Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="md:col-span-2">
+              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg" style={{ height: '400px' }}>
+                <DailyGainChart accountId={selectedAccount?.id?.toString()} />
+              </Card>
             </div>
-          </ScrollArea>
+            <div className="md:col-span-1">
+              <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg" style={{ height: '400px' }}>
+                <ScrollArea className="h-full pr-4">
+                  <DailyDataWidget accountId={selectedAccount?.id?.toString()} />
+                </ScrollArea>
+              </Card>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <MetricCard
+              label="Average Win"
+              value={`$${Math.abs(tradingMetrics.avgWin).toFixed(2)}`}
+              className="p-4"
+            />
+            <MetricCard
+              label="Average Loss"
+              value={`$${Math.abs(tradingMetrics.avgLoss).toFixed(2)}`}
+              className="p-4"
+            />
+            <MetricCard
+              label="Win Rate"
+              value={`${tradingMetrics.winRate.toFixed(1)}%`}
+              className="p-4"
+            />
+          </div>
+
+          {/* New Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <MetricCard
+              label="Total Results"
+              value={`$${tradingMetrics.totalResults.toFixed(2)}`}
+              className="p-4"
+            />
+            <MetricCard
+              label="Total Balance"
+              value={`$${tradingMetrics.totalBalance.toFixed(2)}`}
+              className="p-4"
+            />
+            <MetricCard
+              label="Profit Factor"
+              value={tradingMetrics.profitFactor.toFixed(2)}
+              className="p-4"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <MetricCard
+              label="Max Closed DD"
+              value={`${tradingMetrics.maxClosedDrawdown.toFixed(2)}%`}
+              className="p-4"
+            />
+            <MetricCard
+              label="Total Orders"
+              value={tradingMetrics.totalOrders.toString()}
+              className="p-4"
+            />
+            <MetricCard
+              label="Last Trade Take"
+              value={`$${tradingMetrics.lastTradeTake.toFixed(2)}`}
+              className="p-4"
+            />
+          </div>
+
+          {/* History Table */}
+          <Card className="bg-[#141522]/40 border-[#2A2D3E] p-4 rounded-lg">
+            <HistoryTable history={tradeHistory} />
+          </Card>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -8,7 +8,8 @@ interface MetricCardProps {
   className?: string;
 }
 
-const MetricCard = ({ label, value, className }: MetricCardProps) => {
+const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
+  // Helper function to determine if the value should show a dollar sign
   const shouldShowDollar = (label: string): boolean => {
     const dollarLabels = [
       'Average Win', 'Average Loss', 'Total Results', 
@@ -17,11 +18,13 @@ const MetricCard = ({ label, value, className }: MetricCardProps) => {
     return dollarLabels.includes(label);
   };
 
+  // Helper function to format the value based on the label
   const formatValue = (value: string | number, label: string): string => {
     if (typeof value === 'number') {
       if (shouldShowDollar(label)) {
         return `$${Math.abs(value).toFixed(2)}`;
       }
+      // Add percentage sign for percentage values
       if (label.toLowerCase().includes('rate') || 
           label.toLowerCase().includes('drawdown') || 
           label.includes('5 days ago')) {
@@ -32,58 +35,21 @@ const MetricCard = ({ label, value, className }: MetricCardProps) => {
     return value;
   };
 
-  const isPositiveValue = (value: string | number): boolean => {
-    if (typeof value === 'number') {
-      return value >= 0;
-    }
-    const numValue = parseFloat(value);
-    return !isNaN(numValue) && numValue >= 0;
-  };
-
-  const getValueColor = (label: string, value: string | number): string => {
-    if (label === 'Average Win') {
-      return '#39FF14';
-    }
-
-    if (['Total Balance', 'Max Closed DD'].includes(label)) {
-      return isPositiveValue(value) ? '#34C759' : '#FF1744';
-    }
-
-    if (['Total Results', 'Last Trade Take'].includes(label)) {
-      return isPositiveValue(value) ? '#39FF14' : '#FF1744';
-    }
-
-    return isPositiveValue(value) ? '#39FF14' : '#FF1744';
-  };
-
-  const valueColor = getValueColor(label, value);
-
   return (
     <div className={cn(
-      "relative group cursor-pointer",
-      "before:absolute before:inset-0 before:rounded-xl before:bg-gradient-to-b",
-      "before:from-white/[0.08] before:to-transparent before:opacity-0 before:transition-opacity",
-      "hover:before:opacity-100",
-      "bg-[#1A1B23]/40 backdrop-blur-sm",
-      "border-t border-white/[0.08]",
-      "transition-all duration-300 ease-in-out",
-      "transform hover:translate-y-[-2px]",
+      "w-full bg-darkBlue/40",
+      "shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)]",
+      "hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)]",
+      "transition-shadow duration-200",
+      "rounded-xl",
+      "bg-gradient-to-b from-white/10 to-transparent",
+      "backdrop-blur-sm",
       className
     )}>
-      <div className="relative p-6">
-        <div className="flex flex-col items-start space-y-2">
-          <span className="text-[13px] font-medium text-[#8E9196] group-hover:text-white/80 transition-colors">
-            {label}
-          </span>
-          <span 
-            className="text-2xl font-bold tracking-tight"
-            style={{ 
-              color: valueColor,
-              textShadow: valueColor === '#39FF14' ? `0 0 10px ${valueColor}40` : 'none'
-            }}
-          >
-            {formatValue(value, label)}
-          </span>
+      <div className="flex flex-col items-center justify-center py-2">
+        <div className="text-sm text-softWhite/70 font-medium">{label}</div>
+        <div className="text-lg font-bold text-softWhite">
+          {formatValue(value, label)}
         </div>
       </div>
     </div>
