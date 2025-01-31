@@ -1,13 +1,20 @@
 
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { format, parse } from "date-fns";
 
 interface TotalGainCardProps {
   accountId?: string;
 }
 
+interface GainData {
+  date: string;
+  value: number;
+}
+
 const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
-  const [totalGain, setTotalGain] = useState<number | null>(null);
+  const [gainData, setGainData] = useState<GainData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -33,7 +40,7 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
         startDate.setDate(startDate.getDate() - 30);
 
         const response = await fetch(
-          `https://www.myfxbook.com/api/get-gain.json?session=${encodeURIComponent(
+          `https://www.myfxbook.com/api/get-daily-gain.json?session=${encodeURIComponent(
             session
           )}&id=${encodeURIComponent(accountId)}&start=${startDate.toISOString().split('T')[0]}&end=${endDate.toISOString().split('T')[0]}`
         );
@@ -45,8 +52,21 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
         const data = await response.json();
         console.log("Total Gain API Response:", data);
 
-        if (!data.error) {
-          setTotalGain(data.value);
+        if (!data.error && data.dailyGain) {
+          const formattedData = data.dailyGain.flat().map((item: any) => {
+            try {
+              const parsedDate = parse(item.date, 'MM/dd/yyyy', new Date());
+              return {
+                date: format(parsedDate, 'MMM dd'),
+                value: Number(item.value),
+              };
+            } catch (error) {
+              console.error("Error parsing date:", item.date, error);
+              return null;
+            }
+          }).filter((item): item is GainData => item !== null);
+          
+          setGainData(formattedData);
         } else {
           throw new Error(data.message || "Failed to fetch total gain data");
         }
@@ -72,18 +92,61 @@ const TotalGainCard = ({ accountId }: TotalGainCardProps) => {
           Total Gain (30 Days)
         </h3>
       </div>
-      <div className="flex items-center justify-center p-4">
+      <div className="p-4 h-[300px]">
         {isLoading ? (
-          <p className="text-center text-softWhite">Loading...</p>
+          <div className="h-full flex items-center justify-center">
+            <p className="text-center text-softWhite">Loading...</p>
+          </div>
+        ) : gainData.length > 0 ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={gainData}>
+              <defs>
+                <linearGradient id="gainGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#0EA5E9" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#0EA5E9" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid 
+                strokeDasharray="3 3" 
+                vertical={false}
+                stroke="#403E43"
+                opacity={0.4}
+              />
+              <XAxis 
+                dataKey="date"
+                stroke="#8E9196"
+                tickLine={false}
+                axisLine={false}
+                dy={10}
+              />
+              <YAxis
+                stroke="#8E9196"
+                tickLine={false}
+                axisLine={false}
+                dx={-10}
+                tickFormatter={(value) => `${value}%`}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#1A1F2C',
+                  border: '1px solid #403E43',
+                  borderRadius: '6px',
+                  color: '#fff'
+                }}
+                formatter={(value: number) => [`${value.toFixed(2)}%`, 'Gain']}
+              />
+              <Area
+                type="monotone"
+                dataKey="value"
+                stroke="#0EA5E9"
+                fillOpacity={1}
+                fill="url(#gainGradient)"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
         ) : (
-          <div className="text-3xl font-bold text-center">
-            {totalGain !== null ? (
-              <span className="text-softWhite bg-clip-text text-transparent bg-gradient-to-b from-[#ffffff] to-[#a8a8a8] shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
-                {totalGain >= 0 ? "+" : ""}{totalGain.toFixed(2)}%
-              </span>
-            ) : (
-              <span className="text-softWhite">N/A</span>
-            )}
+          <div className="h-full flex items-center justify-center">
+            <p className="text-center text-softWhite">No gain data available</p>
           </div>
         )}
       </div>
