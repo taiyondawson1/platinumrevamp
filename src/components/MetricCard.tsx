@@ -35,6 +35,18 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
     return value;
   };
 
+  // Helper function to determine if a value is positive or negative
+  const isPositiveValue = (value: string | number): boolean => {
+    if (typeof value === 'number') {
+      return value >= 0;
+    }
+    // Try to parse string values that might be numbers
+    const numValue = parseFloat(value);
+    return !isNaN(numValue) && numValue >= 0;
+  };
+
+  const valueColor = isPositiveValue(value) ? '#39FF14' : '#FF1744';
+
   return (
     <div className={cn(
       "w-full bg-darkBlue/40",
@@ -48,7 +60,13 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
     )}>
       <div className="flex flex-col items-center justify-center py-2">
         <div className="text-sm text-softWhite/70 font-medium">{label}</div>
-        <div className="text-lg font-bold text-softWhite">
+        <div 
+          className="text-lg font-bold"
+          style={{ 
+            color: valueColor,
+            textShadow: `0 0 5px ${valueColor}`,
+          }}
+        >
           {formatValue(value, label)}
         </div>
       </div>
@@ -57,3 +75,4 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
 };
 
 export default MetricCard;
+
