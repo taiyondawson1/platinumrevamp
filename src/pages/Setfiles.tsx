@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Download, Info, X, Clock, CheckCircle, Asterisk, ArrowLeft, BarChart } from "lucide-react";
@@ -41,8 +42,8 @@ const SetfilesPage = () => {
   ];
 
   const defaultRiskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
-  const stealthPhases = ["XAUUSD", "US30", "AUDNZD"];
-  const infinityLevels = ["Trend", "Consolodation (XAUUSD)", "Consolodation (US30)", "HEDGE MODE"];
+  const stealthPhases = ["XAUUSD", "US30"];
+  const infinityLevels = ["Trend", "Consolodation (XAUUSD)", "Consolodation (US30)", "HEDGE MODE", "AUDNZD"];
 
   const getRiskLevels = () => {
     if (selectedExpert === "PlatinumAi: Stealth") return stealthPhases;
@@ -51,12 +52,17 @@ const SetfilesPage = () => {
   };
 
   const getSymbolForSelectedRisk = () => {
-    if (selectedExpert === "PlatinumAi: Infinity" && (selectedRisk === "Trend" || selectedRisk === "Consolodation (US30)")) {
-      return "US30";
+    if (selectedExpert === "PlatinumAi: Infinity") {
+      if (selectedRisk === "Trend" || selectedRisk === "Consolodation (US30)") {
+        return "US30";
+      }
+      if (selectedRisk === "AUDNZD") {
+        return "AUDNZD";
+      }
+      return "XAUUSD";
     }
     if (selectedExpert === "PlatinumAi: Stealth") {
       if (selectedRisk === "XAUUSD") return "XAUUSD";
-      if (selectedRisk === "AUDNZD") return "AUDNZD";
       return "US30";
     }
     return "XAUUSD";
@@ -112,9 +118,9 @@ const SetfilesPage = () => {
       if (risk === "US30") {
         return "Phase 2 approach with US30 trading.";
       }
-      if (risk === "AUDNZD") {
-        return "Phase 3 approach with AUDNZD trading.";
-      }
+    }
+    if (selectedExpert === "PlatinumAi: Infinity" && risk === "AUDNZD") {
+      return "Optimized for AUDNZD currency pair trading.";
     }
     return risk === "Balanced" 
       ? "A balanced approach offering higher potential returns while maintaining reasonable risk control."
