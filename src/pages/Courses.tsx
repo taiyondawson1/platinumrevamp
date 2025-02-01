@@ -2,9 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { BookOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CoursesPage = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const courses = [
     {
@@ -19,7 +21,7 @@ const CoursesPage = () => {
       description: "Advanced techniques and strategies for our most sophisticated trading bot.",
       duration: "6 hours",
       lessons: 15,
-      path: "/courses/platinumai-stealth"
+      path: "/courses/stealth"
     },
     {
       name: "PlatinumAi: Infinity Course",
@@ -30,11 +32,15 @@ const CoursesPage = () => {
     }
   ];
 
-  const handleStartCourse = (courseName: string) => {
-    toast({
-      title: "Course Access",
-      description: `Starting ${courseName}...`,
-    });
+  const handleStartCourse = (course: typeof courses[0]) => {
+    if (course.name === "PlatinumAi: Stealth Course") {
+      navigate('/courses/stealth');
+    } else {
+      toast({
+        title: "Coming Soon",
+        description: "This course will be available soon!",
+      });
+    }
   };
 
   return (
@@ -74,7 +80,7 @@ const CoursesPage = () => {
                   </div>
                   <div className="flex gap-2">
                     <Button
-                      onClick={() => handleStartCourse(course.name)}
+                      onClick={() => handleStartCourse(course)}
                       size="sm"
                       className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 
                                shadow-embossed hover:shadow-embossed-hover transition-all duration-300
