@@ -16,7 +16,7 @@ const CourseView = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        console.log('Fetching course with path:', `/courses/${courseId}`);
+        console.log('Fetching course with ID:', courseId);
         const { data: courseData, error: courseError } = await supabase
           .from('courses')
           .select('*')
@@ -26,6 +26,7 @@ const CourseView = () => {
         if (courseError) throw courseError;
         
         if (!courseData) {
+          console.log('Course not found for path:', `/courses/${courseId}`);
           toast({
             title: "Course not found",
             description: "The requested course could not be found",
@@ -54,7 +55,6 @@ const CourseView = () => {
 
   const handleComplete = async () => {
     try {
-      // Mark course as completed
       const { error } = await supabase
         .from('course_progress')
         .upsert({
@@ -70,7 +70,6 @@ const CourseView = () => {
         description: "Course completed!",
       });
       
-      // Navigate back to courses
       navigate('/courses');
     } catch (error) {
       console.error('Error marking course as complete:', error);
