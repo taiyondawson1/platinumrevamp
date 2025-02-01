@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -22,14 +21,14 @@ const CourseView = () => {
 
       const { data, error } = await supabase
         .from('courses')
-        .select('*')
+        .select()
         .eq('id', courseId)
         .single();
       
       if (error) throw error;
       return data;
     },
-    enabled: !!courseId // Only run query if courseId exists
+    enabled: !!courseId
   });
 
   const { data: progress } = useQuery({
@@ -41,7 +40,7 @@ const CourseView = () => {
 
       const { data, error } = await supabase
         .from('course_progress')
-        .select('*')
+        .select()
         .eq('course_id', courseId)
         .eq('user_id', user.id)
         .single();
@@ -49,7 +48,7 @@ const CourseView = () => {
       if (error && error.code !== 'PGRST116') throw error;
       return data;
     },
-    enabled: !!courseId // Only run query if courseId exists
+    enabled: !!courseId
   });
 
   const updateProgress = useMutation({
