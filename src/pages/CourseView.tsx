@@ -16,7 +16,7 @@ const CourseView = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        console.log('Fetching course with path:', courseId);
+        console.log('Fetching course with path:', `/courses/${courseId}`);
         const { data: courseData, error: courseError } = await supabase
           .from('courses')
           .select('*')
