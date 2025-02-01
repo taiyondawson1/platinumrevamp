@@ -49,6 +49,12 @@ const Register = () => {
             title: "Too Many Attempts",
             description: "Please wait a few minutes before trying to register again.",
           });
+        } else if (error.message.includes('timeout') || error.status === 504) {
+          toast({
+            variant: "destructive",
+            title: "Server Timeout",
+            description: "The server is taking too long to respond. Please try again.",
+          });
         } else {
           toast({
             variant: "destructive",
@@ -102,6 +108,7 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
                 className="bg-darkGrey border-silver/20"
               />
             </div>
@@ -112,6 +119,7 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isLoading}
                 className="bg-darkGrey border-silver/20"
               />
             </div>
@@ -122,6 +130,7 @@ const Register = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
+                disabled={isLoading}
                 className="bg-darkGrey border-silver/20"
               />
             </div>
@@ -136,3 +145,4 @@ const Register = () => {
 };
 
 export default Register;
+
