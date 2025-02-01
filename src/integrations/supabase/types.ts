@@ -77,44 +77,6 @@ export type Database = {
           },
         ]
       }
-      course_progress: {
-        Row: {
-          completed: boolean | null
-          course_id: string
-          created_at: string | null
-          id: string
-          updated_at: string | null
-          user_id: string
-          watch_time: number | null
-        }
-        Insert: {
-          completed?: boolean | null
-          course_id: string
-          created_at?: string | null
-          id?: string
-          updated_at?: string | null
-          user_id: string
-          watch_time?: number | null
-        }
-        Update: {
-          completed?: boolean | null
-          course_id?: string
-          created_at?: string | null
-          id?: string
-          updated_at?: string | null
-          user_id?: string
-          watch_time?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "course_progress_course_id_fkey"
-            columns: ["course_id"]
-            isOneToOne: false
-            referencedRelation: "courses"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       courses: {
         Row: {
           created_at: string | null
