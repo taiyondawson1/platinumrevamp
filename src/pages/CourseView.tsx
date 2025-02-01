@@ -16,13 +16,26 @@ const CourseView = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
+        console.log('Fetching course with path:', courseId);
         const { data: courseData, error: courseError } = await supabase
           .from('courses')
           .select('*')
-          .eq('name', 'PlatinumAi: Stealth Course')
-          .single();
+          .eq('path', `/courses/${courseId}`)
+          .maybeSingle();
 
         if (courseError) throw courseError;
+        
+        if (!courseData) {
+          toast({
+            title: "Course not found",
+            description: "The requested course could not be found",
+            variant: "destructive",
+          });
+          navigate('/courses');
+          return;
+        }
+
+        console.log('Found course:', courseData);
         setCourse(courseData);
       } catch (error) {
         console.error('Error fetching course:', error);
@@ -37,7 +50,7 @@ const CourseView = () => {
     };
 
     fetchCourse();
-  }, [toast]);
+  }, [courseId, toast, navigate]);
 
   const handleComplete = async () => {
     try {
