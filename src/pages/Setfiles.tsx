@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Download, Info, X, Clock, CheckCircle, Asterisk, ArrowLeft, BarChart } from "lucide-react";
@@ -434,68 +435,56 @@ const SetfilesPage = () => {
                 <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_8px_32px rgba(0,0,0,0.4)] h-full">
                   <div className="p-4">
                     <div className="flex items-center mb-4">
-                      <span className={`${
-                        selectedRisk === "Conservative" || selectedRisk === "Balanced" || selectedRisk === "Aggressive"
-                          ? "bg-[#0EA5E9]/10 text-[#0EA5E9]" 
-                          : "bg-green-500/10 text-green-300"
-                      } text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full flex items-center gap-1`}>
-                        <CheckCircle className="w-3 h-3" />
-                        {selectedRisk === "Conservative" || selectedRisk === "Balanced" || selectedRisk === "Aggressive" 
-                          ? "Daily Analysis Required" 
-                          : "Hand-Free operation"}
+                      <span className="bg-green-500/10 text-green-300 text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full flex items-center gap-1">
+                        <BarChart className="w-3 h-3" />
+                        Daily Targets
                       </span>
                     </div>
-
-                    {selectedRisk === "Conservative" || selectedRisk === "Balanced" || selectedRisk === "Aggressive" ? (
-                      <div className="space-y-4">
-                        <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-[#0EA5E9] shadow-[0_0_10px_#0EA5E9] animate-pulse mt-[-4px]" />
-                            <h3 className="text-softWhite font-bold text-lg mb-2">Market Direction</h3>
-                          </div>
-                          <p className="text-mediumGray text-sm mb-3">
-                            Must be used in accordance with daily market analysis from #daily-analysis
-                          </p>
-                          <button 
-                            onClick={() => setShowNewsDialog(true)}
-                            className="text-[#0EA5E9] text-sm hover:underline"
-                          >
-                            Learn more about market analysis
-                          </button>
+                    <h3 className="text-softWhite font-medium mb-0">Profit & Loss Limits</h3>
+                    <p className="text-xs text-mediumGray mb-4">Recommended daily targets based on account balance</p>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-mediumGray text-sm block mb-2">
+                          Enter Account Balance:
+                        </label>
+                        <input
+                          type="number"
+                          value={accountBalance}
+                          onChange={(e) => setAccountBalance(Number(e.target.value))}
+                          className="w-full bg-black/40 border border-mediumGray/20 rounded p-2 text-softWhite"
+                        />
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-mediumGray text-sm">Daily Profit Target:</span>
+                        <div className="flex items-center px-2 py-1 rounded bg-green-500/20 text-green-300">
+                          <span className="font-bold text-[10px]">
+                            ${calculateDailyProfit(accountBalance, selectedRisk).toFixed(2)}
+                          </span>
+                          <span className="ml-0.5 text-[10px]">
+                            ({getRiskLevelProfitPercentage(selectedRisk)}%)
+                          </span>
                         </div>
                       </div>
-
-                    ) : selectedRisk === "Ultrasoft" ? (
-                      <>
-                        <div className="mb-4">
-                          <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
-                                <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_10px_#4ade80] animate-pulse"></div>
-                              </div>
-                              <span className="text-softWhite font-medium">Automated Trading</span>
-                            </div>
-                            <p className="text-mediumGray text-sm mb-4">
-                              Can run autonomously with minimal intervention, except during high-impact news
-                            </p>
-                            <Button variant="link" className="text-green-400 p-0 h-auto" onClick={() => setShowNewsDialog(true)}>
-                              Learn about news handling
-                            </Button>
-                          </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-mediumGray text-sm">Max Daily Loss:</span>
+                        <div className="flex items-center px-2 py-1 rounded bg-red-500/20 text-red-300">
+                          <span className="font-bold text-[10px]">
+                            ${calculateMaxDailyLoss(accountBalance, selectedRisk).toFixed(2)}
+                          </span>
+                          <span className="ml-0.5 text-[10px]">
+                            ({getRiskLevelLossPercentage(selectedRisk)}%)
+                          </span>
                         </div>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-mediumGray text-sm mb-6">
-                          Automatically detect current market analysis from 4-day analysis
-                        </p>
-                        <div className="mt-auto">
-                          <Button variant="link" className="text-green-400 p-0 h-auto" onClick={() => setShowNewsDialog(true)}>
-                            Learn about news handling
-                          </Button>
-                        </div>
-                      </>
-                    )}
+                      </div>
+                      <div className="mt-4 text-xs text-mediumGray">
+                        <p className="mb-1">Important: Use these exact values when configuring your EA</p>
+                        <ul className="space-y-1 -mt-10">
+                          <li>• DailyProfitTarget: 250 (2.5%)</li>
+                          <li>• MaxDailyLoss: 450 (4.5%)</li>
+                        </ul>
+                      </div>
+                      <p className="text-xs text-mediumGray mt-2">Recommended daily targets based on account balance</p>
+                    </div>
                   </div>
                 </Card>
               </div>
