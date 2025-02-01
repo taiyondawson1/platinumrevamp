@@ -28,6 +28,14 @@ const ExpertAdvisors = () => {
       filename: "PlatinumAi Infinity.ex4",
       downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Infinity.ex4"
     },
+    {
+      name: "Metratrader4Validation",
+      description: "Please make sure this file goes in your Libararies folder so you liscence can be validated",
+      presets: "Required for validation",
+      path: "/expert-advisors/metatrader-validation",
+      filename: "MetatraderValidation.ex4",
+      downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//MetatraderValidation.ex4"
+    },
   ];
 
   const handleDownload = async (expert: typeof experts[0]) => {
@@ -159,4 +167,3 @@ const ExpertAdvisors = () => {
 };
 
 export default ExpertAdvisors;
-
