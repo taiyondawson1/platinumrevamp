@@ -8,6 +8,13 @@ const CoursesPage = () => {
 
   const courses = [
     {
+      name: "PlatinumAi: Flagship Course",
+      description: "Our comprehensive foundation course covering all essential trading concepts and strategies.",
+      duration: "8 hours",
+      lessons: 20,
+      externalUrl: "https://taiyondawson212-gmailcom-s-school.teachable.com/courses/enrolled/2736916"
+    },
+    {
       name: "PlatinumAi: Stealth Course",
       description: "Advanced techniques and strategies for our most sophisticated trading bot.",
       duration: "6 hours",
