@@ -55,16 +55,59 @@ const SetfilesPage = () => {
   const handleDownload = () => {
     try {
       let downloadUrl = "";
+      let filename = "";
       
       // Set download URL based on selected risk and expert
-      if (selectedExpert === "PlatinumAi: Infinity" && selectedRisk === "AUDNZD") {
-        downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//AUDNZD.set";
+      if (selectedExpert === "PlatinumAi: Infinity") {
+        if (selectedRisk === "HEDGE MODE") {
+          // For HEDGE MODE we need to download both files
+          const longUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20-%20Infinity%20only%20long%20xauusd%20.set";
+          const shortUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20-%20%20Infinity%20only%20short%20xauusd.set";
+          
+          // Download long position file
+          const longLink = document.createElement('a');
+          longLink.href = longUrl;
+          longLink.download = "HEDGE_MODE_LONG.set";
+          document.body.appendChild(longLink);
+          longLink.click();
+          document.body.removeChild(longLink);
+          
+          // Download short position file
+          setTimeout(() => {
+            const shortLink = document.createElement('a');
+            shortLink.href = shortUrl;
+            shortLink.download = "HEDGE_MODE_SHORT.set";
+            document.body.appendChild(shortLink);
+            shortLink.click();
+            document.body.removeChild(shortLink);
+          }, 1000); // Delay second download by 1 second
+
+          toast({
+            title: "Downloads Started",
+            description: "Downloading HEDGE MODE setfiles...",
+          });
+          return;
+        } else if (selectedRisk === "Consolodation (US30)") {
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Infinity%20us30%20asia.set";
+          filename = "US30_CONSOLIDATION.set";
+        } else if (selectedRisk === "AUDNZD") {
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20-%20Infinity%20AUDNZD.set";
+          filename = "AUDNZD.set";
+        }
+      } else if (selectedExpert === "PlatinumAi: Stealth") {
+        if (selectedRisk === "XAUUSD") {
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20-%20Stealth%20100K%20XAUUSD.set";
+          filename = "STEALTH_XAUUSD.set";
+        } else if (selectedRisk === "US30") {
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Infinity%20us30%20asia.set";
+          filename = "STEALTH_US30.set";
+        }
       }
       
       if (downloadUrl) {
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.download = `${selectedRisk}.set`;
+        link.download = filename;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
