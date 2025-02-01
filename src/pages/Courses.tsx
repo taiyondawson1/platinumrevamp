@@ -2,40 +2,37 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { BookOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 const CoursesPage = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const courses = [
-    {
-      name: "PlatinumAi: Pulse Course",
-      description: "Learn how to effectively use mean reversion strategies and master consolidating market periods.",
-      duration: "4 hours",
-      lessons: 12,
-      path: "/courses/platinumai-pulse"
-    },
-    {
-      name: "PlatinumAi: Stealth Course",
-      description: "Advanced techniques and strategies for our most sophisticated trading bot.",
-      duration: "6 hours",
-      lessons: 15,
-      path: "/courses/platinumai-stealth"
-    },
-    {
-      name: "PlatinumAi: Infinity Course",
-      description: "Master the 'one shot, one entry' approach and optimize for prop firm success.",
-      duration: "3 hours",
-      lessons: 9,
-      path: "/courses/platinumai-infinity"
+  const { data: courses, isLoading } = useQuery({
+    queryKey: ['courses'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*');
+      
+      if (error) throw error;
+      return data;
     }
-  ];
+  });
 
-  const handleStartCourse = (courseName: string) => {
+  const handleStartCourse = (courseId: string, courseName: string) => {
     toast({
-      title: "Course Access",
-      description: `Starting ${courseName}...`,
+      title: "Starting Course",
+      description: `Loading ${courseName}...`,
     });
+    navigate(`/courses/${courseId}`);
   };
+
+  if (isLoading) {
+    return <div className="p-4 text-center">Loading courses...</div>;
+  }
 
   return (
     <div className="p-4 ml-[64px] relative">
@@ -48,9 +45,9 @@ const CoursesPage = () => {
         {/* Right fade gradient */}
         <div className="absolute right-0 top-0 w-16 h-full bg-gradient-to-l from-darkBase to-transparent z-10" />
         
-        {courses.map((course) => (
+        {courses?.map((course) => (
           <div 
-            key={course.name}
+            key={course.id}
             className="group bg-darkBlue/40 backdrop-blur-sm p-3 border border-mediumGray/20 
                      hover:border-mediumGray/30 transition-all duration-300
                      relative overflow-hidden !rounded-none"
@@ -74,7 +71,7 @@ const CoursesPage = () => {
                   </div>
                   <div className="flex gap-2">
                     <Button
-                      onClick={() => handleStartCourse(course.name)}
+                      onClick={() => handleStartCourse(course.id, course.name)}
                       size="sm"
                       className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 
                                shadow-embossed hover:shadow-embossed-hover transition-all duration-300

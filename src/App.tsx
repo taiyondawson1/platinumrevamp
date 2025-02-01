@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +11,7 @@ import ExpertAdvisorsPage from "@/pages/ExpertAdvisors";
 import SetfilesPage from "@/pages/Setfiles";
 import TradingPage from "@/pages/Trading";
 import CoursesPage from "@/pages/Courses";
+import CourseView from "@/pages/CourseView";
 import TradeHub from "@/pages/TradeHub";
 import MyFxBookLoginPage from "@/pages/MyFxBookLoginPage";
 import TradingViewTickerTape from "@/components/TradingViewTickerTape";
@@ -85,6 +85,7 @@ function MainContent() {
                 <Route path="/expert-advisors" element={<PrivateRoute><ExpertAdvisorsPage /></PrivateRoute>} />
                 <Route path="/setfiles" element={<PrivateRoute><SetfilesPage /></PrivateRoute>} />
                 <Route path="/courses" element={<PrivateRoute><CoursesPage /></PrivateRoute>} />
+                <Route path="/courses/:courseId" element={<PrivateRoute><CourseView /></PrivateRoute>} />
                 <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
                 <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
               </Routes>
