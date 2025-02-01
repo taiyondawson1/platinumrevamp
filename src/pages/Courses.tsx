@@ -1,13 +1,10 @@
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { BookOpen, Upload } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { BookOpen } from "lucide-react";
 
 const CoursesPage = () => {
   const { toast } = useToast();
-  const [uploading, setUploading] = useState(false);
 
   const courses = [
     {
@@ -40,106 +37,58 @@ const CoursesPage = () => {
     });
   };
 
-  const handleVideoUpload = async (event: React.ChangeEvent<HTMLInputElement>, courseName: string) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setUploading(true);
-      
-      // Upload video to Supabase Storage
-      const fileExt = file.name.split('.').pop();
-      const filePath = `${courseName.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.${fileExt}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('course-videos')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('course-videos')
-        .getPublicUrl(filePath);
-
-      // Update the courses table with video information
-      const { error: dbError } = await supabase
-        .from('courses')
-        .upsert({
-          name: courseName,
-          video_url: publicUrl,
-          path: courses.find(c => c.name === courseName)?.path || '',
-          description: courses.find(c => c.name === courseName)?.description || '',
-          duration: courses.find(c => c.name === courseName)?.duration || '',
-          lessons: courses.find(c => c.name === courseName)?.lessons || 0,
-        });
-
-      if (dbError) throw dbError;
-
-      toast({
-        title: "Success",
-        description: "Video uploaded successfully!",
-      });
-    } catch (error) {
-      console.error('Error uploading video:', error);
-      toast({
-        title: "Error",
-        description: "Failed to upload video. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setUploading(false);
-    }
-  };
-
   return (
     <div className="p-4 ml-[64px] relative">
       <h1 className="text-xl font-semibold text-softWhite mb-4">Courses</h1>
       
       <div className="grid gap-3 relative">
+        {/* Left fade gradient */}
+        <div className="absolute left-0 top-0 w-16 h-full bg-gradient-to-r from-darkBase to-transparent z-10" />
+        
+        {/* Right fade gradient */}
+        <div className="absolute right-0 top-0 w-16 h-full bg-gradient-to-l from-darkBase to-transparent z-10" />
+        
         {courses.map((course) => (
           <div 
             key={course.name}
-            className="tradehub-card p-4 flex flex-col gap-4"
+            className="group bg-darkBlue/40 backdrop-blur-sm p-3 border border-mediumGray/20 
+                     hover:border-mediumGray/30 transition-all duration-300
+                     relative overflow-hidden !rounded-none"
           >
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <h2 className="text-lg font-medium text-softWhite">{course.name}</h2>
-                <p className="text-sm text-mediumGray max-w-xl">{course.description}</p>
-                <div className="flex items-center gap-4 text-xs text-mediumGray mt-2">
-                  <span>⏱️ {course.duration}</span>
-                  <span>📚 {course.lessons} lessons</span>
+            {/* Shiny gold reflective effect */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
+                          bg-gradient-to-r from-transparent via-[#ffd70022] to-transparent
+                          translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000
+                          pointer-events-none" />
+            
+            <div className="flex flex-col items-center justify-center gap-3 relative">
+              <div className="space-y-1.5 text-center">
+                <div>
+                  <h2 className="text-base font-medium text-softWhite">{course.name}</h2>
+                  <p className="text-sm text-mediumGray leading-relaxed">{course.description}</p>
                 </div>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={() => handleStartCourse(course.name)}
-                  size="sm"
-                  className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 h-8
-                           shadow-embossed hover:shadow-embossed-hover transition-all duration-300
-                           border border-[#FFD700]/30 hover:border-[#FFD700]/40"
-                >
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  Start Course
-                </Button>
-                
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept="video/*"
-                    onChange={(e) => handleVideoUpload(e, course.name)}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    disabled={uploading}
-                  />
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="border-mediumGray/30 hover:border-mediumGray/40 h-8"
-                    disabled={uploading}
-                  >
-                    <Upload className="w-4 h-4 mr-2" />
-                    Upload Video
-                  </Button>
+                <div className="flex flex-col items-center justify-center gap-2 pt-1.5">
+                  <div className="text-xs text-mediumGray flex items-center gap-4 mb-2">
+                    <span>⏱️ {course.duration}</span>
+                    <span>📚 {course.lessons} lessons</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleStartCourse(course.name)}
+                      size="sm"
+                      className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 
+                               shadow-embossed hover:shadow-embossed-hover transition-all duration-300
+                               border border-[#FFD700]/30 hover:border-[#FFD700]/40 text-xs h-7
+                               relative overflow-hidden group !rounded-none"
+                    >
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
+                                    bg-gradient-to-r from-transparent via-[#ffd70022] to-transparent
+                                    translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000
+                                    pointer-events-none" />
+                      <BookOpen className="w-3.5 h-3.5 mr-1" />
+                      Start Course
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
