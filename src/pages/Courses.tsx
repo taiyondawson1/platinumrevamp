@@ -8,32 +8,26 @@ const CoursesPage = () => {
 
   const courses = [
     {
-      name: "PlatinumAi: Pulse Course",
-      description: "Learn how to effectively use mean reversion strategies and master consolidating market periods.",
-      duration: "4 hours",
-      lessons: 12,
-      path: "/courses/platinumai-pulse"
-    },
-    {
       name: "PlatinumAi: Stealth Course",
       description: "Advanced techniques and strategies for our most sophisticated trading bot.",
       duration: "6 hours",
       lessons: 15,
-      path: "/courses/platinumai-stealth"
+      externalUrl: "https://taiyondawson212-gmailcom-s-school.teachable.com/courses/enrolled/2736916"
     },
     {
       name: "PlatinumAi: Infinity Course",
       description: "Master the 'one shot, one entry' approach and optimize for prop firm success.",
       duration: "3 hours",
       lessons: 9,
-      path: "/courses/platinumai-infinity"
+      externalUrl: "https://taiyondawson212-gmailcom-s-school.teachable.com/courses/enrolled/2736902"
     }
   ];
 
-  const handleStartCourse = (courseName: string) => {
+  const handleStartCourse = (courseName: string, externalUrl: string) => {
+    window.open(externalUrl, '_blank');
     toast({
       title: "Course Access",
-      description: `Starting ${courseName}...`,
+      description: `Opening ${courseName} in a new tab...`,
     });
   };
 
@@ -74,7 +68,7 @@ const CoursesPage = () => {
                   </div>
                   <div className="flex gap-2">
                     <Button
-                      onClick={() => handleStartCourse(course.name)}
+                      onClick={() => handleStartCourse(course.name, course.externalUrl)}
                       size="sm"
                       className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 
                                shadow-embossed hover:shadow-embossed-hover transition-all duration-300
