@@ -3,30 +3,30 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { ArrowLeft, CheckCircle } from "lucide-react";
 
 const CourseView = () => {
-  const { courseId } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [course, setCourse] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        console.log('Fetching course with ID:', courseId);
+        console.log('Fetching course with ID:', id);
         const { data: courseData, error: courseError } = await supabase
           .from('courses')
           .select('*')
-          .eq('path', `/courses/${courseId}`)
+          .eq('id', id)
           .maybeSingle();
 
         if (courseError) throw courseError;
         
         if (!courseData) {
-          console.log('Course not found for path:', `/courses/${courseId}`);
+          console.log('Course not found with id:', id);
           toast({
             title: "Course not found",
             description: "The requested course could not be found",
@@ -46,12 +46,12 @@ const CourseView = () => {
           variant: "destructive",
         });
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchCourse();
-  }, [courseId, toast, navigate]);
+  }, [id, toast, navigate]);
 
   const handleComplete = async () => {
     try {

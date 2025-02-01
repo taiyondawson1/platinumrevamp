@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -85,7 +86,7 @@ function MainContent() {
                 <Route path="/expert-advisors" element={<PrivateRoute><ExpertAdvisorsPage /></PrivateRoute>} />
                 <Route path="/setfiles" element={<PrivateRoute><SetfilesPage /></PrivateRoute>} />
                 <Route path="/courses" element={<PrivateRoute><CoursesPage /></PrivateRoute>} />
-                <Route path="/courses/stealth" element={<PrivateRoute><CourseView /></PrivateRoute>} />
+                <Route path="/courses/:id" element={<PrivateRoute><CourseView /></PrivateRoute>} />
                 <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
                 <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
               </Routes>

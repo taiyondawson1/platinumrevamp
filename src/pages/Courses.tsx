@@ -10,31 +10,31 @@ const CoursesPage = () => {
 
   const courses = [
     {
+      id: "platinumai-pulse",
       name: "PlatinumAi: Pulse Course",
       description: "Learn how to effectively use mean reversion strategies and master consolidating market periods.",
       duration: "4 hours",
       lessons: 12,
-      path: "/courses/platinumai-pulse"
     },
     {
+      id: "stealth",
       name: "PlatinumAi: Stealth Course",
       description: "Advanced techniques and strategies for our most sophisticated trading bot.",
       duration: "6 hours",
       lessons: 15,
-      path: "/courses/stealth"
     },
     {
+      id: "platinumai-infinity",
       name: "PlatinumAi: Infinity Course",
       description: "Master the 'one shot, one entry' approach and optimize for prop firm success.",
       duration: "3 hours",
       lessons: 9,
-      path: "/courses/platinumai-infinity"
     }
   ];
 
   const handleStartCourse = (course: typeof courses[0]) => {
-    if (course.name === "PlatinumAi: Stealth Course") {
-      navigate('/courses/stealth');
+    if (course.id === "stealth") {
+      navigate(`/courses/${course.id}`);
     } else {
       toast({
         title: "Coming Soon",
