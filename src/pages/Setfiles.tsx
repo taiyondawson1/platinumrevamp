@@ -44,7 +44,7 @@ const SetfilesPage = () => {
 
   const defaultRiskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
   const stealthPhases = ["XAUUSD", "US30"];
-  const infinityLevels = ["Trend", "Consolodation (XAUUSD)", "Consolodation (US30)", "HEDGE MODE", "AUDNZD"];
+  const infinityLevels = ["Consolodation (XAUUSD)", "Consolodation (US30)", "HEDGE MODE", "AUDNZD"];
 
   const getRiskLevels = () => {
     if (selectedExpert === "PlatinumAi: Stealth") return stealthPhases;
@@ -90,6 +90,9 @@ const SetfilesPage = () => {
         } else if (selectedRisk === "Consolodation (US30)") {
           downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Infinity%20us30%20asia.set";
           filename = "US30_CONSOLIDATION.set";
+        } else if (selectedRisk === "Consolodation (XAUUSD)") {
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20-%20Infinity%20XAUUSD%20consolodation.set";
+          filename = "XAUUSD_CONSOLIDATION.set";
         } else if (selectedRisk === "AUDNZD") {
           downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20-%20Infinity%20AUDNZD.set";
           filename = "AUDNZD.set";
@@ -134,7 +137,7 @@ const SetfilesPage = () => {
 
   const getSymbolForSelectedRisk = () => {
     if (selectedExpert === "PlatinumAi: Infinity") {
-      if (selectedRisk === "Trend" || selectedRisk === "Consolodation (US30)") {
+      if (selectedRisk === "Consolodation (US30)") {
         return "US30";
       }
       if (selectedRisk === "AUDNZD") {
