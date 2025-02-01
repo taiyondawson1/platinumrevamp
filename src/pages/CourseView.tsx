@@ -18,6 +18,8 @@ const CourseView = () => {
   const { data: course, isLoading: courseLoading } = useQuery({
     queryKey: ['course', courseId],
     queryFn: async () => {
+      if (!courseId) throw new Error('Course ID is required');
+
       const { data, error } = await supabase
         .from('courses')
         .select('*')
@@ -26,7 +28,8 @@ const CourseView = () => {
       
       if (error) throw error;
       return data;
-    }
+    },
+    enabled: !!courseId // Only run query if courseId exists
   });
 
   const { data: progress } = useQuery({
@@ -34,6 +37,7 @@ const CourseView = () => {
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
+      if (!courseId) throw new Error('Course ID is required');
 
       const { data, error } = await supabase
         .from('course_progress')
@@ -44,13 +48,15 @@ const CourseView = () => {
       
       if (error && error.code !== 'PGRST116') throw error;
       return data;
-    }
+    },
+    enabled: !!courseId // Only run query if courseId exists
   });
 
   const updateProgress = useMutation({
     mutationFn: async ({ watchTime, completed }: { watchTime: number, completed: boolean }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
+      if (!courseId) throw new Error('Course ID is required');
 
       const { error } = await supabase
         .from('course_progress')
