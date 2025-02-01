@@ -42,7 +42,22 @@ const Register = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('rate limit') || error.message.includes('429')) {
+          toast({
+            variant: "destructive",
+            title: "Too Many Attempts",
+            description: "Please wait a few minutes before trying to register again.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: error.message,
+          });
+        }
+        return;
+      }
 
       toast({
         title: "Success",
