@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Download, Info, X, Clock, CheckCircle, Asterisk, ArrowLeft, BarChart } from "lucide-react";
@@ -44,7 +45,7 @@ const SetfilesPage = () => {
 
   const defaultRiskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
   const stealthPhases = ["XAUUSD", "US30"];
-  const infinityLevels = ["Consolodation (XAUUSD)", "Consolodation (US30)", "HEDGE MODE", "AUDNZD"];
+  const infinityLevels = ["Striker", "Consolodation (XAUUSD)", "Consolodation (US30)", "HEDGE MODE", "AUDNZD"];
 
   const getRiskLevels = () => {
     if (selectedExpert === "PlatinumAi: Stealth") return stealthPhases;
@@ -59,7 +60,10 @@ const SetfilesPage = () => {
       
       // Set download URL based on selected risk and expert
       if (selectedExpert === "PlatinumAi: Infinity") {
-        if (selectedRisk === "HEDGE MODE") {
+        if (selectedRisk === "Striker") {
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20-%20infinity%20xauusd%20asia%20STRIKER.set";
+          filename = "STRIKER.set";
+        } else if (selectedRisk === "HEDGE MODE") {
           // For HEDGE MODE we need to download both files
           const longUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20-%20Infinity%20only%20long%20xauusd%20.set";
           const shortUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20-%20%20Infinity%20only%20short%20xauusd.set";
