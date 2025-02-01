@@ -77,6 +77,42 @@ export type Database = {
           },
         ]
       }
+      courses: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration: string | null
+          id: string
+          lessons: number | null
+          name: string
+          path: string | null
+          updated_at: string | null
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration?: string | null
+          id?: string
+          lessons?: number | null
+          name: string
+          path?: string | null
+          updated_at?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration?: string | null
+          id?: string
+          lessons?: number | null
+          name?: string
+          path?: string | null
+          updated_at?: string | null
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       mt4_accounts: {
         Row: {
           account_name: string | null
