@@ -1,7 +1,6 @@
 
 import { Card } from "@/components/ui/card";
 import { CalendarDays, ArrowLeftRight, LineChart, Radio, Newspaper } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 const tools = [
   {
@@ -20,7 +19,7 @@ const tools = [
     icon: <LineChart className="h-6 w-6" />,
     title: "TradingView",
     description: "Advanced charting platform",
-    externalLink: "https://www.tradingview.com/chart/"
+    externalLink: "https://www.tradingview.com/chart"
   },
   {
     icon: <Radio className="h-6 w-6" />,
@@ -43,7 +42,7 @@ const ToolsBar = () => {
         <Card
           key={index}
           className="!rounded-none bg-darkBlue/40 border-[#1D1D1D] backdrop-blur-sm p-4 cursor-pointer hover:bg-darkBlue/60 transition-colors shadow-lg hover:shadow-xl"
-          onClick={() => window.open(tool.externalLink, '_blank')}
+          onClick={() => window.open(tool.externalLink, '_blank', 'noopener,noreferrer')}
         >
           <div className="flex flex-col items-center text-center gap-2">
             <div className="text-softWhite">{tool.icon}</div>
