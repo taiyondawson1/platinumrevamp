@@ -64,8 +64,8 @@ const SetfilesPage = () => {
           filename = "STRIKER.set";
         } else if (selectedRisk === "HEDGE MODE") {
           // For HEDGE MODE we need to download both files
-          const longUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20-%20Infinity%20only%20long%20xauusd%20.set";
-          const shortUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20-%20%20Infinity%20only%20short%20xauusd.set";
+          const longUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20-%20Infinity%20only%20long%20xauusd%20%20(1).set";
+          const shortUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20-%20Infinity%20only%20long%20xauusd%20.set";
           
           // Download long position file
           const longLink = document.createElement('a');
