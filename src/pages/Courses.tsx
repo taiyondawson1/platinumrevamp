@@ -10,22 +10,22 @@ const CoursesPage = () => {
     {
       name: "**[START HERE] HOW TO INSTALL**",
       description: "",
-      duration: "8 hours",
-      lessons: 20,
+      duration: "26 minutes",
+      lessons: 6,
       externalUrl: "https://classroom.google.com/w/NzQ4Mjg0ODU3NDE4/tc/NzQ4Mjg1Nzg3NjQ3"
     },
     {
       name: "PlatinumAi: Stealth Course",
       description: "Advanced techniques and strategies for our most sophisticated trading bot.",
-      duration: "6 hours",
-      lessons: 15,
+      duration: "17 minutes",
+      lessons: 2,
       externalUrl: "https://classroom.google.com/w/NzQ4Mjg0ODU3NDE4/tc/NzQ4Mjg0OTM1MzQ5"
     },
     {
       name: "PlatinumAi: Infinity Course",
       description: "Master the 'one shot, one entry' approach and optimize for prop firm success.",
-      duration: "3 hours",
-      lessons: 9,
+      duration: "45 minutes",
+      lessons: 5,
       externalUrl: "https://classroom.google.com/w/NzQ4Mjg0ODU3NDE4/tc/NzQ4Mjg1NzYwNDUw"
     }
   ];
