@@ -40,7 +40,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="ml-[44px] flex flex-col z-[55] pt-[270px]">
+    <div className="fixed top-[230px] left-[44px] flex flex-col z-[55]">
       {/* Navigation Box */}
       <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] mb-4 !rounded-none">
         <div className="space-y-1">
@@ -87,3 +87,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
