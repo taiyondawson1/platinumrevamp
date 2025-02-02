@@ -12,21 +12,21 @@ const CoursesPage = () => {
       description: "",
       duration: "8 hours",
       lessons: 20,
-      externalUrl: "https://taiyondawson212-gmailcom-s-school.teachable.com/courses/enrolled/2736916"
+      externalUrl: "https://classroom.google.com/w/NzQ4Mjg0ODU3NDE4/tc/NzQ4Mjg1Nzg3NjQ3"
     },
     {
       name: "PlatinumAi: Stealth Course",
       description: "Advanced techniques and strategies for our most sophisticated trading bot.",
       duration: "6 hours",
       lessons: 15,
-      externalUrl: "https://taiyondawson212-gmailcom-s-school.teachable.com/purchase?product_id=6088941"
+      externalUrl: "https://classroom.google.com/w/NzQ4Mjg0ODU3NDE4/tc/NzQ4Mjg0OTM1MzQ5"
     },
     {
       name: "PlatinumAi: Infinity Course",
       description: "Master the 'one shot, one entry' approach and optimize for prop firm success.",
       duration: "3 hours",
       lessons: 9,
-      externalUrl: "https://taiyondawson212-gmailcom-s-school.teachable.com/purchase?product_id=6088906"
+      externalUrl: "https://classroom.google.com/w/NzQ4Mjg0ODU3NDE4/tc/NzQ4Mjg1NzYwNDUw"
     }
   ];
 
