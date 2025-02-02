@@ -11,6 +11,29 @@ import ToolsBar from "@/components/ToolsBar";
 const Dashboard = () => {
   const navigate = useNavigate();
 
+  const toolItems = [
+    {
+      label: "Economic Calendar",
+      url: "https://www.myfxbook.com/forex-economic-calendar",
+    },
+    {
+      label: "Currency Correlations",
+      url: "https://www.myfxbook.com/forex-market/correlation",
+    },
+    {
+      label: "TradingView",
+      url: "https://www.tradingview.com/chart/",
+    },
+    {
+      label: "Watch Live News",
+      url: "https://www.youtube.com/channel/UC4R8DWoMoI7CAwX8_LjQHig",
+    },
+    {
+      label: "Read News",
+      url: "https://www.forexfactory.com/calendar",
+    },
+  ];
+
   return (
     <main className="flex-1 p-6 max-w-[1400px] mx-auto">
       <div className="flex flex-col gap-6">
