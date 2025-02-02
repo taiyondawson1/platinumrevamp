@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Download, Info, X, Clock, CheckCircle, Asterisk, ArrowLeft, BarChart } from "lucide-react";
@@ -106,7 +105,7 @@ const SetfilesPage = () => {
           downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20-%20Stealth%20100K%20XAUUSD.set";
           filename = "STEALTH_XAUUSD.set";
         } else if (selectedRisk === "US30") {
-          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Infinity%20us30%20asia.set";
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20Stealth%20100k%20US30.set";
           filename = "STEALTH_US30.set";
         }
       }
@@ -271,56 +270,6 @@ const SetfilesPage = () => {
         </div>
 
         <div className="border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)] animate-[fade-in_0.3s_ease-out]">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Alert 
-                variant="destructive" 
-                className="mb-6 bg-gradient-to-r from-red-950/80 to-red-900/80 border-red-800/30 
-                           cursor-pointer hover:from-red-900/90 hover:to-red-800/90 
-                           transition-all duration-300 shadow-lg backdrop-blur-sm"
-              >
-                <Info className="h-4 w-4 text-red-300" />
-                <AlertDescription className="text-red-100 font-medium">
-                  Important: What You Need to Know About Risk
-                </AlertDescription>
-              </Alert>
-            </AlertDialogTrigger>
-            <AlertDialogContent className="bg-red-950/95 border-red-900/50">
-              <AlertDialogHeader>
-                <AlertDialogTitle className="text-red-50 mb-4">Critical Market Conditions</AlertDialogTitle>
-                <AlertDialogDescription className="text-red-200/90 space-y-6">
-                  <div className="space-y-4">
-                    <p>
-                      While PlatinumAi Quantum's safety features provide robust protection, pay special attention when the EA opens its first trade during a strong trend. In rare cases, sustained market movement against this position may require manual intervention to protect your account.
-                    </p>
-
-                    <div>
-                      <h3 className="text-red-50 font-medium mb-2">Daily Analysis Requirement</h3>
-                      <p>
-                        For Conservative, Balanced, and Aggressive setfiles, it's mandatory to follow our daily market analysis posted in the #daily-analysis channel. This analysis helps optimize your trading by aligning the EA with predicted market direction through the ForceMarketCond parameter.
-                      </p>
-                    </div>
-
-                    <div>
-                      <h3 className="text-red-50 font-medium mb-2">Recommended Safety Measures</h3>
-                      <ul className="space-y-2 list-disc pl-4">
-                        <li>Always disable the EA during high-impact news events</li>
-                        <li>Monitor and close positions if market conditions deteriorate</li>
-                        <li>Check #daily-analysis before each trading session</li>
-                        <li>Update ForceMarketCond according to daily predictions</li>
-                      </ul>
-                    </div>
-                  </div>
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel className="bg-red-950 border-red-900/50 text-red-200 hover:bg-red-900/50 hover:text-red-100">
-                  Close
-                </AlertDialogCancel>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-
           <div className="max-w-[900px] mx-auto border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px rgba(0,0,0,0.3)] animate-[fade-in_0.3s_ease-out]">
             <div className="mb-8">
               <h1 className="text-2xl font-semibold text-softWhite tracking-tight mb-1">Setfiles</h1>
