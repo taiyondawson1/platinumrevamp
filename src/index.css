@@ -43,13 +43,13 @@
 
   html {
     @apply h-full antialiased;
-    font-size: 16px;
+    font-size: 14px;
     -webkit-text-size-adjust: 100%;
   }
 
   body {
     @apply bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey text-foreground font-['Inter'] min-h-screen m-0 p-0;
-    width: 100vw;
+    width: 100%;
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
@@ -102,15 +102,11 @@
 
 /* Responsive section padding */
 .section-padding {
-  @apply py-16 px-4 md:py-20 md:px-6 lg:px-12;
+  @apply py-8 px-4 md:py-12 lg:py-16 lg:px-6;
 }
 
 /* Mobile-first responsive design */
 @media (max-width: 640px) {
-  html {
-    font-size: 14px;
-  }
-  
   .container {
     @apply px-3;
   }
@@ -124,10 +120,25 @@
   }
 }
 
-/* Tablet adjustments */
-@media (min-width: 641px) and (max-width: 1024px) {
+/* Tablet and laptop adjustments */
+@media (min-width: 641px) and (max-width: 1366px) {
+  html {
+    font-size: 14px;
+  }
+  
   .container {
     @apply px-4;
+  }
+  
+  main {
+    @apply max-w-[1200px] mx-auto;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1367px) {
+  html {
+    font-size: 16px;
   }
 }
 
