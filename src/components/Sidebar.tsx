@@ -15,23 +15,23 @@ const menuItems = [
 const toolItems = [
   {
     label: "Economic Calendar",
-    url: "https://tradingeconomics.com/calendar",
+    url: "https://www.myfxbook.com/forex-economic-calendar",
   },
   {
     label: "Currency Correlations",
-    url: "https://www.myfxbook.com/forex-market/correlations",
+    url: "https://www.myfxbook.com/forex-market/correlation",
   },
   {
     label: "TradingView",
-    url: "https://www.tradingview.com",
+    url: "https://www.tradingview.com/chart/",
   },
   {
     label: "Watch Live News",
-    url: "https://www.youtube.com/live",
+    url: "https://www.youtube.com/channel/UC4R8DWoMoI7CAwX8_LjQHig",
   },
   {
     label: "Read News",
-    url: "https://www.forexfactory.com/news",
+    url: "https://www.forexfactory.com/calendar",
   },
 ];
 
