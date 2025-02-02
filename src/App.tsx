@@ -41,7 +41,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   }, []);
 
   if (isAuthenticated === null) {
-    return null;
+    return null; // or a loading spinner
   }
 
   return isAuthenticated ? children : <Navigate to="/login" replace />;
@@ -74,7 +74,7 @@ function MainContent() {
               <Separator className="h-[1px] bg-silver/20" />
             </div>
           )}
-          <main className={`flex-1 ${!hideHeader ? "ml-[64px] mr-0 mt-[250px]" : ""}`}>
+          <main className={`flex-1 ${!hideHeader ? "ml-[270px] mr-0 mt-[250px]" : ""}`}>
             <div className="overflow-auto">
               <Routes>
                 <Route path="/login" element={<Login />} />
