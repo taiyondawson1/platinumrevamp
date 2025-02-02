@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -5,11 +6,6 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    @apply border-border;
-    scroll-behavior: smooth;
-  }
-
   :root {
     --background: 0 0% 10%;
     --foreground: 0 0% 98%;
@@ -39,30 +35,15 @@
     --input: 0 0% 14.9%;
     --ring: 0 0% 75%;
   }
+}
 
-  html {
-    @apply h-full antialiased;
-    font-size: 14px;
-    -webkit-text-size-adjust: 100%;
+@layer base {
+  * {
+    @apply border-border;
   }
-
-  /* Laptop-specific zoom level */
-  @media screen and (min-width: 1024px) and (max-width: 1536px) {
-    body {
-      zoom: 75%;
-      -webkit-transform: scale(0.75);
-      -webkit-transform-origin: 0 0;
-      transform: scale(0.75);
-      transform-origin: 0 0;
-    }
-  }
-
   body {
-    @apply bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey text-foreground font-['Inter'] min-h-screen m-0 p-0;
-    width: 100%;
+    @apply bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey text-foreground font-['Inter'];
     min-height: 100vh;
-    overflow-x: hidden;
-    position: relative;
   }
 
   /* Custom Scrollbar Styling */
@@ -108,51 +89,4 @@
   @apply bg-darkBlue/40 border border-[#1D1D1D] backdrop-blur-sm 
          shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 rounded-lg 
          hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] !important;
-}
-
-/* Responsive section padding */
-.section-padding {
-  @apply py-8 px-4 md:py-12 lg:py-16 lg:px-6;
-}
-
-/* Mobile-first responsive design */
-@media (max-width: 640px) {
-  .container {
-    @apply px-3;
-  }
-
-  body {
-    @apply overflow-x-hidden;
-  }
-
-  main {
-    @apply w-full overflow-x-hidden;
-  }
-}
-
-/* Tablet and laptop adjustments */
-@media (min-width: 641px) and (max-width: 1366px) {
-  html {
-    font-size: 14px;
-  }
-  
-  .container {
-    @apply px-4;
-  }
-  
-  main {
-    @apply max-w-[1200px] mx-auto;
-  }
-}
-
-/* Large screens */
-@media (min-width: 1367px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-/* Ensure proper content width */
-#root {
-  @apply w-full max-w-full m-0 p-0;
 }
