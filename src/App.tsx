@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import Sidebar from "@/components/Sidebar";
-import Home from "@/pages/Home";
 import Dashboard from "@/pages/Dashboard";
 import ExpertAdvisorsPage from "@/pages/ExpertAdvisors";
 import SetfilesPage from "@/pages/Setfiles";
@@ -41,7 +40,11 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   }, []);
 
   if (isAuthenticated === null) {
-    return null; // or a loading spinner
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
+        <div className="animate-pulse text-softWhite">Loading...</div>
+      </div>
+    );
   }
 
   return isAuthenticated ? children : <Navigate to="/login" replace />;
@@ -79,7 +82,7 @@ function MainContent() {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                <Route path="/" element={<Navigate to="/login" replace />} />
                 <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
                 <Route path="/trading" element={<PrivateRoute><TradingPage /></PrivateRoute>} />
                 <Route path="/expert-advisors" element={<PrivateRoute><ExpertAdvisorsPage /></PrivateRoute>} />
@@ -87,7 +90,7 @@ function MainContent() {
                 <Route path="/courses" element={<PrivateRoute><CoursesPage /></PrivateRoute>} />
                 <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
                 <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
               </Routes>
             </div>
           </main>
