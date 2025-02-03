@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import Sidebar from "@/components/Sidebar";
 import Dashboard from "@/pages/Dashboard";
@@ -24,16 +24,31 @@ const queryClient = new QueryClient();
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         console.log("Auth check - Session:", session);
-        setIsAuthenticated(!!session);
+        
+        if (session) {
+          setIsAuthenticated(true);
+          // If we're on login page, redirect to dashboard
+          if (window.location.pathname === '/login') {
+            navigate('/dashboard');
+          }
+        } else {
+          setIsAuthenticated(false);
+          // If not authenticated and not on login/register page, redirect to login
+          if (!['/login', '/register'].includes(window.location.pathname)) {
+            navigate('/login');
+          }
+        }
       } catch (error) {
         console.error("Auth check error:", error);
         setIsAuthenticated(false);
+        navigate('/login');
       } finally {
         setIsLoading(false);
       }
@@ -41,14 +56,22 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
     checkAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state changed - Event:", _event, "Session:", session);
-      setIsAuthenticated(!!session);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed - Event:", event, "Session:", session);
+      
+      if (event === 'SIGNED_IN' && session) {
+        setIsAuthenticated(true);
+        navigate('/dashboard');
+      } else if (event === 'SIGNED_OUT' || !session) {
+        setIsAuthenticated(false);
+        navigate('/login');
+      }
+      
       setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate]);
 
   if (isLoading || isAuthenticated === null) {
     return (
@@ -93,7 +116,7 @@ function MainContent() {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
                 <Route path="/trading" element={<PrivateRoute><TradingPage /></PrivateRoute>} />
                 <Route path="/expert-advisors" element={<PrivateRoute><ExpertAdvisorsPage /></PrivateRoute>} />
@@ -101,7 +124,7 @@ function MainContent() {
                 <Route path="/courses" element={<PrivateRoute><CoursesPage /></PrivateRoute>} />
                 <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
                 <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
-                <Route path="*" element={<Navigate to="/login" replace />} />
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </div>
           </main>
