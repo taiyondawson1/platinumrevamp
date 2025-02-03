@@ -40,8 +40,13 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Show loading state instead of null
   if (isAuthenticated === null) {
-    return null; // or a loading spinner
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
+        <div className="text-softWhite text-lg">Loading...</div>
+      </div>
+    );
   }
 
   return isAuthenticated ? children : <Navigate to="/login" replace />;
