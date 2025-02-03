@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Download } from "lucide-react";
@@ -15,7 +14,7 @@ const ExpertAdvisors = () => {
       name: "PlatinumAi: Stealth",
       description: "Our most advanced bot. Use with caution.",
       subtitle: "Ideal for personal capital, optimized for prop firm capital.",
-      presets: "7 presets available",
+      presets: "2 presets available",
       path: "/expert-advisors/platinumai-stealth",
       filename: "PlatinumAI Stealth.ex4",
       downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20Stealth.ex4"
