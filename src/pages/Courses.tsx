@@ -28,16 +28,16 @@ const CoursesPage = () => {
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {courses.map((course, index) => (
-          <Card key={index} className="p-6">
-            <h3 className="text-lg font-semibold mb-2">{course.name}</h3>
-            <p className="text-sm text-gray-500 mb-4">{course.description}</p>
+          <Card key={index} className="metric-card">
+            <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
+            <p className="text-sm text-mediumGray mb-6">{course.description}</p>
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full bg-black/20 hover:bg-black/30 border-silver/20 hover:border-silver/30"
               onClick={() => window.open(course.externalUrl, '_blank')}
             >
               Open Course
-              <ArrowUpRight className="w-4 h-4 ml-2" />
+              <ArrowUpRight className="w-4 h-4" />
             </Button>
           </Card>
         ))}
