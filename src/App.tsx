@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,13 +17,62 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
 const queryClient = new QueryClient();
+
+const INACTIVITY_TIMEOUT = 300000; // 5 minutes in milliseconds
+
+function useInactivityTimer() {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  let timer: NodeJS.Timeout;
+
+  const resetTimer = () => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(async () => {
+      console.log("Inactivity timeout reached - logging out");
+      await supabase.auth.signOut();
+      toast({
+        title: "Session Expired",
+        description: "You have been logged out due to inactivity",
+      });
+      navigate('/login');
+    }, INACTIVITY_TIMEOUT);
+  };
+
+  useEffect(() => {
+    // Set up event listeners for user activity
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    
+    const handleUserActivity = () => {
+      console.log("User activity detected - resetting timer");
+      resetTimer();
+    };
+
+    // Add event listeners
+    events.forEach(event => {
+      document.addEventListener(event, handleUserActivity);
+    });
+
+    // Initial timer setup
+    resetTimer();
+
+    // Cleanup
+    return () => {
+      if (timer) clearTimeout(timer);
+      events.forEach(event => {
+        document.removeEventListener(event, handleUserActivity);
+      });
+    };
+  }, [navigate]);
+}
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  useInactivityTimer(); // Add inactivity timer to protected routes
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -34,13 +82,11 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         
         if (session) {
           setIsAuthenticated(true);
-          // If we're on login page, redirect to dashboard
           if (window.location.pathname === '/login') {
             navigate('/dashboard');
           }
         } else {
           setIsAuthenticated(false);
-          // If not authenticated and not on login/register page, redirect to login
           if (!['/login', '/register'].includes(window.location.pathname)) {
             navigate('/login');
           }
