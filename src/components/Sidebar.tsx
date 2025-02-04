@@ -1,7 +1,8 @@
-
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Home, LayoutDashboard, BarChart, Bot, FileText, BookOpen } from "lucide-react";
+import { Home, LayoutDashboard, BarChart, Bot, FileText, BookOpen, LogOut } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 
 const menuItems = [
   { label: "Home", path: "/", icon: Home },
@@ -38,6 +39,26 @@ const toolItems = [
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    try {
+      console.log("Logging out user...");
+      await supabase.auth.signOut();
+      toast({
+        title: "Logged out successfully",
+        description: "You have been logged out of your account",
+      });
+      navigate('/login');
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({
+        variant: "destructive",
+        title: "Error logging out",
+        description: "Please try again",
+      });
+    }
+  };
 
   return (
     <div className="fixed left-[44px] top-[270px] h-[calc(100vh-290px)] flex flex-col z-[55]">
@@ -68,18 +89,29 @@ const Sidebar = () => {
       {/* Tools Box */}
       <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] flex-1 !rounded-none">
         <h3 className="text-xs font-semibold text-softWhite mb-4 px-4 underline">TOOLS</h3>
-        <div className="space-y-1">
-          {toolItems.map((tool) => (
-            <a
-              key={tool.label}
-              href={tool.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
-            >
-              {tool.label}
-            </a>
-          ))}
+        <div className="flex flex-col h-full">
+          <div className="space-y-1 flex-1">
+            {toolItems.map((tool) => (
+              <a
+                key={tool.label}
+                href={tool.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
+              >
+                {tool.label}
+              </a>
+            ))}
+          </div>
+          
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-2 text-xs text-accent-red hover:text-red-400 hover:bg-highlightGray/5 transition-all duration-300 mt-4 border-t border-silver/20 pt-4 !rounded-none"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
         </div>
       </div>
     </div>
