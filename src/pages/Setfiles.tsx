@@ -453,7 +453,7 @@ const SetfilesPage = () => {
                       </div>
                       <div className="mt-4 text-xs text-mediumGray">
                         <p className="mb-1">Important: Use these exact values when configuring your EA</p>
-                        <ul className="space-y-1 -mt-10">
+                        <ul className="space-y-1">
                           <li>• DailyProfitTarget: 250 (2.5%)</li>
                           <li>• MaxDailyLoss: 450 (4.5%)</li>
                         </ul>
@@ -499,8 +499,7 @@ const SetfilesPage = () => {
                             </button>
                           </div>
                         </div>
-
-                      ) : selectedRisk === "Ultrasoft" || selectedRisk === "Ultrasafe" ? (
+                      ) : (
                         <>
                           <div className="mb-4">
                             <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
@@ -517,17 +516,6 @@ const SetfilesPage = () => {
                                 Learn about news handling
                               </Button>
                             </div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <p className="text-mediumGray text-sm mb-6">
-                            Automatically detect current market analysis from 4-day analysis
-                          </p>
-                          <div className="mt-auto">
-                            <Button variant="link" className="text-green-400 p-0 h-auto" onClick={() => setShowNewsDialog(true)}>
-                              Learn about news handling
-                            </Button>
                           </div>
                         </>
                       )}
@@ -562,3 +550,17 @@ const SetfilesPage = () => {
                           3
                         </div>
                         Load the EA with the provided .set file
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SetfilesPage;
