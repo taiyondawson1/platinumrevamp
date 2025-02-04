@@ -1,4 +1,4 @@
-```typescript
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
@@ -86,4 +86,3 @@ const CoursesPage = () => {
 };
 
 export default CoursesPage;
-```
