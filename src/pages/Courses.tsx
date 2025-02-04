@@ -1,3 +1,4 @@
+```typescript
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
@@ -7,6 +8,11 @@ const courses = [
     name: "**[START HERE] HOW TO INSTALL**",
     description: "Learn how to properly install and set up your Expert Advisor",
     externalUrl: "https://classroom.google.com/c/NzQ4Mjg0ODU3NDE4?cjc=4lz6o2f"
+  },
+  {
+    name: "PlatinumAi: Pulse",
+    description: "Master the Pulse trading strategy",
+    externalUrl: "https://classroom.google.com/c/NzQ4NzMxODEwNjQ4?cjc=btoyiex"
   },
   {
     name: "PlatinumAi: Stealth",
@@ -80,3 +86,4 @@ const CoursesPage = () => {
 };
 
 export default CoursesPage;
+```

@@ -1,3 +1,4 @@
+```typescript
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Download, Info, X, Clock, CheckCircle, Asterisk, ArrowLeft, BarChart } from "lucide-react";
@@ -29,9 +30,13 @@ const SetfilesPage = () => {
   const [selectedRisk, setSelectedRisk] = useState<string>("Balanced");
   const [accountBalance, setAccountBalance] = useState<number>(100000);
   const [showNewsDialog, setShowNewsDialog] = useState(false);
-  const [selectedExpert, setSelectedExpert] = useState<string>("PlatinumAi: Stealth");
+  const [selectedExpert, setSelectedExpert] = useState<string>("PlatinumAi: Pulse");
 
   const experts = [
+    {
+      name: "PlatinumAi: Pulse",
+      description: "Advanced algorithmic trading system"
+    },
     {
       name: "PlatinumAi: Stealth",
       description: "High-performance trading system"
@@ -45,10 +50,12 @@ const SetfilesPage = () => {
   const defaultRiskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
   const stealthPhases = ["XAUUSD", "US30"];
   const infinityLevels = ["24/7", "Consolodation (XAUUSD)", "Consolodation (US30)", "HEDGE MODE", "AUDNZD"];
+  const pulseLevels = ["Ultrasafe", "Conservative", "Balanced", "Aggressive"];
 
   const getRiskLevels = () => {
     if (selectedExpert === "PlatinumAi: Stealth") return stealthPhases;
     if (selectedExpert === "PlatinumAi: Infinity") return infinityLevels;
+    if (selectedExpert === "PlatinumAi: Pulse") return pulseLevels;
     return defaultRiskLevels;
   };
 
@@ -57,8 +64,21 @@ const SetfilesPage = () => {
       let downloadUrl = "";
       let filename = "";
       
-      // Set download URL based on selected risk and expert
-      if (selectedExpert === "PlatinumAi: Infinity") {
+      if (selectedExpert === "PlatinumAi: Pulse") {
+        if (selectedRisk === "Ultrasafe") {
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//ultrasafe.set";
+          filename = "PULSE_ULTRASAFE.set";
+        } else if (selectedRisk === "Conservative") {
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//conservative.set";
+          filename = "PULSE_CONSERVATIVE.set";
+        } else if (selectedRisk === "Balanced") {
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//balanced.set";
+          filename = "PULSE_BALANCED.set";
+        } else if (selectedRisk === "Aggressive") {
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//Aggressive_.set";
+          filename = "PULSE_AGGRESSIVE.set";
+        }
+      } else if (selectedExpert === "PlatinumAi: Infinity") {
         if (selectedRisk === "24/7") {
           downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20infinity%20-24%205.set";
           filename = "24-7.set";
@@ -198,6 +218,12 @@ const SetfilesPage = () => {
   };
 
   const getRiskDescription = (risk: string) => {
+    if (selectedExpert === "PlatinumAi: Pulse") {
+      if (risk === "Ultrasafe") {
+        return "Hands-free operation with minimal risk and steady returns.";
+      }
+      return "Daily analysis required. Optimized for XAUUSD trading on 5M timeframe.";
+    }
     if (selectedExpert === "PlatinumAi: Stealth") {
       if (risk === "XAUUSD") {
         return "Phase 1 approach with XAUUSD trading.";
@@ -319,7 +345,7 @@ const SetfilesPage = () => {
                         ? "bg-red-500/20 text-red-300"
                         : selectedRisk === "Conservative" || selectedRisk === "XAUUSD" || selectedRisk === "US30" || selectedRisk === "AUDNZD"
                         ? "bg-blue-500/20 text-blue-300"
-                        : selectedRisk === "Ultrasoft"
+                        : selectedRisk === "Ultrasoft" || selectedRisk === "Ultrasafe"
                         ? "bg-green-500/20 text-green-300"
                         : "bg-orange-500/20 text-orange-300"
                     } text-xs px-2 py-1 rounded flex items-center gap-1`}>
@@ -328,7 +354,7 @@ const SetfilesPage = () => {
                         ? "High Risk" 
                         : selectedRisk === "Conservative" || selectedRisk === "XAUUSD" || selectedRisk === "US30" || selectedRisk === "AUDNZD" 
                           ? "Low Risk" 
-                          : selectedRisk === "Ultrasoft" 
+                          : selectedRisk === "Ultrasoft" || selectedRisk === "Ultrasafe"
                             ? "Minimal Risk" 
                             : "Medium Risk"}
                     </span>
@@ -343,7 +369,7 @@ const SetfilesPage = () => {
                           selectedRisk === "Aggressive" ? "high" :
                           selectedRisk === "Conservative" || selectedRisk === "XAUUSD" || selectedRisk === "US30" || selectedRisk === "AUDNZD" 
                           ? "low" :
-                          selectedRisk === "Ultrasoft" ? "minimal" : "moderate"
+                          selectedRisk === "Ultrasoft" || selectedRisk === "Ultrasafe" ? "minimal" : "moderate"
                         } risk`
                     }
                   </p>
@@ -474,7 +500,7 @@ const SetfilesPage = () => {
                           </div>
                         </div>
 
-                      ) : selectedRisk === "Ultrasoft" ? (
+                      ) : selectedRisk === "Ultrasoft" || selectedRisk === "Ultrasafe" ? (
                         <>
                           <div className="mb-4">
                             <div className="bg-darkBlue/60 border border-mediumGray/20 rounded-lg p-4">
@@ -625,30 +651,3 @@ const SetfilesPage = () => {
                       ⚠
                     </div>
                     <h3 className="text-red-300 font-medium">News Event Handling</h3>
-                  </div>
-                  <p className="text-sm">
-                    While the EA can run autonomously, it's crucial to disable it before high-impact news events and re-enable it afterward. This precaution helps avoid potential market volatility risks.
-                  </p>
-                </div>
-
-                <div className="bg-blue-500/10 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-4 h-4 rounded-full bg-blue-500/20 flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                    </div>
-                    <h3 className="text-blue-300 font-medium">Optional Analysis</h3>
-                  </div>
-                  <p className="text-sm">
-                    For enhanced performance, you can optionally follow our daily market analysis on Discord. While not required for Ultrasafe, this additional insight can help optimize your trading results.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-};
-
-export default SetfilesPage;
