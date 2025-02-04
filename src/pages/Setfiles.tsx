@@ -1,4 +1,4 @@
-```typescript
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Download, Info, X, Clock, CheckCircle, Asterisk, ArrowLeft, BarChart } from "lucide-react";
@@ -22,7 +22,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 const SetfilesPage = () => {
   const navigate = useNavigate();
@@ -394,7 +394,7 @@ const SetfilesPage = () => {
                 <div className="p-4">
                   <div className="flex items-center gap-2 mb-4">
                     <span className="bg-white/20 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {selectedExpert === "PlatinumAi: Stealth" ? "15 MIN" : "1 MIN"}
+                      <Clock className="w-3 h-3" /> {selectedExpert === "PlatinumAi: Stealth" ? "15 MIN" : selectedExpert === "PlatinumAi: Pulse" ? "5 MIN" : "1 MIN"}
                     </span>
                     <span className="text-softWhite text-sm font-semibold tracking-tight">Timeframe</span>
                   </div>
@@ -562,92 +562,3 @@ const SetfilesPage = () => {
                           3
                         </div>
                         Load the EA with the provided .set file
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h4 className="text-mediumGray text-sm font-medium mb-2">Best Practices</h4>
-                    <ul className="space-y-2">
-                      <li className="flex items-center gap-2 text-mediumGray text-sm">
-                        <div className="w-4 h-4 rounded-full border border-blue-400/40 flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                        </div>
-                        Avoid trading during high impact news events
-                      </li>
-                      <li className="flex items-center gap-2 text-mediumGray text-sm">
-                        <div className="w-4 h-4 rounded-full border border-blue-400/40 flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                        </div>
-                        Use a VPS for optimal performance
-                      </li>
-                      <li className="flex items-center gap-2 text-mediumGray text-sm">
-                        <div className="w-4 h-4 rounded-full border border-blue-400/40 flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                        </div>
-                        Monitor system performance regularly
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <Dialog open={showNewsDialog} onOpenChange={setShowNewsDialog}>
-        <DialogContent className="bg-darkBlue/95 border-mediumGray/20">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-semibold text-softWhite">
-              {selectedRisk === "Conservative" ? "Daily Market Analysis System" : "Hands-Free Operation Guide"}
-            </DialogTitle>
-          </DialogHeader>
-          {selectedRisk === "Conservative" ? (
-            <div className="text-mediumGray space-y-6">
-              <div className="space-y-4">
-                <div className="bg-blue-500/10 p-4 rounded-lg">
-                  <h3 className="text-blue-300 font-medium mb-2">Daily Market Analysis</h3>
-                  <p className="text-sm">
-                    At the end of each trading day, our expert market analysts provide comprehensive trend predictions for the next trading session. These predictions are based on thorough technical analysis, market sentiment, and current market conditions.
-                  </p>
-                </div>
-
-                <div className="bg-green-500/10 p-4 rounded-lg">
-                  <h3 className="text-green-300 font-medium mb-2">Optimizing Your Strategy</h3>
-                  <p className="text-sm">
-                    Each analysis includes a recommended bias for the FundedEA strategy to optimize your EA settings. This crucial parameter helps the EA to either buy or sell based on your strategy within the predicted market direction.
-                  </p>
-                </div>
-
-                <div className="bg-red-500/10 p-4 rounded-lg">
-                  <h3 className="text-red-300 font-medium mb-2">Important Note</h3>
-                  <p className="text-sm">
-                    For optimal results, always check the #daily_analysis channel on Discord before starting your trading session and adjust your EA settings according to the provided recommendations.
-                  </p>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="text-mediumGray">
-              <p className="mb-4">Important guidelines for automated trading</p>
-              
-              <div className="space-y-6">
-                <div className="bg-green-500/10 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                    </div>
-                    <h3 className="text-green-300 font-medium">Automated Operation</h3>
-                  </div>
-                  <p className="text-sm">
-                    The Ultrasafe setfile is designed to operate autonomously with minimal user intervention. Its conservative approach and built-in safety features allow for hands-free operation during normal market conditions.
-                  </p>
-                </div>
-
-                <div className="bg-red-500/10 p-4 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-red-300">
-                      ⚠
-                    </div>
-                    <h3 className="text-red-300 font-medium">News Event Handling</h3>
