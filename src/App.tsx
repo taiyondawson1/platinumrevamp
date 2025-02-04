@@ -33,6 +33,7 @@ function useInactivityTimer() {
     timer = setTimeout(async () => {
       console.log("Inactivity timeout reached - logging out");
       await supabase.auth.signOut();
+      sessionStorage.clear();
       toast({
         title: "Session Expired",
         description: "You have been logged out due to inactivity",
@@ -72,7 +73,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  useInactivityTimer(); // Add inactivity timer to protected routes
+  useInactivityTimer();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -86,7 +87,9 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
             navigate('/dashboard');
           }
         } else {
+          console.log("No session found - redirecting to login");
           setIsAuthenticated(false);
+          sessionStorage.clear();
           if (!['/login', '/register'].includes(window.location.pathname)) {
             navigate('/login');
           }
@@ -94,6 +97,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.error("Auth check error:", error);
         setIsAuthenticated(false);
+        sessionStorage.clear();
         navigate('/login');
       } finally {
         setIsLoading(false);
@@ -110,13 +114,27 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         navigate('/dashboard');
       } else if (event === 'SIGNED_OUT' || !session) {
         setIsAuthenticated(false);
+        sessionStorage.clear();
         navigate('/login');
       }
       
       setIsLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    // Check auth status when tab becomes visible
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        console.log("Tab became visible - checking auth status");
+        checkAuth();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      subscription.unsubscribe();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [navigate]);
 
   if (isLoading || isAuthenticated === null) {
