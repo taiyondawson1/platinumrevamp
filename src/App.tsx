@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +16,7 @@ import MyFxBookLoginPage from "@/pages/MyFxBookLoginPage";
 import TradingViewTickerTape from "@/components/TradingViewTickerTape";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import Home from "@/pages/Home";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
@@ -73,6 +75,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
   useInactivityTimer();
 
   useEffect(() => {
@@ -83,14 +86,15 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         
         if (session) {
           setIsAuthenticated(true);
-          if (window.location.pathname === '/login') {
+          // If user is authenticated and tries to access public routes, redirect to dashboard
+          if (['/login', '/register', '/'].includes(location.pathname)) {
             navigate('/dashboard');
           }
         } else {
           console.log("No session found - redirecting to login");
           setIsAuthenticated(false);
           sessionStorage.clear();
-          if (!['/login', '/register'].includes(window.location.pathname)) {
+          if (!['/login', '/register', '/'].includes(location.pathname)) {
             navigate('/login');
           }
         }
@@ -98,7 +102,9 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         console.error("Auth check error:", error);
         setIsAuthenticated(false);
         sessionStorage.clear();
-        navigate('/login');
+        if (!['/login', '/register', '/'].includes(location.pathname)) {
+          navigate('/login');
+        }
       } finally {
         setIsLoading(false);
       }
@@ -115,7 +121,9 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       } else if (event === 'SIGNED_OUT' || !session) {
         setIsAuthenticated(false);
         sessionStorage.clear();
-        navigate('/login');
+        if (!['/login', '/register', '/'].includes(location.pathname)) {
+          navigate('/login');
+        }
       }
       
       setIsLoading(false);
@@ -135,7 +143,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [navigate]);
+  }, [navigate, location]);
 
   if (isLoading || isAuthenticated === null) {
     return (
@@ -178,9 +186,9 @@ function MainContent() {
           <main className={`flex-1 ${!hideHeader ? "ml-[270px] mr-0 mt-[250px]" : ""}`}>
             <div className="overflow-auto">
               <Routes>
+                <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
                 <Route path="/trading" element={<PrivateRoute><TradingPage /></PrivateRoute>} />
                 <Route path="/expert-advisors" element={<PrivateRoute><ExpertAdvisorsPage /></PrivateRoute>} />
@@ -188,7 +196,7 @@ function MainContent() {
                 <Route path="/courses" element={<PrivateRoute><CoursesPage /></PrivateRoute>} />
                 <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
                 <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>
           </main>
