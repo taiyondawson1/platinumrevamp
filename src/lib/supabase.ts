@@ -1,3 +1,4 @@
+
 import { createClient } from '@supabase/supabase-js';
 
 export const supabaseUrl = 'https://qzbwxtegqsusmfwjauwh.supabase.co';
@@ -5,15 +6,8 @@ export const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
-    persistSession: false, // Don't persist session across tabs
+    persistSession: true, // Enable session persistence
     autoRefreshToken: true,
-    storage: sessionStorage, // Use sessionStorage instead of localStorage
-  },
-  global: {
-    headers: {
-      'apikey': supabaseKey,
-      'Authorization': `Bearer ${supabaseKey}`,
-      'Content-Type': 'application/json'
-    }
+    storage: localStorage, // Use localStorage instead of sessionStorage
   }
 });
