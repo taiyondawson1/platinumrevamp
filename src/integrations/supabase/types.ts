@@ -77,6 +77,33 @@ export type Database = {
           },
         ]
       }
+      account_requests: {
+        Row: {
+          created_at: string | null
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       course_progress: {
         Row: {
           completed: boolean | null
@@ -148,6 +175,57 @@ export type Database = {
           path?: string | null
           updated_at?: string | null
           video_url?: string | null
+        }
+        Relationships: []
+      }
+      license_keys: {
+        Row: {
+          account_numbers: string[]
+          created_at: string | null
+          e_key: string
+          email: string
+          enroller_id: string | null
+          expiry_date: string | null
+          id: string
+          license_key: string
+          name: string
+          phone: string
+          product_code: string
+          status: string | null
+          subscription_type: string
+          user_id: string
+        }
+        Insert: {
+          account_numbers: string[]
+          created_at?: string | null
+          e_key: string
+          email: string
+          enroller_id?: string | null
+          expiry_date?: string | null
+          id?: string
+          license_key: string
+          name: string
+          phone: string
+          product_code: string
+          status?: string | null
+          subscription_type: string
+          user_id: string
+        }
+        Update: {
+          account_numbers?: string[]
+          created_at?: string | null
+          e_key?: string
+          email?: string
+          enroller_id?: string | null
+          expiry_date?: string | null
+          id?: string
+          license_key?: string
+          name?: string
+          phone?: string
+          product_code?: string
+          status?: string | null
+          subscription_type?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -246,6 +324,54 @@ export type Database = {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          product_code: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          product_code: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          product_code?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       trades: {
         Row: {
           account_number: string
@@ -312,7 +438,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      user_role: "ceo" | "admin" | "enroller" | "customer"
     }
     CompositeTypes: {
       [_ in never]: never
