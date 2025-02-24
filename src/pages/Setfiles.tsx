@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Download, Info, X, Clock, CheckCircle, Asterisk, ArrowLeft, BarChart } from "lucide-react";
@@ -50,7 +49,7 @@ const SetfilesPage = () => {
   const defaultRiskLevels = ["Ultrasoft", "Conservative", "Balanced", "Aggressive"];
   const stealthPhases = ["XAUUSD", "US30"];
   const infinityLevels = ["24/7", "Consolodation (XAUUSD)", "Consolodation (US30)", "HEDGE MODE", "AUDNZD"];
-  const pulseLevels = ["Ultrasafe", "Conservative", "Balanced", "Aggressive"];
+  const pulseLevels = ["24/7", "Ultrasafe", "Conservative", "Balanced", "Aggressive"];
 
   const getRiskLevels = () => {
     if (selectedExpert === "PlatinumAi: Stealth") return stealthPhases;
@@ -65,7 +64,10 @@ const SetfilesPage = () => {
       let filename = "";
       
       if (selectedExpert === "PlatinumAi: Pulse") {
-        if (selectedRisk === "Ultrasafe") {
+        if (selectedRisk === "24/7") {
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//pulse-24-7.set";
+          filename = "PULSE_24_7.set";
+        } else if (selectedRisk === "Ultrasafe") {
           downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//ultrasafe.set";
           filename = "PULSE_ULTRASAFE.set";
         } else if (selectedRisk === "Conservative") {
@@ -177,6 +179,8 @@ const SetfilesPage = () => {
 
   const getRiskLevelProfitPercentage = (risk: string): number => {
     switch (risk) {
+      case "24/7":
+        return 0.5;
       case "Ultrasoft":
         return 0.3;
       case "Conservative":
@@ -198,6 +202,8 @@ const SetfilesPage = () => {
 
   const getRiskLevelLossPercentage = (risk: string): number => {
     switch (risk) {
+      case "24/7":
+        return 1.5;
       case "Ultrasoft":
         return 4.5;
       case "Conservative":
@@ -219,6 +225,9 @@ const SetfilesPage = () => {
 
   const getRiskDescription = (risk: string) => {
     if (selectedExpert === "PlatinumAi: Pulse") {
+      if (risk === "24/7") {
+        return "Automated 24/7 trading optimized for consistent returns with minimal intervention.";
+      }
       if (risk === "Ultrasafe") {
         return "Hands-free operation with minimal risk and steady returns.";
       }
@@ -345,7 +354,7 @@ const SetfilesPage = () => {
                         ? "bg-red-500/20 text-red-300"
                         : selectedRisk === "Conservative" || selectedRisk === "XAUUSD" || selectedRisk === "US30" || selectedRisk === "AUDNZD"
                         ? "bg-blue-500/20 text-blue-300"
-                        : selectedRisk === "Ultrasoft" || selectedRisk === "Ultrasafe"
+                        : selectedRisk === "Ultrasoft" || selectedRisk === "Ultrasafe" || selectedRisk === "24/7"
                         ? "bg-green-500/20 text-green-300"
                         : "bg-orange-500/20 text-orange-300"
                     } text-xs px-2 py-1 rounded flex items-center gap-1`}>
@@ -354,7 +363,7 @@ const SetfilesPage = () => {
                         ? "High Risk" 
                         : selectedRisk === "Conservative" || selectedRisk === "XAUUSD" || selectedRisk === "US30" || selectedRisk === "AUDNZD" 
                           ? "Low Risk" 
-                          : selectedRisk === "Ultrasoft" || selectedRisk === "Ultrasafe"
+                          : selectedRisk === "Ultrasoft" || selectedRisk === "Ultrasafe" || selectedRisk === "24/7"
                             ? "Minimal Risk" 
                             : "Medium Risk"}
                     </span>
@@ -369,7 +378,7 @@ const SetfilesPage = () => {
                           selectedRisk === "Aggressive" ? "high" :
                           selectedRisk === "Conservative" || selectedRisk === "XAUUSD" || selectedRisk === "US30" || selectedRisk === "AUDNZD" 
                           ? "low" :
-                          selectedRisk === "Ultrasoft" || selectedRisk === "Ultrasafe" ? "minimal" : "moderate"
+                          selectedRisk === "Ultrasoft" || selectedRisk === "Ultrasafe" || selectedRisk === "24/7" ? "minimal" : "moderate"
                         } risk`
                     }
                   </p>
