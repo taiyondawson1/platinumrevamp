@@ -65,31 +65,29 @@ const SetfilesPage = () => {
       
       if (selectedExpert === "PlatinumAi: Pulse") {
         if (selectedRisk === "24/7") {
-          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//pulse-24-7.set";
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PULSE247%20SET%20FILE.set";
           filename = "PULSE_24_7.set";
         } else if (selectedRisk === "Ultrasafe") {
-          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//ultrasafe.set";
-          filename = "PULSE_ULTRASAFE.set";
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PULSE%20V2%20ULTRASAFE.set";
+          filename = "PULSE_V2_ULTRASAFE.set";
         } else if (selectedRisk === "Conservative") {
-          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//conservative.set";
-          filename = "PULSE_CONSERVATIVE.set";
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PULSE%20V2%20CONSERVATIVE.set";
+          filename = "PULSE_V2_CONSERVATIVE.set";
         } else if (selectedRisk === "Balanced") {
-          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//balanced.set";
-          filename = "PULSE_BALANCED.set";
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PULSE%20V2%20BALANCED.set";
+          filename = "PULSE_V2_BALANCED.set";
         } else if (selectedRisk === "Aggressive") {
-          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//Aggressive_.set";
-          filename = "PULSE_AGGRESSIVE.set";
+          downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PULSE%20V2%20AGGRESSIVE.set";
+          filename = "PULSE_V2_AGGRESSIVE.set";
         }
       } else if (selectedExpert === "PlatinumAi: Infinity") {
         if (selectedRisk === "24/7") {
           downloadUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20infinity%20-24%205.set";
           filename = "24-7.set";
         } else if (selectedRisk === "HEDGE MODE") {
-          // For HEDGE MODE we need to download both files
           const longUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20infinity%20-only%20long%20xauusd.set";
           const shortUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20infinity%20-%20only%20short%20xauusd.set";
           
-          // Download long position file
           const longLink = document.createElement('a');
           longLink.href = longUrl;
           longLink.download = "HEDGE_MODE_LONG.set";
@@ -97,7 +95,6 @@ const SetfilesPage = () => {
           longLink.click();
           document.body.removeChild(longLink);
           
-          // Download short position file
           setTimeout(() => {
             const shortLink = document.createElement('a');
             shortLink.href = shortUrl;
@@ -105,7 +102,7 @@ const SetfilesPage = () => {
             document.body.appendChild(shortLink);
             shortLink.click();
             document.body.removeChild(shortLink);
-          }, 1000); // Delay second download by 1 second
+          }, 1000);
 
           toast({
             title: "Downloads Started",
@@ -304,7 +301,7 @@ const SetfilesPage = () => {
           </div>
         </div>
 
-        <div className="border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px_rgba(0,0,0,0.3)] animate-[fade-in_0.3s_ease-out]">
+        <div className="border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px rgba(0,0,0,0.3)] animate-[fade-in_0.3s_ease-out]">
           <div className="max-w-[900px] mx-auto border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px rgba(0,0,0,0.3)] animate-[fade-in_0.3s_ease-out]">
             <div className="mb-8">
               <h1 className="text-2xl font-semibold text-softWhite tracking-tight mb-1">Setfiles</h1>
@@ -419,7 +416,11 @@ const SetfilesPage = () => {
                 <Card className="bg-darkBlue/40 border-mediumGray/20 shadow-[0_8px_32px rgba(0,0,0,0.4)] h-full">
                   <div className="p-4">
                     <div className="flex items-center mb-4">
-                      <span className="bg-green-500/10 text-green-300 text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full flex items-center gap-1">
+                      <span className={`${
+                        selectedRisk === "Conservative" || selectedRisk === "Balanced" || selectedRisk === "Aggressive"
+                          ? "bg-[#0EA5E9]/10 text-[#0EA5E9]" 
+                          : "bg-green-500/10 text-green-300"
+                      } text-xs px-4 py-1 rounded-lg whitespace-nowrap w-full flex items-center gap-1`}>
                         <BarChart className="w-3 h-3" />
                         Daily Targets
                       </span>

@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Download } from "lucide-react";
@@ -17,8 +16,8 @@ const ExpertAdvisors = () => {
       subtitle: "Advanced algorithmic trading with multiple risk levels.",
       presets: "4 presets available",
       path: "/expert-advisors/platinumai-pulse",
-      filename: "PlatinumAi Pulse.ex4",
-      downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Pulse.ex4"
+      filename: "PlatinumAi Pulse v2.ex4",
+      downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Pulse%20v2.ex4"
     },
     {
       name: "PlatinumAi: Stealth",
