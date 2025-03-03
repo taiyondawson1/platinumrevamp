@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { PlusCircle, XCircle, Copy, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import { Loader2 } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const MAX_ACCOUNTS = 5;
 
@@ -16,45 +18,54 @@ const LicenseKey = () => {
   const [newAccount, setNewAccount] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch license key and account numbers
   useEffect(() => {
     const fetchLicenseData = async () => {
       try {
         setIsLoading(true);
+        setError(null);
         
         // Get current user
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        
+        if (userError) throw userError;
         
         if (!user) {
-          toast({
-            title: "Error",
-            description: "You must be logged in to view your license key",
-            variant: "destructive",
-          });
+          setError("You must be logged in to view your license key");
+          setIsLoading(false);
           return;
         }
         
+        console.log("Fetching license key for user:", user.id);
+        
         // Get license key for current user
-        const { data: licenseData, error } = await supabase
+        const { data: licenseData, error: licenseError } = await supabase
           .from('license_keys')
           .select('*')
           .eq('user_id', user.id)
           .single();
         
-        if (error && error.code !== 'PGRST116') { // PGRST116 is "row not found"
-          throw error;
-        }
-        
-        if (licenseData) {
+        if (licenseError) {
+          if (licenseError.code === 'PGRST116') { // "Row not found" error code
+            console.log("No license key found, generating a new one...");
+            await createNewLicenseKey(user.id);
+          } else {
+            console.error("License fetch error:", licenseError);
+            throw licenseError;
+          }
+        } else if (licenseData) {
+          console.log("License key found:", licenseData);
           setLicenseKey(licenseData.license_key);
           setAccountNumbers(licenseData.account_numbers || []);
         } else {
-          // Generate a new license key if none exists
+          console.log("No license data returned but no error either, generating a new key...");
           await createNewLicenseKey(user.id);
         }
       } catch (error) {
         console.error("Error fetching license data:", error);
+        setError(error instanceof Error ? error.message : "Unknown error occurred");
         toast({
           title: "Error fetching license data",
           description: error instanceof Error ? error.message : "Unknown error",
@@ -73,6 +84,7 @@ const LicenseKey = () => {
     try {
       // Generate a random license key
       const newKey = generateLicenseKey();
+      console.log("Generated new license key:", newKey);
       
       // Insert new license key
       const { data, error } = await supabase
@@ -84,7 +96,7 @@ const LicenseKey = () => {
             account_numbers: [],
             status: 'active',
             subscription_type: 'standard',
-            name: 'User', // Default values
+            name: 'User',
             email: 'user@example.com',
             phone: '',
             product_code: 'EA-001',
@@ -94,9 +106,13 @@ const LicenseKey = () => {
         .select()
         .single();
       
-      if (error) throw error;
+      if (error) {
+        console.error("Error inserting license key:", error);
+        throw error;
+      }
       
       if (data) {
+        console.log("New license key created:", data);
         setLicenseKey(data.license_key);
         setAccountNumbers(data.account_numbers || []);
         toast({
@@ -106,6 +122,7 @@ const LicenseKey = () => {
       }
     } catch (error) {
       console.error("Error creating license key:", error);
+      setError(error instanceof Error ? error.message : "Unknown error occurred");
       toast({
         title: "Error creating license key",
         description: error instanceof Error ? error.message : "Unknown error",
@@ -229,8 +246,20 @@ const LicenseKey = () => {
     return (
       <main className="flex-1 p-6 max-w-[1400px] mx-auto">
         <div className="flex justify-center items-center h-[300px]">
-          <div className="animate-pulse text-softWhite">Loading license data...</div>
+          <Loader2 className="h-8 w-8 animate-spin text-softWhite" />
+          <span className="ml-2 text-softWhite">Loading license data...</span>
         </div>
+      </main>
+    );
+  }
+  
+  if (error) {
+    return (
+      <main className="flex-1 p-6 max-w-[1400px] mx-auto">
+        <Alert variant="destructive">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       </main>
     );
   }
