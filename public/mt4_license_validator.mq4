@@ -3,133 +3,85 @@
 //| License Key Validation for MT4 Expert Advisor                     |
 //+------------------------------------------------------------------+
 
-// License Key Configuration
-string LicenseKey = "YOUR_LICENSE_KEY_HERE";  // Replace with your license key
-string ValidationUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/functions/v1/validate-license";
-bool IsValidLicense = false;
-int RevalidationInterval = 3600;  // Revalidate every hour (in seconds)
-datetime LastValidationTime = 0;
+//--- LICENSE VALIDATION CODE (PASTE THIS BLOCK DIRECTLY BELOW YOUR EXISTING INPUTS) ---
+input string License_Key = "YOUR_LICENSE_KEY_HERE"; // Your license key
+input bool Show_License_Messages = true;            // Show license validation messages
 
-//+------------------------------------------------------------------+
-//| Expert initialization function                                     |
-//+------------------------------------------------------------------+
-int OnInit()
-{
-   // Display license information
-   Print("MT4 License Validator initializing...");
-   Print("License Key: ", LicenseKey);
-   Print("Account Number: ", AccountNumber());
-   
-   // Check if license key is valid
-   IsValidLicense = ValidateLicense();
-   
-   if(!IsValidLicense)
-   {
-      Print("License validation failed. Please check your license key and account number.");
-      MessageBox("License validation failed. Please check your license key in the inputs tab and ensure your MT4 account is authorized.", "License Error", MB_ICONERROR);
-      return INIT_FAILED;
-   }
-   
-   Print("License validated successfully!");
-   LastValidationTime = TimeCurrent();
-   
-   // Continue with the rest of your initialization code
-   return INIT_SUCCEEDED;
-}
+// License validation variables (no need to modify)
+string g_ValidationUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/functions/v1/validate-license";
+bool g_IsLicenseValid = false;
+datetime g_LastValidationTime = 0;
+int g_ValidationInterval = 3600; // Revalidate every hour
 
-//+------------------------------------------------------------------+
-//| Expert deinitialization function                                   |
-//+------------------------------------------------------------------+
-void OnDeinit(const int reason)
-{
-   // Clean up resources
-   IsValidLicense = false;
-   Print("MT4 License Validator stopped");
-}
-
-//+------------------------------------------------------------------+
-//| Expert tick function                                               |
-//+------------------------------------------------------------------+
-void OnTick()
-{
-   // Periodically revalidate license
-   if(TimeCurrent() - LastValidationTime > RevalidationInterval)
-   {
-      Print("Revalidating license...");
-      IsValidLicense = ValidateLicense();
-      LastValidationTime = TimeCurrent();
-      
-      if(!IsValidLicense)
-      {
-         Print("License validation failed. Stopping EA.");
-         MessageBox("Your license is no longer valid. The EA will be stopped.", "License Error", MB_ICONERROR);
-         ExpertRemove();
-         return;
-      }
-   }
-   
-   // Your trading logic goes here
-   // ...
-}
-
-//+------------------------------------------------------------------+
-//| License validation function                                        |
-//+------------------------------------------------------------------+
+//--- LICENSE VALIDATION FUNCTION (PASTE THIS BLOCK WHERE YOUR OTHER FUNCTIONS ARE) ---
 bool ValidateLicense()
 {
-   if(LicenseKey == "" || LicenseKey == "YOUR_LICENSE_KEY_HERE")
+   // Skip validation if done recently
+   if(g_IsLicenseValid && (TimeCurrent() - g_LastValidationTime) < g_ValidationInterval)
+      return true;
+      
+   // Check if license key is properly set
+   if(License_Key == "" || License_Key == "YOUR_LICENSE_KEY_HERE")
    {
-      Print("Please set your license key in the inputs tab");
+      if(Show_License_Messages)
+      {
+         Print("License Error: Please configure your license key in the inputs tab");
+         MessageBox("Please set your license key in the inputs tab", "License Required", MB_ICONEXCLAMATION);
+      }
       return false;
    }
    
+   // Prepare the request data
    string accountNumber = IntegerToString(AccountNumber());
-   
-   // Construct the JSON payload
-   string jsonPayload = "{\"licenseKey\":\"" + LicenseKey + "\",\"accountNumber\":\"" + accountNumber + "\"}";
-   
-   // Headers for the HTTP request
+   string jsonPayload = "{\"licenseKey\":\"" + License_Key + "\",\"accountNumber\":\"" + accountNumber + "\"}";
    string headers = "Content-Type: application/json\r\n";
    
-   char responseData[];
+   // Convert string to char array for the WebRequest
    char postData[];
    StringToCharArray(jsonPayload, postData, 0, StringLen(jsonPayload));
    
-   Print("Sending license validation request to: ", ValidationUrl);
-   Print("Payload: ", jsonPayload);
+   // Response variables
+   char responseData[];
+   string responseHeaders;
    
-   // Make the HTTP request
+   // Send the validation request
    int result = WebRequest(
-      "POST",            // Method
-      ValidationUrl,     // URL
-      headers,           // Headers
-      5000,              // Timeout
-      postData,          // POST data
-      responseData,      // Response data
-      string           // Response headers (not used)
+      "POST",           // Method
+      g_ValidationUrl,  // URL
+      headers,          // Headers
+      5000,             // Timeout (5 seconds)
+      postData,         // POST data
+      responseData,     // Response data
+      responseHeaders   // Response headers
    );
    
-   // Check for errors
+   // Check for WebRequest errors
    if(result == -1)
    {
       int errorCode = GetLastError();
-      Print("HTTP request failed with error code: ", errorCode);
       
-      // Common WebRequest errors:
-      // 4060: Cannot connect to server
-      // 4067: HTTP request failed
-      // 5004: WebRequest function is not allowed. Add URL to allowed list
-      
+      // Handle common WebRequest errors
       if(errorCode == 5004)
       {
-         Print("WebRequest is not allowed for URL ", ValidationUrl);
-         Print("Please add this URL to the list of allowed URLs in MT4 -> Tools -> Options -> Expert Advisors -> 'Allow WebRequest for listed URL:'");
-         MessageBox("WebRequest is not allowed. Please add this URL to the allowed list in MT4 settings:\n\n" + ValidationUrl + "\n\nGo to Tools -> Options -> Expert Advisors -> 'Allow WebRequest for listed URL:'", "WebRequest Error", MB_ICONEXCLAMATION);
+         if(Show_License_Messages)
+         {
+            Print("WebRequest Error: URL not allowed in MT4 settings");
+            MessageBox(
+               "Please allow WebRequests for the validation server:\n\n" + g_ValidationUrl + 
+               "\n\nGo to Tools -> Options -> Expert Advisors -> 'Allow WebRequest for listed URL:'",
+               "WebRequest Setup Required",
+               MB_ICONINFORMATION
+            );
+         }
       }
       else
       {
-         Print("Connection error. Please check your internet connection.");
-         MessageBox("Connection error " + IntegerToString(errorCode) + ". Please check your internet connection.", "Connection Error", MB_ICONEXCLAMATION);
+         if(Show_License_Messages)
+         {
+            Print("Connection Error: ", errorCode, " - Check internet connection");
+            MessageBox("Connection error " + IntegerToString(errorCode) + ". Please check your internet connection.", 
+                     "Connection Error", MB_ICONEXCLAMATION);
+         }
       }
       
       return false;
@@ -137,31 +89,63 @@ bool ValidateLicense()
    
    // Parse the response
    string response = CharArrayToString(responseData);
-   Print("License validation response: ", response);
    
-   // Check if the response contains "success":true
-   if(StringFind(response, "\"success\":true") >= 0)
-   {
-      Print("License validated successfully!");
-      return true;
-   }
-   else
+   // Check if response contains success:true
+   bool isValid = (StringFind(response, "\"success\":true") >= 0);
+   
+   // Update validation status and time
+   g_IsLicenseValid = isValid;
+   g_LastValidationTime = TimeCurrent();
+   
+   // Handle invalid license
+   if(!isValid && Show_License_Messages)
    {
       // Extract error message if available
+      string errorMessage = "Invalid license key or unauthorized account";
       int messageStart = StringFind(response, "\"message\":\"");
+      
       if(messageStart >= 0)
       {
          messageStart += 11; // Length of "message":"
          int messageEnd = StringFind(response, "\"", messageStart);
+         
          if(messageEnd >= 0)
-         {
-            string errorMessage = StringSubstr(response, messageStart, messageEnd - messageStart);
-            Print("License validation failed: ", errorMessage);
-            MessageBox("License validation failed: " + errorMessage, "License Error", MB_ICONERROR);
-         }
+            errorMessage = StringSubstr(response, messageStart, messageEnd - messageStart);
       }
-      return false;
+      
+      Print("License Validation Failed: ", errorMessage);
+      MessageBox("License validation failed: " + errorMessage, "License Error", MB_ICONERROR);
    }
+   
+   if(isValid && Show_License_Messages)
+      Print("License validated successfully!");
+      
+   return isValid;
 }
 
-//+------------------------------------------------------------------+
+//--- INSTRUCTIONS FOR IMPLEMENTATION IN YOUR EXPERT ADVISOR ---
+/*
+
+1. ADD TO OnInit() - Paste this at the beginning of your OnInit() function:
+
+   // Validate license
+   if(!ValidateLicense())
+   {
+      return INIT_FAILED;
+   }
+
+2. ADD TO OnTick() - Paste this at the beginning of your OnTick() function:
+
+   // Check license periodically
+   if(!ValidateLicense())
+   {
+      Print("License validation failed. EA will be stopped.");
+      ExpertRemove();
+      return;
+   }
+
+3. IMPORTANT: Make sure to add the validation URL to MT4's allowed URLs list:
+   Tools -> Options -> Expert Advisors -> "Allow WebRequest for listed URL"
+   Add this URL: https://qzbwxtegqsusmfwjauwh.supabase.co/functions/v1/validate-license
+
+*/
