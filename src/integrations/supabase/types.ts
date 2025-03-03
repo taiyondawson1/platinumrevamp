@@ -205,7 +205,7 @@ export type Database = {
           id?: string
           license_key: string
           name: string
-          phone: string
+          phone?: string
           product_code: string
           status?: string | null
           subscription_type: string
@@ -430,6 +430,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_random_license_key: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_user_id_from_account: {
         Args: {
           account_number: string

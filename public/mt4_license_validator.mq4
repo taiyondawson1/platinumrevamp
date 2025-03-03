@@ -15,12 +15,18 @@ datetime LastValidationTime = 0;
 //+------------------------------------------------------------------+
 int OnInit()
 {
+   // Display license information
+   Print("MT4 License Validator initializing...");
+   Print("License Key: ", LicenseKey);
+   Print("Account Number: ", AccountNumber());
+   
    // Check if license key is valid
    IsValidLicense = ValidateLicense();
    
    if(!IsValidLicense)
    {
       Print("License validation failed. Please check your license key and account number.");
+      MessageBox("License validation failed. Please check your license key in the inputs tab and ensure your MT4 account is authorized.", "License Error", MB_ICONERROR);
       return INIT_FAILED;
    }
    
@@ -38,6 +44,7 @@ void OnDeinit(const int reason)
 {
    // Clean up resources
    IsValidLicense = false;
+   Print("MT4 License Validator stopped");
 }
 
 //+------------------------------------------------------------------+
@@ -48,12 +55,14 @@ void OnTick()
    // Periodically revalidate license
    if(TimeCurrent() - LastValidationTime > RevalidationInterval)
    {
+      Print("Revalidating license...");
       IsValidLicense = ValidateLicense();
       LastValidationTime = TimeCurrent();
       
       if(!IsValidLicense)
       {
          Print("License validation failed. Stopping EA.");
+         MessageBox("Your license is no longer valid. The EA will be stopped.", "License Error", MB_ICONERROR);
          ExpertRemove();
          return;
       }
@@ -70,7 +79,7 @@ bool ValidateLicense()
 {
    if(LicenseKey == "" || LicenseKey == "YOUR_LICENSE_KEY_HERE")
    {
-      Print("Please set your license key");
+      Print("Please set your license key in the inputs tab");
       return false;
    }
    
@@ -85,6 +94,9 @@ bool ValidateLicense()
    char responseData[];
    char postData[];
    StringToCharArray(jsonPayload, postData, 0, StringLen(jsonPayload));
+   
+   Print("Sending license validation request to: ", ValidationUrl);
+   Print("Payload: ", jsonPayload);
    
    // Make the HTTP request
    int result = WebRequest(
@@ -112,6 +124,12 @@ bool ValidateLicense()
       {
          Print("WebRequest is not allowed for URL ", ValidationUrl);
          Print("Please add this URL to the list of allowed URLs in MT4 -> Tools -> Options -> Expert Advisors -> 'Allow WebRequest for listed URL:'");
+         MessageBox("WebRequest is not allowed. Please add this URL to the allowed list in MT4 settings:\n\n" + ValidationUrl + "\n\nGo to Tools -> Options -> Expert Advisors -> 'Allow WebRequest for listed URL:'", "WebRequest Error", MB_ICONEXCLAMATION);
+      }
+      else
+      {
+         Print("Connection error. Please check your internet connection.");
+         MessageBox("Connection error " + IntegerToString(errorCode) + ". Please check your internet connection.", "Connection Error", MB_ICONEXCLAMATION);
       }
       
       return false;
@@ -124,10 +142,26 @@ bool ValidateLicense()
    // Check if the response contains "success":true
    if(StringFind(response, "\"success\":true") >= 0)
    {
+      Print("License validated successfully!");
       return true;
    }
-   
-   return false;
+   else
+   {
+      // Extract error message if available
+      int messageStart = StringFind(response, "\"message\":\"");
+      if(messageStart >= 0)
+      {
+         messageStart += 11; // Length of "message":"
+         int messageEnd = StringFind(response, "\"", messageStart);
+         if(messageEnd >= 0)
+         {
+            string errorMessage = StringSubstr(response, messageStart, messageEnd - messageStart);
+            Print("License validation failed: ", errorMessage);
+            MessageBox("License validation failed: " + errorMessage, "License Error", MB_ICONERROR);
+         }
+      }
+      return false;
+   }
 }
 
 //+------------------------------------------------------------------+
