@@ -20,7 +20,6 @@ import Home from "@/pages/Home";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
-import { useMediaQuery } from "@/hooks/use-media-query";
 
 const queryClient = new QueryClient();
 
@@ -165,7 +164,6 @@ function MainContent() {
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
   const hideHeader = isHomePage || isSetfilesPage || isTradeHubPage || isLoginPage || isRegisterPage;
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
@@ -175,17 +173,17 @@ function MainContent() {
           {!hideHeader && (
             <div className="fixed top-0 left-0 right-0 bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[50] h-[230px]" />
           )}
-          {!hideHeader && isDesktop && (
+          {!hideHeader && (
             <div className="fixed top-0 left-[270px] right-0 z-[51]">
               <TradingViewTickerTape />
             </div>
           )}
           {!hideHeader && (
-            <div className="fixed left-0 right-0 top-[230px] z-[50] px-[44px] hidden lg:block">
+            <div className="fixed left-0 right-0 top-[230px] z-[50] px-[44px]">
               <Separator className="h-[1px] bg-silver/20" />
             </div>
           )}
-          <main className={`flex-1 ${!hideHeader ? "lg:ml-[270px] mr-0 mt-[60px] lg:mt-[250px]" : ""}`}>
+          <main className={`flex-1 ${!hideHeader ? "ml-[270px] mr-0 mt-[250px]" : ""}`}>
             <div className="overflow-auto">
               <Routes>
                 <Route path="/" element={<Home />} />

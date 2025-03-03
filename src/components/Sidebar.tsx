@@ -1,12 +1,8 @@
-
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Home, LayoutDashboard, BarChart, Bot, FileText, BookOpen, LogOut, Menu, X } from "lucide-react";
+import { Home, LayoutDashboard, BarChart, Bot, FileText, BookOpen, LogOut } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { useMediaQuery } from "@/hooks/use-media-query";
 
 const menuItems = [
   { label: "Home", path: "/", icon: Home },
@@ -44,15 +40,6 @@ const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isOpen, setIsOpen] = useState(false);
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
-
-  // Close sidebar when route changes (mobile only)
-  useEffect(() => {
-    if (!isDesktop) {
-      setIsOpen(false);
-    }
-  }, [location.pathname, isDesktop]);
 
   const handleLogout = async () => {
     try {
@@ -74,84 +61,62 @@ const Sidebar = () => {
     }
   };
 
-  // Mobile toggle button
-  const MobileMenuToggle = () => (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="fixed top-4 left-4 z-[60] lg:hidden"
-      onClick={() => setIsOpen(!isOpen)}
-    >
-      {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-    </Button>
-  );
-
   return (
-    <>
-      <MobileMenuToggle />
-      
-      <div className={cn(
-        "fixed lg:left-[44px] top-0 lg:top-[270px] h-full lg:h-[calc(100vh-290px)] flex flex-col z-[55]",
-        "transition-all duration-300 bg-darkBase/95 lg:bg-transparent",
-        "w-[280px] lg:w-auto",
-        isOpen ? "left-0" : "-left-[280px] lg:left-[44px]",
-        "lg:flex"
-      )}>
-        {/* Navigation Box */}
-        <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] mb-4 !rounded-none mt-16 lg:mt-0">
-          <div className="space-y-1">
-            {menuItems.map((item) => {
-              const isActive = location.pathname === item.path;
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.label}
-                  onClick={() => navigate(item.path)}
-                  className={cn(
-                    "w-full flex items-center gap-3 px-4 py-2 transition-all duration-300 text-xs !rounded-none",
-                    "hover:bg-highlightGray/5 text-left",
-                    isActive ? "text-softWhite bg-highlightGray/10" : "text-mediumGray"
-                  )}
-                >
-                  <Icon className="w-4 h-4" />
-                  {item.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Tools Box */}
-        <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] flex-1 !rounded-none flex flex-col">
-          <h3 className="text-xs font-semibold text-softWhite mb-4 px-4 underline">TOOLS</h3>
-          <div className="flex-1 flex flex-col min-h-0">
-            <div className="space-y-1 flex-1">
-              {toolItems.map((tool) => (
-                <a
-                  key={tool.label}
-                  href={tool.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
-                >
-                  {tool.label}
-                </a>
-              ))}
-            </div>
-            
-            <div className="mt-auto pt-4 border-t border-silver/20">
+    <div className="fixed left-[44px] top-[270px] h-[calc(100vh-290px)] flex flex-col z-[55]">
+      {/* Navigation Box */}
+      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] mb-4 !rounded-none">
+        <div className="space-y-1">
+          {menuItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            const Icon = item.icon;
+            return (
               <button
-                onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-2 text-xs text-accent-red hover:text-red-400 hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
+                key={item.label}
+                onClick={() => navigate(item.path)}
+                className={cn(
+                  "w-full flex items-center gap-3 px-4 py-2 transition-all duration-300 text-xs !rounded-none",
+                  "hover:bg-highlightGray/5 text-left",
+                  isActive ? "text-softWhite bg-highlightGray/10" : "text-mediumGray"
+                )}
               >
-                <LogOut className="w-4 h-4" />
-                Logout
+                <Icon className="w-4 h-4" />
+                {item.label}
               </button>
-            </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Tools Box */}
+      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] flex-1 !rounded-none flex flex-col">
+        <h3 className="text-xs font-semibold text-softWhite mb-4 px-4 underline">TOOLS</h3>
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="space-y-1 flex-1">
+            {toolItems.map((tool) => (
+              <a
+                key={tool.label}
+                href={tool.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
+              >
+                {tool.label}
+              </a>
+            ))}
+          </div>
+          
+          <div className="mt-auto pt-4 border-t border-silver/20">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-2 text-xs text-accent-red hover:text-red-400 hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
