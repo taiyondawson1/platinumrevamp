@@ -10,14 +10,16 @@ input bool Show_License_Messages = true;            // Show license validation m
 // License validation variables (no need to modify)
 string g_ValidationUrl = "https://qzbwxtegqsusmfwjauwh.supabase.co/functions/v1/validate-license";
 bool g_IsLicenseValid = false;
-datetime g_LastValidationTime = 0;
-int g_ValidationInterval = 3600; // Revalidate every hour
+string g_LastValidatedAccount = "";
 
 //--- LICENSE VALIDATION FUNCTION (PASTE THIS BLOCK WHERE YOUR OTHER FUNCTIONS ARE) ---
 bool ValidateLicense()
 {
-   // Skip validation if done recently
-   if(g_IsLicenseValid && (TimeCurrent() - g_LastValidationTime) < g_ValidationInterval)
+   // Current account number
+   string currentAccount = IntegerToString(AccountNumber());
+   
+   // Skip validation if already validated for this account
+   if(g_IsLicenseValid && g_LastValidatedAccount == currentAccount)
       return true;
       
    // Check if license key is properly set
@@ -32,7 +34,7 @@ bool ValidateLicense()
    }
    
    // Prepare the request data
-   string accountNumber = IntegerToString(AccountNumber());
+   string accountNumber = currentAccount;
    string jsonPayload = "{\"licenseKey\":\"" + License_Key + "\",\"accountNumber\":\"" + accountNumber + "\"}";
    string headers = "Content-Type: application/json\r\n";
    
@@ -93,9 +95,11 @@ bool ValidateLicense()
    // Check if response contains success:true
    bool isValid = (StringFind(response, "\"success\":true") >= 0);
    
-   // Update validation status and time
+   // Update validation status and account
    g_IsLicenseValid = isValid;
-   g_LastValidationTime = TimeCurrent();
+   if(isValid) {
+      g_LastValidatedAccount = currentAccount;
+   }
    
    // Handle invalid license
    if(!isValid && Show_License_Messages)
@@ -136,7 +140,7 @@ bool ValidateLicense()
 
 2. ADD TO OnTick() - Paste this at the beginning of your OnTick() function:
 
-   // Check license periodically
+   // Check if account has changed
    if(!ValidateLicense())
    {
       Print("License validation failed. EA will be stopped.");
@@ -149,3 +153,4 @@ bool ValidateLicense()
    Add this URL: https://qzbwxtegqsusmfwjauwh.supabase.co/functions/v1/validate-license
 
 */
+
