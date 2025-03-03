@@ -17,6 +17,7 @@ import TradingViewTickerTape from "@/components/TradingViewTickerTape";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Home from "@/pages/Home";
+import LicenseKey from "@/pages/LicenseKey";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
@@ -196,6 +197,7 @@ function MainContent() {
                 <Route path="/courses" element={<PrivateRoute><CoursesPage /></PrivateRoute>} />
                 <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
                 <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
+                <Route path="/license-key" element={<PrivateRoute><LicenseKey /></PrivateRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>

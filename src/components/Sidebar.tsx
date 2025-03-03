@@ -1,6 +1,7 @@
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Home, LayoutDashboard, BarChart, Bot, FileText, BookOpen, LogOut } from "lucide-react";
+import { Home, LayoutDashboard, BarChart, Bot, FileText, BookOpen, LogOut, Key } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 
@@ -11,6 +12,7 @@ const menuItems = [
   { label: "Expert Advisors", path: "/expert-advisors", icon: Bot },
   { label: "Setfiles", path: "/setfiles", icon: FileText },
   { label: "Courses", path: "/courses", icon: BookOpen },
+  { label: "License Key", path: "/license-key", icon: Key },
 ];
 
 const toolItems = [

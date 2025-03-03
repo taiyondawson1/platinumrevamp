@@ -1,7 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Key } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import WorldClocks from "@/components/WorldClocks";
 import PositionSizeCalculator from "@/components/PositionSizeCalculator";
@@ -27,7 +27,7 @@ const Dashboard = () => {
         <ToolsBar />
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-6 space-y-4">
             <h3 className="text-xl font-semibold text-softWhite">Expert Advisors</h3>
             <p className="text-mediumGray">Access and manage your automated trading strategies.</p>
@@ -63,6 +63,19 @@ const Dashboard = () => {
               onClick={() => navigate('/courses')}
             >
               Start Learning
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Card>
+          
+          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-6 space-y-4">
+            <h3 className="text-xl font-semibold text-softWhite">License Key</h3>
+            <p className="text-mediumGray">Manage your license key and authorized MT4 accounts.</p>
+            <Button 
+              variant="ghost" 
+              className="group !rounded-none"
+              onClick={() => navigate('/license-key')}
+            >
+              Manage License
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Card>

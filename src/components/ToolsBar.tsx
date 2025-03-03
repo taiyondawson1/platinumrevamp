@@ -1,6 +1,7 @@
 
 import { Card } from "@/components/ui/card";
-import { CalendarDays, ArrowLeftRight, LineChart, Radio, Newspaper } from "lucide-react";
+import { CalendarDays, ArrowLeftRight, LineChart, Radio, Newspaper, Key } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const tools = [
   {
@@ -32,17 +33,33 @@ const tools = [
     title: "Read News",
     description: "Latest forex market news",
     externalLink: "https://www.forexfactory.com/calendar"
+  },
+  {
+    icon: <Key className="h-6 w-6" />,
+    title: "License Key",
+    description: "Manage your EA license key",
+    internalLink: "/license-key"
   }
 ];
 
 const ToolsBar = () => {
+  const navigate = useNavigate();
+  
+  const handleCardClick = (tool: typeof tools[0]) => {
+    if (tool.internalLink) {
+      navigate(tool.internalLink);
+    } else if (tool.externalLink) {
+      window.open(tool.externalLink, '_blank', 'noopener,noreferrer');
+    }
+  };
+  
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
       {tools.map((tool, index) => (
         <Card
           key={index}
           className="!rounded-none bg-darkBlue/40 border-[#1D1D1D] backdrop-blur-sm p-4 cursor-pointer hover:bg-darkBlue/60 transition-colors shadow-lg hover:shadow-xl"
-          onClick={() => window.open(tool.externalLink, '_blank', 'noopener,noreferrer')}
+          onClick={() => handleCardClick(tool)}
         >
           <div className="flex flex-col items-center text-center gap-2">
             <div className="text-softWhite">{tool.icon}</div>
