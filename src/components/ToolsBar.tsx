@@ -1,6 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { CalendarDays, ArrowLeftRight, LineChart, Radio, Newspaper } from "lucide-react";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 const tools = [
   {
@@ -36,6 +37,8 @@ const tools = [
 ];
 
 const ToolsBar = () => {
+  const isMobile = useMediaQuery("(max-width: 640px)");
+  
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
       {tools.map((tool, index) => (
@@ -47,7 +50,7 @@ const ToolsBar = () => {
           <div className="flex flex-col items-center text-center gap-1 sm:gap-2">
             <div className="text-softWhite">{tool.icon}</div>
             <h3 className="text-base sm:text-lg font-semibold text-softWhite">{tool.title}</h3>
-            <p className="text-xs sm:text-sm text-mediumGray hidden sm:block">{tool.description}</p>
+            <p className={`text-xs sm:text-sm text-mediumGray ${isMobile ? 'hidden' : 'block'}`}>{tool.description}</p>
           </div>
         </Card>
       ))}
