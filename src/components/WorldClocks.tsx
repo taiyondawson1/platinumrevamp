@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { formatInTimeZone } from 'date-fns-tz';
 
@@ -48,7 +49,7 @@ const WorldClocks = () => {
               </span>
             </div>
             
-            <div className="relative w-[200px] h-[200px]">
+            <div className="relative w-[140px] h-[140px] sm:w-[160px] sm:h-[160px] md:w-[180px] md:h-[180px] lg:w-[200px] lg:h-[200px]">
               <div className="relative w-full h-full backdrop-blur-xl">
                 {/* Hour markers */}
                 {[...Array(12)].map((_, i) => (
@@ -99,10 +100,10 @@ const WorldClocks = () => {
 
                 {/* Digital Time */}
                 <div className="absolute top-1/4 left-0 right-0 text-center">
-                  <div className="text-2xl font-bold text-softWhite">
+                  <div className="text-xl sm:text-2xl font-bold text-softWhite">
                     {formatInTimeZone(time, city.timezone, 'HH:mm')}
                   </div>
-                  <div className="text-xs text-mediumGray mt-1">
+                  <div className="text-[10px] sm:text-xs text-mediumGray mt-1">
                     {formatInTimeZone(time, city.timezone, 'EEEE • MMM dd')}
                   </div>
                 </div>

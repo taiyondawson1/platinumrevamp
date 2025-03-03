@@ -12,12 +12,12 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="flex-1 p-6 max-w-[1400px] mx-auto">
+    <main className="flex-1 p-4 sm:p-6 max-w-[1400px] mx-auto">
       <div className="flex flex-col gap-6">
         {/* Welcome Section */}
-        <section className="space-y-4">
-          <h1 className="text-4xl font-bold text-softWhite">Welcome to Your Dashboard</h1>
-          <p className="text-mediumGray text-lg max-w-2xl">
+        <section className="space-y-2 sm:space-y-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-softWhite">Welcome to Your Dashboard</h1>
+          <p className="text-mediumGray text-sm sm:text-base md:text-lg max-w-2xl">
             Manage your trading analysis, expert advisors, and market insights.
             Connect your MyFxBook account to get started.
           </p>
@@ -27,10 +27,10 @@ const Dashboard = () => {
         <ToolsBar />
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-6 space-y-4">
-            <h3 className="text-xl font-semibold text-softWhite">Expert Advisors</h3>
-            <p className="text-mediumGray">Access and manage your automated trading strategies.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-4 sm:p-6 space-y-2 sm:space-y-4">
+            <h3 className="text-lg sm:text-xl font-semibold text-softWhite">Expert Advisors</h3>
+            <p className="text-sm text-mediumGray">Access and manage your automated trading strategies.</p>
             <Button 
               variant="ghost" 
               className="group !rounded-none"
@@ -41,9 +41,9 @@ const Dashboard = () => {
             </Button>
           </Card>
 
-          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-6 space-y-4">
-            <h3 className="text-xl font-semibold text-softWhite">Trading Analysis</h3>
-            <p className="text-mediumGray">View detailed analytics and performance metrics.</p>
+          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-4 sm:p-6 space-y-2 sm:space-y-4">
+            <h3 className="text-lg sm:text-xl font-semibold text-softWhite">Trading Analysis</h3>
+            <p className="text-sm text-mediumGray">View detailed analytics and performance metrics.</p>
             <Button 
               variant="ghost" 
               className="group !rounded-none"
@@ -54,9 +54,9 @@ const Dashboard = () => {
             </Button>
           </Card>
 
-          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-6 space-y-4">
-            <h3 className="text-xl font-semibold text-softWhite">Learning Resources</h3>
-            <p className="text-mediumGray">Access educational content and trading courses.</p>
+          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-4 sm:p-6 space-y-2 sm:space-y-4">
+            <h3 className="text-lg sm:text-xl font-semibold text-softWhite">Learning Resources</h3>
+            <p className="text-sm text-mediumGray">Access educational content and trading courses.</p>
             <Button 
               variant="ghost" 
               className="group !rounded-none"
@@ -69,12 +69,12 @@ const Dashboard = () => {
         </div>
 
         {/* World Clocks and Position Size Calculator Section */}
-        <div className="flex flex-col lg:flex-row h-[340px]">
-          <section className="flex-1 border border-silver/20 bg-darkBase/40 !rounded-none">
+        <div className="flex flex-col lg:flex-row h-auto lg:h-[340px]">
+          <section className="flex-1 border border-silver/20 bg-darkBase/40 !rounded-none mb-4 lg:mb-0">
             <WorldClocks />
           </section>
           
-          <div className="w-[325px] border-l border-silver/20 !rounded-none">
+          <div className="w-full lg:w-[325px] border-t lg:border-t-0 lg:border-l border-silver/20 !rounded-none">
             <PositionSizeCalculator />
           </div>
         </div>
