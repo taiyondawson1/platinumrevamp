@@ -59,6 +59,8 @@ const Register = () => {
         return;
       }
 
+      console.log("Staff key validated, proceeding with registration...");
+
       // Proceed with registration
       const { error } = await supabase.auth.signUp({
         email,
@@ -67,8 +69,9 @@ const Register = () => {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
             created_at: new Date().toISOString(),
-            staff_key: staffKey,
-            role: 'customer' // Explicitly setting the role as a string to match our enum type
+            staff_key: staffKey, // This will be used by handle_new_user function for the profiles table
+            enrolled_by: staffKey, // This will be used by create_license_key_for_new_user function
+            role: 'customer' // Explicitly setting the role as a string
           }
         }
       });

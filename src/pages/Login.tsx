@@ -69,20 +69,20 @@ const Login = () => {
       }
 
       if (data?.user) {
-        // Check if the user profile has a matching staff key
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('staff_key')
-          .eq('id', data.user.id)
+        // Check if the user has the matching staff key in the license_keys
+        const { data: licenseData, error: licenseError } = await supabase
+          .from('license_keys')
+          .select('enrolled_by')
+          .eq('user_id', data.user.id)
           .single();
         
-        if (profileError || !profileData || profileData.staff_key !== staffKey) {
+        if (licenseError || !licenseData || licenseData.enrolled_by !== staffKey) {
           // If staff keys don't match, sign out and show error
           await supabase.auth.signOut();
           toast({
             variant: "destructive",
             title: "Invalid Staff Key",
-            description: "The staff key doesn't match the one assigned to your account",
+            description: "The staff key doesn't match the one used during registration",
           });
           setIsLoading(false);
           return;
