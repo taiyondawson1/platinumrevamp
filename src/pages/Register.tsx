@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -174,7 +173,7 @@ const Register = () => {
         }
       }
 
-      // Create a customer request for account registration approval
+      // Create a customer request for account registration approval FIRST
       const requestBody = {
         customer_name: email.split('@')[0],
         request_type: 'registration',
@@ -187,7 +186,6 @@ const Register = () => {
       
       console.log("Sending registration request with body:", JSON.stringify(requestBody));
 
-      // Create a customer request for account registration approval
       try {
         const response = await fetch('/.netlify/functions/create-registration-request', {
           method: 'POST',
@@ -205,7 +203,6 @@ const Register = () => {
           
           let errorData;
           try {
-            // Try to parse as JSON, but handle case where it's not valid JSON
             errorData = responseText ? JSON.parse(responseText) : { message: "Unknown error occurred" };
           } catch (e) {
             console.error("Failed to parse error response:", e);
