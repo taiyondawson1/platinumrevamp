@@ -9,6 +9,3 @@
     [headers.values]
     Content-Type = "text/javascript"
 
-[functions]
-  directory = "netlify/functions/"
-  node_bundler = "esbuild"

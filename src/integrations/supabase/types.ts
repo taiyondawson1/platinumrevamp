@@ -178,50 +178,6 @@ export type Database = {
         }
         Relationships: []
       }
-      customer_requests: {
-        Row: {
-          created_at: string
-          customer_id: string | null
-          customer_name: string
-          description: string | null
-          handled_by: string | null
-          id: string
-          request_type: string
-          status: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string
-          customer_id?: string | null
-          customer_name: string
-          description?: string | null
-          handled_by?: string | null
-          id?: string
-          request_type: string
-          status?: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string
-          customer_id?: string | null
-          customer_name?: string
-          description?: string | null
-          handled_by?: string | null
-          id?: string
-          request_type?: string
-          status?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "customer_requests_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: false
-            referencedRelation: "customers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       customers: {
         Row: {
           created_at: string

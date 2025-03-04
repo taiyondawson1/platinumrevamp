@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import HistoryTable from "@/components/HistoryTable";
 import DailyGainChart from "@/components/DailyGainChart";
@@ -8,8 +9,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Moon, Sun } from "lucide-react";
 import MetricCard from "@/components/MetricCard";
-import { supabase } from "@/lib/supabase";
-import { useRealtimeSubscription } from "@/hooks/use-realtime-subscription";
 
 interface OpenTrade {
   openTime: string;
@@ -68,47 +67,8 @@ const TradeHub = () => {
   const [openTrades, setOpenTrades] = useState<OpenTrade[]>([]);
   const [tradeHistory, setTradeHistory] = useState<TradeHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  const [accountId, setAccountId] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(true); // Changed to true for default dark mode
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (selectedAccount?.id) {
-      setAccountId(selectedAccount.id.toString());
-    }
-  }, [selectedAccount]);
-
-  // Subscribe to real-time updates for account metrics
-  useRealtimeSubscription({
-    table: 'account_metrics',
-    event: 'INSERT',
-    filter: accountId ? 'account_number' : undefined,
-    filterValue: accountId || '',
-    onDataChange: (payload) => {
-      toast({
-        title: "Account Metrics Updated",
-        description: "Your account metrics have been updated with the latest data.",
-      });
-      // Refresh data when new metrics are available
-      fetchData();
-    }
-  });
-
-  // Subscribe to real-time updates for trades
-  useRealtimeSubscription({
-    table: 'trades',
-    event: 'INSERT',
-    filter: accountId ? 'account_number' : undefined,
-    filterValue: accountId || '',
-    onDataChange: (payload) => {
-      toast({
-        title: "New Trade Recorded",
-        description: "A new trade has been recorded for your account.",
-      });
-      // Refresh data when new trades are available
-      fetchData();
-    }
-  });
 
   // Calculate metrics for the last 5 days
   const calculateRecentMetrics = (history: TradeHistory[], opens: OpenTrade[]) => {
@@ -227,70 +187,70 @@ const TradeHub = () => {
     };
   }, [isDarkMode]);
 
-  const fetchData = async () => {
-    if (!selectedAccount?.id) return;
-
-    const session = localStorage.getItem("myfxbook_session");
-    if (!session) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No active session found. Please login again.",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      // Fetch open trades
-      console.log("Fetching trades for account:", selectedAccount.id);
-      const openTradesResponse = await fetch(
-        `https://www.myfxbook.com/api/get-open-trades.json?session=${encodeURIComponent(
-          session
-        )}&id=${encodeURIComponent(selectedAccount.id)}`
-      );
-
-      if (!openTradesResponse.ok) {
-        throw new Error("Failed to fetch open trades");
-      }
-
-      const openTradesData: OpenTradesResponse = await openTradesResponse.json();
-      console.log("Open Trades API Response:", openTradesData);
-
-      // Fetch trade history
-      console.log("Fetching trade history for account:", selectedAccount.id);
-      const historyResponse = await fetch(
-        `https://www.myfxbook.com/api/get-history.json?session=${encodeURIComponent(
-          session
-        )}&id=${encodeURIComponent(selectedAccount.id)}`
-      );
-
-      if (!historyResponse.ok) {
-        throw new Error("Failed to fetch trade history");
-      }
-
-      const historyData: HistoryResponse = await historyResponse.json();
-      console.log("History API Response:", historyData);
-
-      if (!openTradesData.error && !historyData.error) {
-        setOpenTrades(openTradesData.openTrades || []);
-        setTradeHistory(historyData.history || []);
-      } else {
-        throw new Error(openTradesData.message || historyData.message || "Failed to fetch data");
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to fetch data",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+      if (!selectedAccount?.id) return;
+
+      const session = localStorage.getItem("myfxbook_session");
+      if (!session) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "No active session found. Please login again.",
+        });
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        // Fetch open trades
+        console.log("Fetching trades for account:", selectedAccount.id);
+        const openTradesResponse = await fetch(
+          `https://www.myfxbook.com/api/get-open-trades.json?session=${encodeURIComponent(
+            session
+          )}&id=${encodeURIComponent(selectedAccount.id)}`
+        );
+
+        if (!openTradesResponse.ok) {
+          throw new Error("Failed to fetch open trades");
+        }
+
+        const openTradesData: OpenTradesResponse = await openTradesResponse.json();
+        console.log("Open Trades API Response:", openTradesData);
+
+        // Fetch trade history
+        console.log("Fetching trade history for account:", selectedAccount.id);
+        const historyResponse = await fetch(
+          `https://www.myfxbook.com/api/get-history.json?session=${encodeURIComponent(
+            session
+          )}&id=${encodeURIComponent(selectedAccount.id)}`
+        );
+
+        if (!historyResponse.ok) {
+          throw new Error("Failed to fetch trade history");
+        }
+
+        const historyData: HistoryResponse = await historyResponse.json();
+        console.log("History API Response:", historyData);
+
+        if (!openTradesData.error && !historyData.error) {
+          setOpenTrades(openTradesData.openTrades || []);
+          setTradeHistory(historyData.history || []);
+        } else {
+          throw new Error(openTradesData.message || historyData.message || "Failed to fetch data");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error instanceof Error ? error.message : "Failed to fetch data",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchData();
   }, [selectedAccount?.id, toast]);
 

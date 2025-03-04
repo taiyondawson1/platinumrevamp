@@ -6,35 +6,8 @@ export const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXB
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
-    persistSession: true,
+    persistSession: true, // Enable session persistence
     autoRefreshToken: true,
-    storage: localStorage,
-  },
-  db: {
-    schema: 'public',
-  },
-  realtime: {
-    params: {
-      eventsPerSecond: 10
-    }
-  },
-  global: {
-    fetch: (url, options) => {
-      // Set a longer timeout for fetch operations to prevent timeouts during registration
-      const controller = new AbortController();
-      const signal = controller.signal;
-      
-      // 30-second timeout instead of the browser default
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
-      
-      // Combine the provided options with our signal
-      const fetchOptions = {
-        ...options,
-        signal
-      };
-      
-      return fetch(url, fetchOptions)
-        .finally(() => clearTimeout(timeoutId));
-    }
+    storage: localStorage, // Use localStorage instead of sessionStorage
   }
 });

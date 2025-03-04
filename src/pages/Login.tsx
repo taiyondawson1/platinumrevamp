@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,9 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { UserPlus } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
-import { useRealtimeSubscription } from "@/hooks/use-realtime-subscription";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,76 +15,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [pendingRequest, setPendingRequest] = useState(false);
-  const [pendingRequestId, setPendingRequestId] = useState<string | null>(null);
-
-  // Check if there's a pending registration request for this email
-  const checkPendingRequest = async (email: string) => {
-    const { data, error } = await supabase
-      .from('customer_requests')
-      .select('*')
-      .eq('request_type', 'registration')
-      .eq('status', 'pending')
-      .like('description', `%${email}%`)
-      .maybeSingle();
-    
-    if (error) {
-      console.error("Error checking pending request:", error);
-      return false;
-    }
-    
-    if (data) {
-      setPendingRequestId(data.id);
-      return true;
-    }
-    
-    return false;
-  };
-
-  // Subscribe to real-time updates for the pending request
-  useRealtimeSubscription({
-    table: 'customer_requests',
-    event: 'UPDATE',
-    filter: pendingRequestId ? 'id' : undefined,
-    filterValue: pendingRequestId || '',
-    onDataChange: (payload) => {
-      console.log("Received real-time update for request:", payload);
-      if (payload.new.status === 'approved') {
-        setPendingRequest(false);
-        toast({
-          title: "Registration Approved",
-          description: "Your registration has been approved. You can now log in.",
-        });
-      } else if (payload.new.status === 'rejected') {
-        toast({
-          variant: "destructive",
-          title: "Registration Rejected",
-          description: "Your registration request has been rejected. Please contact support.",
-        });
-      }
-    }
-  });
-
-  // Fetch the pending request ID when email changes
-  useEffect(() => {
-    if (email) {
-      const getPendingRequestId = async () => {
-        const { data, error } = await supabase
-          .from('customer_requests')
-          .select('id')
-          .eq('request_type', 'registration')
-          .eq('status', 'pending')
-          .like('description', `%${email}%`)
-          .maybeSingle();
-        
-        if (!error && data) {
-          setPendingRequestId(data.id);
-        }
-      };
-      
-      getPendingRequestId();
-    }
-  }, [email, pendingRequest]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,27 +31,15 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const hasPendingRequest = await checkPendingRequest(email);
-      
-      if (hasPendingRequest) {
-        setPendingRequest(true);
-        setIsLoading(false);
-        return;
-      }
-
+      // First validate staff key
       const { data: staffKeyData, error: staffKeyError } = await supabase
         .from('staff_keys')
         .select('status')
         .eq('key', staffKey)
         .eq('status', 'active')
-        .maybeSingle();
+        .single();
       
-      if (staffKeyError) {
-        console.error("Staff key validation error:", staffKeyError);
-        throw new Error(`Database error: ${staffKeyError.message}`);
-      }
-      
-      if (!staffKeyData) {
+      if (staffKeyError || !staffKeyData) {
         toast({
           variant: "destructive",
           title: "Invalid Staff Key",
@@ -154,13 +69,15 @@ const Login = () => {
       }
 
       if (data?.user) {
+        // Check the profiles table for staff key validation
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('staff_key')
           .eq('id', data.user.id)
-          .maybeSingle();
+          .single();
         
-        if (profileError) {
+        // Only validate if staff key was returned from profiles
+        if (profileError || !profileData) {
           console.error("Profile fetch error:", profileError);
           await supabase.auth.signOut();
           toast({
@@ -172,18 +89,7 @@ const Login = () => {
           return;
         }
 
-        if (!profileData) {
-          console.error("No profile found");
-          await supabase.auth.signOut();
-          toast({
-            variant: "destructive",
-            title: "Profile Error",
-            description: "Could not find your profile. Please contact support.",
-          });
-          setIsLoading(false);
-          return;
-        }
-
+        // Allow login if staff key is not set in profile (legacy users) or if it matches
         if (profileData.staff_key && profileData.staff_key !== staffKey) {
           await supabase.auth.signOut();
           toast({
@@ -213,40 +119,6 @@ const Login = () => {
       setIsLoading(false);
     }
   };
-
-  if (pendingRequest) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-softWhite">Registration Pending</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Alert className="bg-darkGrey border-silver/20">
-              <InfoIcon className="h-4 w-4" />
-              <AlertTitle>Account Pending Approval</AlertTitle>
-              <AlertDescription>
-                Your registration request has been submitted and is pending approval. 
-                You will receive a confirmation email once your account has been approved.
-              </AlertDescription>
-            </Alert>
-            <Button 
-              type="button" 
-              className="w-full" 
-              onClick={() => {
-                setPendingRequest(false);
-                setEmail("");
-                setPassword("");
-                setStaffKey("");
-              }}
-            >
-              Return to Login
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey p-4">

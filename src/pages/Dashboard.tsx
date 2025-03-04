@@ -7,62 +7,9 @@ import WorldClocks from "@/components/WorldClocks";
 import PositionSizeCalculator from "@/components/PositionSizeCalculator";
 import DailyHabits from "@/components/DailyHabits";
 import ToolsBar from "@/components/ToolsBar";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-import { useToast } from "@/hooks/use-toast";
-import { useRealtimeSubscription } from "@/hooks/use-realtime-subscription";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [userId, setUserId] = useState<string | null>(null);
-
-  // Get current user
-  useEffect(() => {
-    const getUserId = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        setUserId(data.user.id);
-      }
-    };
-
-    getUserId();
-  }, []);
-
-  // Subscribe to license key updates if userId is available
-  useRealtimeSubscription({
-    table: 'license_keys',
-    event: 'UPDATE',
-    filter: 'user_id',
-    filterValue: userId || '',
-    onDataChange: (payload) => {
-      console.log('License key updated:', payload);
-      toast({
-        title: "License Updated",
-        description: "Your license information has been updated.",
-      });
-    }
-  });
-
-  // Subscribe to customer_requests updates
-  useRealtimeSubscription({
-    table: 'customer_requests',
-    event: 'UPDATE',
-    onDataChange: (payload) => {
-      if (payload.new.status === 'approved') {
-        toast({
-          title: "Request Approved",
-          description: "One of your requests has been approved.",
-        });
-      } else if (payload.new.status === 'rejected') {
-        toast({
-          variant: "destructive",
-          title: "Request Rejected",
-          description: "One of your requests has been rejected.",
-        });
-      }
-    }
-  });
 
   return (
     <main className="flex-1 p-6 max-w-[1400px] mx-auto">
