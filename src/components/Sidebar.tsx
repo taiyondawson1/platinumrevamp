@@ -1,9 +1,10 @@
-
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Home, LayoutDashboard, BarChart, Bot, FileText, BookOpen, LogOut, Key } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
+import { useRealtimeSubscription } from "@/hooks/use-realtime-subscription";
+import { useState, useEffect } from "react";
 
 const menuItems = [
   { label: "Home", path: "/", icon: Home },
@@ -43,6 +44,38 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getUserId = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        setUserId(data.user.id);
+      }
+    };
+
+    getUserId();
+  }, []);
+
+  useRealtimeSubscription({
+    table: 'customer_requests',
+    event: 'INSERT',
+    onDataChange: () => {
+      setNotificationCount(prev => prev + 1);
+    }
+  });
+
+  useRealtimeSubscription({
+    table: 'license_keys',
+    event: 'UPDATE',
+    filter: 'user_id',
+    filterValue: userId || '',
+    onDataChange: () => {
+      setNotificationCount(prev => prev + 1);
+    }
+  });
+
   const handleLogout = async () => {
     try {
       console.log("Logging out user...");
@@ -63,9 +96,12 @@ const Sidebar = () => {
     }
   };
 
+  const clearNotifications = () => {
+    setNotificationCount(0);
+  };
+
   return (
     <div className="fixed left-[44px] top-[270px] h-[calc(100vh-290px)] flex flex-col z-[55]">
-      {/* Navigation Box */}
       <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] mb-4 !rounded-none">
         <div className="space-y-1">
           {menuItems.map((item) => {
@@ -89,7 +125,6 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Tools Box */}
       <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] flex-1 !rounded-none flex flex-col">
         <h3 className="text-xs font-semibold text-softWhite mb-4 px-4 underline">TOOLS</h3>
         <div className="flex-1 flex flex-col min-h-0">

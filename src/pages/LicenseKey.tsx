@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { useRealtimeSubscription } from "@/hooks/use-realtime-subscription";
 
 const MAX_ACCOUNTS = 5;
 
@@ -19,6 +19,39 @@ const LicenseKey = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Get current user
+  useEffect(() => {
+    const getUserId = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        setUserId(data.user.id);
+      }
+    };
+
+    getUserId();
+  }, []);
+
+  // Subscribe to real-time updates for license keys
+  useRealtimeSubscription({
+    table: 'license_keys',
+    event: 'UPDATE',
+    filter: 'user_id',
+    filterValue: userId || '',
+    onDataChange: (payload) => {
+      if (payload.new.license_key) {
+        setLicenseKey(payload.new.license_key);
+      }
+      if (payload.new.account_numbers) {
+        setAccountNumbers(payload.new.account_numbers);
+      }
+      toast({
+        title: "License Updated",
+        description: "Your license information has been updated.",
+      });
+    }
+  });
 
   // Fetch license key and account numbers
   useEffect(() => {

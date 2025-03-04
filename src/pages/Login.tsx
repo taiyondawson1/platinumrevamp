@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { UserPlus } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
+import { useRealtimeSubscription } from "@/hooks/use-realtime-subscription";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,6 +18,7 @@ const Login = () => {
   const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [pendingRequest, setPendingRequest] = useState(false);
+  const [pendingRequestId, setPendingRequestId] = useState<string | null>(null);
 
   const checkPendingRequest = async (email: string) => {
     const { data, error } = await supabase
@@ -32,6 +33,48 @@ const Login = () => {
     }
     return false;
   };
+
+  useRealtimeSubscription({
+    table: 'customer_requests',
+    event: 'UPDATE',
+    filter: pendingRequestId ? 'id' : undefined,
+    filterValue: pendingRequestId || '',
+    onDataChange: (payload) => {
+      if (payload.new.status === 'approved') {
+        setPendingRequest(false);
+        toast({
+          title: "Registration Approved",
+          description: "Your registration has been approved. You can now log in.",
+        });
+      } else if (payload.new.status === 'rejected') {
+        toast({
+          variant: "destructive",
+          title: "Registration Rejected",
+          description: "Your registration request has been rejected. Please contact support.",
+        });
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (email) {
+      const getPendingRequestId = async () => {
+        const { data, error } = await supabase
+          .from('customer_requests')
+          .select('id')
+          .eq('request_type', 'registration')
+          .eq('status', 'pending')
+          .like('description', `%${email}%`)
+          .single();
+        
+        if (!error && data) {
+          setPendingRequestId(data.id);
+        }
+      };
+      
+      getPendingRequestId();
+    }
+  }, [email, pendingRequest]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +91,6 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Check if this user has a pending registration request
       const hasPendingRequest = await checkPendingRequest(email);
       
       if (hasPendingRequest) {
@@ -57,7 +99,6 @@ const Login = () => {
         return;
       }
 
-      // First validate staff key
       const { data: staffKeyData, error: staffKeyError } = await supabase
         .from('staff_keys')
         .select('status')
@@ -95,14 +136,12 @@ const Login = () => {
       }
 
       if (data?.user) {
-        // Check the profiles table for staff key validation
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('staff_key')
           .eq('id', data.user.id)
           .single();
         
-        // Only validate if staff key was returned from profiles
         if (profileError || !profileData) {
           console.error("Profile fetch error:", profileError);
           await supabase.auth.signOut();
@@ -115,7 +154,6 @@ const Login = () => {
           return;
         }
 
-        // Allow login if staff key is not set in profile (legacy users) or if it matches
         if (profileData.staff_key && profileData.staff_key !== staffKey) {
           await supabase.auth.signOut();
           toast({
