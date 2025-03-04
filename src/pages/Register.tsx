@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { ArrowLeft } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -20,26 +21,62 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [validationErrors, setValidationErrors] = useState<{
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+    staffKey?: string;
+  }>({});
+
+  const validateForm = () => {
+    const errors: {
+      email?: string;
+      password?: string;
+      confirmPassword?: string;
+      staffKey?: string;
+    } = {};
+    let isValid = true;
+
+    // Email validation
+    if (!email.trim()) {
+      errors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = "Email is invalid";
+      isValid = false;
+    }
+
+    // Password validation
+    if (!password) {
+      errors.password = "Password is required";
+      isValid = false;
+    } else if (password.length < 6) {
+      errors.password = "Password must be at least 6 characters";
+      isValid = false;
+    }
+
+    // Confirm password validation
+    if (password !== confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
+      isValid = false;
+    }
+
+    // Staff key validation
+    if (!staffKey.trim()) {
+      errors.staffKey = "Staff key is required";
+      isValid = false;
+    }
+
+    setValidationErrors(errors);
+    return isValid;
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
+    setValidationErrors({});
     
-    if (password !== confirmPassword) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Passwords do not match",
-      });
-      return;
-    }
-
-    if (!staffKey.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Staff key is required",
-      });
+    if (!validateForm()) {
       return;
     }
 
@@ -60,6 +97,7 @@ const Register = () => {
           title: "Invalid Staff Key",
           description: "The staff key provided is invalid or inactive",
         });
+        setValidationErrors({ staffKey: "The staff key provided is invalid or inactive" });
         setIsLoading(false);
         return;
       }
@@ -67,7 +105,7 @@ const Register = () => {
       console.log("Staff key validated, proceeding with registration request...");
 
       // Create a customer request for account registration approval
-      const requestBody = JSON.stringify({
+      const requestBody = {
         customer_name: email.split('@')[0],
         request_type: 'registration',
         description: JSON.stringify({
@@ -75,58 +113,53 @@ const Register = () => {
           password, // Note: In production, consider more secure approaches
           staff_key: staffKey
         })
-      });
+      };
       
-      console.log("Sending registration request with body:", requestBody);
+      console.log("Sending registration request with body:", JSON.stringify(requestBody));
 
       // Create a customer request for account registration approval
-      const response = await fetch('/.netlify/functions/create-registration-request', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: requestBody
-      });
-
-      console.log("Registration response status:", response.status);
-      
-      // Get the response as text first
-      const responseText = await response.text();
-      console.log("Response text:", responseText);
-      
-      // Only try to parse if there's actual content
-      if (!response.ok) {
-        if (!responseText) {
-          throw new Error("Server returned an empty response. This likely indicates a configuration issue with the serverless function.");
-        }
-        
-        let errorData;
-        try {
-          errorData = JSON.parse(responseText);
-        } catch (e) {
-          console.error("Failed to parse error response:", e);
-          throw new Error(`Server returned an invalid response: ${responseText}`);
-        }
-        
-        throw new Error(errorData.message || 'Failed to submit registration request');
-      }
-      
-      let responseData;
       try {
-        responseData = responseText ? JSON.parse(responseText) : {};
-      } catch (e) {
-        console.error("Failed to parse success response:", e);
-        throw new Error(`Server returned an invalid JSON response: ${responseText}`);
+        const response = await fetch('/.netlify/functions/create-registration-request', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        console.log("Registration response status:", response.status);
+        
+        if (!response.ok) {
+          const responseText = await response.text();
+          console.error("Error response:", responseText);
+          
+          let errorData;
+          try {
+            // Try to parse as JSON, but handle case where it's not valid JSON
+            errorData = responseText ? JSON.parse(responseText) : { message: "Unknown error occurred" };
+          } catch (e) {
+            console.error("Failed to parse error response:", e);
+            throw new Error(`Server returned an invalid response: ${responseText || "Empty response"}`);
+          }
+          
+          throw new Error(errorData.message || 'Failed to submit registration request');
+        }
+        
+        const responseText = await response.text();
+        const responseData = responseText ? JSON.parse(responseText) : {};
+        
+        console.log("Registration response data:", responseData);
+        
+        // Show success message
+        setRequestSubmitted(true);
+        toast({
+          title: "Request Submitted",
+          description: "Your registration request has been submitted for approval. You will receive an email once it's approved."
+        });
+      } catch (fetchError) {
+        console.error("Fetch error:", fetchError);
+        throw fetchError;
       }
-      
-      console.log("Registration response data:", responseData);
-      
-      // Show success message
-      setRequestSubmitted(true);
-      toast({
-        title: "Request Submitted",
-        description: "Your registration request has been submitted for approval. You will receive an email once it's approved."
-      });
 
     } catch (error) {
       console.error("Registration error:", error);
@@ -203,8 +236,11 @@ const Register = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
-                className="bg-darkGrey border-silver/20"
+                className={`bg-darkGrey border-silver/20 ${validationErrors.email ? 'border-red-500' : ''}`}
               />
+              {validationErrors.email && (
+                <p className="text-red-400 text-xs mt-1">{validationErrors.email}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Input
@@ -214,8 +250,11 @@ const Register = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="bg-darkGrey border-silver/20"
+                className={`bg-darkGrey border-silver/20 ${validationErrors.password ? 'border-red-500' : ''}`}
               />
+              {validationErrors.password && (
+                <p className="text-red-400 text-xs mt-1">{validationErrors.password}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Input
@@ -225,8 +264,11 @@ const Register = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="bg-darkGrey border-silver/20"
+                className={`bg-darkGrey border-silver/20 ${validationErrors.confirmPassword ? 'border-red-500' : ''}`}
               />
+              {validationErrors.confirmPassword && (
+                <p className="text-red-400 text-xs mt-1">{validationErrors.confirmPassword}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Input
@@ -236,12 +278,21 @@ const Register = () => {
                 onChange={(e) => setStaffKey(e.target.value)}
                 required
                 disabled={isLoading}
-                className="bg-darkGrey border-silver/20"
+                className={`bg-darkGrey border-silver/20 ${validationErrors.staffKey ? 'border-red-500' : ''}`}
               />
-              <p className="text-xs text-silver/70">Enter the staff key provided by your account manager</p>
+              {validationErrors.staffKey ? (
+                <p className="text-red-400 text-xs mt-1">{validationErrors.staffKey}</p>
+              ) : (
+                <p className="text-xs text-silver/70">Enter the staff key provided by your account manager</p>
+              )}
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Submitting Request..." : "Submit Registration Request"}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Submitting Request...
+                </>
+              ) : "Submit Registration Request"}
             </Button>
           </form>
         </CardContent>

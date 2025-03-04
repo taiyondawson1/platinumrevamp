@@ -44,6 +44,18 @@ exports.handler = async (event) => {
     console.log("SUPABASE_URL available:", !!process.env.SUPABASE_URL);
     console.log("SUPABASE_SERVICE_ROLE_KEY available:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
     
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error("Missing required environment variables");
+      return {
+        statusCode: 500,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: 'Server configuration error: Missing environment variables' }),
+      };
+    }
+    
     const requestBody = event.body;
     console.log("Request body received:", requestBody);
     
@@ -90,6 +102,52 @@ exports.handler = async (event) => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ message: 'Supabase client not initialized' }),
+      };
+    }
+
+    // First validate staff key from the description
+    try {
+      const descriptionObj = JSON.parse(description);
+      if (!descriptionObj.staff_key) {
+        return {
+          statusCode: 400,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: 'Staff key is required' }),
+        };
+      }
+
+      const { data: staffKeyData, error: staffKeyError } = await supabaseAdmin
+        .from('staff_keys')
+        .select('status')
+        .eq('key', descriptionObj.staff_key)
+        .eq('status', 'active')
+        .single();
+      
+      if (staffKeyError || !staffKeyData) {
+        console.error('Staff key validation error:', staffKeyError);
+        return {
+          statusCode: 400,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: 'Invalid or inactive staff key' }),
+        };
+      }
+      
+      console.log("Staff key validated successfully");
+    } catch (error) {
+      console.error('Error parsing description or validating staff key:', error);
+      return {
+        statusCode: 400,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: 'Invalid description format' }),
       };
     }
 
