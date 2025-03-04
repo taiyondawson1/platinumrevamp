@@ -1,15 +1,13 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, InfoIcon, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
-import { Loader2 } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -21,12 +19,58 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [requestStatus, setRequestStatus] = useState("pending");
+  const [requestId, setRequestId] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<{
     email?: string;
     password?: string;
     confirmPassword?: string;
     staffKey?: string;
   }>({});
+
+  // Subscribe to real-time updates for the customer_requests table
+  useEffect(() => {
+    if (!requestId) return;
+    
+    console.log("Setting up real-time subscription for request ID:", requestId);
+    
+    const channel = supabase
+      .channel('registration-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'customer_requests',
+          filter: `id=eq.${requestId}`
+        },
+        (payload) => {
+          console.log("Received real-time update:", payload);
+          
+          const newStatus = payload.new.status;
+          setRequestStatus(newStatus);
+          
+          if (newStatus === 'approved') {
+            toast({
+              title: "Registration Approved!",
+              description: "Your registration has been approved. You can now log in.",
+            });
+            setTimeout(() => navigate("/login"), 2000);
+          } else if (newStatus === 'rejected') {
+            toast({
+              variant: "destructive",
+              title: "Registration Rejected",
+              description: "Your registration request has been rejected. Please contact support.",
+            });
+          }
+        }
+      )
+      .subscribe();
+    
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [requestId, navigate, toast]);
 
   const validateForm = () => {
     const errors: {
@@ -150,6 +194,11 @@ const Register = () => {
         
         console.log("Registration response data:", responseData);
         
+        // Save the request ID for real-time updates
+        if (responseData.data && responseData.data[0]) {
+          setRequestId(responseData.data[0].id);
+        }
+        
         // Show success message
         setRequestSubmitted(true);
         toast({
@@ -180,24 +229,42 @@ const Register = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-softWhite">Registration Pending</CardTitle>
+            <CardTitle className="text-2xl font-bold text-softWhite">Registration {requestStatus !== "pending" ? requestStatus.charAt(0).toUpperCase() + requestStatus.slice(1) : "Pending"}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Alert className="bg-darkGrey border-silver/20">
+            <Alert className={`bg-darkGrey border-silver/20 ${
+              requestStatus === 'approved' ? 'border-green-500/50' : 
+              requestStatus === 'rejected' ? 'border-red-500/50' : ''
+            }`}>
               <InfoIcon className="h-4 w-4" />
-              <AlertTitle>Registration Request Submitted</AlertTitle>
+              <AlertTitle>
+                {requestStatus === 'approved' ? 'Registration Approved!' : 
+                 requestStatus === 'rejected' ? 'Registration Rejected' : 
+                 'Registration Request Submitted'}
+              </AlertTitle>
               <AlertDescription>
-                Your registration request has been submitted and is pending approval by our staff. 
-                You will receive a confirmation email once your account has been approved.
+                {requestStatus === 'approved' ? 
+                  'Your registration has been approved. You will be redirected to the login page.' : 
+                 requestStatus === 'rejected' ? 
+                  'Your registration request has been rejected. Please contact support for assistance.' : 
+                  'Your registration request has been submitted and is pending approval by our staff. You will see updates here when your account status changes.'}
               </AlertDescription>
             </Alert>
-            <Button 
-              type="button" 
-              className="w-full" 
-              onClick={() => navigate("/login")}
-            >
-              Return to Login
-            </Button>
+            <div className="flex flex-col space-y-2">
+              {requestStatus === 'pending' && (
+                <div className="flex items-center justify-center space-x-2 py-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-silver" />
+                  <span className="text-silver text-sm">Waiting for approval...</span>
+                </div>
+              )}
+              <Button 
+                type="button" 
+                className="w-full" 
+                onClick={() => navigate("/login")}
+              >
+                Return to Login
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
