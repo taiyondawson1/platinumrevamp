@@ -37,15 +37,18 @@ export const useRealtimeSubscription = ({
     console.log(`Setting up real-time subscription for ${table}`, { event, filterOptions });
     
     try {
+      // Create the channel with a unique name for this subscription
+      const channelName = `${table}-changes-${Math.random().toString(36).substring(2, 11)}`;
+      
       const newChannel = supabase
-        .channel(`${table}-changes`)
+        .channel(channelName)
         .on(
           'postgres_changes',
           {
             event,
             schema,
             table,
-            ...filterOptions
+            ...(filterOptions || {})
           },
           (payload) => {
             console.log(`Real-time update received for ${table}:`, payload);
