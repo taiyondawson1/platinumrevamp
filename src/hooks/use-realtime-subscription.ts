@@ -49,7 +49,7 @@ export const useRealtimeSubscription = ({
             schema,
             table,
             ...(filterOptions || {})
-          },
+          } as any,
           (payload) => {
             console.log(`Real-time update received for ${table}:`, payload);
             if (onDataChange) {
