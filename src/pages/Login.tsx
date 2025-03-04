@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { UserPlus } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,6 +17,21 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [pendingRequest, setPendingRequest] = useState(false);
+
+  const checkPendingRequest = async (email: string) => {
+    const { data, error } = await supabase
+      .from('customer_requests')
+      .select('*')
+      .eq('request_type', 'registration')
+      .eq('status', 'pending')
+      .like('description', `%${email}%`);
+    
+    if (!error && data && data.length > 0) {
+      return true;
+    }
+    return false;
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +48,15 @@ const Login = () => {
     setIsLoading(true);
 
     try {
+      // Check if this user has a pending registration request
+      const hasPendingRequest = await checkPendingRequest(email);
+      
+      if (hasPendingRequest) {
+        setPendingRequest(true);
+        setIsLoading(false);
+        return;
+      }
+
       // First validate staff key
       const { data: staffKeyData, error: staffKeyError } = await supabase
         .from('staff_keys')
@@ -119,6 +145,40 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
+  if (pendingRequest) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-softWhite">Registration Pending</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert className="bg-darkGrey border-silver/20">
+              <InfoIcon className="h-4 w-4" />
+              <AlertTitle>Account Pending Approval</AlertTitle>
+              <AlertDescription>
+                Your registration request has been submitted and is pending approval. 
+                You will receive a confirmation email once your account has been approved.
+              </AlertDescription>
+            </Alert>
+            <Button 
+              type="button" 
+              className="w-full" 
+              onClick={() => {
+                setPendingRequest(false);
+                setEmail("");
+                setPassword("");
+                setStaffKey("");
+              }}
+            >
+              Return to Login
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey p-4">

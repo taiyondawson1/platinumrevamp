@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { ArrowLeft } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -16,6 +18,7 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [requestSubmitted, setRequestSubmitted] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,52 +62,42 @@ const Register = () => {
         return;
       }
 
-      console.log("Staff key validated, proceeding with registration...");
+      console.log("Staff key validated, proceeding with registration request...");
 
-      // Make sure we pass the staff_key in the correct format
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/login`,
-          data: {
-            staff_key: staffKey
+      // Create a customer request for account registration approval
+      const { error: requestError } = await supabase
+        .from('customer_requests')
+        .insert([
+          {
+            customer_name: email.split('@')[0], // Use part of email as name
+            request_type: 'registration',
+            status: 'pending',
+            description: JSON.stringify({
+              email,
+              password, // Note: In production, consider more secure approaches
+              staff_key: staffKey
+            })
           }
-        }
-      });
+        ]);
 
-      if (error) {
-        console.error("Registration error details:", error);
-        
-        if (error.message.includes('rate limit') || error.message.includes('429')) {
-          toast({
-            variant: "destructive",
-            title: "Too Many Attempts",
-            description: "Please wait a few minutes before trying to register again.",
-          });
-        } else if (error.message.includes('timeout') || error.status === 504) {
-          toast({
-            variant: "destructive",
-            title: "Server Timeout",
-            description: "The server is taking too long to respond. Please try again.",
-          });
-        } else {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: error.message,
-          });
-        }
+      if (requestError) {
+        console.error("Registration request error:", requestError);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to submit registration request. Please try again."
+        });
         setIsLoading(false);
         return;
       }
-
+      
+      // Show success message but don't actually register the user yet
+      setRequestSubmitted(true);
       toast({
-        title: "Success",
-        description: "Please check your email to confirm your account",
+        title: "Request Submitted",
+        description: "Your registration request has been submitted for approval. You will receive an email once it's approved."
       });
 
-      navigate("/login");
     } catch (error) {
       console.error("Registration error:", error);
       toast({
@@ -116,6 +109,35 @@ const Register = () => {
       setIsLoading(false);
     }
   };
+
+  if (requestSubmitted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-softWhite">Registration Pending</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert className="bg-darkGrey border-silver/20">
+              <InfoIcon className="h-4 w-4" />
+              <AlertTitle>Registration Request Submitted</AlertTitle>
+              <AlertDescription>
+                Your registration request has been submitted and is pending approval by our staff. 
+                You will receive a confirmation email once your account has been approved.
+              </AlertDescription>
+            </Alert>
+            <Button 
+              type="button" 
+              className="w-full" 
+              onClick={() => navigate("/login")}
+            >
+              Return to Login
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey p-4">
@@ -181,7 +203,7 @@ const Register = () => {
               <p className="text-xs text-silver/70">Enter the staff key provided by your account manager</p>
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Creating Account..." : "Create Account"}
+              {isLoading ? "Submitting Request..." : "Submit Registration Request"}
             </Button>
           </form>
         </CardContent>
