@@ -222,6 +222,7 @@ export type Database = {
           account_numbers: string[]
           created_at: string | null
           email: string
+          enrolled_by: string | null
           enroller_id: string | null
           expiry_date: string | null
           id: string
@@ -239,6 +240,7 @@ export type Database = {
           account_numbers: string[]
           created_at?: string | null
           email: string
+          enrolled_by?: string | null
           enroller_id?: string | null
           expiry_date?: string | null
           id?: string
@@ -256,6 +258,7 @@ export type Database = {
           account_numbers?: string[]
           created_at?: string | null
           email?: string
+          enrolled_by?: string | null
           enroller_id?: string | null
           expiry_date?: string | null
           id?: string
