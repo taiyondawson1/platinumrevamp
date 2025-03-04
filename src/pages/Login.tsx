@@ -59,7 +59,13 @@ const Login = () => {
 
       if (error) {
         console.error("Login error:", error);
-        throw error;
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message,
+        });
+        setIsLoading(false);
+        return;
       }
 
       if (data?.user) {

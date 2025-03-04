@@ -68,12 +68,14 @@ const Register = () => {
           data: {
             created_at: new Date().toISOString(),
             staff_key: staffKey,
-            role: 'customer' // Explicitly setting the role to match our enum type
+            role: 'customer' // Explicitly setting the role as a string to match our enum type
           }
         }
       });
 
       if (error) {
+        console.error("Registration error details:", error);
+        
         if (error.message.includes('rate limit') || error.message.includes('429')) {
           toast({
             variant: "destructive",
@@ -93,6 +95,7 @@ const Register = () => {
             description: error.message,
           });
         }
+        setIsLoading(false);
         return;
       }
 
