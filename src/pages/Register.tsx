@@ -67,7 +67,8 @@ const Register = () => {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
             created_at: new Date().toISOString(),
-            staff_key: staffKey
+            staff_key: staffKey,
+            role: 'customer' // Explicitly setting the role to match our enum type
           }
         }
       });
