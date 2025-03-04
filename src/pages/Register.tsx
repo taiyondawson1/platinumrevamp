@@ -22,6 +22,7 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [requestStatus, setRequestStatus] = useState("pending");
   const [requestId, setRequestId] = useState<string | null>(null);
+  const [registrationAttempts, setRegistrationAttempts] = useState(0);
   const [validationErrors, setValidationErrors] = useState<{
     email?: string;
     password?: string;
@@ -179,7 +180,7 @@ const Register = () => {
         request_type: 'registration',
         description: JSON.stringify({
           email,
-          password, // Note: In production, consider more secure approaches
+          password,
           staff_key: staffKey
         })
       };
@@ -223,6 +224,23 @@ const Register = () => {
             return;
           }
           
+          // Check if we need to retry
+          if (registrationAttempts < 2 && errorData.message && 
+              (errorData.message.includes("unique constraint") || 
+               errorData.message.includes("duplicate key") || 
+               errorData.message.includes("e_key"))) {
+            
+            console.log(`Retrying registration (attempt ${registrationAttempts + 1})`);
+            setRegistrationAttempts(prev => prev + 1);
+            
+            // Small delay before retrying
+            setTimeout(() => {
+              handleRegister(e);
+            }, 1000);
+            
+            return;
+          }
+          
           throw new Error(errorData.message || 'Failed to submit registration request');
         }
         
@@ -235,6 +253,9 @@ const Register = () => {
         if (responseData.data && responseData.data[0]) {
           setRequestId(responseData.data[0].id);
         }
+        
+        // Reset registration attempts counter on success
+        setRegistrationAttempts(0);
         
         // Show success message
         setRequestSubmitted(true);
