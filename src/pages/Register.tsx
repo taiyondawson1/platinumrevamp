@@ -64,18 +64,6 @@ const Register = () => {
 
       console.log("Staff key validated, proceeding with registration request...");
 
-      // Create a customer request for account registration approval
-      // Using service role to bypass RLS restrictions for unauthenticated requests
-      const { error: requestError } = await supabase.auth.admin.createUser({
-        email: email,
-        password: password,
-        email_confirm: true,
-        user_metadata: {
-          name: email.split('@')[0],
-          staff_key: staffKey
-        }
-      });
-
       // Create a customer request for account registration approval using supabase functions
       const response = await fetch('/.netlify/functions/create-registration-request', {
         method: 'POST',
