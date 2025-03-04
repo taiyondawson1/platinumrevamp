@@ -61,17 +61,14 @@ const Register = () => {
 
       console.log("Staff key validated, proceeding with registration...");
 
-      // Proceed with registration
+      // Proceed with registration - use simplified metadata structure
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
-            created_at: new Date().toISOString(),
-            staff_key: staffKey, // This will be used by handle_new_user function for the profiles table
-            enrolled_by: staffKey, // This will be used by create_license_key_for_new_user function
-            role: 'customer' // Explicitly setting the role as a string
+            staff_key: staffKey
           }
         }
       });
