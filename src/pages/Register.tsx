@@ -14,6 +14,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -28,9 +29,37 @@ const Register = () => {
       return;
     }
 
+    if (!staffKey.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Staff key is required",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
+      // First validate staff key
+      const { data: staffKeyData, error: staffKeyError } = await supabase
+        .from('staff_keys')
+        .select('status')
+        .eq('key', staffKey)
+        .eq('status', 'active')
+        .single();
+      
+      if (staffKeyError || !staffKeyData) {
+        toast({
+          variant: "destructive",
+          title: "Invalid Staff Key",
+          description: "The staff key provided is invalid or inactive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Proceed with registration
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -38,6 +67,7 @@ const Register = () => {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
             created_at: new Date().toISOString(),
+            staff_key: staffKey
           }
         }
       });
@@ -133,6 +163,18 @@ const Register = () => {
                 disabled={isLoading}
                 className="bg-darkGrey border-silver/20"
               />
+            </div>
+            <div className="space-y-2">
+              <Input
+                type="text"
+                placeholder="Staff Key"
+                value={staffKey}
+                onChange={(e) => setStaffKey(e.target.value)}
+                required
+                disabled={isLoading}
+                className="bg-darkGrey border-silver/20"
+              />
+              <p className="text-xs text-silver/70">Enter the staff key provided by your account manager</p>
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Creating Account..." : "Create Account"}

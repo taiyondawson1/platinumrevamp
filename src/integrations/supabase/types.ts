@@ -178,11 +178,49 @@ export type Database = {
         }
         Relationships: []
       }
+      customers: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          phone: string | null
+          revenue: string
+          sales_rep_id: string
+          staff_key: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          phone?: string | null
+          revenue?: string
+          sales_rep_id: string
+          staff_key?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          phone?: string | null
+          revenue?: string
+          sales_rep_id?: string
+          staff_key?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       license_keys: {
         Row: {
           account_numbers: string[]
           created_at: string | null
-          e_key: string
           email: string
           enroller_id: string | null
           expiry_date: string | null
@@ -191,6 +229,8 @@ export type Database = {
           name: string
           phone: string
           product_code: string
+          staff_id: string | null
+          staff_key: string
           status: string | null
           subscription_type: string
           user_id: string
@@ -198,7 +238,6 @@ export type Database = {
         Insert: {
           account_numbers: string[]
           created_at?: string | null
-          e_key: string
           email: string
           enroller_id?: string | null
           expiry_date?: string | null
@@ -207,6 +246,8 @@ export type Database = {
           name: string
           phone?: string
           product_code: string
+          staff_id?: string | null
+          staff_key: string
           status?: string | null
           subscription_type: string
           user_id: string
@@ -214,7 +255,6 @@ export type Database = {
         Update: {
           account_numbers?: string[]
           created_at?: string | null
-          e_key?: string
           email?: string
           enroller_id?: string | null
           expiry_date?: string | null
@@ -223,6 +263,8 @@ export type Database = {
           name?: string
           phone?: string
           product_code?: string
+          staff_id?: string | null
+          staff_key?: string
           status?: string | null
           subscription_type?: string
           user_id?: string
@@ -356,19 +398,99 @@ export type Database = {
           created_at: string | null
           id: string
           role: Database["public"]["Enums"]["user_role"]
+          staff_key: string | null
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
           id: string
           role?: Database["public"]["Enums"]["user_role"]
+          staff_key?: string | null
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
+          staff_key?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      sales: {
+        Row: {
+          amount: number
+          created_at: string
+          customer_id: string
+          date: string
+          id: string
+          product_name: string | null
+          sales_rep_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          customer_id: string
+          date?: string
+          id?: string
+          product_name?: string | null
+          sales_rep_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          customer_id?: string
+          date?: string
+          id?: string
+          product_name?: string | null
+          sales_rep_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff_keys: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string | null
+          id: string
+          key: string
+          name: string | null
+          password: string | null
+          role: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          key: string
+          name?: string | null
+          password?: string | null
+          role: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          key?: string
+          name?: string | null
+          password?: string | null
+          role?: string
+          status?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -430,6 +552,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_random_6digit: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       generate_random_license_key: {
         Args: Record<PropertyKey, never>
         Returns: string

@@ -13,13 +13,42 @@ const Login = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!staffKey.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Staff key is required",
+      });
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
+      // First validate staff key
+      const { data: staffKeyData, error: staffKeyError } = await supabase
+        .from('staff_keys')
+        .select('status')
+        .eq('key', staffKey)
+        .eq('status', 'active')
+        .single();
+      
+      if (staffKeyError || !staffKeyData) {
+        toast({
+          variant: "destructive",
+          title: "Invalid Staff Key",
+          description: "The staff key provided is invalid or inactive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
       console.log("Attempting login with email:", email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -34,6 +63,25 @@ const Login = () => {
       }
 
       if (data?.user) {
+        // Check if the user profile has a matching staff key
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('staff_key')
+          .eq('id', data.user.id)
+          .single();
+        
+        if (profileError || !profileData || profileData.staff_key !== staffKey) {
+          // If staff keys don't match, sign out and show error
+          await supabase.auth.signOut();
+          toast({
+            variant: "destructive",
+            title: "Invalid Staff Key",
+            description: "The staff key doesn't match the one assigned to your account",
+          });
+          setIsLoading(false);
+          return;
+        }
+
         console.log("Login successful, user:", data.user);
         toast({
           title: "Success",
@@ -80,6 +128,17 @@ const Login = () => {
                 required
                 className="bg-darkGrey border-silver/20"
               />
+            </div>
+            <div className="space-y-2">
+              <Input
+                type="text"
+                placeholder="Staff Key"
+                value={staffKey}
+                onChange={(e) => setStaffKey(e.target.value)}
+                required
+                className="bg-darkGrey border-silver/20"
+              />
+              <p className="text-xs text-silver/70">Enter the staff key provided by your account manager</p>
             </div>
             <div className="space-y-2">
               <Button type="submit" className="w-full" disabled={isLoading}>
