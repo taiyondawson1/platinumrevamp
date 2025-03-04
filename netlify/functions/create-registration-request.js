@@ -13,6 +13,11 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
       body: JSON.stringify({ message: 'Method not allowed' }),
     };
   }
@@ -24,9 +29,16 @@ exports.handler = async (event) => {
     if (!customer_name || !request_type || !description) {
       return {
         statusCode: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
         body: JSON.stringify({ message: 'Missing required fields' }),
       };
     }
+
+    console.log("Processing registration request:", { customer_name, request_type });
 
     // Insert request using service role to bypass RLS
     const { data, error } = await supabaseAdmin
@@ -45,6 +57,11 @@ exports.handler = async (event) => {
       console.error('Error creating registration request:', error);
       return {
         statusCode: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
         body: JSON.stringify({ 
           message: 'Failed to create registration request', 
           error: error.message 
@@ -54,6 +71,11 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
       body: JSON.stringify({ 
         message: 'Registration request created successfully',
         data
@@ -63,6 +85,11 @@ exports.handler = async (event) => {
     console.error('Server error:', error);
     return {
       statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
       body: JSON.stringify({ message: 'Server error', error: error.message }),
     };
   }

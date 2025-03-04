@@ -19,9 +19,11 @@ const Register = () => {
   const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
     
     if (password !== confirmPassword) {
       toast({
@@ -81,10 +83,24 @@ const Register = () => {
         })
       });
 
+      console.log("Registration response status:", response.status);
+      
       if (!response.ok) {
-        const errorData = await response.json();
+        const text = await response.text();
+        console.error("Response text:", text);
+        
+        let errorData;
+        try {
+          errorData = JSON.parse(text);
+        } catch (e) {
+          throw new Error(`Server returned an invalid response: ${text || 'Empty response'}`);
+        }
+        
         throw new Error(errorData.message || 'Failed to submit registration request');
       }
+      
+      const responseData = await response.json();
+      console.log("Registration response data:", responseData);
       
       // Show success message
       setRequestSubmitted(true);
@@ -95,10 +111,12 @@ const Register = () => {
 
     } catch (error) {
       console.error("Registration error:", error);
+      const message = error instanceof Error ? error.message : "Failed to register";
+      setErrorMessage(message);
       toast({
         variant: "destructive",
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to register",
+        description: message,
       });
     } finally {
       setIsLoading(false);
@@ -152,6 +170,12 @@ const Register = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleRegister} className="space-y-4">
+            {errorMessage && (
+              <Alert variant="destructive" className="bg-red-900/20 border-red-800 text-red-200">
+                <AlertTitle>Registration Error</AlertTitle>
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
+            )}
             <div className="space-y-2">
               <Input
                 type="email"
