@@ -69,7 +69,7 @@ const Login = () => {
       }
 
       if (data?.user) {
-        // Instead of checking license_keys, check profiles table which is guaranteed to exist
+        // Check the profiles table for staff key validation
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('staff_key')

@@ -61,7 +61,7 @@ const Register = () => {
 
       console.log("Staff key validated, proceeding with registration...");
 
-      // Proceed with registration - use simplified metadata structure
+      // Make sure we pass the staff_key in the correct format
       const { error } = await supabase.auth.signUp({
         email,
         password,
