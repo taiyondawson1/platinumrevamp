@@ -19,7 +19,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     }
   },
   global: {
-    fetch: (...args) => {
+    fetch: (url, options) => {
       // Set a longer timeout for fetch operations to prevent timeouts during registration
       const controller = new AbortController();
       const signal = controller.signal;
@@ -27,7 +27,13 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
       // 30-second timeout instead of the browser default
       const timeoutId = setTimeout(() => controller.abort(), 30000);
       
-      return fetch(...args, { signal })
+      // Combine the provided options with our signal
+      const fetchOptions = {
+        ...options,
+        signal
+      };
+      
+      return fetch(url, fetchOptions)
         .finally(() => clearTimeout(timeoutId));
     }
   }
