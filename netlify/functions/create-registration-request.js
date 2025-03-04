@@ -1,205 +1,131 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
-// Initialize Supabase client with service role key for admin access
-// This bypasses RLS policies
-const supabaseAdmin = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+// Initialize Supabase client
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Define CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
-};
-
-exports.handler = async (event) => {
-  // Handle CORS preflight requests
+exports.handler = async (event, context) => {
+  console.log('Registration request received');
+  
+  // Enable CORS
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+  };
+  
+  // Handle preflight OPTIONS request
   if (event.httpMethod === 'OPTIONS') {
-    console.log("Handling OPTIONS preflight request");
     return {
-      statusCode: 204,
-      headers: corsHeaders,
+      statusCode: 200,
+      headers,
       body: ''
     };
   }
-
-  // Only accept POST requests
-  if (event.httpMethod !== 'POST') {
-    console.log(`Rejected ${event.httpMethod} request. Only POST is allowed.`);
-    return {
-      statusCode: 405,
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ message: 'Method not allowed' }),
-    };
-  }
-
+  
   try {
-    // Log environment variables availability (without exposing secrets)
-    console.log("SUPABASE_URL available:", !!process.env.SUPABASE_URL);
-    console.log("SUPABASE_SERVICE_ROLE_KEY available:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
-    
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      console.error("Missing required environment variables");
-      return {
-        statusCode: 500,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: 'Server configuration error: Missing environment variables' }),
-      };
-    }
-    
-    const requestBody = event.body;
-    console.log("Request body received:", requestBody);
-    
     // Parse request body
-    let parsedBody;
-    try {
-      parsedBody = JSON.parse(requestBody);
-    } catch (error) {
-      console.error("Failed to parse request body:", error);
+    const requestBody = JSON.parse(event.body);
+    console.log('Request body:', JSON.stringify(requestBody));
+    
+    // Validate input
+    if (!requestBody.customer_name || !requestBody.request_type || !requestBody.description) {
+      console.log('Validation failed: Missing required fields');
       return {
         statusCode: 400,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: 'Invalid JSON in request body' }),
+        headers,
+        body: JSON.stringify({ message: 'Missing required fields' })
       };
     }
     
-    const { customer_name, request_type, description } = parsedBody;
-
-    // Validate required fields
-    if (!customer_name || !request_type || !description) {
-      console.error("Missing required fields:", { customer_name, request_type, description });
-      return {
-        statusCode: 400,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: 'Missing required fields' }),
-      };
-    }
-
-    console.log("Processing registration request:", { customer_name, request_type });
-
-    // Check if Supabase client is initialized correctly
-    if (!supabaseAdmin) {
-      console.error("Supabase client not initialized");
-      return {
-        statusCode: 500,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: 'Supabase client not initialized' }),
-      };
-    }
-
-    // First validate staff key from the description
+    // Extract email from description for duplicate check
+    let email = '';
     try {
-      const descriptionObj = JSON.parse(description);
-      if (!descriptionObj.staff_key) {
-        return {
-          statusCode: 400,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ message: 'Staff key is required' }),
-        };
-      }
-
-      const { data: staffKeyData, error: staffKeyError } = await supabaseAdmin
-        .from('staff_keys')
-        .select('status')
-        .eq('key', descriptionObj.staff_key)
-        .eq('status', 'active')
-        .single();
-      
-      if (staffKeyError || !staffKeyData) {
-        console.error('Staff key validation error:', staffKeyError);
-        return {
-          statusCode: 400,
-          headers: {
-            ...corsHeaders,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ message: 'Invalid or inactive staff key' }),
-        };
-      }
-      
-      console.log("Staff key validated successfully");
-    } catch (error) {
-      console.error('Error parsing description or validating staff key:', error);
-      return {
-        statusCode: 400,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: 'Invalid description format' }),
-      };
+      const descriptionObj = JSON.parse(requestBody.description);
+      email = descriptionObj.email;
+    } catch (e) {
+      console.error('Failed to parse description JSON:', e);
     }
-
-    // Insert request using service role to bypass RLS
-    const { data, error } = await supabaseAdmin
+    
+    if (email) {
+      // Check for existing requests with the same email
+      const { data: existingRequests, error: checkError } = await supabase
+        .from('customer_requests')
+        .select('id, status')
+        .eq('request_type', 'registration')
+        .filter('description', 'ilike', `%${email}%`);
+      
+      if (checkError) {
+        console.error('Error checking for existing requests:', checkError);
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({ message: `Database error: ${checkError.message}` })
+        };
+      }
+      
+      // If there's an existing pending request, return it instead of creating a new one
+      const pendingRequest = existingRequests?.find(req => req.status === 'pending');
+      if (pendingRequest) {
+        console.log('Found existing pending request:', pendingRequest.id);
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ 
+            message: 'Registration request already exists',
+            data: [pendingRequest]
+          })
+        };
+      }
+      
+      // If there's an approved request, treat it as a duplicate registration
+      const approvedRequest = existingRequests?.find(req => req.status === 'approved');
+      if (approvedRequest) {
+        console.log('Found existing approved request:', approvedRequest.id);
+        return {
+          statusCode: 409,
+          headers,
+          body: JSON.stringify({ 
+            message: 'This email has already been registered. Please login or use a different email.' 
+          })
+        };
+      }
+    }
+    
+    // Insert request into customer_requests table
+    console.log('Creating new registration request');
+    const { data, error } = await supabase
       .from('customer_requests')
-      .insert([
-        {
-          customer_name,
-          request_type,
-          description,
-          status: 'pending'
-        }
-      ])
+      .insert([requestBody])
       .select();
-
+    
     if (error) {
       console.error('Error creating registration request:', error);
       return {
         statusCode: 500,
-        headers: {
-          ...corsHeaders,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-          message: 'Failed to create registration request', 
-          error: error.message 
-        }),
+        headers,
+        body: JSON.stringify({ message: `Database error: ${error.message}` })
       };
     }
-
-    console.log("Registration request created successfully:", data);
+    
+    console.log('Registration request created successfully:', data);
     return {
       statusCode: 200,
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'application/json'
-      },
+      headers,
       body: JSON.stringify({ 
         message: 'Registration request created successfully',
         data
-      }),
+      })
     };
+    
   } catch (error) {
     console.error('Server error:', error);
     return {
       statusCode: 500,
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ message: 'Server error', error: error.message }),
+      headers,
+      body: JSON.stringify({ message: error.message || 'Unknown server error' })
     };
   }
 };

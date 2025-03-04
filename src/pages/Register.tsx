@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { ArrowLeft, InfoIcon, Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useRealtimeSubscription } from "@/hooks/use-realtime-subscription";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -28,49 +29,33 @@ const Register = () => {
     staffKey?: string;
   }>({});
 
-  // Subscribe to real-time updates for the customer_requests table
-  useEffect(() => {
-    if (!requestId) return;
-    
-    console.log("Setting up real-time subscription for request ID:", requestId);
-    
-    const channel = supabase
-      .channel('registration-updates')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'customer_requests',
-          filter: `id=eq.${requestId}`
-        },
-        (payload) => {
-          console.log("Received real-time update:", payload);
-          
-          const newStatus = payload.new.status;
-          setRequestStatus(newStatus);
-          
-          if (newStatus === 'approved') {
-            toast({
-              title: "Registration Approved!",
-              description: "Your registration has been approved. You can now log in.",
-            });
-            setTimeout(() => navigate("/login"), 2000);
-          } else if (newStatus === 'rejected') {
-            toast({
-              variant: "destructive",
-              title: "Registration Rejected",
-              description: "Your registration request has been rejected. Please contact support.",
-            });
-          }
-        }
-      )
-      .subscribe();
-    
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [requestId, navigate, toast]);
+  // Listen for real-time updates to the customer request status
+  useRealtimeSubscription({
+    table: 'customer_requests',
+    event: 'UPDATE',
+    filter: requestId ? 'id' : undefined,
+    filterValue: requestId || '',
+    onDataChange: (payload) => {
+      console.log("Received real-time update for request:", payload);
+      
+      const newStatus = payload.new.status;
+      setRequestStatus(newStatus);
+      
+      if (newStatus === 'approved') {
+        toast({
+          title: "Registration Approved!",
+          description: "Your registration has been approved. You can now log in.",
+        });
+        setTimeout(() => navigate("/login"), 2000);
+      } else if (newStatus === 'rejected') {
+        toast({
+          variant: "destructive",
+          title: "Registration Rejected",
+          description: "Your registration request has been rejected. Please contact support.",
+        });
+      }
+    }
+  });
 
   const validateForm = () => {
     const errors: {
@@ -133,9 +118,14 @@ const Register = () => {
         .select('status')
         .eq('key', staffKey)
         .eq('status', 'active')
-        .single();
+        .maybeSingle();
       
-      if (staffKeyError || !staffKeyData) {
+      if (staffKeyError) {
+        console.error("Staff key validation error:", staffKeyError);
+        throw new Error(`Database error: ${staffKeyError.message}`);
+      }
+      
+      if (!staffKeyData) {
         toast({
           variant: "destructive",
           title: "Invalid Staff Key",
@@ -147,6 +137,41 @@ const Register = () => {
       }
 
       console.log("Staff key validated, proceeding with registration request...");
+
+      // Check if email is already registered
+      const { data: emailCheck, error: emailCheckError } = await supabase
+        .from('customer_requests')
+        .select('id, status')
+        .eq('request_type', 'registration')
+        .filter('description', 'ilike', `%${email}%`)
+        .maybeSingle();
+      
+      if (emailCheckError) {
+        console.error("Email check error:", emailCheckError);
+        throw new Error(`Database error: ${emailCheckError.message}`);
+      }
+      
+      if (emailCheck) {
+        if (emailCheck.status === 'pending') {
+          setRequestId(emailCheck.id);
+          setRequestSubmitted(true);
+          toast({
+            title: "Request Already Submitted",
+            description: "A registration request for this email is already pending approval.",
+          });
+          setIsLoading(false);
+          return;
+        } else if (emailCheck.status === 'approved') {
+          toast({
+            variant: "destructive",
+            title: "Email Already Registered",
+            description: "This email has already been registered. Please login or use a different email.",
+          });
+          setValidationErrors({ email: "This email has already been registered" });
+          setIsLoading(false);
+          return;
+        }
+      }
 
       // Create a customer request for account registration approval
       const requestBody = {
@@ -184,6 +209,18 @@ const Register = () => {
           } catch (e) {
             console.error("Failed to parse error response:", e);
             throw new Error(`Server returned an invalid response: ${responseText || "Empty response"}`);
+          }
+          
+          // Check for duplicate email error
+          if (errorData.message && errorData.message.includes("duplicate")) {
+            toast({
+              variant: "destructive",
+              title: "Email Already Registered",
+              description: "This email has already been registered. Please login or use a different email.",
+            });
+            setValidationErrors({ email: "This email has already been registered" });
+            setIsLoading(false);
+            return;
           }
           
           throw new Error(errorData.message || 'Failed to submit registration request');

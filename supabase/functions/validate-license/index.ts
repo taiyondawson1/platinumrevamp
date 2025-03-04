@@ -65,7 +65,7 @@ serve(async (req) => {
       .select('*')
       .eq('license_key', licenseKey)
       .eq('status', 'active')
-      .single();
+      .maybeSingle();
     
     // Handle license not found or inactive
     if (licenseError) {
@@ -124,19 +124,54 @@ serve(async (req) => {
       if (accountNumbers.length === 0) {
         console.log(`Adding first account ${accountNumber} to license ${licenseKey}`);
         
-        const updatedAccountNumbers = [accountNumber];
-        
-        const { error: updateError } = await supabase
-          .from('license_keys')
-          .update({ account_numbers: updatedAccountNumbers })
-          .eq('license_key', licenseKey);
-        
-        if (updateError) {
-          console.log(`Error adding account: ${updateError.message}`);
+        try {
+          const updatedAccountNumbers = [accountNumber];
+          
+          const { error: updateError } = await supabase
+            .from('license_keys')
+            .update({ account_numbers: updatedAccountNumbers })
+            .eq('license_key', licenseKey);
+          
+          if (updateError) {
+            console.log(`Error adding account: ${updateError.message}`);
+            return new Response(
+              JSON.stringify({ 
+                success: false, 
+                message: `Error authorizing account: ${updateError.message}`
+              } as ValidationResponse),
+              { 
+                headers: { ...corsHeaders, "Content-Type": "application/json" },
+                status: 500 
+              }
+            );
+          }
+          
+          console.log(`Account ${accountNumber} successfully added to license ${licenseKey}`);
+          
+          // Return success with the updated account numbers
+          return new Response(
+            JSON.stringify({ 
+              success: true, 
+              message: "First account automatically authorized",
+              data: {
+                userId: licenseData.user_id,
+                licenseKey: licenseData.license_key,
+                accountNumbers: updatedAccountNumbers,
+                status: licenseData.status,
+                subscription_type: licenseData.subscription_type
+              }
+            } as ValidationResponse),
+            { 
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+              status: 200 
+            }
+          );
+        } catch (addError) {
+          console.error("Error adding account to license:", addError);
           return new Response(
             JSON.stringify({ 
               success: false, 
-              message: `Error authorizing account: ${updateError.message}`
+              message: `Error adding account: ${addError instanceof Error ? addError.message : String(addError)}`
             } as ValidationResponse),
             { 
               headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -144,27 +179,6 @@ serve(async (req) => {
             }
           );
         }
-        
-        console.log(`Account ${accountNumber} successfully added to license ${licenseKey}`);
-        
-        // Return success with the updated account numbers
-        return new Response(
-          JSON.stringify({ 
-            success: true, 
-            message: "First account automatically authorized",
-            data: {
-              userId: licenseData.user_id,
-              licenseKey: licenseData.license_key,
-              accountNumbers: updatedAccountNumbers,
-              status: licenseData.status,
-              subscription_type: licenseData.subscription_type
-            }
-          } as ValidationResponse),
-          { 
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-            status: 200 
-          }
-        );
       }
       
       return new Response(

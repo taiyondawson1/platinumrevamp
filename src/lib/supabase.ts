@@ -9,5 +9,13 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
     persistSession: true, // Enable session persistence
     autoRefreshToken: true,
     storage: localStorage, // Use localStorage instead of sessionStorage
+  },
+  db: {
+    schema: 'public',
+  },
+  realtime: {
+    params: {
+      eventsPerSecond: 10
+    }
   }
 });

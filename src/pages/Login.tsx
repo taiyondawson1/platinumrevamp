@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,26 +21,37 @@ const Login = () => {
   const [pendingRequest, setPendingRequest] = useState(false);
   const [pendingRequestId, setPendingRequestId] = useState<string | null>(null);
 
+  // Check if there's a pending registration request for this email
   const checkPendingRequest = async (email: string) => {
     const { data, error } = await supabase
       .from('customer_requests')
       .select('*')
       .eq('request_type', 'registration')
       .eq('status', 'pending')
-      .like('description', `%${email}%`);
+      .like('description', `%${email}%`)
+      .maybeSingle();
     
-    if (!error && data && data.length > 0) {
+    if (error) {
+      console.error("Error checking pending request:", error);
+      return false;
+    }
+    
+    if (data) {
+      setPendingRequestId(data.id);
       return true;
     }
+    
     return false;
   };
 
+  // Subscribe to real-time updates for the pending request
   useRealtimeSubscription({
     table: 'customer_requests',
     event: 'UPDATE',
     filter: pendingRequestId ? 'id' : undefined,
     filterValue: pendingRequestId || '',
     onDataChange: (payload) => {
+      console.log("Received real-time update for request:", payload);
       if (payload.new.status === 'approved') {
         setPendingRequest(false);
         toast({
@@ -56,6 +68,7 @@ const Login = () => {
     }
   });
 
+  // Fetch the pending request ID when email changes
   useEffect(() => {
     if (email) {
       const getPendingRequestId = async () => {
@@ -65,7 +78,7 @@ const Login = () => {
           .eq('request_type', 'registration')
           .eq('status', 'pending')
           .like('description', `%${email}%`)
-          .single();
+          .maybeSingle();
         
         if (!error && data) {
           setPendingRequestId(data.id);
@@ -104,9 +117,14 @@ const Login = () => {
         .select('status')
         .eq('key', staffKey)
         .eq('status', 'active')
-        .single();
+        .maybeSingle();
       
-      if (staffKeyError || !staffKeyData) {
+      if (staffKeyError) {
+        console.error("Staff key validation error:", staffKeyError);
+        throw new Error(`Database error: ${staffKeyError.message}`);
+      }
+      
+      if (!staffKeyData) {
         toast({
           variant: "destructive",
           title: "Invalid Staff Key",
@@ -140,15 +158,27 @@ const Login = () => {
           .from('profiles')
           .select('staff_key')
           .eq('id', data.user.id)
-          .single();
+          .maybeSingle();
         
-        if (profileError || !profileData) {
+        if (profileError) {
           console.error("Profile fetch error:", profileError);
           await supabase.auth.signOut();
           toast({
             variant: "destructive",
             title: "Profile Error",
             description: "Could not validate your account. Please try again.",
+          });
+          setIsLoading(false);
+          return;
+        }
+
+        if (!profileData) {
+          console.error("No profile found");
+          await supabase.auth.signOut();
+          toast({
+            variant: "destructive",
+            title: "Profile Error",
+            description: "Could not find your profile. Please contact support.",
           });
           setIsLoading(false);
           return;
