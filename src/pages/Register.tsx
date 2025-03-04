@@ -29,7 +29,6 @@ const Register = () => {
     staffKey?: string;
   }>({});
 
-  // Listen for real-time updates to the customer request status
   useRealtimeSubscription({
     table: 'customer_requests',
     event: 'UPDATE',
@@ -66,7 +65,6 @@ const Register = () => {
     } = {};
     let isValid = true;
 
-    // Email validation
     if (!email.trim()) {
       errors.email = "Email is required";
       isValid = false;
@@ -75,7 +73,6 @@ const Register = () => {
       isValid = false;
     }
 
-    // Password validation
     if (!password) {
       errors.password = "Password is required";
       isValid = false;
@@ -84,13 +81,11 @@ const Register = () => {
       isValid = false;
     }
 
-    // Confirm password validation
     if (password !== confirmPassword) {
       errors.confirmPassword = "Passwords do not match";
       isValid = false;
     }
 
-    // Staff key validation
     if (!staffKey.trim()) {
       errors.staffKey = "Staff key is required";
       isValid = false;
@@ -112,7 +107,6 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      // First validate staff key
       const { data: staffKeyData, error: staffKeyError } = await supabase
         .from('staff_keys')
         .select('status')
@@ -138,7 +132,6 @@ const Register = () => {
 
       console.log("Staff key validated, proceeding with registration request...");
 
-      // Check if email is already registered
       const { data: emailCheck, error: emailCheckError } = await supabase
         .from('customer_requests')
         .select('id, status')
@@ -173,7 +166,6 @@ const Register = () => {
         }
       }
 
-      // Create a customer request for account registration approval FIRST
       const requestBody = {
         customer_name: email.split('@')[0],
         request_type: 'registration',
@@ -209,7 +201,6 @@ const Register = () => {
             throw new Error(`Server returned an invalid response: ${responseText || "Empty response"}`);
           }
           
-          // Check for duplicate email error
           if (errorData.message && errorData.message.includes("duplicate")) {
             toast({
               variant: "destructive",
@@ -221,7 +212,6 @@ const Register = () => {
             return;
           }
           
-          // Check if we need to retry
           if (registrationAttempts < 2 && errorData.message && 
               (errorData.message.includes("unique constraint") || 
                errorData.message.includes("duplicate key") || 
@@ -230,7 +220,6 @@ const Register = () => {
             console.log(`Retrying registration (attempt ${registrationAttempts + 1})`);
             setRegistrationAttempts(prev => prev + 1);
             
-            // Small delay before retrying
             setTimeout(() => {
               handleRegister(e);
             }, 1000);
@@ -246,15 +235,12 @@ const Register = () => {
         
         console.log("Registration response data:", responseData);
         
-        // Save the request ID for real-time updates
         if (responseData.data && responseData.data[0]) {
           setRequestId(responseData.data[0].id);
         }
         
-        // Reset registration attempts counter on success
         setRegistrationAttempts(0);
         
-        // Show success message
         setRequestSubmitted(true);
         toast({
           title: "Request Submitted",
