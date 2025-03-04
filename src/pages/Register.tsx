@@ -66,40 +66,59 @@ const Register = () => {
 
       console.log("Staff key validated, proceeding with registration request...");
 
-      // Create a customer request for account registration approval using supabase functions
+      // Create a customer request for account registration approval
+      const requestBody = JSON.stringify({
+        customer_name: email.split('@')[0],
+        request_type: 'registration',
+        description: JSON.stringify({
+          email,
+          password, // Note: In production, consider more secure approaches
+          staff_key: staffKey
+        })
+      });
+      
+      console.log("Sending registration request with body:", requestBody);
+
+      // Create a customer request for account registration approval
       const response = await fetch('/.netlify/functions/create-registration-request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          customer_name: email.split('@')[0],
-          request_type: 'registration',
-          description: JSON.stringify({
-            email,
-            password, // Note: In production, consider more secure approaches
-            staff_key: staffKey
-          })
-        })
+        body: requestBody
       });
 
       console.log("Registration response status:", response.status);
       
+      // Get the response as text first
+      const responseText = await response.text();
+      console.log("Response text:", responseText);
+      
+      // Only try to parse if there's actual content
       if (!response.ok) {
-        const text = await response.text();
-        console.error("Response text:", text);
+        if (!responseText) {
+          throw new Error("Server returned an empty response. This likely indicates a configuration issue with the serverless function.");
+        }
         
         let errorData;
         try {
-          errorData = JSON.parse(text);
+          errorData = JSON.parse(responseText);
         } catch (e) {
-          throw new Error(`Server returned an invalid response: ${text || 'Empty response'}`);
+          console.error("Failed to parse error response:", e);
+          throw new Error(`Server returned an invalid response: ${responseText}`);
         }
         
         throw new Error(errorData.message || 'Failed to submit registration request');
       }
       
-      const responseData = await response.json();
+      let responseData;
+      try {
+        responseData = responseText ? JSON.parse(responseText) : {};
+      } catch (e) {
+        console.error("Failed to parse success response:", e);
+        throw new Error(`Server returned an invalid JSON response: ${responseText}`);
+      }
+      
       console.log("Registration response data:", responseData);
       
       // Show success message
