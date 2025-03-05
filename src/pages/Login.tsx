@@ -115,10 +115,10 @@ const Login = () => {
         
         // Staff members (CEO, ADMIN, ENROLLER) must use their own staff key to login
         if (userRole === 'ceo' || userRole === 'admin' || userRole === 'enroller') {
-          // Check if the staff key matches what's in the staff_keys table for this user
+          // Check if the staff key exists in the staff_keys table
           const { data: staffData, error: staffError } = await supabase
             .from('staff_keys')
-            .select('key, user_id')
+            .select('key, user_id, role')
             .eq('key', staffKey)
             .single();
           
@@ -134,13 +134,16 @@ const Login = () => {
             return;
           }
           
-          // If the key exists but is assigned to a different user
-          if (staffData.user_id && staffData.user_id !== data.user.id) {
+          // If the key exists but is assigned to a different user with a different role
+          // (This allows the same key to be used for enrollment by multiple staff members)
+          if (staffData.user_id && 
+              staffData.user_id !== data.user.id && 
+              staffData.role !== userRole) {
             await supabase.auth.signOut();
             toast({
               variant: "destructive",
               title: "Staff Key Error",
-              description: "This staff key is assigned to another account.",
+              description: "This staff key doesn't match your role.",
             });
             setIsLoading(false);
             return;

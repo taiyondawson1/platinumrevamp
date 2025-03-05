@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -99,27 +98,6 @@ const Register = () => {
     try {
       console.log("Staff key validated, proceeding with registration...");
 
-      // If this is a staff registration, check if the key is already assigned
-      if (isStaffRegistration) {
-        const { data: keyData, error: keyError } = await supabase
-          .from('staff_keys')
-          .select('user_id')
-          .eq('key', staffKey)
-          .single();
-          
-        if (keyError) {
-          console.error("Staff key check error:", keyError);
-        } else if (keyData && keyData.user_id) {
-          toast({
-            variant: "destructive",
-            title: "Staff Key Already Assigned",
-            description: "This staff key is already assigned to another account",
-          });
-          setIsLoading(false);
-          return;
-        }
-      }
-
       // Make sure we pass the appropriate data for the user type
       const { error } = await supabase.auth.signUp({
         email,
@@ -130,7 +108,7 @@ const Register = () => {
             // For staff members we'll associate the staff key directly
             // For customers, we'll use enrolled_by in the license_keys table
             role: isStaffRegistration ? staffKeyInfo.role : 'customer',
-            // For customers, we'll still pass the enrolling staff key
+            // For customers, we'll pass the enrolling staff key
             // to be used in the handle_new_user trigger
             enrolled_by: isStaffRegistration ? null : staffKey
           }
@@ -161,11 +139,6 @@ const Register = () => {
         }
         setIsLoading(false);
         return;
-      }
-
-      // If this is a staff registration, update the staff_keys table
-      if (isStaffRegistration) {
-        // We'll update the user_id in the staff_keys table when they confirm their email
       }
 
       toast({
