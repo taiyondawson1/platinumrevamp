@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { UserPlus } from "lucide-react";
 import { useStaffKeyValidation } from "@/hooks/use-staff-key-validation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 // Staff key validation regex patterns
 const STAFF_KEY_PATTERNS = {
@@ -24,6 +25,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showDebugDialog, setShowDebugDialog] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<any>(null);
   
   // Use our custom hook for real-time staff key validation
   const { staffKeyInfo, isLoading: isValidating } = useStaffKeyValidation(staffKey);
@@ -70,6 +73,7 @@ const Login = () => {
     }
     
     setIsLoading(true);
+    let debugData: any = {};
 
     try {
       console.log("Attempting login with email:", email);
@@ -79,6 +83,7 @@ const Login = () => {
       });
 
       console.log("Login response:", { data, error });
+      debugData.signInResponse = { data, error };
 
       if (error) {
         console.error("Login error:", error);
@@ -96,9 +101,12 @@ const Login = () => {
           // First we need to determine if this is a staff member or a customer
           const { data: profileData, error: profileError } = await supabase
             .from('profiles')
-            .select('role')
+            .select('role, staff_key')
             .eq('id', data.user.id)
             .single();
+          
+          debugData.profileData = profileData;
+          debugData.profileError = profileError;
           
           if (profileError) {
             console.error("Profile fetch error:", profileError);
@@ -124,6 +132,9 @@ const Login = () => {
               .eq('key', staffKey)
               .single();
             
+            debugData.staffData = staffData;
+            debugData.staffError = staffError;
+            
             if (staffError || !staffData) {
               console.error("Staff key fetch error:", staffError);
               await supabase.auth.signOut();
@@ -137,7 +148,6 @@ const Login = () => {
             }
             
             // If the key exists but is assigned to a different user with a different role
-            // (This allows the same key to be used for enrollment by multiple staff members)
             if (staffData.user_id && 
                 staffData.user_id !== data.user.id && 
                 staffData.role !== userRole) {
@@ -158,6 +168,8 @@ const Login = () => {
                 .update({ user_id: data.user.id })
                 .eq('key', staffKey);
               
+              debugData.staffKeyUpdateError = updateError;
+              
               if (updateError) {
                 console.error("Error assigning staff key:", updateError);
                 // Continue with login even if update fails
@@ -173,6 +185,9 @@ const Login = () => {
               .eq('user_id', data.user.id)
               .maybeSingle();
             
+            debugData.licenseData = licenseData;
+            debugData.licenseError = licenseError;
+            
             if (licenseError) {
               console.error("License key fetch error:", licenseError);
             }
@@ -186,8 +201,10 @@ const Login = () => {
                   // Update the enrolled_by field
                   const { error: updateError } = await supabase
                     .from('license_keys')
-                    .update({ enrolled_by: staffKey })
+                    .update({ enrolled_by: staffKey, staff_key: staffKey })
                     .eq('user_id', data.user.id);
+                  
+                  debugData.licenseUpdateError = updateError;
                   
                   if (updateError) {
                     console.error("Error updating enrolled_by:", updateError);
@@ -217,7 +234,7 @@ const Login = () => {
                     enrolled_by: staffKey,
                     // Add other required fields based on your table structure
                     license_key: 'PENDING',
-                    product_code: 'DEFAULT',
+                    product_code: 'EA-001',
                     subscription_type: 'standard',
                     name: data.user.email?.split('@')[0] || 'Customer',
                     email: data.user.email || '',
@@ -225,6 +242,8 @@ const Login = () => {
                     account_numbers: [],
                     staff_key: staffKey
                   });
+                
+                debugData.licenseUpsertError = upsertError;
                 
                 if (upsertError) {
                   console.error("Error creating license record:", upsertError);
@@ -241,6 +260,17 @@ const Login = () => {
                 return;
               }
             }
+          } else {
+            // Unknown role
+            console.error("Unknown user role:", userRole);
+            await supabase.auth.signOut();
+            toast({
+              variant: "destructive",
+              title: "Account Error",
+              description: "Unknown account type. Please contact support.",
+            });
+            setIsLoading(false);
+            return;
           }
 
           console.log("Login successful, user:", data.user);
@@ -251,6 +281,8 @@ const Login = () => {
           navigate("/dashboard");
         } catch (error) {
           console.error("Error during login process:", error);
+          debugData.processingError = error;
+          setDebugInfo(debugData);
           await supabase.auth.signOut();
           toast({
             variant: "destructive",
@@ -262,6 +294,8 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Login error:", error);
+      debugData.finalError = error;
+      setDebugInfo(debugData);
       toast({
         variant: "destructive",
         title: "Error",
@@ -352,9 +386,38 @@ const Login = () => {
                 Create Account
               </Button>
             </div>
+            
+            {process.env.NODE_ENV === 'development' && (
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm"
+                className="w-full mt-2 text-xs"
+                onClick={() => setShowDebugDialog(true)}
+              >
+                Debug Info
+              </Button>
+            )}
           </form>
         </CardContent>
       </Card>
+      
+      {/* Debug Dialog (only shown in development) */}
+      {process.env.NODE_ENV === 'development' && (
+        <Dialog open={showDebugDialog} onOpenChange={setShowDebugDialog}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Debug Information</DialogTitle>
+              <DialogDescription>
+                Detailed information about the login process
+              </DialogDescription>
+            </DialogHeader>
+            <pre className="p-4 bg-darkGrey rounded-md overflow-x-auto">
+              {debugInfo ? JSON.stringify(debugInfo, null, 2) : 'No debug info available'}
+            </pre>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

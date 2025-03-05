@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { ArrowLeft } from "lucide-react";
 import { useStaffKeyValidation } from "@/hooks/use-staff-key-validation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 // Staff key validation regex patterns
 const STAFF_KEY_PATTERNS = {
@@ -25,6 +26,8 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showDebugDialog, setShowDebugDialog] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<any>(null);
   
   // Use our custom hook for real-time staff key validation
   const { staffKeyInfo, isLoading: isValidating } = useStaffKeyValidation(staffKey);
@@ -95,12 +98,16 @@ const Register = () => {
     }
 
     setIsLoading(true);
+    let debugData: any = {
+      isStaffRegistration,
+      staffKeyInfo: JSON.parse(JSON.stringify(staffKeyInfo))
+    };
 
     try {
       console.log("Staff key validated, proceeding with registration...");
 
       // Make sure we pass the appropriate data for the user type
-      const { error } = await supabase.auth.signUp({
+      const userData = {
         email,
         password,
         options: {
@@ -112,11 +119,17 @@ const Register = () => {
             // For customers, we'll pass the enrolling staff key
             // to be used in the handle_new_user trigger
             enrolled_by: isStaffRegistration ? null : staffKey,
-            // Always pass staff_key for database records
-            staff_key: staffKey
+            // Pass staff_key only for staff members
+            staff_key: isStaffRegistration ? staffKey : null
           }
         }
-      });
+      };
+      
+      debugData.userData = userData;
+
+      const { data, error } = await supabase.auth.signUp(userData);
+      
+      debugData.signupResponse = { data, error };
 
       if (error) {
         console.error("Registration error details:", error);
@@ -140,18 +153,33 @@ const Register = () => {
             description: error.message,
           });
         }
+        setDebugInfo(debugData);
         setIsLoading(false);
         return;
       }
 
-      toast({
-        title: "Success",
-        description: "Please check your email to confirm your account",
-      });
+      // Verify user was created successfully
+      if (data?.user) {
+        console.log("User created successfully:", data.user);
+        
+        toast({
+          title: "Success",
+          description: "Please check your email to confirm your account",
+        });
 
-      navigate("/login");
+        navigate("/login");
+      } else {
+        console.error("User data not returned after signup");
+        toast({
+          variant: "destructive",
+          title: "Registration Error",
+          description: "Unknown error during registration. Please try again.",
+        });
+      }
     } catch (error) {
       console.error("Registration error:", error);
+      debugData.finalError = error;
+      setDebugInfo(debugData);
       toast({
         variant: "destructive",
         title: "Error",
@@ -256,9 +284,38 @@ const Register = () => {
             >
               {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
+            
+            {process.env.NODE_ENV === 'development' && (
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm"
+                className="w-full mt-2 text-xs"
+                onClick={() => setShowDebugDialog(true)}
+              >
+                Debug Info
+              </Button>
+            )}
           </form>
         </CardContent>
       </Card>
+      
+      {/* Debug Dialog (only shown in development) */}
+      {process.env.NODE_ENV === 'development' && (
+        <Dialog open={showDebugDialog} onOpenChange={setShowDebugDialog}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Debug Information</DialogTitle>
+              <DialogDescription>
+                Detailed information about the registration process
+              </DialogDescription>
+            </DialogHeader>
+            <pre className="p-4 bg-darkGrey rounded-md overflow-x-auto">
+              {debugInfo ? JSON.stringify(debugInfo, null, 2) : 'No debug info available'}
+            </pre>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
