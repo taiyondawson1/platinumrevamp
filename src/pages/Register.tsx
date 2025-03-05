@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { ArrowLeft } from "lucide-react";
+import { useStaffKeyValidation } from "@/hooks/use-staff-key-validation";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 // Staff key validation regex patterns
 const STAFF_KEY_PATTERNS = {
@@ -23,6 +25,9 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Use our custom hook for real-time staff key validation
+  const { staffKeyInfo, isLoading: isValidating } = useStaffKeyValidation(staffKey);
 
   // Function to validate staff key format
   const validateStaffKeyFormat = (key: string): boolean => {
@@ -64,27 +69,29 @@ const Register = () => {
       return;
     }
 
+    // Check if staff key is valid according to real-time validation
+    if (!staffKeyInfo.isValid) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Staff Key",
+        description: "The staff key provided is invalid or inactive",
+      });
+      return;
+    }
+    
+    // Check if staff key is already assigned
+    if (staffKeyInfo.isAssigned) {
+      toast({
+        variant: "destructive",
+        title: "Staff Key Already Assigned",
+        description: "This staff key is already assigned to another account",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // First validate staff key
-      const { data: staffKeyData, error: staffKeyError } = await supabase
-        .from('staff_keys')
-        .select('status')
-        .eq('key', staffKey)
-        .eq('status', 'active')
-        .single();
-      
-      if (staffKeyError || !staffKeyData) {
-        toast({
-          variant: "destructive",
-          title: "Invalid Staff Key",
-          description: "The staff key provided is invalid or inactive",
-        });
-        setIsLoading(false);
-        return;
-      }
-
       console.log("Staff key validated, proceeding with registration...");
 
       // Make sure we pass the staff_key in the correct format
@@ -202,13 +209,37 @@ const Register = () => {
                 onChange={(e) => setStaffKey(e.target.value)}
                 required
                 disabled={isLoading}
-                className="bg-darkGrey border-silver/20"
+                className={`bg-darkGrey border-silver/20 ${
+                  staffKey && !isValidating ? 
+                    (staffKeyInfo.isValid ? 'border-green-500' : 'border-red-500') : 
+                    ''
+                }`}
               />
               <p className="text-xs text-silver/70">
                 Enter your staff key (CEO###, AD####, or EN####)
               </p>
+              
+              {staffKey && !isValidating && !staffKeyInfo.isValid && (
+                <Alert variant="destructive" className="mt-2 py-2">
+                  <AlertDescription>
+                    This staff key is invalid or inactive
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {staffKey && !isValidating && staffKeyInfo.isValid && staffKeyInfo.isAssigned && (
+                <Alert className="mt-2 py-2 bg-amber-500/20 border-amber-500 text-amber-200">
+                  <AlertDescription>
+                    This staff key is already assigned to another account
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={isLoading || isValidating || (staffKey && staffKeyInfo.isAssigned)}
+            >
               {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
