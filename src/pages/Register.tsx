@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -232,23 +233,44 @@ const Register = () => {
               }
             }
             
-            const { error: createCustomerError } = await supabase
+            // Fix the issue with onConflict - use upsert pattern instead
+            const customerData = {
+              id: data.user.id,
+              name: email.split('@')[0],
+              email: email,
+              phone: '',
+              status: 'Active',
+              sales_rep_id: '00000000-0000-0000-0000-000000000000',
+              staff_key: staffKey,
+              revenue: '$0'
+            };
+            
+            // First check if record exists
+            const { data: existingCustomer } = await supabase
               .from('customers')
-              .insert({
-                id: data.user.id,
-                name: email.split('@')[0],
-                email: email,
-                phone: '',
-                status: 'Active',
-                sales_rep_id: '00000000-0000-0000-0000-000000000000',
-                staff_key: staffKey,
-                revenue: '$0'
-              })
-              .onConflict('id')
-              .ignore();
+              .select('id')
+              .eq('id', data.user.id)
+              .maybeSingle();
               
-            if (createCustomerError) {
-              console.error("Error creating/updating customer record:", createCustomerError);
+            if (existingCustomer) {
+              // Update existing record
+              const { error: updateCustomerError } = await supabase
+                .from('customers')
+                .update(customerData)
+                .eq('id', data.user.id);
+                
+              if (updateCustomerError) {
+                console.error("Error updating customer record:", updateCustomerError);
+              }
+            } else {
+              // Insert new record
+              const { error: createCustomerError } = await supabase
+                .from('customers')
+                .insert(customerData);
+                
+              if (createCustomerError) {
+                console.error("Error creating customer record:", createCustomerError);
+              }
             }
           } catch (err) {
             console.error("Error ensuring customer record creation:", err);
