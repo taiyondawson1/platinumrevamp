@@ -257,7 +257,8 @@ const Login = () => {
                     id: data.user.id,
                     role: 'customer',
                     staff_key: null,
-                    enrolled_by: staffKey
+                    enrolled_by: staffKey,
+                    enroller: staffKey
                   })
                   .single();
                 
@@ -274,12 +275,12 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
-                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
+                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
+                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
                 console.log("Created new profile as last resort");
               } else {
-                debugData.retryProfileData = { ...retryProfileData, enrolled_by: staffKey };
-                profileData = { ...retryProfileData, enrolled_by: staffKey };
+                debugData.retryProfileData = { ...retryProfileData, enrolled_by: staffKey, enroller: staffKey };
+                profileData = { ...retryProfileData, enrolled_by: staffKey, enroller: staffKey };
                 console.log("Successfully fixed and fetched profile:", retryProfileData);
               }
             } catch (fixErr) {
@@ -292,7 +293,8 @@ const Login = () => {
                     id: data.user.id,
                     role: 'customer',
                     staff_key: null,
-                    enrolled_by: staffKey
+                    enrolled_by: staffKey,
+                    enroller: staffKey
                   })
                   .single();
                 
@@ -309,8 +311,8 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
-                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
+                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
+                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
                 console.log("Created new profile as last resort");
               } catch (createErr) {
                 console.error("Error in last resort profile creation:", createErr);
@@ -533,6 +535,16 @@ const Login = () => {
                 console.warn("Non-blocking warning - Error fixing enrollment data:", fixEnrollmentError);
               } else {
                 console.log("Successfully fixed enrollment data");
+                
+                const { error: updateEnrollerError } = await supabase
+                  .from('profiles')
+                  .update({ enroller: staffKey })
+                  .eq('id', data.user.id);
+                  
+                if (updateEnrollerError) {
+                  console.warn("Non-blocking warning - Error updating enroller:", updateEnrollerError);
+                }
+                
                 toast({
                   title: "Enrollment Fixed",
                   description: "Your enrollment data has been updated",
@@ -607,7 +619,7 @@ const Login = () => {
             <div className="space-y-2">
               <Input
                 type="text"
-                placeholder="Enrolled by"
+                placeholder="Enroller"
                 value={staffKey}
                 onChange={(e) => setStaffKey(e.target.value)}
                 required

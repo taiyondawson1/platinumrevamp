@@ -73,10 +73,14 @@ serve(async (req) => {
 
     console.log("Found user:", userData);
 
-    // Update the profiles table with enrolled_by
+    // Update the profiles table with enrolled_by and enroller
     const { error: profileUpdateError } = await supabase
       .from('profiles')
-      .update({ enrolled_by: enrollmentKey, updated_at: new Date().toISOString() })
+      .update({ 
+        enrolled_by: enrollmentKey, 
+        enroller: enrollmentKey,
+        updated_at: new Date().toISOString() 
+      })
       .eq('id', userData.id);
 
     if (profileUpdateError) {
@@ -85,11 +89,12 @@ serve(async (req) => {
       console.log("Successfully updated profile with enrollment key");
     }
 
-    // Update the license_keys table with enrolled_by
+    // Update the license_keys table with enrolled_by and enroller
     const { error: licenseUpdateError } = await supabase
       .from('license_keys')
       .update({ 
-        enrolled_by: enrollmentKey, 
+        enrolled_by: enrollmentKey,
+        enroller: enrollmentKey,
         staff_key: userData.role === 'customer' ? null : enrollmentKey 
       })
       .eq('user_id', userData.id);
@@ -100,10 +105,13 @@ serve(async (req) => {
       console.log("Successfully updated license key with enrollment key");
     }
 
-    // Update the customer_accounts table with enrolled_by
+    // Update the customer_accounts table with enrolled_by and enroller
     const { error: accountUpdateError } = await supabase
       .from('customer_accounts')
-      .update({ enrolled_by: enrollmentKey })
+      .update({ 
+        enrolled_by: enrollmentKey,
+        enroller: enrollmentKey 
+      })
       .eq('user_id', userData.id);
 
     if (accountUpdateError) {
@@ -112,11 +120,12 @@ serve(async (req) => {
       console.log("Successfully updated customer account with enrollment key");
     }
 
-    // Update the customers table - clear staff_key for customers, set it for staff
+    // Update the customers table with enroller - clear staff_key for customers, set it for staff
     const { error: customerUpdateError } = await supabase
       .from('customers')
       .update({ 
         staff_key: userData.role === 'customer' ? null : enrollmentKey,
+        enroller: userData.role === 'customer' ? enrollmentKey : null,
         updated_at: new Date().toISOString()
       })
       .eq('id', userData.id);

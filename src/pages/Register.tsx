@@ -112,7 +112,7 @@ const Register = () => {
         staffKey,
         isStaffKeyFormat,
         role: isStaffRegistration ? staffKeyInfo.role : 'customer',
-        enrolled_by: !isStaffRegistration ? staffKey : null,
+        enroller: !isStaffRegistration ? staffKey : null,
         staff_key: isStaffRegistration ? staffKey : null
       });
 
@@ -123,6 +123,7 @@ const Register = () => {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
             role: isStaffRegistration ? staffKeyInfo.role : 'customer',
+            enroller: !isStaffRegistration ? staffKey : null,
             enrolled_by: !isStaffRegistration ? staffKey : null,
             staff_key: isStaffRegistration ? staffKey : null
           }
@@ -272,7 +273,8 @@ const Register = () => {
             const { error: updateProfileError } = await supabase
               .from('profiles')
               .update({
-                enrolled_by: staffKey
+                enrolled_by: staffKey,
+                enroller: staffKey
               })
               .eq('id', data.user.id);
               
@@ -382,7 +384,7 @@ const Register = () => {
             <div className="space-y-2">
               <Input
                 type="text"
-                placeholder="Enrolled by"
+                placeholder="Enroller"
                 value={staffKey}
                 onChange={(e) => setStaffKey(e.target.value)}
                 required

@@ -183,6 +183,7 @@ export type Database = {
           created_at: string
           email: string
           enrolled_by: string | null
+          enroller: string | null
           id: string
           license_key: string | null
           name: string
@@ -195,6 +196,7 @@ export type Database = {
           created_at?: string
           email: string
           enrolled_by?: string | null
+          enroller?: string | null
           id?: string
           license_key?: string | null
           name: string
@@ -207,6 +209,7 @@ export type Database = {
           created_at?: string
           email?: string
           enrolled_by?: string | null
+          enroller?: string | null
           id?: string
           license_key?: string | null
           name?: string
@@ -265,6 +268,7 @@ export type Database = {
         Row: {
           created_at: string
           email: string
+          enroller: string | null
           id: string
           name: string
           phone: string | null
@@ -277,6 +281,7 @@ export type Database = {
         Insert: {
           created_at?: string
           email: string
+          enroller?: string | null
           id?: string
           name: string
           phone?: string | null
@@ -289,6 +294,7 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string
+          enroller?: string | null
           id?: string
           name?: string
           phone?: string | null
@@ -306,6 +312,7 @@ export type Database = {
           created_at: string | null
           email: string
           enrolled_by: string | null
+          enroller: string | null
           enroller_id: string | null
           expiry_date: string | null
           id: string
@@ -324,6 +331,7 @@ export type Database = {
           created_at?: string | null
           email: string
           enrolled_by?: string | null
+          enroller?: string | null
           enroller_id?: string | null
           expiry_date?: string | null
           id?: string
@@ -342,6 +350,7 @@ export type Database = {
           created_at?: string | null
           email?: string
           enrolled_by?: string | null
+          enroller?: string | null
           enroller_id?: string | null
           expiry_date?: string | null
           id?: string
@@ -483,6 +492,7 @@ export type Database = {
         Row: {
           created_at: string | null
           enrolled_by: string | null
+          enroller: string | null
           id: string
           role: Database["public"]["Enums"]["user_role"]
           staff_key: string | null
@@ -491,6 +501,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           enrolled_by?: string | null
+          enroller?: string | null
           id: string
           role?: Database["public"]["Enums"]["user_role"]
           staff_key?: string | null
@@ -499,6 +510,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           enrolled_by?: string | null
+          enroller?: string | null
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
           staff_key?: string | null
