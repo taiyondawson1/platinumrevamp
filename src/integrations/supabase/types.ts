@@ -684,6 +684,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      repair_missing_customer_records: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       user_role: "ceo" | "admin" | "enroller" | "customer"

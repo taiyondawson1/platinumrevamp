@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,6 @@ import { useStaffKeyValidation } from "@/hooks/use-staff-key-validation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-// Staff key validation regex patterns
 const STAFF_KEY_PATTERNS = {
   CEO: /^CEO\d{3}$/,    // CEO followed by 3 digits
   ADMIN: /^AD\d{4}$/,   // AD followed by 4 digits
@@ -29,10 +27,8 @@ const Register = () => {
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugInfo, setDebugInfo] = useState<any>(null);
   
-  // Use our custom hook for real-time staff key validation
   const { staffKeyInfo, isLoading: isValidating } = useStaffKeyValidation(staffKey);
 
-  // Function to validate staff key format
   const validateStaffKeyFormat = (key: string): boolean => {
     return (
       STAFF_KEY_PATTERNS.CEO.test(key) ||
@@ -62,10 +58,8 @@ const Register = () => {
       return;
     }
 
-    // Validate if this is a staff key format
     const isStaffKeyFormat = validateStaffKeyFormat(staffKey);
     
-    // For staff registration, we need to validate the format
     if (isStaffKeyFormat && !staffKeyInfo.isValid) {
       toast({
         variant: "destructive",
@@ -84,7 +78,6 @@ const Register = () => {
     };
 
     try {
-      // Fix database triggers first
       try {
         console.log("Fixing database triggers before registration...");
         const { error: fixError } = await supabase.functions.invoke('fix-handle-new-user');
@@ -95,7 +88,6 @@ const Register = () => {
         console.warn("Non-blocking warning - Failed to call fix function:", fixErr);
       }
 
-      // Determine if this is a staff registration or customer registration
       const isStaffRegistration = isStaffKeyFormat && 
                                (staffKeyInfo.role === 'ceo' || 
                                 staffKeyInfo.role === 'admin' || 
@@ -103,7 +95,6 @@ const Register = () => {
       
       debugData.isStaffRegistration = isStaffRegistration;
       
-      // If this is a customer registration using staff key format, check if the key can be used for enrollment
       if (!isStaffRegistration && isStaffKeyFormat && !staffKeyInfo.canBeUsedForEnrollment) {
         toast({
           variant: "destructive",
@@ -124,19 +115,14 @@ const Register = () => {
         enrolled_by: !isStaffRegistration && isStaffKeyFormat ? staffKey : null
       });
 
-      // Make sure we pass the appropriate data for the user type
       const userData = {
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
-            // For staff members we associate role and staff_key
-            // For customers, we'll use enrolled_by in the license_keys table
             role: isStaffRegistration ? staffKeyInfo.role : 'customer',
-            // For customers using staff key, pass the enrolling staff key
             enrolled_by: !isStaffRegistration && isStaffKeyFormat ? staffKey : null,
-            // Pass staff_key only for staff members
             staff_key: isStaffRegistration ? staffKey : null
           }
         }
@@ -175,14 +161,21 @@ const Register = () => {
         return;
       }
 
-      // Verify user was created successfully
       if (data?.user) {
         console.log("User created successfully:", data.user);
         
-        // For customers, we need to ensure the customer record is created
+        try {
+          console.log("Ensuring customer records are properly created...");
+          const { error: repairError } = await supabase.functions.invoke('repair-customer-records');
+          if (repairError) {
+            console.warn("Non-blocking warning - Error repairing customer records:", repairError);
+          }
+        } catch (repairErr) {
+          console.warn("Non-blocking warning - Failed to repair customer records:", repairErr);
+        }
+        
         if (!isStaffRegistration) {
           try {
-            // Ensure we have a valid license key record
             const { data: licenseData, error: licenseError } = await supabase
               .from('license_keys')
               .select('*')
@@ -192,7 +185,6 @@ const Register = () => {
             if (licenseError || !licenseData) {
               console.log("No license key found, attempting to create one...");
               
-              // Create license key record
               const { error: createLicenseError } = await supabase
                 .from('license_keys')
                 .insert({
@@ -214,7 +206,32 @@ const Register = () => {
               }
             }
             
-            // Directly create customer record
+            const { data: customerAccountData, error: customerAccountError } = await supabase
+              .from('customer_accounts')
+              .select('*')
+              .eq('user_id', data.user.id)
+              .maybeSingle();
+              
+            if (customerAccountError || !customerAccountData) {
+              console.log("No customer_accounts record found, attempting to create one...");
+              
+              const { error: createCustomerAccountError } = await supabase
+                .from('customer_accounts')
+                .insert({
+                  user_id: data.user.id,
+                  name: email.split('@')[0],
+                  email: email,
+                  phone: '',
+                  status: 'active',
+                  enrolled_by: staffKey,
+                  license_key: licenseData ? licenseData.license_key : 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase()
+                });
+                
+              if (createCustomerAccountError) {
+                console.error("Error creating customer_accounts record:", createCustomerAccountError);
+              }
+            }
+            
             const { error: createCustomerError } = await supabase
               .from('customers')
               .insert({
@@ -226,10 +243,12 @@ const Register = () => {
                 sales_rep_id: '00000000-0000-0000-0000-000000000000',
                 staff_key: staffKey,
                 revenue: '$0'
-              });
+              })
+              .onConflict('id')
+              .ignore();
               
             if (createCustomerError) {
-              console.error("Error creating customer record:", createCustomerError);
+              console.error("Error creating/updating customer record:", createCustomerError);
             }
           } catch (err) {
             console.error("Error ensuring customer record creation:", err);
@@ -374,7 +393,6 @@ const Register = () => {
         </CardContent>
       </Card>
       
-      {/* Debug Dialog (only shown in development) */}
       {process.env.NODE_ENV === 'development' && (
         <Dialog open={showDebugDialog} onOpenChange={setShowDebugDialog}>
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">

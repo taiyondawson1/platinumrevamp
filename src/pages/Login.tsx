@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,6 @@ import { useStaffKeyValidation } from "@/hooks/use-staff-key-validation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-// Staff key validation regex patterns
 const STAFF_KEY_PATTERNS = {
   CEO: /^CEO\d{3}$/,    // CEO followed by 3 digits
   ADMIN: /^AD\d{4}$/,   // AD followed by 4 digits
@@ -28,10 +26,8 @@ const Login = () => {
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugInfo, setDebugInfo] = useState<any>(null);
   
-  // Use our custom hook for real-time staff key validation
   const { staffKeyInfo, isLoading: isValidating } = useStaffKeyValidation(staffKey);
 
-  // Function to validate staff key format
   const validateStaffKeyFormat = (key: string): boolean => {
     return (
       STAFF_KEY_PATTERNS.CEO.test(key) ||
@@ -43,7 +39,6 @@ const Login = () => {
   const repairCustomerRecord = async (userId: string, userEmail: string) => {
     console.log("Attempting to repair customer record for:", userEmail);
     try {
-      // First, fix any database triggers that might be broken
       const { error: fixError } = await supabase.functions.invoke('fix-handle-new-user');
       
       if (fixError) {
@@ -51,7 +46,6 @@ const Login = () => {
         return false;
       }
       
-      // Check if user has a license key
       const { data: licenseData, error: licenseError } = await supabase
         .from('license_keys')
         .select('*')
@@ -63,7 +57,6 @@ const Login = () => {
         return false;
       }
       
-      // If no license key exists, create one
       if (!licenseData) {
         console.log("No license key found, creating one...");
         const { error: createLicenseError } = await supabase
@@ -92,7 +85,6 @@ const Login = () => {
         console.log("License key exists:", licenseData.license_key);
       }
       
-      // Now check if customer record exists
       const { data: customerData, error: customerError } = await supabase
         .from('customers')
         .select('*')
@@ -104,11 +96,9 @@ const Login = () => {
         return false;
       }
       
-      // If no customer record exists, create one from license data or user data
       if (!customerData) {
         console.log("No customer record found, creating one...");
         
-        // Get the latest license data (in case we just created it)
         const { data: latestLicense } = await supabase
           .from('license_keys')
           .select('*')
@@ -162,7 +152,6 @@ const Login = () => {
       return;
     }
 
-    // Validate staff key format for staff members
     const isStaffKeyFormat = validateStaffKeyFormat(staffKey);
     
     setIsLoading(true);
@@ -176,7 +165,6 @@ const Login = () => {
     try {
       console.log("Attempting login with email:", email);
       
-      // Always call the fix-handle-new-user function first to ensure database is in good state
       try {
         console.log("Fixing database triggers before login...");
         const { error: fixError } = await supabase.functions.invoke('fix-handle-new-user');
@@ -209,13 +197,21 @@ const Login = () => {
 
       if (data?.user) {
         try {
-          // First we need to determine if this is a staff member or a customer
-          // Using let instead of const so we can reassign it later if needed
+          try {
+            console.log("Repairing customer records if needed...");
+            const { error: repairError } = await supabase.functions.invoke('repair-customer-records');
+            if (repairError) {
+              console.warn("Non-blocking warning - Error repairing customer records:", repairError);
+            }
+          } catch (repairErr) {
+            console.warn("Non-blocking warning - Failed to repair customer records:", repairErr);
+          }
+
           let { data: profileData, error: profileError } = await supabase
             .from('profiles')
             .select('role, staff_key')
             .eq('id', data.user.id)
-            .maybeSingle(); // Using maybeSingle instead of single to prevent errors if profile doesn't exist
+            .maybeSingle();
           
           debugData.profileData = profileData;
           debugData.profileError = profileError;
@@ -224,7 +220,6 @@ const Login = () => {
             console.error("Profile fetch error or missing profile:", profileError);
             setDebugInfo(debugData);
             
-            // Fix the profile by calling our edge function
             try {
               console.log("Attempting to fix profile issues...");
               const { error: fixError } = await supabase.functions.invoke('fix-handle-new-user');
@@ -232,7 +227,6 @@ const Login = () => {
                 console.error("Error fixing triggers:", fixError);
               }
 
-              // Try to fetch the profile again after fixing
               const { data: retryProfileData, error: retryProfileError } = await supabase
                 .from('profiles')
                 .select('role, staff_key')
@@ -240,7 +234,6 @@ const Login = () => {
                 .maybeSingle();
                 
               if (retryProfileError || !retryProfileData) {
-                // Create a simple profile directly as a last resort
                 const { error: createProfileError } = await supabase
                   .from('profiles')
                   .insert({
@@ -263,22 +256,17 @@ const Login = () => {
                   return;
                 }
                 
-                // Set profile data manually since we just created it
                 debugData.retryProfileData = { role: 'customer', staff_key: null };
-                // Now we can safely reassign profileData because it's a let variable
                 profileData = { role: 'customer', staff_key: null };
                 console.log("Created new profile as last resort");
               } else {
-                // Continue with the retry data
                 debugData.retryProfileData = retryProfileData;
-                // Now we can safely reassign profileData because it's a let variable
                 profileData = retryProfileData;
                 console.log("Successfully fixed and fetched profile:", retryProfileData);
               }
             } catch (fixErr) {
               console.error("Error calling fix function:", fixErr);
               
-              // Last resort: create a profile directly
               try {
                 const { error: createProfileError } = await supabase
                   .from('profiles')
@@ -302,8 +290,7 @@ const Login = () => {
                   return;
                 }
                 
-                // Set profile data manually since we just created it
-                // Now we can safely reassign profileData because it's a let variable
+                debugData.retryProfileData = { role: 'customer', staff_key: null };
                 profileData = { role: 'customer', staff_key: null };
                 console.log("Created new profile as last resort");
               } catch (createErr) {
@@ -325,7 +312,6 @@ const Login = () => {
           console.log("User role:", userRole);
           debugData.userRole = userRole;
           
-          // Staff members (CEO, ADMIN, ENROLLER) must use a staff key format and it must be valid
           if (userRole === 'ceo' || userRole === 'admin' || userRole === 'enroller') {
             if (!isStaffKeyFormat) {
               await supabase.auth.signOut();
@@ -339,7 +325,6 @@ const Login = () => {
               return;
             }
             
-            // Check if the staff key exists in the staff_keys table
             const { data: staffData, error: staffError } = await supabase
               .from('staff_keys')
               .select('key, user_id, role')
@@ -362,7 +347,6 @@ const Login = () => {
               return;
             }
             
-            // If the key exists but is assigned to a different user with a different role
             if (staffData.user_id && 
                 staffData.user_id !== data.user.id && 
                 staffData.role !== userRole) {
@@ -377,7 +361,6 @@ const Login = () => {
               return;
             }
             
-            // If the key exists but is not assigned to any user, update it
             if (!staffData.user_id) {
               const { error: updateError } = await supabase
                 .from('staff_keys')
@@ -388,21 +371,15 @@ const Login = () => {
               
               if (updateError) {
                 console.error("Error assigning staff key:", updateError);
-                // Continue with login even if update fails
               }
             }
-          } 
-          // For customers, we don't need staff key format validation
-          else if (userRole === 'customer') {
-            // Repair or create customer record if necessary
+          } else if (userRole === 'customer') {
             const repairSuccess = await repairCustomerRecord(data.user.id, data.user.email || email);
             
             if (!repairSuccess) {
               console.warn("Warning: Unable to repair customer record. Some features may not work correctly.");
-              // Continue with login anyway since this is non-critical
             }
             
-            // For customers, we check if they have a license key
             const { data: licenseData, error: licenseError } = await supabase
               .from('license_keys')
               .select('enrolled_by, license_key')
@@ -414,16 +391,11 @@ const Login = () => {
             
             if (licenseError) {
               console.error("License key fetch error:", licenseError);
-              // Don't fail login if we can't fetch license info
             }
             
-            // If we have a license record with enrolled_by
             if (licenseData && licenseData.enrolled_by) {
-              // If the staff key doesn't match the one that enrolled them
               if (licenseData.enrolled_by !== staffKey) {
-                // Only if the new key is valid for enrollment, update their enrollment
                 if (isStaffKeyFormat && staffKeyInfo.canBeUsedForEnrollment) {
-                  // Update the enrolled_by field
                   const { error: updateError } = await supabase
                     .from('license_keys')
                     .update({ enrolled_by: staffKey, staff_key: staffKey })
@@ -433,9 +405,7 @@ const Login = () => {
                   
                   if (updateError) {
                     console.error("Error updating enrolled_by:", updateError);
-                    // Continue with login even if update fails
                   } else {
-                    // If we successfully updated the license key, also update the customer record
                     const { error: customerUpdateError } = await supabase
                       .from('customers')
                       .update({ staff_key: staffKey })
@@ -446,12 +416,8 @@ const Login = () => {
                     }
                   }
                 }
-                // If not a valid staff key, just continue with login using their existing enrollment
               }
-            } 
-            // No license record yet or no enrolled_by
-            else if (isStaffKeyFormat && staffKeyInfo.canBeUsedForEnrollment) {
-              // Create or update license record with this enrollment key
+            } else if (isStaffKeyFormat && staffKeyInfo.canBeUsedForEnrollment) {
               const { error: upsertError } = await supabase
                 .from('license_keys')
                 .upsert({
@@ -472,7 +438,6 @@ const Login = () => {
               
               if (upsertError) {
                 console.error("Error creating/updating license record:", upsertError);
-                // Try to create a customer record directly as a fallback
                 const { error: customerCreateError } = await supabase
                   .from('customers')
                   .insert({
@@ -492,12 +457,8 @@ const Login = () => {
                 }
               }
             }
-            // If customer tried to use a non-enrolling key, we still let them login
-            // but we don't update their license record
           } else {
-            // Unknown role, this is a server error, role should be set in the profiles table
             console.error("Unknown user role:", userRole);
-            // Instead of failing, we'll attempt to fix the profile by setting to customer
             try {
               const { error: fixProfileError } = await supabase
                 .from('profiles')
@@ -522,7 +483,6 @@ const Login = () => {
                 return;
               }
               
-              // Try repairing customer record
               await repairCustomerRecord(data.user.id, data.user.email || email);
             } catch (fixErr) {
               console.error("Error fixing profile:", fixErr);
@@ -667,7 +627,6 @@ const Login = () => {
         </CardContent>
       </Card>
       
-      {/* Debug Dialog (only shown in development) */}
       {process.env.NODE_ENV === 'development' && (
         <Dialog open={showDebugDialog} onOpenChange={setShowDebugDialog}>
           <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">

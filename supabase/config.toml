@@ -6,3 +6,5 @@ verify_jwt = false
 verify_jwt = false
 [functions.update-handle-new-user]
 verify_jwt = false
+[functions.repair-customer-records]
+verify_jwt = false
