@@ -27,9 +27,47 @@ serve(async (req) => {
       }
     )
 
+    // First make sure the generate_random_license_key function exists
+    const { error: keyFunctionError } = await supabase.rpc('execute_admin_query', {
+      query_text: `
+        -- Ensure we have a function to generate random license keys
+        CREATE OR REPLACE FUNCTION public.generate_random_license_key()
+        RETURNS text
+        LANGUAGE plpgsql
+        AS $function$
+        DECLARE
+            chars TEXT := 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            result TEXT := '';
+            i INTEGER;
+            j INTEGER;
+        BEGIN
+            FOR i IN 1..5 LOOP
+                FOR j IN 1..5 LOOP
+                    result := result || substr(chars, floor(random() * length(chars) + 1)::integer, 1);
+                END LOOP;
+                IF i < 5 THEN
+                    result := result || '-';
+                END IF;
+            END LOOP;
+            RETURN result;
+        END;
+        $function$;
+      `
+    })
+
+    if (keyFunctionError) {
+      console.error('Error creating license key generation function:', keyFunctionError)
+      // Continue despite this error as it might just be that the function already exists
+    }
+
     // Update the handle_new_user function to properly handle customer roles
     const { error } = await supabase.rpc('execute_admin_query', {
       query_text: `
+        -- Drop the existing triggers if they exist to avoid conflicts
+        DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+        DROP TRIGGER IF EXISTS on_auth_user_created_license_key ON auth.users;
+
+        -- Update handle_new_user function to just handle profile creation
         CREATE OR REPLACE FUNCTION public.handle_new_user()
         RETURNS trigger
         LANGUAGE plpgsql
@@ -69,7 +107,8 @@ serve(async (req) => {
             staff_key = CASE 
                           WHEN valid_role = 'customer' THEN NULL
                           ELSE COALESCE(new.raw_user_meta_data->>'staff_key', profiles.staff_key)
-                        END;
+                        END,
+            updated_at = NOW();
           
           RETURN NEW;
         END;
@@ -102,17 +141,10 @@ serve(async (req) => {
           role_text TEXT := COALESCE(new.raw_user_meta_data->>'role', 'customer');
           retry_count INTEGER := 0;
           max_retries INTEGER := 3;
-          is_customer BOOLEAN;
         BEGIN
-          -- Only create license keys for customers
-          is_customer := (role_text = 'customer');
+          -- Log for debugging
+          RAISE NOTICE 'Creating license key for user % with role %', new.id, role_text;
           
-          IF NOT is_customer THEN
-            -- Not a customer, don't create a license key
-            RETURN NEW;
-          END IF;
-          
-          -- For customers, ensure they have a license key
           -- Generate a new unique license key
           LOOP
             new_license_key := public.generate_random_license_key();
@@ -150,7 +182,7 @@ serve(async (req) => {
               '',
               'EA-001',
               enrolled_by_key,
-              enrolled_by_key
+              COALESCE(enrolled_by_key, new.raw_user_meta_data->>'staff_key')
           )
           ON CONFLICT (user_id) DO NOTHING;
               
@@ -198,18 +230,18 @@ serve(async (req) => {
           ) 
           VALUES (
             NEW.user_id, 
-            NEW.name,
-            NEW.email,
+            COALESCE(NEW.name, 'Customer'),
+            COALESCE(NEW.email, ''),
             COALESCE(NEW.phone, ''),
             COALESCE(NEW.status, 'Active'),
             '00000000-0000-0000-0000-000000000000'::uuid,
-            NEW.staff_key,
+            COALESCE(NEW.staff_key, NEW.enrolled_by),
             '$0'
           )
           ON CONFLICT (id) 
           DO UPDATE SET
-            name = EXCLUDED.name,
-            email = EXCLUDED.email,
+            name = COALESCE(EXCLUDED.name, customers.name),
+            email = COALESCE(EXCLUDED.email, customers.email),
             phone = COALESCE(EXCLUDED.phone, customers.phone),
             status = COALESCE(EXCLUDED.status, customers.status),
             staff_key = COALESCE(EXCLUDED.staff_key, customers.staff_key),
@@ -240,6 +272,8 @@ serve(async (req) => {
         DECLARE
           user_record RECORD;
           license_record RECORD;
+          new_license_key TEXT;
+          retry_count INTEGER;
         BEGIN
           -- Find any auth users without valid profiles
           FOR user_record IN 
@@ -256,6 +290,58 @@ serve(async (req) => {
               
             -- Log the fix
             RAISE NOTICE 'Fixed profile for user %: %', user_record.id, user_record.email;
+          END LOOP;
+          
+          -- Find any users without license keys
+          FOR user_record IN 
+            SELECT au.id, au.email, p.role, p.staff_key
+            FROM auth.users au
+            JOIN public.profiles p ON au.id = p.id
+            LEFT JOIN public.license_keys lk ON au.id = lk.user_id
+            WHERE lk.id IS NULL
+          LOOP
+            -- Generate a unique license key
+            retry_count := 0;
+            LOOP
+                new_license_key := public.generate_random_license_key();
+                
+                -- Exit when we find a unique key or hit max retries
+                EXIT WHEN NOT EXISTS (
+                    SELECT 1 FROM public.license_keys 
+                    WHERE license_key = new_license_key
+                ) OR retry_count >= 3;
+                
+                retry_count := retry_count + 1;
+            END LOOP;
+            
+            -- Insert the license key record
+            INSERT INTO public.license_keys (
+                user_id,
+                license_key,
+                account_numbers,
+                status,
+                subscription_type,
+                name,
+                email,
+                phone,
+                product_code,
+                staff_key,
+                enrolled_by
+            ) VALUES (
+                user_record.id,
+                new_license_key,
+                '{}',
+                'active',
+                'standard',
+                split_part(user_record.email, '@', 1),
+                user_record.email,
+                '',
+                'EA-001', 
+                user_record.staff_key,
+                user_record.staff_key
+            );
+            
+            RAISE NOTICE 'Created license key for user %: %', user_record.id, new_license_key;
           END LOOP;
           
           -- Find any license_keys without corresponding customers
@@ -306,64 +392,48 @@ serve(async (req) => {
       })
     }
 
-    // Execute a force sync of all license keys to customers
-    const { error: forceSyncError } = await supabase.rpc('execute_admin_query', {
+    // Recreate the triggers to run the functions
+    const { error: triggerError } = await supabase.rpc('execute_admin_query', {
       query_text: `
-        -- Force sync all license keys to customers
-        DO $$
-        DECLARE
-          license_record RECORD;
-        BEGIN
-          FOR license_record IN
-            SELECT user_id, name, email, phone, status, staff_key
-            FROM public.license_keys
-          LOOP
-            INSERT INTO public.customers (
-              id,
-              name,
-              email,
-              phone,
-              status,
-              sales_rep_id,
-              staff_key,
-              revenue
-            ) 
-            VALUES (
-              license_record.user_id, 
-              license_record.name,
-              license_record.email,
-              COALESCE(license_record.phone, ''),
-              COALESCE(license_record.status, 'Active'),
-              '00000000-0000-0000-0000-000000000000'::uuid,
-              license_record.staff_key,
-              '$0'
-            )
-            ON CONFLICT (id) 
-            DO UPDATE SET
-              name = EXCLUDED.name,
-              email = EXCLUDED.email,
-              phone = COALESCE(EXCLUDED.phone, customers.phone),
-              status = COALESCE(EXCLUDED.status, customers.status),
-              staff_key = COALESCE(EXCLUDED.staff_key, customers.staff_key),
-              updated_at = NOW();
-          END LOOP;
-        END $$;
+        -- Recreate both triggers to ensure both functions get called
+        CREATE TRIGGER on_auth_user_created
+            AFTER INSERT ON auth.users
+            FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+            
+        CREATE TRIGGER on_auth_user_created_license_key
+            AFTER INSERT ON auth.users
+            FOR EACH ROW EXECUTE FUNCTION public.create_customer_license();
       `
     })
 
-    if (forceSyncError) {
-      console.error('Error during force sync of license keys to customers:', forceSyncError)
+    if (triggerError) {
+      console.error('Error recreating triggers:', triggerError)
       return new Response(JSON.stringify({ 
-        error: 'Failed to force sync license keys to customers',
-        details: forceSyncError
+        error: 'Failed to recreate triggers',
+        details: triggerError
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500
       })
     }
 
+    // Update the config to enable the functions
+    const { error: configError } = await supabase.rpc('execute_admin_query', {
+      query_text: `
+        -- Make sure the functions are enabled in config
+        UPDATE supabase_functions.config
+        SET verify_jwt = false
+        WHERE function_name IN ('update-handle-new-user', 'fix-handle-new-user');
+      `
+    })
+
+    if (configError) {
+      console.error('Error updating function config:', configError)
+      // This is not critical, so continue anyway
+    }
+
     return new Response(JSON.stringify({ 
-      message: 'Database functions and triggers updated successfully, customer records synced.'
+      message: 'Database functions and triggers updated successfully. All accounts will now be properly stored in the license_keys table.'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200

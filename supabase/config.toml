@@ -2,3 +2,7 @@
 project_id = "qzbwxtegqsusmfwjauwh"
 [functions.validate-license]
 verify_jwt = false
+[functions.fix-handle-new-user]
+verify_jwt = false
+[functions.update-handle-new-user]
+verify_jwt = false
