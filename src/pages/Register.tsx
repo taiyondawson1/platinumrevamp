@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -100,7 +99,7 @@ const Register = () => {
         toast({
           variant: "destructive",
           title: "Invalid Enrollment Key",
-          description: "This staff key cannot be used for customer enrollment",
+          description: "This enrollment key cannot be used for customer enrollment",
         });
         setDebugInfo(debugData);
         setIsLoading(false);
@@ -113,7 +112,8 @@ const Register = () => {
         staffKey,
         isStaffKeyFormat,
         role: isStaffRegistration ? staffKeyInfo.role : 'customer',
-        enrolled_by: !isStaffRegistration && isStaffKeyFormat ? staffKey : null
+        enrolled_by: !isStaffRegistration ? staffKey : null,
+        staff_key: isStaffRegistration ? staffKey : null
       });
 
       const userData = {
@@ -123,7 +123,7 @@ const Register = () => {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
             role: isStaffRegistration ? staffKeyInfo.role : 'customer',
-            enrolled_by: !isStaffRegistration && isStaffKeyFormat ? staffKey : null,
+            enrolled_by: !isStaffRegistration ? staffKey : null,
             staff_key: isStaffRegistration ? staffKey : null
           }
         }
@@ -233,7 +233,6 @@ const Register = () => {
               }
             }
             
-            // Fix the issue with onConflict - use upsert pattern instead
             const customerData = {
               id: data.user.id,
               name: email.split('@')[0],
@@ -245,7 +244,6 @@ const Register = () => {
               revenue: '$0'
             };
             
-            // First check if record exists
             const { data: existingCustomer } = await supabase
               .from('customers')
               .select('id')
@@ -253,7 +251,6 @@ const Register = () => {
               .maybeSingle();
               
             if (existingCustomer) {
-              // Update existing record
               const { error: updateCustomerError } = await supabase
                 .from('customers')
                 .update(customerData)
@@ -263,7 +260,6 @@ const Register = () => {
                 console.error("Error updating customer record:", updateCustomerError);
               }
             } else {
-              // Insert new record
               const { error: createCustomerError } = await supabase
                 .from('customers')
                 .insert(customerData);

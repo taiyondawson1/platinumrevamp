@@ -1,161 +1,136 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
+import { corsHeaders } from '../_shared/cors.ts'
+
+const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
 
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    // Get Supabase client with admin privileges
-    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // 1. First, check if the trigger for handle_new_user exists
-    const { data: triggerData, error: triggerError } = await supabase.rpc(
-      'execute_admin_query',
-      { 
-        query_text: `
-          SELECT trigger_name 
-          FROM information_schema.triggers 
-          WHERE event_object_table = 'users' 
-          AND trigger_name = 'on_auth_user_created'
-        `
-      }
-    );
-
-    if (triggerError) {
-      console.error("Error checking trigger:", triggerError);
-      return new Response(
-        JSON.stringify({ success: false, error: triggerError.message }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-      );
-    }
-
-    // 2. If the trigger doesn't exist, recreate it
-    if (!triggerData || triggerData.length === 0) {
-      console.log("Recreating handle_new_user trigger...");
-      
-      const { error: createTriggerError } = await supabase.rpc(
-        'execute_admin_query',
-        { 
-          query_text: `
-            CREATE TRIGGER on_auth_user_created
-            AFTER INSERT ON auth.users
-            FOR EACH ROW EXECUTE FUNCTION public.handle_new_user()
-          `
-        }
-      );
-
-      if (createTriggerError) {
-        console.error("Error recreating trigger:", createTriggerError);
-        return new Response(
-          JSON.stringify({ success: false, error: createTriggerError.message }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-        );
-      }
-    }
-
-    // 3. Check if the license key trigger exists
-    const { data: licenseKeyTriggerData, error: licenseKeyTriggerError } = await supabase.rpc(
-      'execute_admin_query',
-      { 
-        query_text: `
-          SELECT trigger_name 
-          FROM information_schema.triggers 
-          WHERE event_object_table = 'users' 
-          AND trigger_name = 'on_auth_user_created_license_key'
-        `
-      }
-    );
-
-    if (licenseKeyTriggerError) {
-      console.error("Error checking license key trigger:", licenseKeyTriggerError);
-    }
-
-    // 4. If the license key trigger doesn't exist, recreate it
-    if (!licenseKeyTriggerData || licenseKeyTriggerData.length === 0) {
-      console.log("Recreating create_customer_license trigger...");
-      
-      const { error: createLicenseTriggerError } = await supabase.rpc(
-        'execute_admin_query',
-        { 
-          query_text: `
-            CREATE TRIGGER on_auth_user_created_license_key
-            AFTER INSERT ON auth.users
-            FOR EACH ROW EXECUTE FUNCTION public.create_customer_license()
-          `
-        }
-      );
-
-      if (createLicenseTriggerError) {
-        console.error("Error recreating license key trigger:", createLicenseTriggerError);
-      }
-    }
-
-    // 5. Check for and fix the customer_accounts sync trigger
-    const { data: syncTriggerData, error: syncTriggerError } = await supabase.rpc(
-      'execute_admin_query',
-      { 
-        query_text: `
-          SELECT trigger_name 
-          FROM information_schema.triggers 
-          WHERE event_object_table = 'license_keys' 
-          AND trigger_name = 'sync_license_key_to_customer_accounts_trigger'
-        `
-      }
-    );
-
-    if (syncTriggerError) {
-      console.error("Error checking sync trigger:", syncTriggerError);
-    }
-
-    // 6. If the sync trigger doesn't exist, recreate it
-    if (!syncTriggerData || syncTriggerData.length === 0) {
-      console.log("Recreating sync_license_key_to_customer_accounts trigger...");
-      
-      const { error: createSyncTriggerError } = await supabase.rpc(
-        'execute_admin_query',
-        { 
-          query_text: `
-            CREATE TRIGGER sync_license_key_to_customer_accounts_trigger
-            AFTER INSERT OR UPDATE ON public.license_keys
-            FOR EACH ROW EXECUTE FUNCTION public.sync_license_key_to_customer_accounts()
-          `
-        }
-      );
-
-      if (createSyncTriggerError) {
-        console.error("Error recreating sync trigger:", createSyncTriggerError);
-      }
-    }
-
-    // 7. Repair any missing customer records
-    const { error: repairError } = await supabase.rpc('repair_missing_customer_records');
+    console.log("Starting fix-handle-new-user function...")
     
-    if (repairError) {
-      console.error("Error repairing customer records:", repairError);
+    // Create a Supabase client with the service role key (has admin rights)
+    const supabase = createClient(
+      supabaseUrl,
+      supabaseServiceKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    )
+
+    // Update the handle_new_user function to properly handle staff_key and enrolled_by
+    const { error } = await supabase.rpc('execute_admin_query', {
+      query_text: `
+        -- First, drop the existing triggers if they exist to avoid conflicts
+        DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+        DROP TRIGGER IF EXISTS on_auth_user_created_license_key ON auth.users;
+
+        -- Update handle_new_user function to properly handle staff_key for staff vs customers
+        CREATE OR REPLACE FUNCTION public.handle_new_user()
+        RETURNS trigger
+        LANGUAGE plpgsql
+        SECURITY DEFINER
+        AS $$
+        DECLARE
+          valid_role public.user_role;
+          role_text text;
+          staff_key_value text;
+          is_staff boolean;
+        BEGIN
+          -- First, safely extract and validate the role
+          role_text := COALESCE(new.raw_user_meta_data->>'role', 'customer');
+          
+          -- Validate the role and convert to enum
+          CASE role_text
+            WHEN 'ceo' THEN valid_role := 'ceo'::public.user_role;
+            WHEN 'admin' THEN valid_role := 'admin'::public.user_role;
+            WHEN 'enroller' THEN valid_role := 'enroller'::public.user_role;
+            ELSE valid_role := 'customer'::public.user_role;
+          END CASE;
+          
+          -- Determine if this is a staff member (non-customer)
+          is_staff := (valid_role = 'ceo' OR valid_role = 'admin' OR valid_role = 'enroller');
+          
+          -- Set staff_key based on role - only for staff members
+          IF is_staff THEN
+            -- Staff members get their staff_key stored
+            staff_key_value := new.raw_user_meta_data->>'staff_key';
+          ELSE
+            -- Customers should never have a staff_key (they have enrolled_by instead)
+            staff_key_value := NULL;
+          END IF;
+          
+          -- Log for debugging
+          RAISE NOTICE 'Creating profile for user % with role % and staff_key %', new.id, valid_role, staff_key_value;
+          
+          -- Create the profile with the validated role and appropriate staff_key
+          INSERT INTO public.profiles (id, role, staff_key)
+          VALUES (new.id, valid_role, staff_key_value)
+          ON CONFLICT (id) DO UPDATE SET
+            role = EXCLUDED.role,
+            staff_key = EXCLUDED.staff_key,
+            updated_at = NOW();
+          
+          RETURN NEW;
+        EXCEPTION
+          WHEN others THEN
+            RAISE NOTICE 'Error creating profile: %', SQLERRM;
+            RETURN NEW;
+        END;
+        $$;
+
+        -- The create_customer_license function has already been updated in the SQL migration
+
+        -- Recreate both triggers to ensure both functions get called
+        CREATE TRIGGER on_auth_user_created
+            AFTER INSERT ON auth.users
+            FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+            
+        CREATE TRIGGER on_auth_user_created_license_key
+            AFTER INSERT ON auth.users
+            FOR EACH ROW EXECUTE FUNCTION public.create_customer_license();
+      `
+    })
+
+    if (error) {
+      console.error('Error updating handle_new_user function:', error)
+      return new Response(JSON.stringify({ 
+        error: 'Failed to update handle_new_user function',
+        details: error
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500
+      })
     }
 
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        message: "Database triggers and customer records successfully repaired" 
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-    );
-  } catch (error) {
-    console.error("Error in fix-handle-new-user:", error);
-    return new Response(
-      JSON.stringify({ success: false, error: error.message }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-    );
+    // Run the repair function to fix any existing records with incorrect data
+    const { error: repairError } = await supabase.rpc('repair_missing_customer_records')
+
+    if (repairError) {
+      console.error('Error running repair function:', repairError)
+      // Non-fatal error, continue with response
+    }
+
+    return new Response(JSON.stringify({ 
+      message: "Successfully updated database triggers and fixed existing records to properly handle enrollment keys."
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 200
+    })
+  } catch (err) {
+    console.error('Error:', err)
+    return new Response(JSON.stringify({ error: err.message }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500,
+    })
   }
-});
+})

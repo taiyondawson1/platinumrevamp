@@ -72,7 +72,7 @@ const Login = () => {
             phone: '',
             product_code: 'EA-001',
             enrolled_by: staffKey,
-            staff_key: staffKey
+            staff_key: null
           });
         
         if (createLicenseError) {
@@ -115,7 +115,7 @@ const Login = () => {
               phone: latestLicense.phone || '',
               status: 'Active',
               sales_rep_id: '00000000-0000-0000-0000-000000000000',
-              staff_key: latestLicense.staff_key || staffKey,
+              staff_key: null,
               revenue: '$0'
             });
           
@@ -398,7 +398,10 @@ const Login = () => {
                 if (isStaffKeyFormat && staffKeyInfo.canBeUsedForEnrollment) {
                   const { error: updateError } = await supabase
                     .from('license_keys')
-                    .update({ enrolled_by: staffKey, staff_key: staffKey })
+                    .update({ 
+                      enrolled_by: staffKey,
+                      staff_key: null
+                    })
                     .eq('user_id', data.user.id);
                   
                   debugData.licenseUpdateError = updateError;
@@ -408,7 +411,7 @@ const Login = () => {
                   } else {
                     const { error: customerUpdateError } = await supabase
                       .from('customers')
-                      .update({ staff_key: staffKey })
+                      .update({ staff_key: null })
                       .eq('id', data.user.id);
                     
                     if (customerUpdateError) {
@@ -423,7 +426,7 @@ const Login = () => {
                 .upsert({
                   user_id: data.user.id,
                   enrolled_by: staffKey,
-                  staff_key: staffKey,
+                  staff_key: null,
                   license_key: licenseData?.license_key || ('PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase()),
                   product_code: 'EA-001',
                   subscription_type: 'standard',
@@ -447,7 +450,7 @@ const Login = () => {
                     phone: '',
                     status: 'Active',
                     sales_rep_id: '00000000-0000-0000-0000-000000000000',
-                    staff_key: staffKey,
+                    staff_key: null,
                     revenue: '$0'
                   })
                   .single();
