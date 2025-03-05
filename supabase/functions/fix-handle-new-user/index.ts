@@ -27,6 +27,19 @@ serve(async (req) => {
       }
     )
 
+    // Ensure license_keys.staff_key can be NULL
+    const { error: alterTableError } = await supabase.rpc('execute_admin_query', {
+      query_text: `
+        -- Ensure that staff_key can be NULL in license_keys table
+        ALTER TABLE IF EXISTS public.license_keys ALTER COLUMN staff_key DROP NOT NULL;
+      `
+    });
+
+    if (alterTableError) {
+      console.error('Error updating license_keys table:', alterTableError);
+      // Non-fatal error, continue with function updates
+    }
+
     // Update the handle_new_user function to properly handle staff_key and enrolled_by
     const { error } = await supabase.rpc('execute_admin_query', {
       query_text: `
@@ -88,7 +101,121 @@ serve(async (req) => {
         END;
         $$;
 
-        -- The create_customer_license function has already been updated in the SQL migration
+        -- Update the create_customer_license function to handle staff_key properly
+        CREATE OR REPLACE FUNCTION public.create_customer_license()
+        RETURNS trigger
+        LANGUAGE plpgsql
+        SECURITY DEFINER
+        AS $$
+        DECLARE
+          new_license_key TEXT;
+          enrolled_by_key TEXT := new.raw_user_meta_data->>'enrolled_by';
+          role_text TEXT := COALESCE(new.raw_user_meta_data->>'role', 'customer');
+          retry_count INTEGER := 0;
+          max_retries INTEGER := 3;
+          customer_name TEXT;
+          is_staff BOOLEAN;
+        BEGIN
+          -- Log for debugging
+          RAISE NOTICE 'Creating license key for user % with role % and enrolled_by %', new.id, role_text, enrolled_by_key;
+          
+          -- Determine if this is a staff member or customer
+          is_staff := (role_text = 'ceo' OR role_text = 'admin' OR role_text = 'enroller');
+          
+          -- Use email or meta data for customer name 
+          customer_name := COALESCE(new.raw_user_meta_data->>'name', split_part(NEW.email, '@', 1));
+          
+          -- Generate a new unique license key
+          LOOP
+            new_license_key := public.generate_random_license_key();
+            
+            -- Exit when we find a unique key or hit max retries
+            EXIT WHEN NOT EXISTS (
+                SELECT 1 FROM public.license_keys 
+                WHERE license_key = new_license_key
+            ) OR retry_count >= max_retries;
+            
+            retry_count := retry_count + 1;
+          END LOOP;
+
+          -- Insert the license key with proper field assignments
+          INSERT INTO public.license_keys (
+              user_id,
+              license_key,
+              account_numbers,
+              status,
+              subscription_type,
+              name,
+              email,
+              phone,
+              product_code,
+              enrolled_by,    -- Only set for customers 
+              staff_key       -- Only set for staff members
+          ) VALUES (
+              NEW.id,
+              new_license_key,
+              '{}',
+              'active',
+              'standard',
+              customer_name,
+              NEW.email,
+              '',
+              'EA-001',
+              CASE WHEN NOT is_staff THEN enrolled_by_key ELSE NULL END,         -- Customers: enrolled_by = key used
+              CASE WHEN is_staff THEN new.raw_user_meta_data->>'staff_key' ELSE NULL END  -- Staff: staff_key = their own key
+          )
+          ON CONFLICT (user_id) DO NOTHING;
+              
+          -- Also insert into customer_accounts table with proper fields
+          INSERT INTO public.customer_accounts (
+              user_id,
+              name,
+              email,
+              phone,
+              status,
+              enrolled_by,    -- Only set for customers
+              license_key
+          ) VALUES (
+              NEW.id,
+              customer_name,
+              NEW.email,
+              '',
+              'active',
+              CASE WHEN NOT is_staff THEN enrolled_by_key ELSE NULL END,
+              new_license_key
+          )
+          ON CONFLICT (user_id) DO NOTHING;
+          
+          -- Also create customer record if it doesn't exist
+          INSERT INTO public.customers (
+              id,
+              name,
+              email,
+              phone,
+              status,
+              sales_rep_id,
+              staff_key,
+              revenue
+          ) VALUES (
+              NEW.id,
+              customer_name,
+              NEW.email,
+              '',
+              'Active',
+              '00000000-0000-0000-0000-000000000000'::uuid,
+              CASE WHEN is_staff THEN new.raw_user_meta_data->>'staff_key' ELSE NULL END,
+              '$0'
+          )
+          ON CONFLICT (id) DO NOTHING;
+          
+          RETURN NEW;
+        EXCEPTION
+          WHEN others THEN
+            -- Log error but don't fail the entire transaction
+            RAISE NOTICE 'Error creating license key and customer account: %', SQLERRM;
+            RETURN NEW;
+        END;
+        $$;
 
         -- Recreate both triggers to ensure both functions get called
         CREATE TRIGGER on_auth_user_created
@@ -121,7 +248,8 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ 
-      message: "Successfully updated database triggers and fixed existing records to properly handle enrollment keys."
+      message: "Successfully updated database triggers and fixed existing records to properly handle enrollment keys.",
+      success: true
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200
