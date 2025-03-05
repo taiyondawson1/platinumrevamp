@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -91,7 +92,7 @@ const Login = () => {
             .from('profiles')
             .select('role, staff_key')
             .eq('id', data.user.id)
-            .single();
+            .maybeSingle(); // Using maybeSingle instead of single to prevent errors if profile doesn't exist
           
           debugData.profileData = profileData;
           debugData.profileError = profileError;
@@ -99,18 +100,51 @@ const Login = () => {
           if (profileError) {
             console.error("Profile fetch error:", profileError);
             setDebugInfo(debugData);
-            await supabase.auth.signOut();
-            toast({
-              variant: "destructive",
-              title: "Profile Error",
-              description: "Could not verify your account role. Please try again.",
-            });
-            setIsLoading(false);
-            setDebugInfo(debugData);
-            return;
+            
+            // Fix the profile by calling our edge function
+            try {
+              const { error: fixError } = await supabase.functions.invoke('fix-handle-new-user');
+              if (fixError) {
+                console.error("Error fixing triggers:", fixError);
+              }
+
+              // Try to fetch the profile again after fixing
+              const { data: retryProfileData, error: retryProfileError } = await supabase
+                .from('profiles')
+                .select('role, staff_key')
+                .eq('id', data.user.id)
+                .maybeSingle();
+                
+              if (retryProfileError || !retryProfileData) {
+                await supabase.auth.signOut();
+                toast({
+                  variant: "destructive",
+                  title: "Profile Error",
+                  description: "Could not verify your account role. Please try again.",
+                });
+                setIsLoading(false);
+                setDebugInfo(debugData);
+                return;
+              }
+              
+              // Continue with the retry data
+              debugData.retryProfileData = retryProfileData;
+              console.log("Successfully fixed and fetched profile:", retryProfileData);
+            } catch (fixErr) {
+              console.error("Error calling fix function:", fixErr);
+              await supabase.auth.signOut();
+              toast({
+                variant: "destructive",
+                title: "Profile Error",
+                description: "Could not verify your account role. Please try again.",
+              });
+              setIsLoading(false);
+              setDebugInfo(debugData);
+              return;
+            }
           }
 
-          const userRole = profileData?.role;
+          const userRole = profileData?.role || 'customer';
           console.log("User role:", userRole);
           debugData.userRole = userRole;
           
@@ -133,7 +167,7 @@ const Login = () => {
               .from('staff_keys')
               .select('key, user_id, role')
               .eq('key', staffKey)
-              .single();
+              .maybeSingle();
             
             debugData.staffData = staffData;
             debugData.staffError = staffError;
@@ -251,15 +285,42 @@ const Login = () => {
           } else {
             // Unknown role, this is a server error, role should be set in the profiles table
             console.error("Unknown user role:", userRole);
-            await supabase.auth.signOut();
-            toast({
-              variant: "destructive",
-              title: "Account Error",
-              description: "Your account has an invalid role. Please contact support.",
-            });
-            setIsLoading(false);
-            setDebugInfo(debugData);
-            return;
+            // Instead of failing, we'll attempt to fix the profile by setting to customer
+            try {
+              const { error: fixProfileError } = await supabase
+                .from('profiles')
+                .upsert({
+                  id: data.user.id,
+                  role: 'customer',
+                  updated_at: new Date().toISOString()
+                });
+                
+              debugData.fixProfileError = fixProfileError;
+              
+              if (fixProfileError) {
+                console.error("Error fixing profile:", fixProfileError);
+                await supabase.auth.signOut();
+                toast({
+                  variant: "destructive",
+                  title: "Account Error",
+                  description: "Could not fix your account role. Please contact support.",
+                });
+                setIsLoading(false);
+                setDebugInfo(debugData);
+                return;
+              }
+            } catch (fixErr) {
+              console.error("Error fixing profile:", fixErr);
+              await supabase.auth.signOut();
+              toast({
+                variant: "destructive",
+                title: "Account Error",
+                description: "Could not fix your account role. Please contact support.",
+              });
+              setIsLoading(false);
+              setDebugInfo(debugData);
+              return;
+            }
           }
 
           console.log("Login successful, user:", data.user);

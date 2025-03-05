@@ -97,11 +97,9 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         console.log("Auth check - Session:", session);
         
         if (session) {
-          setIsAuthenticated(true);
+          await fixDatabaseTriggers();
           
-          if (process.env.NODE_ENV === 'development') {
-            fixDatabaseTriggers();
-          }
+          setIsAuthenticated(true);
           
           if (['/login', '/register', '/'].includes(location.pathname)) {
             navigate('/dashboard');
@@ -132,12 +130,9 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       console.log("Auth state changed - Event:", event, "Session:", session);
       
       if (event === 'SIGNED_IN' && session) {
+        await fixDatabaseTriggers();
+        
         setIsAuthenticated(true);
-        
-        if (process.env.NODE_ENV === 'development') {
-          fixDatabaseTriggers();
-        }
-        
         navigate('/dashboard');
       } else if (event === 'SIGNED_OUT' || !session) {
         setIsAuthenticated(false);
