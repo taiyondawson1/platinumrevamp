@@ -256,7 +256,8 @@ const Login = () => {
                   .insert({
                     id: data.user.id,
                     role: 'customer',
-                    staff_key: null
+                    staff_key: null,
+                    enrolled_by: staffKey
                   })
                   .single();
                 
@@ -273,12 +274,12 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null };
-                profileData = { role: 'customer', staff_key: null };
+                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
+                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
                 console.log("Created new profile as last resort");
               } else {
-                debugData.retryProfileData = retryProfileData;
-                profileData = retryProfileData;
+                debugData.retryProfileData = { ...retryProfileData, enrolled_by: staffKey };
+                profileData = { ...retryProfileData, enrolled_by: staffKey };
                 console.log("Successfully fixed and fetched profile:", retryProfileData);
               }
             } catch (fixErr) {
@@ -290,7 +291,8 @@ const Login = () => {
                   .insert({
                     id: data.user.id,
                     role: 'customer',
-                    staff_key: null
+                    staff_key: null,
+                    enrolled_by: staffKey
                   })
                   .single();
                 
@@ -307,8 +309,8 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null };
-                profileData = { role: 'customer', staff_key: null };
+                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
+                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
                 console.log("Created new profile as last resort");
               } catch (createErr) {
                 console.error("Error in last resort profile creation:", createErr);
