@@ -8,7 +8,14 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { ArrowLeft } from "lucide-react";
 import { useStaffKeyValidation } from "@/hooks/use-staff-key-validation";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+
+// Staff key validation regex patterns
+const STAFF_KEY_PATTERNS = {
+  CEO: /^CEO\d{3}$/,    // CEO followed by 3 digits
+  ADMIN: /^AD\d{4}$/,   // AD followed by 4 digits
+  ENROLLER: /^EN\d{4}$/ // EN followed by 4 digits
+};
 
 const Register = () => {
   const navigate = useNavigate();
@@ -21,6 +28,15 @@ const Register = () => {
   
   // Use our custom hook for real-time staff key validation
   const { staffKeyInfo, isLoading: isValidating } = useStaffKeyValidation(staffKey);
+
+  // Function to validate staff key format
+  const validateStaffKeyFormat = (key: string): boolean => {
+    return (
+      STAFF_KEY_PATTERNS.CEO.test(key) ||
+      STAFF_KEY_PATTERNS.ADMIN.test(key) ||
+      STAFF_KEY_PATTERNS.ENROLLER.test(key)
+    );
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +60,7 @@ const Register = () => {
     }
 
     // Validate staff key format
-    if (!staffKeyInfo.isProperFormat) {
+    if (!validateStaffKeyFormat(staffKey)) {
       toast({
         variant: "destructive",
         title: "Invalid Staff Key Format",
@@ -134,44 +150,6 @@ const Register = () => {
     }
   };
 
-  // Helper function to get alert message based on staff key info
-  const getStaffKeyAlertMessage = () => {
-    if (!staffKey || isValidating) return null;
-    
-    if (!staffKeyInfo.isProperFormat) {
-      return {
-        variant: "destructive" as const,
-        title: "Invalid Format",
-        description: "Please use CEO### for CEO, AD#### for Admin, or EN#### for Enroller"
-      };
-    }
-    
-    if (!staffKeyInfo.isValid) {
-      return {
-        variant: "destructive" as const,
-        title: "Invalid Key", 
-        description: "This staff key is invalid or inactive"
-      };
-    }
-    
-    if (staffKeyInfo.isAssigned) {
-      return {
-        variant: "warning" as const,
-        title: "Key Already Assigned",
-        description: "This staff key is already assigned to another account"
-      };
-    }
-    
-    return {
-      variant: "success" as const,
-      title: `Valid ${staffKeyInfo.keyType} Key`,
-      description: "This staff key is valid and available"
-    };
-  };
-
-  // Get alert message information
-  const alertInfo = getStaffKeyAlertMessage();
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey p-4">
       <Card className="w-full max-w-md">
@@ -233,9 +211,7 @@ const Register = () => {
                 disabled={isLoading}
                 className={`bg-darkGrey border-silver/20 ${
                   staffKey && !isValidating ? 
-                    (staffKeyInfo.isValid && !staffKeyInfo.isAssigned ? 'border-green-500' : 
-                     !staffKeyInfo.isProperFormat || !staffKeyInfo.isValid ? 'border-red-500' : 
-                     'border-amber-500') : 
+                    (staffKeyInfo.isValid ? 'border-green-500' : 'border-red-500') : 
                     ''
                 }`}
               />
@@ -243,22 +219,18 @@ const Register = () => {
                 Enter your staff key (CEO###, AD####, or EN####)
               </p>
               
-              {staffKey && !isValidating && alertInfo && (
-                <Alert 
-                  variant={
-                    alertInfo.variant === "success" ? "default" : 
-                    alertInfo.variant === "warning" ? undefined : 
-                    "destructive"
-                  }
-                  className={
-                    alertInfo.variant === "success" ? "mt-2 py-2 bg-green-500/20 border-green-500 text-green-200" : 
-                    alertInfo.variant === "warning" ? "mt-2 py-2 bg-amber-500/20 border-amber-500 text-amber-200" : 
-                    "mt-2 py-2"
-                  }
-                >
-                  <AlertTitle>{alertInfo.title}</AlertTitle>
+              {staffKey && !isValidating && !staffKeyInfo.isValid && (
+                <Alert variant="destructive" className="mt-2 py-2">
                   <AlertDescription>
-                    {alertInfo.description}
+                    This staff key is invalid or inactive
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {staffKey && !isValidating && staffKeyInfo.isValid && staffKeyInfo.isAssigned && (
+                <Alert className="mt-2 py-2 bg-amber-500/20 border-amber-500 text-amber-200">
+                  <AlertDescription>
+                    This staff key is already assigned to another account
                   </AlertDescription>
                 </Alert>
               )}
@@ -266,7 +238,7 @@ const Register = () => {
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isLoading || isValidating || (staffKey && (!staffKeyInfo.isValid || !staffKeyInfo.isProperFormat || staffKeyInfo.isAssigned))}
+              disabled={isLoading || isValidating || (staffKey && staffKeyInfo.isAssigned)}
             >
               {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
