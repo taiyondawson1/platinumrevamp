@@ -199,7 +199,7 @@ const Register = () => {
                   phone: '',
                   product_code: 'EA-001',
                   enrolled_by: staffKey,
-                  staff_key: staffKey
+                  staff_key: null
                 });
                 
               if (createLicenseError) {
@@ -240,7 +240,7 @@ const Register = () => {
               phone: '',
               status: 'Active',
               sales_rep_id: '00000000-0000-0000-0000-000000000000',
-              staff_key: staffKey,
+              staff_key: null,
               revenue: '$0'
             };
             
@@ -268,6 +268,18 @@ const Register = () => {
                 console.error("Error creating customer record:", createCustomerError);
               }
             }
+            
+            const { error: updateProfileError } = await supabase
+              .from('profiles')
+              .update({
+                enrolled_by: staffKey
+              })
+              .eq('id', data.user.id);
+              
+            if (updateProfileError) {
+              console.error("Error updating profile with enrolled_by:", updateProfileError);
+            }
+            
           } catch (err) {
             console.error("Error ensuring customer record creation:", err);
           }

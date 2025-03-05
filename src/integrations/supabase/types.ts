@@ -314,7 +314,7 @@ export type Database = {
           phone: string
           product_code: string
           staff_id: string | null
-          staff_key: string
+          staff_key: string | null
           status: string | null
           subscription_type: string
           user_id: string
@@ -332,7 +332,7 @@ export type Database = {
           phone?: string
           product_code: string
           staff_id?: string | null
-          staff_key: string
+          staff_key?: string | null
           status?: string | null
           subscription_type: string
           user_id: string
@@ -350,7 +350,7 @@ export type Database = {
           phone?: string
           product_code?: string
           staff_id?: string | null
-          staff_key?: string
+          staff_key?: string | null
           status?: string | null
           subscription_type?: string
           user_id?: string

@@ -26,6 +26,19 @@ serve(async (req) => {
       query_text: `
         -- Ensure that staff_key can be NULL in license_keys table
         ALTER TABLE IF EXISTS public.license_keys ALTER COLUMN staff_key DROP NOT NULL;
+        
+        -- Ensure that enrolled_by exists in profiles table
+        DO $$
+        BEGIN
+          IF NOT EXISTS (
+            SELECT 1 FROM information_schema.columns 
+            WHERE table_schema = 'public' 
+            AND table_name = 'profiles' 
+            AND column_name = 'enrolled_by'
+          ) THEN
+            ALTER TABLE public.profiles ADD COLUMN enrolled_by text;
+          END IF;
+        END$$;
       `
     });
 
@@ -49,6 +62,17 @@ serve(async (req) => {
     // This is the primary fix to ensure enrollment keys are properly stored
     const { error: fixCustomerError } = await supabase.rpc('execute_admin_query', {
       query_text: `
+        -- Update profiles table to include enrolled_by for customers
+        UPDATE public.profiles p
+        SET 
+          enrolled_by = c.staff_key,
+          updated_at = NOW()
+        FROM public.customers c
+        WHERE p.id = c.id
+        AND p.role = 'customer'
+        AND p.enrolled_by IS NULL
+        AND c.staff_key IS NOT NULL;
+        
         -- Fix customers that have staff_key incorrectly set
         UPDATE public.customers c
         SET 
@@ -127,7 +151,7 @@ serve(async (req) => {
           au.email,
           '',
           'EA-001',
-          CASE WHEN p.role = 'customer' THEN p.staff_key ELSE NULL END,
+          CASE WHEN p.role = 'customer' THEN p.enrolled_by ELSE NULL END,
           CASE WHEN p.role != 'customer' THEN p.staff_key ELSE NULL END
         FROM public.profiles p
         JOIN auth.users au ON p.id = au.id
