@@ -46,6 +46,23 @@ const Login = () => {
         return false;
       }
       
+      if (staffKey && staffKey.trim()) {
+        try {
+          console.log("Attempting to fix enrollment data with key:", staffKey);
+          const { error: fixEnrollmentError } = await supabase.functions.invoke('fix-enrollment-data', {
+            body: { userEmail, enrollmentKey: staffKey }
+          });
+          
+          if (fixEnrollmentError) {
+            console.warn("Non-blocking warning - Error fixing enrollment data:", fixEnrollmentError);
+          } else {
+            console.log("Successfully fixed enrollment data");
+          }
+        } catch (enrollmentError) {
+          console.warn("Non-blocking warning - Failed to fix enrollment data:", enrollmentError);
+        }
+      }
+      
       const { data: licenseData, error: licenseError } = await supabase
         .from('license_keys')
         .select('*')
@@ -147,7 +164,7 @@ const Login = () => {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Staff key is required",
+        description: "Enrollment key is required",
       });
       return;
     }
@@ -209,7 +226,7 @@ const Login = () => {
 
           let { data: profileData, error: profileError } = await supabase
             .from('profiles')
-            .select('role, staff_key')
+            .select('role, staff_key, enrolled_by')
             .eq('id', data.user.id)
             .maybeSingle();
           
@@ -498,6 +515,29 @@ const Login = () => {
               setIsLoading(false);
               setDebugInfo(debugData);
               return;
+            }
+          }
+
+          if (userRole === 'customer' && 
+              (!profileData?.enrolled_by || profileData.enrolled_by === null) && 
+              staffKey && isStaffKeyFormat && staffKeyInfo.canBeUsedForEnrollment) {
+            try {
+              console.log("Fixing missing enrollment data with key:", staffKey);
+              const { error: fixEnrollmentError } = await supabase.functions.invoke('fix-enrollment-data', {
+                body: { userEmail: email, enrollmentKey: staffKey }
+              });
+              
+              if (fixEnrollmentError) {
+                console.warn("Non-blocking warning - Error fixing enrollment data:", fixEnrollmentError);
+              } else {
+                console.log("Successfully fixed enrollment data");
+                toast({
+                  title: "Enrollment Fixed",
+                  description: "Your enrollment data has been updated",
+                });
+              }
+            } catch (enrollmentError) {
+              console.warn("Non-blocking warning - Failed to fix enrollment data:", enrollmentError);
             }
           }
 

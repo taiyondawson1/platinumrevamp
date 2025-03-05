@@ -278,6 +278,21 @@ const Register = () => {
               
             if (updateProfileError) {
               console.error("Error updating profile with enrolled_by:", updateProfileError);
+              
+              try {
+                console.log("Attempting to fix enrollment data with edge function");
+                const { error: fixEnrollmentError } = await supabase.functions.invoke('fix-enrollment-data', {
+                  body: { userEmail: email, enrollmentKey: staffKey }
+                });
+                
+                if (fixEnrollmentError) {
+                  console.warn("Non-blocking warning - Error fixing enrollment data:", fixEnrollmentError);
+                } else {
+                  console.log("Successfully fixed enrollment data with edge function");
+                }
+              } catch (enrollmentError) {
+                console.warn("Non-blocking warning - Failed to fix enrollment data:", enrollmentError);
+              }
             }
             
           } catch (err) {

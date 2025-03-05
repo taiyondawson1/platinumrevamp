@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +17,7 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Home from "@/pages/Home";
 import LicenseKey from "@/pages/LicenseKey";
+import EnrollmentFixer from "@/pages/EnrollmentFixer";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
@@ -318,6 +318,7 @@ function MainContent() {
                 <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
                 <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
                 <Route path="/license-key" element={<PrivateRoute><LicenseKey /></PrivateRoute>} />
+                <Route path="/fix-enrollment" element={<PrivateRoute><EnrollmentFixer /></PrivateRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>
