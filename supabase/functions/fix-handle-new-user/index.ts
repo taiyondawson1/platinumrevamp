@@ -176,36 +176,70 @@ serve(async (req) => {
       })
     }
 
-    // Create or replace the trigger for license key creation
-    const { error: triggerError } = await supabase.rpc('execute_admin_query', {
+    // Create or replace the sync_license_key_to_customer function to properly handle customer creation
+    const { error: syncFunctionError } = await supabase.rpc('execute_admin_query', {
       query_text: `
-        DROP TRIGGER IF EXISTS on_auth_user_created_license_key ON auth.users;
-        
-        CREATE TRIGGER on_auth_user_created_license_key
-        AFTER INSERT ON auth.users
-        FOR EACH ROW
-        EXECUTE FUNCTION public.create_customer_license();
+        CREATE OR REPLACE FUNCTION public.sync_license_key_to_customer()
+        RETURNS trigger
+        LANGUAGE plpgsql
+        SECURITY DEFINER
+        AS $$
+        BEGIN
+          -- Create or update the customer record based on license key
+          INSERT INTO public.customers (
+            id,
+            name,
+            email,
+            phone,
+            status,
+            sales_rep_id,
+            staff_key,
+            revenue
+          ) 
+          VALUES (
+            NEW.user_id, 
+            NEW.name,
+            NEW.email,
+            COALESCE(NEW.phone, ''),
+            COALESCE(NEW.status, 'Active'),
+            '00000000-0000-0000-0000-000000000000'::uuid,
+            NEW.staff_key,
+            '$0'
+          )
+          ON CONFLICT (id) 
+          DO UPDATE SET
+            name = EXCLUDED.name,
+            email = EXCLUDED.email,
+            phone = COALESCE(EXCLUDED.phone, customers.phone),
+            status = COALESCE(EXCLUDED.status, customers.status),
+            staff_key = COALESCE(EXCLUDED.staff_key, customers.staff_key),
+            updated_at = NOW();
+            
+          RETURN NEW;
+        END;
+        $$;
       `
     })
 
-    if (triggerError) {
-      console.error('Error updating license key trigger:', triggerError)
+    if (syncFunctionError) {
+      console.error('Error updating sync_license_key_to_customer function:', syncFunctionError)
       return new Response(JSON.stringify({ 
-        error: 'Failed to update license key trigger',
-        details: triggerError
+        error: 'Failed to update sync_license_key_to_customer function',
+        details: syncFunctionError
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 500
       })
     }
 
-    // Fix existing customers with missing profiles
+    // Fix existing customers with missing profiles or customer records
     const { error: fixCustomersError } = await supabase.rpc('execute_admin_query', {
       query_text: `
         -- Update any existing users who might have incorrect role assignments
         DO $$
         DECLARE
           user_record RECORD;
+          license_record RECORD;
         BEGIN
           -- Find any auth users without valid profiles
           FOR user_record IN 
@@ -223,14 +257,48 @@ serve(async (req) => {
             -- Log the fix
             RAISE NOTICE 'Fixed profile for user %: %', user_record.id, user_record.email;
           END LOOP;
+          
+          -- Find any license_keys without corresponding customers
+          FOR license_record IN
+            SELECT lk.user_id, lk.name, lk.email, lk.phone, lk.status, lk.staff_key
+            FROM public.license_keys lk
+            LEFT JOIN public.customers c ON lk.user_id = c.id
+            WHERE c.id IS NULL
+          LOOP
+            -- Create a customer record from the license key info
+            INSERT INTO public.customers (
+              id,
+              name,
+              email,
+              phone,
+              status,
+              sales_rep_id,
+              staff_key,
+              revenue
+            ) 
+            VALUES (
+              license_record.user_id, 
+              license_record.name,
+              license_record.email,
+              COALESCE(license_record.phone, ''),
+              COALESCE(license_record.status, 'Active'),
+              '00000000-0000-0000-0000-000000000000'::uuid,
+              license_record.staff_key,
+              '$0'
+            )
+            ON CONFLICT (id) DO NOTHING;
+            
+            -- Log the fix
+            RAISE NOTICE 'Created customer record for user %: %', license_record.user_id, license_record.email;
+          END LOOP;
         END $$;
       `
     })
 
     if (fixCustomersError) {
-      console.error('Error fixing existing customer profiles:', fixCustomersError)
+      console.error('Error fixing existing customer profiles and records:', fixCustomersError)
       return new Response(JSON.stringify({ 
-        error: 'Failed to fix existing customer profiles',
+        error: 'Failed to fix existing customer profiles and records',
         details: fixCustomersError
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -238,8 +306,64 @@ serve(async (req) => {
       })
     }
 
+    // Execute a force sync of all license keys to customers
+    const { error: forceSyncError } = await supabase.rpc('execute_admin_query', {
+      query_text: `
+        -- Force sync all license keys to customers
+        DO $$
+        DECLARE
+          license_record RECORD;
+        BEGIN
+          FOR license_record IN
+            SELECT user_id, name, email, phone, status, staff_key
+            FROM public.license_keys
+          LOOP
+            INSERT INTO public.customers (
+              id,
+              name,
+              email,
+              phone,
+              status,
+              sales_rep_id,
+              staff_key,
+              revenue
+            ) 
+            VALUES (
+              license_record.user_id, 
+              license_record.name,
+              license_record.email,
+              COALESCE(license_record.phone, ''),
+              COALESCE(license_record.status, 'Active'),
+              '00000000-0000-0000-0000-000000000000'::uuid,
+              license_record.staff_key,
+              '$0'
+            )
+            ON CONFLICT (id) 
+            DO UPDATE SET
+              name = EXCLUDED.name,
+              email = EXCLUDED.email,
+              phone = COALESCE(EXCLUDED.phone, customers.phone),
+              status = COALESCE(EXCLUDED.status, customers.status),
+              staff_key = COALESCE(EXCLUDED.staff_key, customers.staff_key),
+              updated_at = NOW();
+          END LOOP;
+        END $$;
+      `
+    })
+
+    if (forceSyncError) {
+      console.error('Error during force sync of license keys to customers:', forceSyncError)
+      return new Response(JSON.stringify({ 
+        error: 'Failed to force sync license keys to customers',
+        details: forceSyncError
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500
+      })
+    }
+
     return new Response(JSON.stringify({ 
-      message: 'handle_new_user function and triggers updated successfully'
+      message: 'Database functions and triggers updated successfully, customer records synced.'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200

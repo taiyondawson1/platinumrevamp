@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -90,6 +91,109 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Check for orphaned customers without license keys
+  const fixOrphanedCustomers = async (userId: string) => {
+    try {
+      console.log("Checking for customer record/license key consistency...");
+      
+      // Check if user has a profile
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .maybeSingle();
+      
+      if (profileError || !profileData) {
+        console.error("Error checking profile or no profile found:", profileError);
+        return;
+      }
+      
+      // Only fix customer records
+      if (profileData.role !== 'customer') {
+        return;
+      }
+      
+      // Check if user has a license key
+      const { data: licenseData, error: licenseError } = await supabase
+        .from('license_keys')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (licenseError) {
+        console.error("Error checking license key:", licenseError);
+        return;
+      }
+      
+      // Check if user has a customer record
+      const { data: customerData, error: customerError } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+      
+      if (customerError) {
+        console.error("Error checking customer record:", customerError);
+        return;
+      }
+      
+      // If there's a license key but no customer record, fix it
+      if (licenseData && !customerData) {
+        console.log("License key exists but no customer record, creating one...");
+        
+        const { error: createCustomerError } = await supabase
+          .from('customers')
+          .insert({
+            id: userId,
+            name: licenseData.name,
+            email: licenseData.email,
+            phone: licenseData.phone || '',
+            status: licenseData.status || 'Active',
+            sales_rep_id: '00000000-0000-0000-0000-000000000000',
+            staff_key: licenseData.staff_key,
+            revenue: '$0'
+          });
+        
+        if (createCustomerError) {
+          console.error("Error creating customer record:", createCustomerError);
+        } else {
+          console.log("Customer record created successfully");
+        }
+      }
+      // If there's a customer record but no license key, fix it
+      else if (!licenseData && customerData) {
+        console.log("Customer record exists but no license key, creating one...");
+        
+        const { data: userInfoData } = await supabase.auth.getUser();
+        const userEmail = userInfoData?.user?.email || customerData.email;
+        
+        const { error: createLicenseError } = await supabase
+          .from('license_keys')
+          .insert({
+            user_id: userId,
+            license_key: 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
+            account_numbers: [],
+            status: customerData.status || 'active',
+            subscription_type: 'standard',
+            name: customerData.name,
+            email: userEmail,
+            phone: customerData.phone || '',
+            product_code: 'EA-001',
+            enrolled_by: customerData.staff_key,
+            staff_key: customerData.staff_key
+          });
+        
+        if (createLicenseError) {
+          console.error("Error creating license key:", createLicenseError);
+        } else {
+          console.log("License key created successfully");
+        }
+      }
+    } catch (err) {
+      console.error("Error fixing orphaned customer records:", err);
+    }
+  };
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -98,6 +202,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         
         if (session) {
           await fixDatabaseTriggers();
+          await fixOrphanedCustomers(session.user.id);
           
           setIsAuthenticated(true);
           
@@ -131,6 +236,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       
       if (event === 'SIGNED_IN' && session) {
         await fixDatabaseTriggers();
+        await fixOrphanedCustomers(session.user.id);
         
         setIsAuthenticated(true);
         navigate('/dashboard');

@@ -40,6 +40,116 @@ const Login = () => {
     );
   };
 
+  const repairCustomerRecord = async (userId: string, userEmail: string) => {
+    console.log("Attempting to repair customer record for:", userEmail);
+    try {
+      // First, fix any database triggers that might be broken
+      const { error: fixError } = await supabase.functions.invoke('fix-handle-new-user');
+      
+      if (fixError) {
+        console.error("Error fixing database functions:", fixError);
+        return false;
+      }
+      
+      // Check if user has a license key
+      const { data: licenseData, error: licenseError } = await supabase
+        .from('license_keys')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (licenseError) {
+        console.error("Error checking license key:", licenseError);
+        return false;
+      }
+      
+      // If no license key exists, create one
+      if (!licenseData) {
+        console.log("No license key found, creating one...");
+        const { error: createLicenseError } = await supabase
+          .from('license_keys')
+          .insert({
+            user_id: userId,
+            license_key: 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
+            account_numbers: [],
+            status: 'active',
+            subscription_type: 'standard',
+            name: userEmail.split('@')[0],
+            email: userEmail,
+            phone: '',
+            product_code: 'EA-001',
+            enrolled_by: staffKey,
+            staff_key: staffKey
+          });
+        
+        if (createLicenseError) {
+          console.error("Error creating license key:", createLicenseError);
+          return false;
+        }
+        
+        console.log("License key created successfully");
+      } else {
+        console.log("License key exists:", licenseData.license_key);
+      }
+      
+      // Now check if customer record exists
+      const { data: customerData, error: customerError } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+      
+      if (customerError) {
+        console.error("Error checking customer record:", customerError);
+        return false;
+      }
+      
+      // If no customer record exists, create one from license data or user data
+      if (!customerData) {
+        console.log("No customer record found, creating one...");
+        
+        // Get the latest license data (in case we just created it)
+        const { data: latestLicense } = await supabase
+          .from('license_keys')
+          .select('*')
+          .eq('user_id', userId)
+          .maybeSingle();
+        
+        if (latestLicense) {
+          const { error: createCustomerError } = await supabase
+            .from('customers')
+            .insert({
+              id: userId,
+              name: latestLicense.name || userEmail.split('@')[0],
+              email: latestLicense.email || userEmail,
+              phone: latestLicense.phone || '',
+              status: 'Active',
+              sales_rep_id: '00000000-0000-0000-0000-000000000000',
+              staff_key: latestLicense.staff_key || staffKey,
+              revenue: '$0'
+            });
+          
+          if (createCustomerError) {
+            console.error("Error creating customer record:", createCustomerError);
+            return false;
+          }
+          
+          console.log("Customer record created successfully");
+          return true;
+        } else {
+          console.error("Failed to get license data for customer creation");
+          return false;
+        }
+      } else {
+        console.log("Customer record exists:", customerData.email);
+        return true;
+      }
+    } catch (error) {
+      console.error("Error repairing customer record:", error);
+      return false;
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -65,6 +175,18 @@ const Login = () => {
 
     try {
       console.log("Attempting login with email:", email);
+      
+      // Always call the fix-handle-new-user function first to ensure database is in good state
+      try {
+        console.log("Fixing database triggers before login...");
+        const { error: fixError } = await supabase.functions.invoke('fix-handle-new-user');
+        if (fixError) {
+          console.warn("Non-blocking warning - Error fixing triggers:", fixError);
+        }
+      } catch (fixErr) {
+        console.warn("Non-blocking warning - Failed to call fix function:", fixErr);
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -97,12 +219,13 @@ const Login = () => {
           debugData.profileData = profileData;
           debugData.profileError = profileError;
           
-          if (profileError) {
-            console.error("Profile fetch error:", profileError);
+          if (profileError || !profileData) {
+            console.error("Profile fetch error or missing profile:", profileError);
             setDebugInfo(debugData);
             
             // Fix the profile by calling our edge function
             try {
+              console.log("Attempting to fix profile issues...");
               const { error: fixError } = await supabase.functions.invoke('fix-handle-new-user');
               if (fixError) {
                 console.error("Error fixing triggers:", fixError);
@@ -116,6 +239,71 @@ const Login = () => {
                 .maybeSingle();
                 
               if (retryProfileError || !retryProfileData) {
+                // Create a simple profile directly as a last resort
+                const { error: createProfileError } = await supabase
+                  .from('profiles')
+                  .insert({
+                    id: data.user.id,
+                    role: 'customer',
+                    staff_key: null
+                  })
+                  .single();
+                
+                if (createProfileError) {
+                  console.error("Failed to create profile as last resort:", createProfileError);
+                  await supabase.auth.signOut();
+                  toast({
+                    variant: "destructive",
+                    title: "Profile Error",
+                    description: "Could not verify your account role. Please try again.",
+                  });
+                  setIsLoading(false);
+                  setDebugInfo(debugData);
+                  return;
+                }
+                
+                // Set profile data manually since we just created it
+                debugData.retryProfileData = { role: 'customer', staff_key: null };
+                profileData = { role: 'customer', staff_key: null };
+                console.log("Created new profile as last resort");
+              } else {
+                // Continue with the retry data
+                debugData.retryProfileData = retryProfileData;
+                profileData = retryProfileData;
+                console.log("Successfully fixed and fetched profile:", retryProfileData);
+              }
+            } catch (fixErr) {
+              console.error("Error calling fix function:", fixErr);
+              
+              // Last resort: create a profile directly
+              try {
+                const { error: createProfileError } = await supabase
+                  .from('profiles')
+                  .insert({
+                    id: data.user.id,
+                    role: 'customer',
+                    staff_key: null
+                  })
+                  .single();
+                
+                if (createProfileError) {
+                  console.error("Failed to create profile as last resort:", createProfileError);
+                  await supabase.auth.signOut();
+                  toast({
+                    variant: "destructive",
+                    title: "Profile Error",
+                    description: "Could not verify your account role. Please try again.",
+                  });
+                  setIsLoading(false);
+                  setDebugInfo(debugData);
+                  return;
+                }
+                
+                // Set profile data manually since we just created it
+                profileData = { role: 'customer', staff_key: null };
+                console.log("Created new profile as last resort");
+              } catch (createErr) {
+                console.error("Error in last resort profile creation:", createErr);
                 await supabase.auth.signOut();
                 toast({
                   variant: "destructive",
@@ -126,21 +314,6 @@ const Login = () => {
                 setDebugInfo(debugData);
                 return;
               }
-              
-              // Continue with the retry data
-              debugData.retryProfileData = retryProfileData;
-              console.log("Successfully fixed and fetched profile:", retryProfileData);
-            } catch (fixErr) {
-              console.error("Error calling fix function:", fixErr);
-              await supabase.auth.signOut();
-              toast({
-                variant: "destructive",
-                title: "Profile Error",
-                description: "Could not verify your account role. Please try again.",
-              });
-              setIsLoading(false);
-              setDebugInfo(debugData);
-              return;
             }
           }
 
@@ -217,6 +390,14 @@ const Login = () => {
           } 
           // For customers, we don't need staff key format validation
           else if (userRole === 'customer') {
+            // Repair or create customer record if necessary
+            const repairSuccess = await repairCustomerRecord(data.user.id, data.user.email || email);
+            
+            if (!repairSuccess) {
+              console.warn("Warning: Unable to repair customer record. Some features may not work correctly.");
+              // Continue with login anyway since this is non-critical
+            }
+            
             // For customers, we check if they have a license key
             const { data: licenseData, error: licenseError } = await supabase
               .from('license_keys')
@@ -249,6 +430,16 @@ const Login = () => {
                   if (updateError) {
                     console.error("Error updating enrolled_by:", updateError);
                     // Continue with login even if update fails
+                  } else {
+                    // If we successfully updated the license key, also update the customer record
+                    const { error: customerUpdateError } = await supabase
+                      .from('customers')
+                      .update({ staff_key: staffKey })
+                      .eq('id', data.user.id);
+                    
+                    if (customerUpdateError) {
+                      console.error("Error updating customer staff_key:", customerUpdateError);
+                    }
                   }
                 }
                 // If not a valid staff key, just continue with login using their existing enrollment
@@ -262,22 +453,39 @@ const Login = () => {
                 .upsert({
                   user_id: data.user.id,
                   enrolled_by: staffKey,
-                  // Add other required fields based on your table structure
-                  license_key: licenseData?.license_key || 'PENDING',
+                  staff_key: staffKey,
+                  license_key: licenseData?.license_key || ('PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase()),
                   product_code: 'EA-001',
                   subscription_type: 'standard',
                   name: data.user.email?.split('@')[0] || 'Customer',
                   email: data.user.email || '',
                   phone: '',
                   account_numbers: [],
-                  staff_key: staffKey
+                  status: 'active'
                 });
               
               debugData.licenseUpsertError = upsertError;
               
               if (upsertError) {
-                console.error("Error creating license record:", upsertError);
-                // Continue with login even if update fails
+                console.error("Error creating/updating license record:", upsertError);
+                // Try to create a customer record directly as a fallback
+                const { error: customerCreateError } = await supabase
+                  .from('customers')
+                  .insert({
+                    id: data.user.id,
+                    name: data.user.email?.split('@')[0] || 'Customer',
+                    email: data.user.email || '',
+                    phone: '',
+                    status: 'Active',
+                    sales_rep_id: '00000000-0000-0000-0000-000000000000',
+                    staff_key: staffKey,
+                    revenue: '$0'
+                  })
+                  .single();
+                
+                if (customerCreateError) {
+                  console.error("Error creating customer record directly:", customerCreateError);
+                }
               }
             }
             // If customer tried to use a non-enrolling key, we still let them login
@@ -309,6 +517,9 @@ const Login = () => {
                 setDebugInfo(debugData);
                 return;
               }
+              
+              // Try repairing customer record
+              await repairCustomerRecord(data.user.id, data.user.email || email);
             } catch (fixErr) {
               console.error("Error fixing profile:", fixErr);
               await supabase.auth.signOut();

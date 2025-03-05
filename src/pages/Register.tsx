@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -83,6 +84,17 @@ const Register = () => {
     };
 
     try {
+      // Fix database triggers first
+      try {
+        console.log("Fixing database triggers before registration...");
+        const { error: fixError } = await supabase.functions.invoke('fix-handle-new-user');
+        if (fixError) {
+          console.warn("Non-blocking warning - Error fixing triggers:", fixError);
+        }
+      } catch (fixErr) {
+        console.warn("Non-blocking warning - Failed to call fix function:", fixErr);
+      }
+
       // Determine if this is a staff registration or customer registration
       const isStaffRegistration = isStaffKeyFormat && 
                                (staffKeyInfo.role === 'ceo' || 
@@ -166,6 +178,63 @@ const Register = () => {
       // Verify user was created successfully
       if (data?.user) {
         console.log("User created successfully:", data.user);
+        
+        // For customers, we need to ensure the customer record is created
+        if (!isStaffRegistration) {
+          try {
+            // Ensure we have a valid license key record
+            const { data: licenseData, error: licenseError } = await supabase
+              .from('license_keys')
+              .select('*')
+              .eq('user_id', data.user.id)
+              .maybeSingle();
+              
+            if (licenseError || !licenseData) {
+              console.log("No license key found, attempting to create one...");
+              
+              // Create license key record
+              const { error: createLicenseError } = await supabase
+                .from('license_keys')
+                .insert({
+                  user_id: data.user.id,
+                  license_key: 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
+                  account_numbers: [],
+                  status: 'active',
+                  subscription_type: 'standard',
+                  name: email.split('@')[0],
+                  email: email,
+                  phone: '',
+                  product_code: 'EA-001',
+                  enrolled_by: staffKey,
+                  staff_key: staffKey
+                });
+                
+              if (createLicenseError) {
+                console.error("Error creating license key record:", createLicenseError);
+              }
+            }
+            
+            // Directly create customer record
+            const { error: createCustomerError } = await supabase
+              .from('customers')
+              .insert({
+                id: data.user.id,
+                name: email.split('@')[0],
+                email: email,
+                phone: '',
+                status: 'Active',
+                sales_rep_id: '00000000-0000-0000-0000-000000000000',
+                staff_key: staffKey,
+                revenue: '$0'
+              });
+              
+            if (createCustomerError) {
+              console.error("Error creating customer record:", createCustomerError);
+            }
+          } catch (err) {
+            console.error("Error ensuring customer record creation:", err);
+          }
+        }
         
         toast({
           title: "Success",
