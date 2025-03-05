@@ -210,7 +210,8 @@ const Login = () => {
       if (data?.user) {
         try {
           // First we need to determine if this is a staff member or a customer
-          const { data: profileData, error: profileError } = await supabase
+          // Using let instead of const so we can reassign it later if needed
+          let { data: profileData, error: profileError } = await supabase
             .from('profiles')
             .select('role, staff_key')
             .eq('id', data.user.id)
@@ -264,11 +265,13 @@ const Login = () => {
                 
                 // Set profile data manually since we just created it
                 debugData.retryProfileData = { role: 'customer', staff_key: null };
+                // Now we can safely reassign profileData because it's a let variable
                 profileData = { role: 'customer', staff_key: null };
                 console.log("Created new profile as last resort");
               } else {
                 // Continue with the retry data
                 debugData.retryProfileData = retryProfileData;
+                // Now we can safely reassign profileData because it's a let variable
                 profileData = retryProfileData;
                 console.log("Successfully fixed and fetched profile:", retryProfileData);
               }
@@ -300,6 +303,7 @@ const Login = () => {
                 }
                 
                 // Set profile data manually since we just created it
+                // Now we can safely reassign profileData because it's a let variable
                 profileData = { role: 'customer', staff_key: null };
                 console.log("Created new profile as last resort");
               } catch (createErr) {
