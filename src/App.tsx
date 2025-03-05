@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -46,7 +45,6 @@ function useInactivityTimer() {
   };
 
   useEffect(() => {
-    // Set up event listeners for user activity
     const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
     
     const handleUserActivity = () => {
@@ -54,15 +52,12 @@ function useInactivityTimer() {
       resetTimer();
     };
 
-    // Add event listeners
     events.forEach(event => {
       document.addEventListener(event, handleUserActivity);
     });
 
-    // Initial timer setup
     resetTimer();
 
-    // Cleanup
     return () => {
       if (timer) clearTimeout(timer);
       events.forEach(event => {
@@ -77,7 +72,23 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
   useInactivityTimer();
+
+  const fixDatabaseTriggers = async () => {
+    try {
+      console.log("Attempting to fix database triggers...");
+      const { data, error } = await supabase.functions.invoke('fix-handle-new-user');
+      
+      if (error) {
+        console.error("Error fixing triggers:", error);
+      } else {
+        console.log("Database triggers fixed:", data);
+      }
+    } catch (err) {
+      console.error("Failed to call fix-handle-new-user function:", err);
+    }
+  };
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -87,7 +98,11 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         
         if (session) {
           setIsAuthenticated(true);
-          // If user is authenticated and tries to access public routes, redirect to dashboard
+          
+          if (process.env.NODE_ENV === 'development') {
+            fixDatabaseTriggers();
+          }
+          
           if (['/login', '/register', '/'].includes(location.pathname)) {
             navigate('/dashboard');
           }
@@ -118,6 +133,11 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       
       if (event === 'SIGNED_IN' && session) {
         setIsAuthenticated(true);
+        
+        if (process.env.NODE_ENV === 'development') {
+          fixDatabaseTriggers();
+        }
+        
         navigate('/dashboard');
       } else if (event === 'SIGNED_OUT' || !session) {
         setIsAuthenticated(false);
@@ -130,7 +150,6 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     });
 
-    // Check auth status when tab becomes visible
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         console.log("Tab became visible - checking auth status");

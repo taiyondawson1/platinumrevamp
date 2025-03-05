@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -62,18 +61,11 @@ const Register = () => {
       return;
     }
 
-    // Validate staff key format
-    if (!validateStaffKeyFormat(staffKey)) {
-      toast({
-        variant: "destructive",
-        title: "Invalid Staff Key Format",
-        description: "Please use CEO### for CEO, AD#### for Admin, or EN#### for Enroller",
-      });
-      return;
-    }
-
-    // Check if staff key is valid according to real-time validation
-    if (!staffKeyInfo.isValid) {
+    // Validate if this is a staff key format
+    const isStaffKeyFormat = validateStaffKeyFormat(staffKey);
+    
+    // For staff registration, we need to validate the format
+    if (isStaffKeyFormat && !staffKeyInfo.isValid) {
       toast({
         variant: "destructive",
         title: "Invalid Staff Key",
@@ -82,29 +74,43 @@ const Register = () => {
       return;
     }
     
-    // Determine if this is a customer registration or staff registration
-    const isStaffRegistration = staffKeyInfo.role === 'ceo' || 
-                              staffKeyInfo.role === 'admin' || 
-                              staffKeyInfo.role === 'enroller';
-    
-    // If this is a customer registration, check if the staff key can be used for enrollment
-    if (!isStaffRegistration && !staffKeyInfo.canBeUsedForEnrollment) {
-      toast({
-        variant: "destructive",
-        title: "Invalid Enrollment Key",
-        description: "This staff key cannot be used for customer enrollment",
-      });
-      return;
-    }
-
     setIsLoading(true);
     let debugData: any = {
-      isStaffRegistration,
+      email,
+      staffKey,
+      isStaffKeyFormat,
       staffKeyInfo: JSON.parse(JSON.stringify(staffKeyInfo))
     };
 
     try {
-      console.log("Staff key validated, proceeding with registration...");
+      // Determine if this is a staff registration or customer registration
+      const isStaffRegistration = isStaffKeyFormat && 
+                               (staffKeyInfo.role === 'ceo' || 
+                                staffKeyInfo.role === 'admin' || 
+                                staffKeyInfo.role === 'enroller');
+      
+      debugData.isStaffRegistration = isStaffRegistration;
+      
+      // If this is a customer registration using staff key format, check if the key can be used for enrollment
+      if (!isStaffRegistration && isStaffKeyFormat && !staffKeyInfo.canBeUsedForEnrollment) {
+        toast({
+          variant: "destructive",
+          title: "Invalid Enrollment Key",
+          description: "This staff key cannot be used for customer enrollment",
+        });
+        setDebugInfo(debugData);
+        setIsLoading(false);
+        return;
+      }
+
+      console.log("Registration type:", isStaffRegistration ? "Staff" : "Customer");
+      console.log("Registration data:", {
+        email,
+        staffKey,
+        isStaffKeyFormat,
+        role: isStaffRegistration ? staffKeyInfo.role : 'customer',
+        enrolled_by: !isStaffRegistration && isStaffKeyFormat ? staffKey : null
+      });
 
       // Make sure we pass the appropriate data for the user type
       const userData = {
@@ -113,12 +119,11 @@ const Register = () => {
         options: {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
-            // For staff members we'll associate the staff key directly
+            // For staff members we associate role and staff_key
             // For customers, we'll use enrolled_by in the license_keys table
             role: isStaffRegistration ? staffKeyInfo.role : 'customer',
-            // For customers, we'll pass the enrolling staff key
-            // to be used in the handle_new_user trigger
-            enrolled_by: isStaffRegistration ? null : staffKey,
+            // For customers using staff key, pass the enrolling staff key
+            enrolled_by: !isStaffRegistration && isStaffKeyFormat ? staffKey : null,
             // Pass staff_key only for staff members
             staff_key: isStaffRegistration ? staffKey : null
           }
