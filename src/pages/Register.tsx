@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -80,8 +81,8 @@ const Register = () => {
     
     // Determine if this is a customer registration or staff registration
     const isStaffRegistration = staffKeyInfo.role === 'ceo' || 
-                                staffKeyInfo.role === 'admin' || 
-                                staffKeyInfo.role === 'enroller';
+                              staffKeyInfo.role === 'admin' || 
+                              staffKeyInfo.role === 'enroller';
     
     // If this is a customer registration, check if the staff key can be used for enrollment
     if (!isStaffRegistration && !staffKeyInfo.canBeUsedForEnrollment) {
@@ -110,7 +111,9 @@ const Register = () => {
             role: isStaffRegistration ? staffKeyInfo.role : 'customer',
             // For customers, we'll pass the enrolling staff key
             // to be used in the handle_new_user trigger
-            enrolled_by: isStaffRegistration ? null : staffKey
+            enrolled_by: isStaffRegistration ? null : staffKey,
+            // Always pass staff_key for database records
+            staff_key: staffKey
           }
         }
       });

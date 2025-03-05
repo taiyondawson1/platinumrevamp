@@ -25,7 +25,7 @@ serve(async (req) => {
       }
     )
 
-    // Update the handle_new_user function to use enrolled_by
+    // Update the handle_new_user function to properly handle staff_key and enrolled_by
     const { error } = await supabase.rpc('execute_admin_query', {
       query_text: `
         CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -34,8 +34,8 @@ serve(async (req) => {
         SECURITY DEFINER
         AS $$
         BEGIN
-          -- Create the profile record
-          INSERT INTO public.profiles (id, role)
+          -- Create the profile record with different handling for staff vs customers
+          INSERT INTO public.profiles (id, role, staff_key)
           VALUES (
               new.id,
               COALESCE(
@@ -44,7 +44,15 @@ serve(async (req) => {
                       ELSE (new.raw_user_meta_data->>'role')::public.user_role
                   END),
                   'customer'::public.user_role
-              )
+              ),
+              -- Only assign staff_key for staff members (non-customers)
+              CASE
+                  WHEN (new.raw_user_meta_data->>'role' = 'ceo' OR 
+                       new.raw_user_meta_data->>'role' = 'admin' OR 
+                       new.raw_user_meta_data->>'role' = 'enroller') 
+                       THEN COALESCE(new.raw_user_meta_data->>'staff_key', NULL)
+                  ELSE NULL -- No staff_key for customers
+              END
           )
           ON CONFLICT (id) DO NOTHING;
           
@@ -83,7 +91,8 @@ serve(async (req) => {
                           email,
                           phone,
                           product_code,
-                          enrolled_by
+                          enrolled_by,
+                          staff_key
                       ) VALUES (
                           NEW.id,
                           new_license_key,
@@ -94,6 +103,7 @@ serve(async (req) => {
                           NEW.email,
                           '',
                           'EA-001',
+                          enrolled_by_key,
                           enrolled_by_key
                       )
                       ON CONFLICT (user_id) DO NOTHING;

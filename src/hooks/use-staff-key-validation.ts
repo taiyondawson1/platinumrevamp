@@ -65,7 +65,7 @@ export const useStaffKeyValidation = (staffKey: string) => {
         // Fetch staff key info from database
         const { data, error } = await supabase
           .from('staff_keys')
-          .select('key, role, status')
+          .select('key, role, status, user_id')
           .eq('key', staffKey)
           .single();
 
@@ -128,7 +128,7 @@ export const useStaffKeyValidation = (staffKey: string) => {
           try {
             const { data } = await supabase
               .from('staff_keys')
-              .select('key, role, status')
+              .select('key, role, status, user_id')
               .eq('key', staffKey)
               .single();
 

@@ -92,104 +92,142 @@ const Login = () => {
       }
 
       if (data?.user) {
-        // First we need to determine if this is a staff member or a customer
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', data.user.id)
-          .single();
-        
-        if (profileError) {
-          console.error("Profile fetch error:", profileError);
-          await supabase.auth.signOut();
-          toast({
-            variant: "destructive",
-            title: "Profile Error",
-            description: "Could not verify your account role. Please try again.",
-          });
-          setIsLoading(false);
-          return;
-        }
-
-        const userRole = profileData?.role;
-        
-        // Staff members (CEO, ADMIN, ENROLLER) must use their own staff key to login
-        if (userRole === 'ceo' || userRole === 'admin' || userRole === 'enroller') {
-          // Check if the staff key exists in the staff_keys table
-          const { data: staffData, error: staffError } = await supabase
-            .from('staff_keys')
-            .select('key, user_id, role')
-            .eq('key', staffKey)
+        try {
+          // First we need to determine if this is a staff member or a customer
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', data.user.id)
             .single();
           
-          if (staffError || !staffData) {
-            console.error("Staff key fetch error:", staffError);
+          if (profileError) {
+            console.error("Profile fetch error:", profileError);
             await supabase.auth.signOut();
             toast({
               variant: "destructive",
-              title: "Invalid Staff Key",
-              description: "The staff key doesn't match your account.",
+              title: "Profile Error",
+              description: "Could not verify your account role. Please try again.",
             });
             setIsLoading(false);
             return;
           }
+
+          const userRole = profileData?.role;
+          console.log("User role:", userRole);
           
-          // If the key exists but is assigned to a different user with a different role
-          // (This allows the same key to be used for enrollment by multiple staff members)
-          if (staffData.user_id && 
-              staffData.user_id !== data.user.id && 
-              staffData.role !== userRole) {
-            await supabase.auth.signOut();
-            toast({
-              variant: "destructive",
-              title: "Staff Key Error",
-              description: "This staff key doesn't match your role.",
-            });
-            setIsLoading(false);
-            return;
-          }
-          
-          // If the key exists but is not assigned to any user, update it
-          if (!staffData.user_id) {
-            const { error: updateError } = await supabase
+          // Staff members (CEO, ADMIN, ENROLLER) must use their own staff key to login
+          if (userRole === 'ceo' || userRole === 'admin' || userRole === 'enroller') {
+            // Check if the staff key exists in the staff_keys table
+            const { data: staffData, error: staffError } = await supabase
               .from('staff_keys')
-              .update({ user_id: data.user.id })
-              .eq('key', staffKey);
+              .select('key, user_id, role')
+              .eq('key', staffKey)
+              .single();
             
-            if (updateError) {
-              console.error("Error assigning staff key:", updateError);
-              // Continue with login even if update fails
+            if (staffError || !staffData) {
+              console.error("Staff key fetch error:", staffError);
+              await supabase.auth.signOut();
+              toast({
+                variant: "destructive",
+                title: "Invalid Staff Key",
+                description: "The staff key doesn't match your account.",
+              });
+              setIsLoading(false);
+              return;
             }
-          }
-        } 
-        // For customers, check if the entered key is a valid enrolling key
-        else if (userRole === 'customer') {
-          // For customers, we check if they were enrolled by this staff key
-          const { data: licenseData, error: licenseError } = await supabase
-            .from('license_keys')
-            .select('enrolled_by')
-            .eq('user_id', data.user.id)
-            .maybeSingle();
-          
-          // If there's no license record yet or no enrolled_by, update it with this key if valid
-          if (licenseError) {
-            console.error("License key fetch error:", licenseError);
-          }
-          
-          // If we have a license record with enrolled_by
-          if (licenseData && licenseData.enrolled_by) {
-            // If the staff key doesn't match the one that enrolled them
-            if (licenseData.enrolled_by !== staffKey) {
-              // Only if the new key is valid for enrollment, update their enrollment
+            
+            // If the key exists but is assigned to a different user with a different role
+            // (This allows the same key to be used for enrollment by multiple staff members)
+            if (staffData.user_id && 
+                staffData.user_id !== data.user.id && 
+                staffData.role !== userRole) {
+              await supabase.auth.signOut();
+              toast({
+                variant: "destructive",
+                title: "Staff Key Error",
+                description: "This staff key doesn't match your role.",
+              });
+              setIsLoading(false);
+              return;
+            }
+            
+            // If the key exists but is not assigned to any user, update it
+            if (!staffData.user_id) {
+              const { error: updateError } = await supabase
+                .from('staff_keys')
+                .update({ user_id: data.user.id })
+                .eq('key', staffKey);
+              
+              if (updateError) {
+                console.error("Error assigning staff key:", updateError);
+                // Continue with login even if update fails
+              }
+            }
+          } 
+          // For customers, check if the entered key is a valid enrolling key
+          else if (userRole === 'customer') {
+            // For customers, we check if they were enrolled by this staff key
+            const { data: licenseData, error: licenseError } = await supabase
+              .from('license_keys')
+              .select('enrolled_by')
+              .eq('user_id', data.user.id)
+              .maybeSingle();
+            
+            if (licenseError) {
+              console.error("License key fetch error:", licenseError);
+            }
+            
+            // If we have a license record with enrolled_by
+            if (licenseData && licenseData.enrolled_by) {
+              // If the staff key doesn't match the one that enrolled them
+              if (licenseData.enrolled_by !== staffKey) {
+                // Only if the new key is valid for enrollment, update their enrollment
+                if (staffKeyInfo.canBeUsedForEnrollment) {
+                  // Update the enrolled_by field
+                  const { error: updateError } = await supabase
+                    .from('license_keys')
+                    .update({ enrolled_by: staffKey })
+                    .eq('user_id', data.user.id);
+                  
+                  if (updateError) {
+                    console.error("Error updating enrolled_by:", updateError);
+                    // Continue with login even if update fails
+                  }
+                } else {
+                  await supabase.auth.signOut();
+                  toast({
+                    variant: "destructive",
+                    title: "Invalid Enrollment Key",
+                    description: "The staff key you entered cannot be used for enrollment.",
+                  });
+                  setIsLoading(false);
+                  return;
+                }
+              }
+            } 
+            // No license record yet or no enrolled_by
+            else {
+              // Check if the key can be used for enrollment
               if (staffKeyInfo.canBeUsedForEnrollment) {
-                // Update the enrolled_by field
-                const { error: updateError } = await supabase
+                // Create or update license record with this enrollment key
+                const { error: upsertError } = await supabase
                   .from('license_keys')
-                  .update({ enrolled_by: staffKey })
-                  .eq('user_id', data.user.id);
+                  .upsert({
+                    user_id: data.user.id,
+                    enrolled_by: staffKey,
+                    // Add other required fields based on your table structure
+                    license_key: 'PENDING',
+                    product_code: 'DEFAULT',
+                    subscription_type: 'standard',
+                    name: data.user.email?.split('@')[0] || 'Customer',
+                    email: data.user.email || '',
+                    phone: '',
+                    account_numbers: [],
+                    staff_key: staffKey
+                  });
                 
-                if (updateError) {
-                  console.error("Error updating enrolled_by:", updateError);
+                if (upsertError) {
+                  console.error("Error creating license record:", upsertError);
                   // Continue with login even if update fails
                 }
               } else {
@@ -203,51 +241,24 @@ const Login = () => {
                 return;
               }
             }
-          } 
-          // No license record yet or no enrolled_by
-          else {
-            // Check if the key can be used for enrollment
-            if (staffKeyInfo.canBeUsedForEnrollment) {
-              // Create or update license record with this enrollment key
-              const { error: upsertError } = await supabase
-                .from('license_keys')
-                .upsert({
-                  user_id: data.user.id,
-                  enrolled_by: staffKey,
-                  // Add other required fields based on your table structure
-                  license_key: 'PENDING',
-                  product_code: 'DEFAULT',
-                  subscription_type: 'standard',
-                  name: data.user.email?.split('@')[0] || 'Customer',
-                  email: data.user.email || '',
-                  phone: '',
-                  account_numbers: [],
-                  staff_key: staffKey
-                });
-              
-              if (upsertError) {
-                console.error("Error creating license record:", upsertError);
-                // Continue with login even if update fails
-              }
-            } else {
-              await supabase.auth.signOut();
-              toast({
-                variant: "destructive",
-                title: "Invalid Enrollment Key",
-                description: "The staff key you entered cannot be used for enrollment.",
-              });
-              setIsLoading(false);
-              return;
-            }
           }
-        }
 
-        console.log("Login successful, user:", data.user);
-        toast({
-          title: "Success",
-          description: "Successfully logged in",
-        });
-        navigate("/dashboard");
+          console.log("Login successful, user:", data.user);
+          toast({
+            title: "Success",
+            description: "Successfully logged in",
+          });
+          navigate("/dashboard");
+        } catch (error) {
+          console.error("Error during login process:", error);
+          await supabase.auth.signOut();
+          toast({
+            variant: "destructive",
+            title: "Login Error",
+            description: "An unexpected error occurred. Please try again.",
+          });
+          setIsLoading(false);
+        }
       }
     } catch (error) {
       console.error("Login error:", error);
