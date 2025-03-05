@@ -257,8 +257,7 @@ const Login = () => {
                     id: data.user.id,
                     role: 'customer',
                     staff_key: null,
-                    enrolled_by: staffKey,
-                    enroller: staffKey
+                    enrolled_by: staffKey
                   })
                   .single();
                 
@@ -275,12 +274,24 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
-                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
+                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
+                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
                 console.log("Created new profile as last resort");
               } else {
-                debugData.retryProfileData = { ...retryProfileData, enrolled_by: staffKey, enroller: staffKey };
-                profileData = { ...retryProfileData, enrolled_by: staffKey, enroller: staffKey };
+                debugData.retryProfileData = retryProfileData;
+                profileData = retryProfileData;
+                
+                if (!profileData.enrolled_by) {
+                  const { error: updateProfileError } = await supabase
+                    .from('profiles')
+                    .update({ enrolled_by: staffKey })
+                    .eq('id', data.user.id);
+                    
+                  if (updateProfileError) {
+                    console.warn("Warning: Could not update profile with enrolled_by:", updateProfileError);
+                  }
+                }
+                
                 console.log("Successfully fixed and fetched profile:", retryProfileData);
               }
             } catch (fixErr) {
@@ -293,8 +304,7 @@ const Login = () => {
                     id: data.user.id,
                     role: 'customer',
                     staff_key: null,
-                    enrolled_by: staffKey,
-                    enroller: staffKey
+                    enrolled_by: staffKey
                   })
                   .single();
                 
@@ -311,8 +321,8 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
-                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
+                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
+                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
                 console.log("Created new profile as last resort");
               } catch (createErr) {
                 console.error("Error in last resort profile creation:", createErr);
@@ -538,11 +548,11 @@ const Login = () => {
                 
                 const { error: updateEnrollerError } = await supabase
                   .from('profiles')
-                  .update({ enroller: staffKey })
+                  .update({ enrolled_by: staffKey })
                   .eq('id', data.user.id);
                   
                 if (updateEnrollerError) {
-                  console.warn("Non-blocking warning - Error updating enroller:", updateEnrollerError);
+                  console.warn("Non-blocking warning - Error updating enrolled_by:", updateEnrollerError);
                 }
                 
                 toast({
