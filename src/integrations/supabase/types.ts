@@ -178,6 +178,50 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_requests: {
+        Row: {
+          created_at: string
+          customer_id: string | null
+          customer_name: string
+          description: string | null
+          handled_by: string | null
+          id: string
+          request_type: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_id?: string | null
+          customer_name: string
+          description?: string | null
+          handled_by?: string | null
+          id?: string
+          request_type: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string | null
+          customer_name?: string
+          description?: string | null
+          handled_by?: string | null
+          id?: string
+          request_type?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_requests_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           created_at: string
@@ -555,6 +599,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_user_role: {
+        Args: {
+          role_to_check: string
+        }
+        Returns: boolean
+      }
+      create_profile_with_role: {
+        Args: {
+          user_id: string
+          role_name: string
+          staff_key_value: string
+        }
+        Returns: undefined
+      }
+      ensure_user_profile: {
+        Args: {
+          user_id: string
+          user_role: string
+          user_staff_key: string
+        }
+        Returns: undefined
+      }
+      execute_admin_query: {
+        Args: {
+          query_text: string
+        }
+        Returns: undefined
+      }
       generate_random_6digit: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -568,6 +640,10 @@ export type Database = {
           account_number: string
         }
         Returns: string
+      }
+      is_staff_manager: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {

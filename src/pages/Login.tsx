@@ -8,6 +8,13 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { UserPlus } from "lucide-react";
 
+// Staff key validation regex patterns
+const STAFF_KEY_PATTERNS = {
+  CEO: /^CEO\d{3}$/,    // CEO followed by 3 digits
+  ADMIN: /^AD\d{4}$/,   // AD followed by 4 digits
+  ENROLLER: /^EN\d{4}$/ // EN followed by 4 digits
+};
+
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -15,6 +22,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Function to validate staff key format
+  const validateStaffKeyFormat = (key: string): boolean => {
+    return (
+      STAFF_KEY_PATTERNS.CEO.test(key) ||
+      STAFF_KEY_PATTERNS.ADMIN.test(key) ||
+      STAFF_KEY_PATTERNS.ENROLLER.test(key)
+    );
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +40,16 @@ const Login = () => {
         variant: "destructive",
         title: "Error",
         description: "Staff key is required",
+      });
+      return;
+    }
+
+    // Validate staff key format
+    if (!validateStaffKeyFormat(staffKey)) {
+      toast({
+        variant: "destructive",
+        title: "Invalid Staff Key Format",
+        description: "Please use CEO### for CEO, AD#### for Admin, or EN#### for Enroller",
       });
       return;
     }
@@ -157,7 +183,9 @@ const Login = () => {
                 required
                 className="bg-darkGrey border-silver/20"
               />
-              <p className="text-xs text-silver/70">Enter the staff key provided by your account manager</p>
+              <p className="text-xs text-silver/70">
+                Enter your staff key (CEO###, AD####, or EN####)
+              </p>
             </div>
             <div className="space-y-2">
               <Button type="submit" className="w-full" disabled={isLoading}>
