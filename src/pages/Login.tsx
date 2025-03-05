@@ -562,7 +562,7 @@ const Login = () => {
             <div className="space-y-2">
               <Input
                 type="text"
-                placeholder="Staff Key"
+                placeholder="Enrolled by"
                 value={staffKey}
                 onChange={(e) => setStaffKey(e.target.value)}
                 required
@@ -573,13 +573,13 @@ const Login = () => {
                 }`}
               />
               <p className="text-xs text-silver/70">
-                Enter your staff key (CEO###, AD####, or EN####)
+                Enter your enrollment key (CEO###, AD####, or EN####)
               </p>
               
               {staffKey && !isValidating && !staffKeyInfo.isValid && (
                 <Alert variant="destructive" className="mt-2 py-2">
                   <AlertDescription>
-                    This staff key is invalid or inactive
+                    This enrollment key is invalid or inactive
                   </AlertDescription>
                 </Alert>
               )}
@@ -587,7 +587,7 @@ const Login = () => {
               {staffKey && !isValidating && staffKeyInfo.isValid && !staffKeyInfo.canBeUsedForEnrollment && (
                 <Alert className="mt-2 py-2 bg-amber-500/20 border-amber-500 text-amber-200">
                   <AlertDescription>
-                    This staff key cannot be used for enrollment
+                    This enrollment key cannot be used for enrollment
                   </AlertDescription>
                 </Alert>
               )}

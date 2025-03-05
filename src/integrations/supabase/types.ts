@@ -644,6 +644,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      cleanup_all_customer_staff_keys: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       create_profile_with_role: {
         Args: {
           user_id: string
