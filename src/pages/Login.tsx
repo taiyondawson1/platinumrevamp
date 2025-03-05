@@ -92,51 +92,150 @@ const Login = () => {
       }
 
       if (data?.user) {
-        // Check the profiles table for staff key validation
+        // First we need to determine if this is a staff member or a customer
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
-          .select('staff_key')
+          .select('role')
           .eq('id', data.user.id)
           .single();
         
-        // Only validate if staff key was returned from profiles
-        if (profileError || !profileData) {
+        if (profileError) {
           console.error("Profile fetch error:", profileError);
           await supabase.auth.signOut();
           toast({
             variant: "destructive",
             title: "Profile Error",
-            description: "Could not validate your account. Please try again.",
+            description: "Could not verify your account role. Please try again.",
           });
           setIsLoading(false);
           return;
         }
 
-        // Allow login if staff key is not set in profile (legacy users) or if it matches
-        if (profileData.staff_key && profileData.staff_key !== staffKey) {
-          await supabase.auth.signOut();
-          toast({
-            variant: "destructive",
-            title: "Invalid Staff Key",
-            description: "The staff key doesn't match the one assigned to your account",
-          });
-          setIsLoading(false);
-          return;
-        }
-
-        // If the staff key doesn't match the one in the profile, update it if it's not assigned
-        if (profileData.staff_key !== staffKey && !staffKeyInfo.isAssigned) {
-          // Update profile with the new staff key
-          const { error: updateError } = await supabase
-            .from('profiles')
-            .update({ staff_key: staffKey })
-            .eq('id', data.user.id);
+        const userRole = profileData?.role;
+        
+        // Staff members (CEO, ADMIN, ENROLLER) must use their own staff key to login
+        if (userRole === 'ceo' || userRole === 'admin' || userRole === 'enroller') {
+          // Check if the staff key matches what's in the staff_keys table for this user
+          const { data: staffData, error: staffError } = await supabase
+            .from('staff_keys')
+            .select('key, user_id')
+            .eq('key', staffKey)
+            .single();
           
-          if (updateError) {
-            console.error("Error updating staff key:", updateError);
-            // Continue with login even if update fails
-          } else {
-            console.log("Staff key updated for user");
+          if (staffError || !staffData) {
+            console.error("Staff key fetch error:", staffError);
+            await supabase.auth.signOut();
+            toast({
+              variant: "destructive",
+              title: "Invalid Staff Key",
+              description: "The staff key doesn't match your account.",
+            });
+            setIsLoading(false);
+            return;
+          }
+          
+          // If the key exists but is assigned to a different user
+          if (staffData.user_id && staffData.user_id !== data.user.id) {
+            await supabase.auth.signOut();
+            toast({
+              variant: "destructive",
+              title: "Staff Key Error",
+              description: "This staff key is assigned to another account.",
+            });
+            setIsLoading(false);
+            return;
+          }
+          
+          // If the key exists but is not assigned to any user, update it
+          if (!staffData.user_id) {
+            const { error: updateError } = await supabase
+              .from('staff_keys')
+              .update({ user_id: data.user.id })
+              .eq('key', staffKey);
+            
+            if (updateError) {
+              console.error("Error assigning staff key:", updateError);
+              // Continue with login even if update fails
+            }
+          }
+        } 
+        // For customers, check if the entered key is a valid enrolling key
+        else if (userRole === 'customer') {
+          // For customers, we check if they were enrolled by this staff key
+          const { data: licenseData, error: licenseError } = await supabase
+            .from('license_keys')
+            .select('enrolled_by')
+            .eq('user_id', data.user.id)
+            .maybeSingle();
+          
+          // If there's no license record yet or no enrolled_by, update it with this key if valid
+          if (licenseError) {
+            console.error("License key fetch error:", licenseError);
+          }
+          
+          // If we have a license record with enrolled_by
+          if (licenseData && licenseData.enrolled_by) {
+            // If the staff key doesn't match the one that enrolled them
+            if (licenseData.enrolled_by !== staffKey) {
+              // Only if the new key is valid for enrollment, update their enrollment
+              if (staffKeyInfo.canBeUsedForEnrollment) {
+                // Update the enrolled_by field
+                const { error: updateError } = await supabase
+                  .from('license_keys')
+                  .update({ enrolled_by: staffKey })
+                  .eq('user_id', data.user.id);
+                
+                if (updateError) {
+                  console.error("Error updating enrolled_by:", updateError);
+                  // Continue with login even if update fails
+                }
+              } else {
+                await supabase.auth.signOut();
+                toast({
+                  variant: "destructive",
+                  title: "Invalid Enrollment Key",
+                  description: "The staff key you entered cannot be used for enrollment.",
+                });
+                setIsLoading(false);
+                return;
+              }
+            }
+          } 
+          // No license record yet or no enrolled_by
+          else {
+            // Check if the key can be used for enrollment
+            if (staffKeyInfo.canBeUsedForEnrollment) {
+              // Create or update license record with this enrollment key
+              const { error: upsertError } = await supabase
+                .from('license_keys')
+                .upsert({
+                  user_id: data.user.id,
+                  enrolled_by: staffKey,
+                  // Add other required fields based on your table structure
+                  license_key: 'PENDING',
+                  product_code: 'DEFAULT',
+                  subscription_type: 'standard',
+                  name: data.user.email?.split('@')[0] || 'Customer',
+                  email: data.user.email || '',
+                  phone: '',
+                  account_numbers: [],
+                  staff_key: staffKey
+                });
+              
+              if (upsertError) {
+                console.error("Error creating license record:", upsertError);
+                // Continue with login even if update fails
+              }
+            } else {
+              await supabase.auth.signOut();
+              toast({
+                variant: "destructive",
+                title: "Invalid Enrollment Key",
+                description: "The staff key you entered cannot be used for enrollment.",
+              });
+              setIsLoading(false);
+              return;
+            }
           }
         }
 
@@ -212,10 +311,10 @@ const Login = () => {
                 </Alert>
               )}
               
-              {staffKey && !isValidating && staffKeyInfo.isValid && staffKeyInfo.isAssigned && (
+              {staffKey && !isValidating && staffKeyInfo.isValid && !staffKeyInfo.canBeUsedForEnrollment && (
                 <Alert className="mt-2 py-2 bg-amber-500/20 border-amber-500 text-amber-200">
                   <AlertDescription>
-                    This staff key is already assigned to another account
+                    This staff key cannot be used for enrollment
                   </AlertDescription>
                 </Alert>
               )}

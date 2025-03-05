@@ -6,8 +6,8 @@ type StaffKeyInfo = {
   isValid: boolean;
   role: string | null;
   status: string | null;
-  isAssigned: boolean;
-  assignedUserId: string | null;
+  canBeUsedForEnrollment: boolean;
+  staffKeyFormat: 'CEO' | 'ADMIN' | 'ENROLLER' | 'INVALID';
 };
 
 export const useStaffKeyValidation = (staffKey: string) => {
@@ -15,8 +15,8 @@ export const useStaffKeyValidation = (staffKey: string) => {
     isValid: false,
     role: null,
     status: null,
-    isAssigned: false,
-    assignedUserId: null,
+    canBeUsedForEnrollment: false,
+    staffKeyFormat: 'INVALID',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,8 +29,8 @@ export const useStaffKeyValidation = (staffKey: string) => {
           isValid: false,
           role: null,
           status: null,
-          isAssigned: false,
-          assignedUserId: null,
+          canBeUsedForEnrollment: false,
+          staffKeyFormat: 'INVALID',
         });
         return;
       }
@@ -43,14 +43,20 @@ export const useStaffKeyValidation = (staffKey: string) => {
         const isCEO = /^CEO\d{3}$/.test(staffKey);
         const isADMIN = /^AD\d{4}$/.test(staffKey);
         const isENROLLER = /^EN\d{4}$/.test(staffKey);
+        
+        let staffKeyFormat: 'CEO' | 'ADMIN' | 'ENROLLER' | 'INVALID' = 'INVALID';
+        
+        if (isCEO) staffKeyFormat = 'CEO';
+        else if (isADMIN) staffKeyFormat = 'ADMIN';
+        else if (isENROLLER) staffKeyFormat = 'ENROLLER';
 
         if (!isCEO && !isADMIN && !isENROLLER) {
           setStaffKeyInfo({
             isValid: false,
             role: null,
             status: null,
-            isAssigned: false,
-            assignedUserId: null,
+            canBeUsedForEnrollment: false,
+            staffKeyFormat: 'INVALID',
           });
           setIsLoading(false);
           return;
@@ -69,30 +75,27 @@ export const useStaffKeyValidation = (staffKey: string) => {
             isValid: false,
             role: null,
             status: null,
-            isAssigned: false,
-            assignedUserId: null,
+            canBeUsedForEnrollment: false,
+            staffKeyFormat,
           });
           setIsLoading(false);
           return;
         }
 
-        // Check if key is assigned to any user
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('staff_key', staffKey)
-          .maybeSingle();
-
-        if (profileError) {
-          console.error("Error checking profile assignment:", profileError);
-        }
+        // Staff key exists and is active
+        const isActive = data ? data.status === 'active' : false;
+        
+        // Check if this is a valid enrolling key (staff member)
+        // CEO, ADMIN, and ENROLLER roles can enroll customers
+        const canBeUsedForEnrollment = isActive && 
+          (data.role === 'ceo' || data.role === 'admin' || data.role === 'enroller');
 
         setStaffKeyInfo({
-          isValid: data ? data.status === 'active' : false,
+          isValid: isActive,
           role: data ? data.role : null,
           status: data ? data.status : null,
-          isAssigned: profileData ? true : false,
-          assignedUserId: profileData ? profileData.id : null,
+          canBeUsedForEnrollment,
+          staffKeyFormat,
         });
       } catch (e) {
         console.error("Error in staff key validation:", e);
@@ -130,11 +133,22 @@ export const useStaffKeyValidation = (staffKey: string) => {
               .single();
 
             if (data) {
+              const isActive = data.status === 'active';
+              const canBeUsedForEnrollment = isActive && 
+                (data.role === 'ceo' || data.role === 'admin' || data.role === 'enroller');
+              
+              let staffKeyFormat: 'CEO' | 'ADMIN' | 'ENROLLER' | 'INVALID' = 'INVALID';
+              if (/^CEO\d{3}$/.test(staffKey)) staffKeyFormat = 'CEO';
+              else if (/^AD\d{4}$/.test(staffKey)) staffKeyFormat = 'ADMIN';
+              else if (/^EN\d{4}$/.test(staffKey)) staffKeyFormat = 'ENROLLER';
+              
               setStaffKeyInfo(prev => ({
                 ...prev,
-                isValid: data.status === 'active',
+                isValid: isActive,
                 role: data.role,
                 status: data.status,
+                canBeUsedForEnrollment,
+                staffKeyFormat,
               }));
             }
           } catch (e) {
@@ -144,42 +158,8 @@ export const useStaffKeyValidation = (staffKey: string) => {
       )
       .subscribe();
 
-    // Set up real-time subscription for profiles
-    const profilesChannel = supabase
-      .channel('profiles-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'profiles',
-          filter: `staff_key=eq.${staffKey}`,
-        },
-        async (payload) => {
-          console.log('Profile with this staff key changed:', payload);
-          // Refresh assignment info
-          try {
-            const { data } = await supabase
-              .from('profiles')
-              .select('id')
-              .eq('staff_key', staffKey)
-              .maybeSingle();
-
-            setStaffKeyInfo(prev => ({
-              ...prev,
-              isAssigned: data ? true : false,
-              assignedUserId: data ? data.id : null,
-            }));
-          } catch (e) {
-            console.error("Error refreshing profile assignment:", e);
-          }
-        }
-      )
-      .subscribe();
-
     return () => {
       supabase.removeChannel(staffKeysChannel);
-      supabase.removeChannel(profilesChannel);
     };
   }, [staffKey]);
 

@@ -79,12 +79,17 @@ const Register = () => {
       return;
     }
     
-    // Check if staff key is already assigned
-    if (staffKeyInfo.isAssigned) {
+    // Determine if this is a customer registration or staff registration
+    const isStaffRegistration = staffKeyInfo.role === 'ceo' || 
+                                staffKeyInfo.role === 'admin' || 
+                                staffKeyInfo.role === 'enroller';
+    
+    // If this is a customer registration, check if the staff key can be used for enrollment
+    if (!isStaffRegistration && !staffKeyInfo.canBeUsedForEnrollment) {
       toast({
         variant: "destructive",
-        title: "Staff Key Already Assigned",
-        description: "This staff key is already assigned to another account",
+        title: "Invalid Enrollment Key",
+        description: "This staff key cannot be used for customer enrollment",
       });
       return;
     }
@@ -94,14 +99,40 @@ const Register = () => {
     try {
       console.log("Staff key validated, proceeding with registration...");
 
-      // Make sure we pass the staff_key in the correct format
+      // If this is a staff registration, check if the key is already assigned
+      if (isStaffRegistration) {
+        const { data: keyData, error: keyError } = await supabase
+          .from('staff_keys')
+          .select('user_id')
+          .eq('key', staffKey)
+          .single();
+          
+        if (keyError) {
+          console.error("Staff key check error:", keyError);
+        } else if (keyData && keyData.user_id) {
+          toast({
+            variant: "destructive",
+            title: "Staff Key Already Assigned",
+            description: "This staff key is already assigned to another account",
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // Make sure we pass the appropriate data for the user type
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
-            staff_key: staffKey
+            // For staff members we'll associate the staff key directly
+            // For customers, we'll use enrolled_by in the license_keys table
+            role: isStaffRegistration ? staffKeyInfo.role : 'customer',
+            // For customers, we'll still pass the enrolling staff key
+            // to be used in the handle_new_user trigger
+            enrolled_by: isStaffRegistration ? null : staffKey
           }
         }
       });
@@ -130,6 +161,11 @@ const Register = () => {
         }
         setIsLoading(false);
         return;
+      }
+
+      // If this is a staff registration, update the staff_keys table
+      if (isStaffRegistration) {
+        // We'll update the user_id in the staff_keys table when they confirm their email
       }
 
       toast({
@@ -216,7 +252,9 @@ const Register = () => {
                 }`}
               />
               <p className="text-xs text-silver/70">
-                Enter your staff key (CEO###, AD####, or EN####)
+                {staffKeyInfo.role === 'ceo' || staffKeyInfo.role === 'admin' || staffKeyInfo.role === 'enroller' 
+                  ? "Enter your staff key (CEO###, AD####, or EN####)" 
+                  : "Enter the staff key of the person who enrolled you"}
               </p>
               
               {staffKey && !isValidating && !staffKeyInfo.isValid && (
@@ -227,10 +265,10 @@ const Register = () => {
                 </Alert>
               )}
               
-              {staffKey && !isValidating && staffKeyInfo.isValid && staffKeyInfo.isAssigned && (
+              {staffKey && !isValidating && staffKeyInfo.isValid && !staffKeyInfo.canBeUsedForEnrollment && (
                 <Alert className="mt-2 py-2 bg-amber-500/20 border-amber-500 text-amber-200">
                   <AlertDescription>
-                    This staff key is already assigned to another account
+                    This staff key cannot be used for enrollment
                   </AlertDescription>
                 </Alert>
               )}
@@ -238,7 +276,7 @@ const Register = () => {
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isLoading || isValidating || (staffKey && staffKeyInfo.isAssigned)}
+              disabled={isLoading || isValidating || (staffKey && !staffKeyInfo.canBeUsedForEnrollment)}
             >
               {isLoading ? "Creating Account..." : "Create Account"}
             </Button>

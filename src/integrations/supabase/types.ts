@@ -178,6 +178,45 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_accounts: {
+        Row: {
+          created_at: string
+          email: string
+          enrolled_by: string | null
+          id: string
+          license_key: string | null
+          name: string
+          phone: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          enrolled_by?: string | null
+          id?: string
+          license_key?: string | null
+          name: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          enrolled_by?: string | null
+          id?: string
+          license_key?: string | null
+          name?: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       customer_requests: {
         Row: {
           created_at: string
