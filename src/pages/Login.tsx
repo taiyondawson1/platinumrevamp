@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,35 +7,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { UserPlus } from "lucide-react";
-import { useStaffKeyValidation } from "@/hooks/use-staff-key-validation";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-
-const STAFF_KEY_PATTERNS = {
-  CEO: /^CEO\d{3}$/,    // CEO followed by 3 digits
-  ADMIN: /^AD\d{4}$/,   // AD followed by 4 digits
-  ENROLLER: /^EN\d{4}$/ // EN followed by 4 digits
-};
 
 const Login = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugInfo, setDebugInfo] = useState<any>(null);
-  
-  const { staffKeyInfo, isLoading: isValidating } = useStaffKeyValidation(staffKey);
-
-  const validateStaffKeyFormat = (key: string): boolean => {
-    return (
-      STAFF_KEY_PATTERNS.CEO.test(key) ||
-      STAFF_KEY_PATTERNS.ADMIN.test(key) ||
-      STAFF_KEY_PATTERNS.ENROLLER.test(key)
-    );
-  };
 
   const repairCustomerRecord = async (userId: string, userEmail: string) => {
     console.log("Attempting to repair customer record for:", userEmail);
@@ -44,23 +26,6 @@ const Login = () => {
       if (fixError) {
         console.error("Error fixing database functions:", fixError);
         return false;
-      }
-      
-      if (staffKey && staffKey.trim()) {
-        try {
-          console.log("Attempting to fix enrollment data with key:", staffKey);
-          const { error: fixEnrollmentError } = await supabase.functions.invoke('fix-enrollment-data', {
-            body: { userEmail, enrollmentKey: staffKey }
-          });
-          
-          if (fixEnrollmentError) {
-            console.warn("Non-blocking warning - Error fixing enrollment data:", fixEnrollmentError);
-          } else {
-            console.log("Successfully fixed enrollment data");
-          }
-        } catch (enrollmentError) {
-          console.warn("Non-blocking warning - Failed to fix enrollment data:", enrollmentError);
-        }
       }
       
       const { data: licenseData, error: licenseError } = await supabase
@@ -88,8 +53,8 @@ const Login = () => {
             email: userEmail,
             phone: '',
             product_code: 'EA-001',
-            enrolled_by: staffKey || '',
-            enroller: staffKey || '',
+            enrolled_by: null,
+            enroller: null,
             staff_key: null
           });
         
@@ -161,23 +126,9 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!staffKey.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Enrollment key is required",
-      });
-      return;
-    }
-
-    const isStaffKeyFormat = validateStaffKeyFormat(staffKey);
-    
     setIsLoading(true);
     let debugData: any = {
-      email,
-      staffKey,
-      isStaffKeyFormat,
-      staffKeyInfo: JSON.parse(JSON.stringify(staffKeyInfo))
+      email
     };
 
     try {
@@ -227,7 +178,7 @@ const Login = () => {
 
           let { data: profileData, error: profileError } = await supabase
             .from('profiles')
-            .select('role, staff_key, enrolled_by, enroller')
+            .select('role')
             .eq('id', data.user.id)
             .maybeSingle();
           
@@ -247,7 +198,7 @@ const Login = () => {
 
               const { data: retryProfileData, error: retryProfileError } = await supabase
                 .from('profiles')
-                .select('role, staff_key, enrolled_by, enroller')
+                .select('role')
                 .eq('id', data.user.id)
                 .maybeSingle();
                 
@@ -256,10 +207,7 @@ const Login = () => {
                   .from('profiles')
                   .insert({
                     id: data.user.id,
-                    role: 'customer',
-                    staff_key: null,
-                    enrolled_by: staffKey,
-                    enroller: staffKey
+                    role: 'customer'
                   })
                   .single();
                 
@@ -276,27 +224,12 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
-                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
+                debugData.retryProfileData = { role: 'customer' };
+                profileData = { role: 'customer' };
                 console.log("Created new profile as last resort");
               } else {
                 debugData.retryProfileData = retryProfileData;
                 profileData = retryProfileData;
-                
-                if (!profileData.enrolled_by || !profileData.enroller) {
-                  const { error: updateProfileError } = await supabase
-                    .from('profiles')
-                    .update({ 
-                      enrolled_by: staffKey,
-                      enroller: staffKey 
-                    })
-                    .eq('id', data.user.id);
-                    
-                  if (updateProfileError) {
-                    console.warn("Warning: Could not update profile enrollment info:", updateProfileError);
-                  }
-                }
-                
                 console.log("Successfully fixed and fetched profile:", retryProfileData);
               }
             } catch (fixErr) {
@@ -307,10 +240,7 @@ const Login = () => {
                   .from('profiles')
                   .insert({
                     id: data.user.id,
-                    role: 'customer',
-                    staff_key: null,
-                    enrolled_by: staffKey,
-                    enroller: staffKey
+                    role: 'customer'
                   })
                   .single();
                 
@@ -327,8 +257,8 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
-                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
+                debugData.retryProfileData = { role: 'customer' };
+                profileData = { role: 'customer' };
                 console.log("Created new profile as last resort");
               } catch (createErr) {
                 console.error("Error in last resort profile creation:", createErr);
@@ -350,154 +280,13 @@ const Login = () => {
           debugData.userRole = userRole;
           
           if (userRole === 'ceo' || userRole === 'admin' || userRole === 'enroller') {
-            if (!isStaffKeyFormat) {
-              await supabase.auth.signOut();
-              toast({
-                variant: "destructive",
-                title: "Invalid Staff Key Format",
-                description: "Staff members must use a valid staff key format (CEO###, AD####, or EN####).",
-              });
-              setIsLoading(false);
-              setDebugInfo(debugData);
-              return;
-            }
-            
-            const { data: staffData, error: staffError } = await supabase
-              .from('staff_keys')
-              .select('key, user_id, role')
-              .eq('key', staffKey)
-              .maybeSingle();
-            
-            debugData.staffData = staffData;
-            debugData.staffError = staffError;
-            
-            if (staffError || !staffData) {
-              console.error("Staff key fetch error:", staffError);
-              await supabase.auth.signOut();
-              toast({
-                variant: "destructive",
-                title: "Invalid Staff Key",
-                description: "The staff key doesn't match your account.",
-              });
-              setIsLoading(false);
-              setDebugInfo(debugData);
-              return;
-            }
-            
-            if (staffData.user_id && 
-                staffData.user_id !== data.user.id && 
-                staffData.role !== userRole) {
-              await supabase.auth.signOut();
-              toast({
-                variant: "destructive",
-                title: "Staff Key Error",
-                description: "This staff key doesn't match your role.",
-              });
-              setIsLoading(false);
-              setDebugInfo(debugData);
-              return;
-            }
-            
-            if (!staffData.user_id) {
-              const { error: updateError } = await supabase
-                .from('staff_keys')
-                .update({ user_id: data.user.id })
-                .eq('key', staffKey);
-              
-              debugData.staffKeyUpdateError = updateError;
-              
-              if (updateError) {
-                console.error("Error assigning staff key:", updateError);
-              }
-            }
+            // No need to validate staff key, just proceed for staff roles
+            console.log("Staff member logged in with role:", userRole);
           } else if (userRole === 'customer') {
             const repairSuccess = await repairCustomerRecord(data.user.id, data.user.email || email);
             
             if (!repairSuccess) {
               console.warn("Warning: Unable to repair customer record. Some features may not work correctly.");
-            }
-            
-            const { data: licenseData, error: licenseError } = await supabase
-              .from('license_keys')
-              .select('enrolled_by, license_key')
-              .eq('user_id', data.user.id)
-              .maybeSingle();
-            
-            debugData.licenseData = licenseData;
-            debugData.licenseError = licenseError;
-            
-            if (licenseError) {
-              console.error("License key fetch error:", licenseError);
-            }
-            
-            if (licenseData && licenseData.enrolled_by) {
-              if (licenseData.enrolled_by !== staffKey) {
-                if (isStaffKeyFormat && staffKeyInfo.canBeUsedForEnrollment) {
-                  const { error: updateError } = await supabase
-                    .from('license_keys')
-                    .update({ 
-                      enrolled_by: staffKey,
-                      enroller: staffKey,
-                      staff_key: null
-                    })
-                    .eq('user_id', data.user.id);
-                  
-                  debugData.licenseUpdateError = updateError;
-                  
-                  if (updateError) {
-                    console.error("Error updating enrolled_by:", updateError);
-                  } else {
-                    const { error: customerUpdateError } = await supabase
-                      .from('customers')
-                      .update({ staff_key: null })
-                      .eq('id', data.user.id);
-                    
-                    if (customerUpdateError) {
-                      console.error("Error updating customer staff_key:", customerUpdateError);
-                    }
-                  }
-                }
-              }
-            } else if (isStaffKeyFormat && staffKeyInfo.canBeUsedForEnrollment) {
-              const { error: upsertError } = await supabase
-                .from('license_keys')
-                .upsert({
-                  user_id: data.user.id,
-                  enrolled_by: staffKey,
-                  enroller: staffKey,
-                  staff_key: null,
-                  license_key: licenseData?.license_key || ('PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase()),
-                  product_code: 'EA-001',
-                  subscription_type: 'standard',
-                  name: data.user.email?.split('@')[0] || 'Customer',
-                  email: data.user.email || '',
-                  phone: '',
-                  account_numbers: [],
-                  status: 'active'
-                });
-              
-              debugData.licenseUpsertError = upsertError;
-              
-              if (upsertError) {
-                console.error("Error creating/updating license record:", upsertError);
-                const { error: customerCreateError } = await supabase
-                  .from('customers')
-                  .insert({
-                    id: data.user.id,
-                    name: data.user.email?.split('@')[0] || 'Customer',
-                    email: data.user.email || '',
-                    phone: '',
-                    status: 'Active',
-                    sales_rep_id: '00000000-0000-0000-0000-000000000000',
-                    staff_key: null,
-                    revenue: '$0'
-                  })
-                  .single();
-                
-                if (customerCreateError) {
-                  console.error("Error creating customer record directly:", customerCreateError);
-                }
-              }
             }
           } else {
             console.error("Unknown user role:", userRole);
@@ -537,43 +326,6 @@ const Login = () => {
               setIsLoading(false);
               setDebugInfo(debugData);
               return;
-            }
-          }
-
-          if (userRole === 'customer' && 
-              (!profileData?.enrolled_by || profileData.enrolled_by === null || 
-               !profileData?.enroller || profileData.enroller === null) && 
-              staffKey && isStaffKeyFormat && staffKeyInfo.canBeUsedForEnrollment) {
-            try {
-              console.log("Fixing missing enrollment data with key:", staffKey);
-              const { error: fixEnrollmentError } = await supabase.functions.invoke('fix-enrollment-data', {
-                body: { userEmail: email, enrollmentKey: staffKey }
-              });
-              
-              if (fixEnrollmentError) {
-                console.warn("Non-blocking warning - Error fixing enrollment data:", fixEnrollmentError);
-              } else {
-                console.log("Successfully fixed enrollment data");
-                
-                const { error: updateEnrollerError } = await supabase
-                  .from('profiles')
-                  .update({ 
-                    enrolled_by: staffKey,
-                    enroller: staffKey 
-                  })
-                  .eq('id', data.user.id);
-                  
-                if (updateEnrollerError) {
-                  console.warn("Non-blocking warning - Error updating enrollment info:", updateEnrollerError);
-                }
-                
-                toast({
-                  title: "Enrollment Fixed",
-                  description: "Your enrollment data has been updated",
-                });
-              }
-            } catch (enrollmentError) {
-              console.warn("Non-blocking warning - Failed to fix enrollment data:", enrollmentError);
             }
           }
 
@@ -639,43 +391,10 @@ const Login = () => {
               />
             </div>
             <div className="space-y-2">
-              <Input
-                type="text"
-                placeholder="Enroller"
-                value={staffKey}
-                onChange={(e) => setStaffKey(e.target.value)}
-                required
-                className={`bg-darkGrey border-silver/20 ${
-                  staffKey && !isValidating ? 
-                    (staffKeyInfo.isValid ? 'border-green-500' : 'border-red-500') : 
-                    ''
-                }`}
-              />
-              <p className="text-xs text-silver/70">
-                Enter your enrollment key (CEO###, AD####, or EN####)
-              </p>
-              
-              {staffKey && !isValidating && !staffKeyInfo.isValid && (
-                <Alert variant="destructive" className="mt-2 py-2">
-                  <AlertDescription>
-                    This enrollment key is invalid or inactive
-                  </AlertDescription>
-                </Alert>
-              )}
-              
-              {staffKey && !isValidating && staffKeyInfo.isValid && !staffKeyInfo.canBeUsedForEnrollment && (
-                <Alert className="mt-2 py-2 bg-amber-500/20 border-amber-500 text-amber-200">
-                  <AlertDescription>
-                    This enrollment key cannot be used for enrollment
-                  </AlertDescription>
-                </Alert>
-              )}
-            </div>
-            <div className="space-y-2">
               <Button 
                 type="submit" 
                 className="w-full" 
-                disabled={isLoading || isValidating}
+                disabled={isLoading}
               >
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
