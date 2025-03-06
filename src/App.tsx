@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +22,7 @@ import EnrollmentFixer from "@/pages/EnrollmentFixer";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
+import { useFixAccounts } from "@/hooks/use-fix-accounts";
 
 const queryClient = new QueryClient();
 
@@ -74,7 +76,26 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const { fixUserRecords } = useFixAccounts();
   useInactivityTimer();
+
+  const ensureUserRecords = async (userId: string, userEmail: string) => {
+    try {
+      // Check if user has all required records
+      const [profileCheck, licenseCheck, customerCheck] = await Promise.all([
+        supabase.from('profiles').select('id').eq('id', userId).maybeSingle(),
+        supabase.from('license_keys').select('id').eq('user_id', userId).maybeSingle(),
+        supabase.from('customers').select('id').eq('id', userId).maybeSingle()
+      ]);
+      
+      if (!profileCheck.data || !licenseCheck.data || !customerCheck.data) {
+        console.log("Missing user records detected, attempting to fix...");
+        await fixUserRecords(userId, userEmail);
+      }
+    } catch (err) {
+      console.error("Error checking user records:", err);
+    }
+  };
 
   const ensureCustomerRecords = async () => {
     try {
@@ -215,6 +236,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         console.log("Auth check - Session:", session);
         
         if (session) {
+          await ensureUserRecords(session.user.id, session.user.email || '');
           await ensureCustomerRecords();
           await fixDatabaseTriggers();
           await fixOrphanedCustomers(session.user.id);
@@ -250,6 +272,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       console.log("Auth state changed - Event:", event, "Session:", session);
       
       if (event === 'SIGNED_IN' && session) {
+        await ensureUserRecords(session.user.id, session.user.email || '');
         await ensureCustomerRecords();
         await fixDatabaseTriggers();
         await fixOrphanedCustomers(session.user.id);
