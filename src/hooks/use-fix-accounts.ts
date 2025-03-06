@@ -12,9 +12,16 @@ export const useFixAccounts = () => {
    * 
    * @param userId Optional user ID to fix specific account
    * @param userEmail Optional email to fix specific account
+   * @param fixSchema Whether to also fix the database schema
+   * @param fixTriggers Whether to also fix database triggers
    * @returns Promise<boolean> True if successful, false otherwise
    */
-  const fixUserRecords = async (userId?: string, userEmail?: string) => {
+  const fixUserRecords = async (
+    userId?: string, 
+    userEmail?: string, 
+    fixSchema: boolean = true, 
+    fixTriggers: boolean = true
+  ) => {
     setIsFixing(true);
     
     try {
@@ -23,11 +30,11 @@ export const useFixAccounts = () => {
         body: userId || userEmail ? { 
           userId, 
           userEmail, 
-          fixSchema: true,  // Tell the function to also fix the schema
-          fixTriggers: true // Tell the function to also fix triggers
+          fixSchema,  // Tell the function to also fix the schema
+          fixTriggers // Tell the function to also fix triggers
         } : { 
-          fixSchema: true, 
-          fixTriggers: true 
+          fixSchema, 
+          fixTriggers 
         }
       });
       

@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,7 +13,6 @@ import TradingPage from "@/pages/Trading";
 import CoursesPage from "@/pages/Courses";
 import TradeHub from "@/pages/TradeHub";
 import MyFxBookLoginPage from "@/pages/MyFxBookLoginPage";
-import TradingViewTickerTape from "@/components/TradingViewTickerTape";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Home from "@/pages/Home";
@@ -88,7 +88,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       
       if (!profileCheck.data || !licenseCheck.data || !customerCheck.data) {
         console.log("Missing user records detected, attempting to fix...");
-        await fixUserRecords(userId, userEmail);
+        await fixUserRecords(userId, userEmail, true, true);
       }
     } catch (err) {
       console.error("Error checking user records:", err);
