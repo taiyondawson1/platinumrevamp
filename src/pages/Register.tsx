@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -200,6 +201,7 @@ const Register = () => {
                   phone: '',
                   product_code: 'EA-001',
                   enrolled_by: staffKey,
+                  enroller: staffKey,
                   staff_key: null
                 });
                 
@@ -226,6 +228,7 @@ const Register = () => {
                   phone: '',
                   status: 'active',
                   enrolled_by: staffKey,
+                  enroller: staffKey,
                   license_key: licenseData ? licenseData.license_key : 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase()
                 });
                 
@@ -242,6 +245,7 @@ const Register = () => {
               status: 'Active',
               sales_rep_id: '00000000-0000-0000-0000-000000000000',
               staff_key: null,
+              enroller: staffKey,
               revenue: '$0'
             };
             
@@ -279,7 +283,7 @@ const Register = () => {
               .eq('id', data.user.id);
               
             if (updateProfileError) {
-              console.error("Error updating profile with enrolled_by:", updateProfileError);
+              console.error("Error updating profile with enrollment info:", updateProfileError);
               
               try {
                 console.log("Attempting to fix enrollment data with edge function");

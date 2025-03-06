@@ -89,6 +89,7 @@ const Login = () => {
             phone: '',
             product_code: 'EA-001',
             enrolled_by: staffKey,
+            enroller: staffKey,
             staff_key: null
           });
         
@@ -226,7 +227,7 @@ const Login = () => {
 
           let { data: profileData, error: profileError } = await supabase
             .from('profiles')
-            .select('role, staff_key, enrolled_by')
+            .select('role, staff_key, enrolled_by, enroller')
             .eq('id', data.user.id)
             .maybeSingle();
           
@@ -246,7 +247,7 @@ const Login = () => {
 
               const { data: retryProfileData, error: retryProfileError } = await supabase
                 .from('profiles')
-                .select('role, staff_key')
+                .select('role, staff_key, enrolled_by, enroller')
                 .eq('id', data.user.id)
                 .maybeSingle();
                 
@@ -257,7 +258,8 @@ const Login = () => {
                     id: data.user.id,
                     role: 'customer',
                     staff_key: null,
-                    enrolled_by: staffKey
+                    enrolled_by: staffKey,
+                    enroller: staffKey
                   })
                   .single();
                 
@@ -274,21 +276,24 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
-                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
+                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
+                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
                 console.log("Created new profile as last resort");
               } else {
                 debugData.retryProfileData = retryProfileData;
                 profileData = retryProfileData;
                 
-                if (!profileData.enrolled_by) {
+                if (!profileData.enrolled_by || !profileData.enroller) {
                   const { error: updateProfileError } = await supabase
                     .from('profiles')
-                    .update({ enrolled_by: staffKey })
+                    .update({ 
+                      enrolled_by: staffKey,
+                      enroller: staffKey 
+                    })
                     .eq('id', data.user.id);
                     
                   if (updateProfileError) {
-                    console.warn("Warning: Could not update profile with enrolled_by:", updateProfileError);
+                    console.warn("Warning: Could not update profile enrollment info:", updateProfileError);
                   }
                 }
                 
@@ -304,7 +309,8 @@ const Login = () => {
                     id: data.user.id,
                     role: 'customer',
                     staff_key: null,
-                    enrolled_by: staffKey
+                    enrolled_by: staffKey,
+                    enroller: staffKey
                   })
                   .single();
                 
@@ -321,8 +327,8 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
-                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey };
+                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
+                profileData = { role: 'customer', staff_key: null, enrolled_by: staffKey, enroller: staffKey };
                 console.log("Created new profile as last resort");
               } catch (createErr) {
                 console.error("Error in last resort profile creation:", createErr);
@@ -431,6 +437,7 @@ const Login = () => {
                     .from('license_keys')
                     .update({ 
                       enrolled_by: staffKey,
+                      enroller: staffKey,
                       staff_key: null
                     })
                     .eq('user_id', data.user.id);
@@ -457,6 +464,7 @@ const Login = () => {
                 .upsert({
                   user_id: data.user.id,
                   enrolled_by: staffKey,
+                  enroller: staffKey,
                   staff_key: null,
                   license_key: licenseData?.license_key || ('PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase()),
                   product_code: 'EA-001',
@@ -533,7 +541,8 @@ const Login = () => {
           }
 
           if (userRole === 'customer' && 
-              (!profileData?.enrolled_by || profileData.enrolled_by === null) && 
+              (!profileData?.enrolled_by || profileData.enrolled_by === null || 
+               !profileData?.enroller || profileData.enroller === null) && 
               staffKey && isStaffKeyFormat && staffKeyInfo.canBeUsedForEnrollment) {
             try {
               console.log("Fixing missing enrollment data with key:", staffKey);
@@ -548,11 +557,14 @@ const Login = () => {
                 
                 const { error: updateEnrollerError } = await supabase
                   .from('profiles')
-                  .update({ enrolled_by: staffKey })
+                  .update({ 
+                    enrolled_by: staffKey,
+                    enroller: staffKey 
+                  })
                   .eq('id', data.user.id);
                   
                 if (updateEnrollerError) {
-                  console.warn("Non-blocking warning - Error updating enrolled_by:", updateEnrollerError);
+                  console.warn("Non-blocking warning - Error updating enrollment info:", updateEnrollerError);
                 }
                 
                 toast({
