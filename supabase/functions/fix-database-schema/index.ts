@@ -126,25 +126,10 @@ serve(async (req) => {
       );
     }
 
-    // After fixing the schema, run a function to check all users and ensure they have complete records
-    const { error: fixError } = await supabase.rpc('repair_missing_customer_records');
-
-    if (fixError) {
-      console.error("Error running repair function:", fixError);
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          error: "Repair function error: " + fixError.message,
-          note: "Schema was successfully updated but records repair failed"
-        }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-      );
-    }
-
     return new Response(
       JSON.stringify({
         success: true,
-        message: "Database schema and user records have been successfully updated."
+        message: "Database schema has been successfully updated."
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
