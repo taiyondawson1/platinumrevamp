@@ -17,6 +17,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [referralCode, setReferralCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showDebugDialog, setShowDebugDialog] = useState(false);
@@ -39,6 +40,7 @@ const Register = () => {
     setIsLoading(true);
     let debugData: any = {
       email,
+      fullName,
       referralCode,
       referralInfo: JSON.parse(JSON.stringify(referralInfo))
     };
@@ -55,7 +57,7 @@ const Register = () => {
         console.warn("Non-blocking warning - Failed to call migration function:", migrationErr);
       }
 
-      // Now proceed with registration
+      // Now proceed with registration with enhanced user data
       const userData = {
         email,
         password,
@@ -63,7 +65,10 @@ const Register = () => {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
             role: 'customer', // All users are customers by default
+            name: fullName.trim() || email.split('@')[0], // Use name or default to email username
             referred_by: referralCode.trim() || null,
+            enrolled_by: referralCode.trim() || null, // For backward compatibility
+            phone: '', // Default empty phone
           }
         }
       };
@@ -104,22 +109,18 @@ const Register = () => {
       if (data?.user) {
         console.log("User created successfully:", data.user);
         
-        // Ensure referral code is assigned
+        // Ensure user records exist in both license_keys and customer_accounts tables
         try {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('referral_code')
-            .eq('id', data.user.id)
-            .single();
-            
-          if (!profileData?.referral_code) {
-            console.log("No referral code found, generating one...");
-            
-            // Call our function to migrate-to-referral-codes again
-            await supabase.functions.invoke('migrate-to-referral-codes');
+          // Trigger the repair function to ensure records exist
+          const { error: repairError } = await supabase.functions.invoke('repair-customer-records', {
+            body: { userId: data.user.id }
+          });
+          
+          if (repairError) {
+            console.warn("Non-blocking warning - Error ensuring customer records:", repairError);
           }
         } catch (repairErr) {
-          console.warn("Non-blocking warning - Failed to ensure referral code:", repairErr);
+          console.warn("Non-blocking warning - Failed to ensure customer records:", repairErr);
         }
         
         toast({
@@ -175,6 +176,16 @@ const Register = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={isLoading}
+                className="bg-darkGrey border-silver/20"
+              />
+            </div>
+            <div className="space-y-2">
+              <Input
+                type="text"
+                placeholder="Full Name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
                 disabled={isLoading}
                 className="bg-darkGrey border-silver/20"
               />

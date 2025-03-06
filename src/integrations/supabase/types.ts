@@ -500,6 +500,8 @@ export type Database = {
           enrolled_by: string | null
           enroller: string | null
           id: string
+          referral_code: string | null
+          referred_by: string | null
           role: Database["public"]["Enums"]["user_role"]
           staff_key: string | null
           updated_at: string | null
@@ -509,6 +511,8 @@ export type Database = {
           enrolled_by?: string | null
           enroller?: string | null
           id: string
+          referral_code?: string | null
+          referred_by?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           staff_key?: string | null
           updated_at?: string | null
@@ -518,6 +522,8 @@ export type Database = {
           enrolled_by?: string | null
           enroller?: string | null
           id?: string
+          referral_code?: string | null
+          referred_by?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           staff_key?: string | null
           updated_at?: string | null
@@ -691,11 +697,19 @@ export type Database = {
         }
         Returns: undefined
       }
+      fix_referral_records: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       generate_random_6digit: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
       generate_random_license_key: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_unique_referral_code: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
@@ -713,12 +727,32 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      update_user_referral: {
+        Args: {
+          p_user_id: string
+          p_enrolled_by: string
+          p_referred_by: string
+        }
+        Returns: undefined
+      }
       update_user_referral_codes: {
         Args: {
           user_id: string
           referral_code: string
         }
         Returns: undefined
+      }
+      validate_referral: {
+        Args: {
+          referral_code: string
+        }
+        Returns: boolean
+      }
+      validate_staff_enrollment: {
+        Args: {
+          enrollment_key: string
+        }
+        Returns: boolean
       }
     }
     Enums: {
