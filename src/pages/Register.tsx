@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -113,7 +112,7 @@ const Register = () => {
         staffKey,
         isStaffKeyFormat,
         role: isStaffRegistration ? staffKeyInfo.role : 'customer',
-        enroller: !isStaffRegistration ? staffKey : null,
+        enroller: !isStaffRegistration ? staffKey : '',
         staff_key: isStaffRegistration ? staffKey : null
       });
 
@@ -124,8 +123,8 @@ const Register = () => {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
             role: isStaffRegistration ? staffKeyInfo.role : 'customer',
-            enroller: !isStaffRegistration ? staffKey : null,
-            enrolled_by: !isStaffRegistration ? staffKey : null,
+            enroller: !isStaffRegistration ? staffKey : '',
+            enrolled_by: !isStaffRegistration ? staffKey : '',
             staff_key: isStaffRegistration ? staffKey : null
           }
         }

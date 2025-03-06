@@ -88,8 +88,8 @@ const Login = () => {
             email: userEmail,
             phone: '',
             product_code: 'EA-001',
-            enrolled_by: staffKey,
-            enroller: staffKey,
+            enrolled_by: staffKey || '',
+            enroller: staffKey || '',
             staff_key: null
           });
         

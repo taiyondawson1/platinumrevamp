@@ -1,4 +1,7 @@
 
+// We're selectively updating this file to focus on the key parts that need to be modified
+// This will ensure the database functions and triggers properly handle empty strings instead of NULLs
+
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
 import { corsHeaders } from '../_shared/cors.ts'
@@ -27,7 +30,7 @@ serve(async (req) => {
       }
     )
 
-    // Update the handle_new_user function to properly handle staff_key and enrolled_by
+    // Update the handle_new_user function to use empty strings instead of NULLs
     const { error } = await supabase.rpc('execute_admin_query', {
       query_text: `
         -- First, drop the existing triggers if they exist to avoid conflicts
@@ -60,28 +63,28 @@ serve(async (req) => {
                        THEN COALESCE(new.raw_user_meta_data->>'staff_key', NULL)
                   ELSE NULL -- No staff_key for customers
               END,
-              -- For customers, always store enrollment key in enrolled_by
+              -- For customers, always store enrollment key in enrolled_by or empty string
               CASE
                   WHEN NOT (new.raw_user_meta_data->>'role' = 'ceo' OR 
                            new.raw_user_meta_data->>'role' = 'admin' OR 
                            new.raw_user_meta_data->>'role' = 'enroller')
-                      THEN COALESCE(new.raw_user_meta_data->>'enrolled_by', new.raw_user_meta_data->>'enroller')
-                  ELSE NULL -- No enrolled_by for staff
+                      THEN COALESCE(new.raw_user_meta_data->>'enrolled_by', new.raw_user_meta_data->>'enroller', '')
+                  ELSE '' -- Empty string for staff
               END,
-              -- For customers, always store enrollment key in enroller
+              -- For customers, always store enrollment key in enroller or empty string
               CASE
                   WHEN NOT (new.raw_user_meta_data->>'role' = 'ceo' OR 
                            new.raw_user_meta_data->>'role' = 'admin' OR 
                            new.raw_user_meta_data->>'role' = 'enroller')
-                      THEN COALESCE(new.raw_user_meta_data->>'enroller', new.raw_user_meta_data->>'enrolled_by')
-                  ELSE NULL -- No enroller for staff
+                      THEN COALESCE(new.raw_user_meta_data->>'enroller', new.raw_user_meta_data->>'enrolled_by', '')
+                  ELSE '' -- Empty string for staff
               END
           )
           ON CONFLICT (id) DO UPDATE SET
               role = EXCLUDED.role,
               staff_key = EXCLUDED.staff_key,
-              enrolled_by = COALESCE(EXCLUDED.enrolled_by, profiles.enrolled_by),
-              enroller = COALESCE(EXCLUDED.enroller, profiles.enroller),
+              enrolled_by = COALESCE(EXCLUDED.enrolled_by, profiles.enrolled_by, ''),
+              enroller = COALESCE(EXCLUDED.enroller, profiles.enroller, ''),
               updated_at = NOW();
           
           RETURN NEW;
@@ -111,8 +114,8 @@ serve(async (req) => {
             
             -- Ensure we have enrollment key for customers
             IF NOT is_staff THEN
-                enrolled_by_key := COALESCE(enrolled_by_key, enroller_key);
-                enroller_key := COALESCE(enroller_key, enrolled_by_key);
+                enrolled_by_key := COALESCE(enrolled_by_key, enroller_key, '');
+                enroller_key := COALESCE(enroller_key, enrolled_by_key, '');
             END IF;
             
             -- Generate a new unique license key
@@ -152,8 +155,8 @@ serve(async (req) => {
                 NEW.email,
                 '',
                 'EA-001',
-                CASE WHEN NOT is_staff THEN enrolled_by_key ELSE NULL END,
-                CASE WHEN NOT is_staff THEN enroller_key ELSE NULL END,
+                CASE WHEN NOT is_staff THEN enrolled_by_key ELSE '' END,
+                CASE WHEN NOT is_staff THEN enroller_key ELSE '' END,
                 CASE WHEN is_staff THEN new.raw_user_meta_data->>'staff_key' ELSE NULL END
             )
             ON CONFLICT (user_id) DO NOTHING;
@@ -390,7 +393,7 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ 
-      message: 'Database functions and triggers updated successfully. All users will now have license keys created automatically.'
+      message: 'Database functions and triggers updated successfully. All users will now have license keys created automatically. Enrollment data will use empty strings instead of NULL values.'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200
