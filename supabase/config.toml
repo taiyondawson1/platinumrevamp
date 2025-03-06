@@ -2,9 +2,5 @@
 project_id = "qzbwxtegqsusmfwjauwh"
 [functions.validate-license]
 verify_jwt = false
-[functions.fix-handle-new-user]
-verify_jwt = false
-[functions.update-handle-new-user]
-verify_jwt = false
-[functions.repair-customer-records]
+[functions.fix-missing-user-records]
 verify_jwt = false

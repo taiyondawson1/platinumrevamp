@@ -242,11 +242,8 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         console.log("Auth check - Session:", session);
         
         if (session) {
-          await fixDatabaseSchema();
+          // Call the combined fix user records function with all flags enabled
           await ensureUserRecords(session.user.id, session.user.email || '');
-          await ensureCustomerRecords();
-          await fixDatabaseTriggers();
-          await fixOrphanedCustomers(session.user.id);
           
           setIsAuthenticated(true);
           
@@ -279,11 +276,8 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       console.log("Auth state changed - Event:", event, "Session:", session);
       
       if (event === 'SIGNED_IN' && session) {
-        await fixDatabaseSchema();
+        // Call the combined fix user records function with all flags enabled
         await ensureUserRecords(session.user.id, session.user.email || '');
-        await ensureCustomerRecords();
-        await fixDatabaseTriggers();
-        await fixOrphanedCustomers(session.user.id);
         
         setIsAuthenticated(true);
         navigate('/dashboard');

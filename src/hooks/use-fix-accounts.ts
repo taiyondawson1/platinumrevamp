@@ -18,21 +18,17 @@ export const useFixAccounts = () => {
     setIsFixing(true);
     
     try {
-      // First check if the database schema needs to be updated
-      try {
-        console.log("Checking if database schema needs updating...");
-        const { error: schemaError } = await supabase.functions.invoke('repair-customer-records');
-        
-        if (schemaError) {
-          console.warn("Non-blocking warning: Schema repair error:", schemaError);
-        }
-      } catch (schemaErr) {
-        console.warn("Non-blocking warning: Schema repair function error:", schemaErr);
-      }
-      
       // Call our edge function to fix the user records
       const { data, error } = await supabase.functions.invoke('fix-missing-user-records', {
-        body: userId || userEmail ? { userId, userEmail } : undefined
+        body: userId || userEmail ? { 
+          userId, 
+          userEmail, 
+          fixSchema: true,  // Tell the function to also fix the schema
+          fixTriggers: true // Tell the function to also fix triggers
+        } : { 
+          fixSchema: true, 
+          fixTriggers: true 
+        }
       });
       
       if (error) {
@@ -46,18 +42,6 @@ export const useFixAccounts = () => {
       }
       
       console.log("User records fix response:", data);
-      
-      // Also try to fix the database triggers that create records automatically
-      try {
-        console.log("Fixing database triggers...");
-        const { error: triggerError } = await supabase.functions.invoke('fix-handle-new-user');
-        
-        if (triggerError) {
-          console.warn("Non-blocking warning: Trigger fix error:", triggerError);
-        }
-      } catch (triggerErr) {
-        console.warn("Non-blocking warning: Trigger fix function error:", triggerErr);
-      }
       
       toast({
         title: "Success", 
