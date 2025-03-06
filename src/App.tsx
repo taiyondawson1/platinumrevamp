@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -81,7 +80,6 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
   const ensureUserRecords = async (userId: string, userEmail: string) => {
     try {
-      // Check if user has all required records
       const [profileCheck, licenseCheck, customerCheck] = await Promise.all([
         supabase.from('profiles').select('id').eq('id', userId).maybeSingle(),
         supabase.from('license_keys').select('id').eq('user_id', userId).maybeSingle(),
@@ -97,18 +95,18 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const ensureCustomerRecords = async () => {
+  const fixDatabaseSchema = async () => {
     try {
-      console.log("Ensuring customer records are properly created...");
-      const { error } = await supabase.functions.invoke('ensure-customer-records');
+      console.log("Attempting to fix database schema...");
+      const { data, error } = await supabase.functions.invoke('fix-database-schema');
       
       if (error) {
-        console.error("Error ensuring customer records:", error);
+        console.error("Error fixing database schema:", error);
       } else {
-        console.log("Customer records ensured successfully");
+        console.log("Database schema fixed:", data);
       }
     } catch (err) {
-      console.error("Failed to call ensure-customer-records function:", err);
+      console.error("Failed to call fix-database-schema function:", err);
     }
   };
 
@@ -127,11 +125,25 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const ensureCustomerRecords = async () => {
+    try {
+      console.log("Ensuring customer records are properly created...");
+      const { error } = await supabase.functions.invoke('ensure-customer-records');
+      
+      if (error) {
+        console.error("Error ensuring customer records:", error);
+      } else {
+        console.log("Customer records ensured successfully");
+      }
+    } catch (err) {
+      console.error("Failed to call ensure-customer-records function:", err);
+    }
+  };
+
   const fixOrphanedCustomers = async (userId: string) => {
     try {
       console.log("Checking for customer record/license key consistency...");
       
-      // Check if user has a profile
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('role')
@@ -143,12 +155,10 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         return;
       }
       
-      // Only fix customer records
       if (profileData.role !== 'customer') {
         return;
       }
       
-      // Check if user has a license key
       const { data: licenseData, error: licenseError } = await supabase
         .from('license_keys')
         .select('*')
@@ -160,7 +170,6 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         return;
       }
       
-      // Check if user has a customer record
       const { data: customerData, error: customerError } = await supabase
         .from('customers')
         .select('*')
@@ -172,7 +181,6 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         return;
       }
       
-      // If there's a license key but no customer record, fix it
       if (licenseData && !customerData) {
         console.log("License key exists but no customer record, creating one...");
         
@@ -194,9 +202,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         } else {
           console.log("Customer record created successfully");
         }
-      }
-      // If there's a customer record but no license key, fix it
-      else if (!licenseData && customerData) {
+      } else if (!licenseData && customerData) {
         console.log("Customer record exists but no license key, creating one...");
         
         const { data: userInfoData } = await supabase.auth.getUser();
@@ -236,6 +242,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         console.log("Auth check - Session:", session);
         
         if (session) {
+          await fixDatabaseSchema();
           await ensureUserRecords(session.user.id, session.user.email || '');
           await ensureCustomerRecords();
           await fixDatabaseTriggers();
@@ -272,6 +279,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       console.log("Auth state changed - Event:", event, "Session:", session);
       
       if (event === 'SIGNED_IN' && session) {
+        await fixDatabaseSchema();
         await ensureUserRecords(session.user.id, session.user.email || '');
         await ensureCustomerRecords();
         await fixDatabaseTriggers();
