@@ -4,5 +4,3 @@ project_id = "qzbwxtegqsusmfwjauwh"
 verify_jwt = false
 [functions.fix-missing-user-records]
 verify_jwt = false
-[functions.fix-database-schema]
-verify_jwt = false
