@@ -1,9 +1,8 @@
-
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PlusCircle, XCircle, Copy, CheckCircle } from "lucide-react";
+import { PlusCircle, XCircle, Copy, CheckCircle, AlertTriangle, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
@@ -19,15 +18,20 @@ const LicenseKey = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isCopied, setIsCopied] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  
+  const [canAddAccounts, setCanAddAccounts] = useState<boolean>(true);
+  const [canRemoveAccounts, setCanRemoveAccounts] = useState<boolean>(true);
+  const [accountsLocked, setAccountsLocked] = useState<boolean>(false);
+  const [maxAccounts, setMaxAccounts] = useState<number>(MAX_ACCOUNTS);
+  const [licenseStatus, setLicenseStatus] = useState<string>('active');
+  const [expiryDate, setExpiryDate] = useState<Date | null>(null);
 
-  // Fetch license key and account numbers
   useEffect(() => {
     const fetchLicenseData = async () => {
       try {
         setIsLoading(true);
         setError(null);
         
-        // Get current user
         const { data: { user }, error: userError } = await supabase.auth.getUser();
         
         if (userError) throw userError;
@@ -40,7 +44,6 @@ const LicenseKey = () => {
         
         console.log("Fetching license key for user:", user.id);
         
-        // Get license key for current user
         const { data: licenseData, error: licenseError } = await supabase
           .from('license_keys')
           .select('*')
@@ -48,7 +51,7 @@ const LicenseKey = () => {
           .single();
         
         if (licenseError) {
-          if (licenseError.code === 'PGRST116') { // "Row not found" error code
+          if (licenseError.code === 'PGRST116') {
             console.log("No license key found, generating a new one...");
             await createNewLicenseKey(user.id);
           } else {
@@ -59,6 +62,13 @@ const LicenseKey = () => {
           console.log("License key found:", licenseData);
           setLicenseKey(licenseData.license_key);
           setAccountNumbers(licenseData.account_numbers || []);
+          
+          setCanAddAccounts(licenseData.can_add_accounts !== false);
+          setCanRemoveAccounts(licenseData.can_remove_accounts !== false);
+          setAccountsLocked(licenseData.accounts_locked === true);
+          setMaxAccounts(licenseData.max_accounts || MAX_ACCOUNTS);
+          setLicenseStatus(licenseData.status || 'active');
+          setExpiryDate(licenseData.expiry_date ? new Date(licenseData.expiry_date) : null);
         } else {
           console.log("No license data returned but no error either, generating a new key...");
           await createNewLicenseKey(user.id);
@@ -77,61 +87,84 @@ const LicenseKey = () => {
     };
     
     fetchLicenseData();
+    setupRealtimeListener();
+    
+    return () => {
+      supabase.removeChannel('license_changes');
+    };
   }, [toast]);
   
-  // Create a new license key
-  const createNewLicenseKey = async (userId: string) => {
-    try {
-      // Generate a random license key
-      const newKey = generateLicenseKey();
-      console.log("Generated new license key:", newKey);
+  const setupRealtimeListener = () => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
       
-      // Insert new license key
-      const { data, error } = await supabase
-        .from('license_keys')
-        .insert([
-          { 
-            user_id: userId, 
-            license_key: newKey,
-            account_numbers: [],
-            status: 'active',
-            subscription_type: 'standard',
-            name: 'User',
-            email: 'user@example.com',
-            phone: '',
-            product_code: 'EA-001',
-            e_key: 'default'
+      const channel = supabase
+        .channel('license_changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'license_keys',
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            console.log('License updated:', payload);
+            const newData = payload.new as any;
+            
+            setLicenseKey(newData.license_key);
+            setAccountNumbers(newData.account_numbers || []);
+            setCanAddAccounts(newData.can_add_accounts !== false);
+            setCanRemoveAccounts(newData.can_remove_accounts !== false);
+            setAccountsLocked(newData.accounts_locked === true);
+            setMaxAccounts(newData.max_accounts || MAX_ACCOUNTS);
+            setLicenseStatus(newData.status || 'active');
+            setExpiryDate(newData.expiry_date ? new Date(newData.expiry_date) : null);
           }
-        ])
-        .select()
-        .single();
+        )
+        .subscribe();
+    });
+  };
+  
+  const createNewLicenseKey = async (userId: string) => {
+    const newKey = generateLicenseKey();
+    console.log("Generated new license key:", newKey);
+    
+    const { data, error } = await supabase
+      .from('license_keys')
+      .insert([
+        { 
+          user_id: userId, 
+          license_key: newKey,
+          account_numbers: [],
+          status: 'active',
+          subscription_type: 'standard',
+          name: 'User',
+          email: 'user@example.com',
+          phone: '',
+          product_code: 'EA-001',
+          e_key: 'default'
+        }
+      ])
+      .select()
+      .single();
       
-      if (error) {
-        console.error("Error inserting license key:", error);
-        throw error;
-      }
-      
-      if (data) {
-        console.log("New license key created:", data);
-        setLicenseKey(data.license_key);
-        setAccountNumbers(data.account_numbers || []);
-        toast({
-          title: "License key generated",
-          description: "A new license key has been generated for you",
-        });
-      }
-    } catch (error) {
-      console.error("Error creating license key:", error);
-      setError(error instanceof Error ? error.message : "Unknown error occurred");
+    if (error) {
+      console.error("Error inserting license key:", error);
+      throw error;
+    }
+    
+    if (data) {
+      console.log("New license key created:", data);
+      setLicenseKey(data.license_key);
+      setAccountNumbers(data.account_numbers || []);
       toast({
-        title: "Error creating license key",
-        description: error instanceof Error ? error.message : "Unknown error",
-        variant: "destructive",
+        title: "License key generated",
+        description: "A new license key has been generated for you",
       });
     }
   };
   
-  // Generate a random license key
   const generateLicenseKey = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let result = "";
@@ -144,12 +177,47 @@ const LicenseKey = () => {
     return result;
   };
   
-  // Add new account number
   const handleAddAccount = async () => {
     if (!newAccount.trim()) {
       toast({
         title: "Error",
         description: "Please enter an account number",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (licenseStatus !== 'active') {
+      toast({
+        title: "Error",
+        description: "Your license is not active. Please contact support.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (expiryDate && new Date() > expiryDate) {
+      toast({
+        title: "Error",
+        description: "Your license has expired. Please renew your subscription.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!canAddAccounts) {
+      toast({
+        title: "Error",
+        description: "You are not allowed to add account numbers. Please contact support.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (accountsLocked) {
+      toast({
+        title: "Error",
+        description: "Account management is locked. Please contact support.",
         variant: "destructive",
       });
       return;
@@ -164,10 +232,10 @@ const LicenseKey = () => {
       return;
     }
     
-    if (accountNumbers.length >= MAX_ACCOUNTS) {
+    if (accountNumbers.length >= maxAccounts) {
       toast({
         title: "Error",
-        description: `Maximum ${MAX_ACCOUNTS} account numbers allowed. Please remove one first.`,
+        description: `Maximum ${maxAccounts} account numbers allowed. Please remove one first or contact support.`,
         variant: "destructive",
       });
       return;
@@ -176,7 +244,6 @@ const LicenseKey = () => {
     try {
       const updatedAccounts = [...accountNumbers, newAccount.trim()];
       
-      // Update license key record
       const { error } = await supabase
         .from('license_keys')
         .update({ account_numbers: updatedAccounts })
@@ -200,12 +267,46 @@ const LicenseKey = () => {
     }
   };
   
-  // Remove account number
   const handleRemoveAccount = async (accountNumber: string) => {
+    if (licenseStatus !== 'active') {
+      toast({
+        title: "Error",
+        description: "Your license is not active. Please contact support.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (expiryDate && new Date() > expiryDate) {
+      toast({
+        title: "Error",
+        description: "Your license has expired. Please renew your subscription.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!canRemoveAccounts) {
+      toast({
+        title: "Error",
+        description: "You are not allowed to remove account numbers. Please contact support.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (accountsLocked) {
+      toast({
+        title: "Error",
+        description: "Account management is locked. Please contact support.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     try {
       const updatedAccounts = accountNumbers.filter(acc => acc !== accountNumber);
       
-      // Update license key record
       const { error } = await supabase
         .from('license_keys')
         .update({ account_numbers: updatedAccounts })
@@ -228,7 +329,6 @@ const LicenseKey = () => {
     }
   };
   
-  // Copy license key to clipboard
   const handleCopyKey = () => {
     navigator.clipboard.writeText(licenseKey);
     setIsCopied(true);
@@ -240,6 +340,15 @@ const LicenseKey = () => {
     setTimeout(() => {
       setIsCopied(false);
     }, 2000);
+  };
+  
+  const formatExpiryDate = (date: Date | null) => {
+    if (!date) return 'Never';
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
   
   if (isLoading) {
@@ -264,6 +373,40 @@ const LicenseKey = () => {
     );
   }
   
+  const LicenseStatusWarning = () => {
+    if (licenseStatus !== 'active') {
+      return (
+        <Alert variant="destructive" className="mb-4">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>License Not Active</AlertTitle>
+          <AlertDescription>Your license is currently {licenseStatus}. Please contact support for assistance.</AlertDescription>
+        </Alert>
+      );
+    }
+    
+    if (expiryDate && new Date() > expiryDate) {
+      return (
+        <Alert variant="destructive" className="mb-4">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>License Expired</AlertTitle>
+          <AlertDescription>Your license expired on {formatExpiryDate(expiryDate)}. Please renew your subscription.</AlertDescription>
+        </Alert>
+      );
+    }
+    
+    if (accountsLocked) {
+      return (
+        <Alert variant="warning" className="mb-4 border-amber-500">
+          <AlertTriangle className="h-4 w-4 text-amber-500" />
+          <AlertTitle className="text-amber-500">Account Management Locked</AlertTitle>
+          <AlertDescription>Your account management has been locked by an administrator. Please contact support.</AlertDescription>
+        </Alert>
+      );
+    }
+    
+    return null;
+  };
+  
   return (
     <main className="flex-1 p-6 max-w-[1400px] mx-auto">
       <div className="flex flex-col gap-6">
@@ -271,11 +414,20 @@ const LicenseKey = () => {
           <h1 className="text-4xl font-bold text-softWhite">License Key Management</h1>
           <p className="text-mediumGray text-lg max-w-2xl">
             Manage your license key and authorized MT4 account numbers here.
-            You can add up to {MAX_ACCOUNTS} MT4 accounts with your license.
+            You can add up to {maxAccounts} MT4 accounts with your license.
           </p>
         </section>
         
-        {/* License Key Display */}
+        <LicenseStatusWarning />
+        
+        {expiryDate && licenseStatus === 'active' && new Date() <= expiryDate && (
+          <Alert className="mb-4 border-blue-500 bg-darkBlue/30">
+            <Info className="h-4 w-4 text-blue-500" />
+            <AlertTitle className="text-blue-500">License Information</AlertTitle>
+            <AlertDescription>Your license is valid until: {formatExpiryDate(expiryDate)}</AlertDescription>
+          </Alert>
+        )}
+        
         <Card className="!rounded-none bg-darkBlue/60 border-silver/20 backdrop-blur-sm p-6 space-y-4">
           <h2 className="text-xl font-semibold text-softWhite">Your License Key</h2>
           <div className="flex items-center gap-4">
@@ -296,7 +448,6 @@ const LicenseKey = () => {
           </p>
         </Card>
         
-        {/* Account Numbers Management */}
         <Card className="!rounded-none bg-darkBlue/60 border-silver/20 backdrop-blur-sm p-6 space-y-4">
           <h2 className="text-xl font-semibold text-softWhite">MT4 Account Numbers</h2>
           <div className="space-y-4">
@@ -306,10 +457,11 @@ const LicenseKey = () => {
                 value={newAccount}
                 onChange={(e) => setNewAccount(e.target.value)}
                 className="flex-1 bg-darkGrey/50 border-silver/20"
+                disabled={!canAddAccounts || accountsLocked || accountNumbers.length >= maxAccounts}
               />
               <Button 
                 onClick={handleAddAccount}
-                disabled={accountNumbers.length >= MAX_ACCOUNTS}
+                disabled={!canAddAccounts || accountsLocked || accountNumbers.length >= maxAccounts}
                 className="min-w-[100px]"
               >
                 <PlusCircle className="h-4 w-4 mr-2" />
@@ -317,9 +469,18 @@ const LicenseKey = () => {
               </Button>
             </div>
             
+            {!canAddAccounts && (
+              <Alert variant="warning" className="border-amber-500 bg-darkBlue/30">
+                <AlertTriangle className="h-4 w-4 text-amber-500" />
+                <AlertDescription className="text-amber-500">
+                  Adding account numbers has been disabled for your license. Please contact support.
+                </AlertDescription>
+              </Alert>
+            )}
+            
             {accountNumbers.length === 0 ? (
               <div className="text-center p-4 text-mediumGray">
-                No account numbers added yet. Add up to {MAX_ACCOUNTS} MT4 account numbers.
+                No account numbers added yet. Add up to {maxAccounts} MT4 account numbers.
               </div>
             ) : (
               <div className="space-y-2">
@@ -333,26 +494,35 @@ const LicenseKey = () => {
                       variant="ghost" 
                       size="icon"
                       onClick={() => handleRemoveAccount(account)}
+                      disabled={!canRemoveAccounts || accountsLocked}
                     >
                       <XCircle className="h-5 w-5 text-accent-red" />
                     </Button>
                   </div>
                 ))}
                 <div className="text-right text-sm text-mediumGray">
-                  {accountNumbers.length} of {MAX_ACCOUNTS} accounts used
+                  {accountNumbers.length} of {maxAccounts} accounts used
                 </div>
               </div>
+            )}
+            
+            {!canRemoveAccounts && accountNumbers.length > 0 && (
+              <Alert variant="warning" className="border-amber-500 bg-darkBlue/30">
+                <AlertTriangle className="h-4 w-4 text-amber-500" />
+                <AlertDescription className="text-amber-500">
+                  Removing account numbers has been disabled for your license. Please contact support.
+                </AlertDescription>
+              </Alert>
             )}
           </div>
         </Card>
         
-        {/* Instructions */}
         <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm p-6 space-y-4">
           <h2 className="text-xl font-semibold text-softWhite">Instructions</h2>
           <ol className="list-decimal list-inside space-y-2 text-mediumGray">
             <li>Copy your license key from above</li>
             <li>Paste the key into your Expert Advisor's LicenseKey variable</li>
-            <li>Add your MT4 account numbers (up to {MAX_ACCOUNTS}) to authorize them</li>
+            <li>Add your MT4 account numbers (up to {maxAccounts}) to authorize them</li>
             <li>The EA will only work on authorized accounts</li>
           </ol>
         </Card>
