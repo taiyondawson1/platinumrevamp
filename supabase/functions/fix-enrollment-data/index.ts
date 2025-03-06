@@ -14,16 +14,16 @@ serve(async (req) => {
   }
 
   try {
-    const { userEmail, enrollmentKey } = await req.json();
+    const { userEmail } = await req.json();
     
-    if (!userEmail || !enrollmentKey) {
+    if (!userEmail) {
       return new Response(
-        JSON.stringify({ success: false, error: "Missing userEmail or enrollmentKey" }),
+        JSON.stringify({ success: false, error: "Missing userEmail" }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
       );
     }
 
-    console.log(`Fixing enrollment data for user ${userEmail} with enrollment key ${enrollmentKey}`);
+    console.log(`Fixing enrollment data for user ${userEmail}`);
 
     // Get Supabase client with admin privileges
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
@@ -58,12 +58,12 @@ serve(async (req) => {
         );
       }
       
-      // Update the profile with enrollment data
+      // Update the profile 
       const { error: profileError } = await supabase
         .from('profiles')
         .update({ 
-          enrolled_by: enrollmentKey,
-          enroller: enrollmentKey,
+          enrolled_by: null,
+          enroller: null,
           staff_key: null,  // Ensure staff_key is NULL for customers
           updated_at: new Date().toISOString()
         })
@@ -81,8 +81,8 @@ serve(async (req) => {
       const { error: licenseError } = await supabase
         .from('license_keys')
         .update({ 
-          enrolled_by: enrollmentKey,
-          enroller: enrollmentKey,
+          enrolled_by: null,
+          enroller: null,
           staff_key: null  // Ensure staff_key is NULL for customers
         })
         .eq('user_id', user.id);
@@ -96,7 +96,7 @@ serve(async (req) => {
       const { error: customerAccountsError } = await supabase
         .from('customer_accounts')
         .update({ 
-          enrolled_by: enrollmentKey 
+          enrolled_by: null 
         })
         .eq('user_id', user.id);
 
@@ -110,7 +110,7 @@ serve(async (req) => {
         .from('customers')
         .update({ 
           staff_key: null,  // Ensure staff_key is NULL for customers
-          enroller: enrollmentKey
+          enroller: null
         })
         .eq('id', user.id);
 
@@ -131,8 +131,8 @@ serve(async (req) => {
     const { error: profileError } = await supabase
       .from('profiles')
       .update({ 
-        enrolled_by: enrollmentKey,
-        enroller: enrollmentKey,
+        enrolled_by: null,
+        enroller: null,
         staff_key: null,  // Ensure staff_key is NULL for customers
         updated_at: new Date().toISOString()
       })
@@ -150,8 +150,8 @@ serve(async (req) => {
     const { error: licenseError } = await supabase
       .from('license_keys')
       .update({ 
-        enrolled_by: enrollmentKey,
-        enroller: enrollmentKey,
+        enrolled_by: null,
+        enroller: null,
         staff_key: null  // Ensure staff_key is NULL for customers
       })
       .eq('user_id', userId);
@@ -165,7 +165,7 @@ serve(async (req) => {
     const { error: customerAccountsError } = await supabase
       .from('customer_accounts')
       .update({ 
-        enrolled_by: enrollmentKey 
+        enrolled_by: null 
       })
       .eq('user_id', userId);
 
@@ -179,7 +179,7 @@ serve(async (req) => {
       .from('customers')
       .update({ 
         staff_key: null,  // Ensure staff_key is NULL for customers
-        enroller: enrollmentKey
+        enroller: null
       })
       .eq('id', userId);
 
