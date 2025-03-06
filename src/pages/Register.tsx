@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,15 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { ArrowLeft } from "lucide-react";
-import { useStaffKeyValidation } from "@/hooks/use-staff-key-validation";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-
-const STAFF_KEY_PATTERNS = {
-  CEO: /^CEO\d{3}$/,    // CEO followed by 3 digits
-  ADMIN: /^AD\d{4}$/,   // AD followed by 4 digits
-  ENROLLER: /^EN\d{4}$/ // EN followed by 4 digits
-};
 
 const Register = () => {
   const navigate = useNavigate();
@@ -22,20 +15,9 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [staffKey, setStaffKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugInfo, setDebugInfo] = useState<any>(null);
-  
-  const { staffKeyInfo, isLoading: isValidating } = useStaffKeyValidation(staffKey);
-
-  const validateStaffKeyFormat = (key: string): boolean => {
-    return (
-      STAFF_KEY_PATTERNS.CEO.test(key) ||
-      STAFF_KEY_PATTERNS.ADMIN.test(key) ||
-      STAFF_KEY_PATTERNS.ENROLLER.test(key)
-    );
-  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,32 +31,9 @@ const Register = () => {
       return;
     }
 
-    if (!staffKey.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Enrollment key is required",
-      });
-      return;
-    }
-
-    const isStaffKeyFormat = validateStaffKeyFormat(staffKey);
-    
-    if (isStaffKeyFormat && !staffKeyInfo.isValid) {
-      toast({
-        variant: "destructive",
-        title: "Invalid Enrollment Key",
-        description: "The enrollment key provided is invalid or inactive",
-      });
-      return;
-    }
-    
     setIsLoading(true);
     let debugData: any = {
-      email,
-      staffKey,
-      isStaffKeyFormat,
-      staffKeyInfo: JSON.parse(JSON.stringify(staffKeyInfo))
+      email
     };
 
     try {
@@ -87,33 +46,11 @@ const Register = () => {
       } catch (fixErr) {
         console.warn("Non-blocking warning - Failed to call fix function:", fixErr);
       }
-
-      const isStaffRegistration = isStaffKeyFormat && 
-                               (staffKeyInfo.role === 'ceo' || 
-                                staffKeyInfo.role === 'admin' || 
-                                staffKeyInfo.role === 'enroller');
       
-      debugData.isStaffRegistration = isStaffRegistration;
-      
-      if (!isStaffRegistration && isStaffKeyFormat && !staffKeyInfo.canBeUsedForEnrollment) {
-        toast({
-          variant: "destructive",
-          title: "Invalid Enrollment Key",
-          description: "This enrollment key cannot be used for customer enrollment",
-        });
-        setDebugInfo(debugData);
-        setIsLoading(false);
-        return;
-      }
-
-      console.log("Registration type:", isStaffRegistration ? "Staff" : "Customer");
+      console.log("Registration type: Customer");
       console.log("Registration data:", {
         email,
-        staffKey,
-        isStaffKeyFormat,
-        role: isStaffRegistration ? staffKeyInfo.role : 'customer',
-        enroller: !isStaffRegistration ? staffKey : '',
-        staff_key: isStaffRegistration ? staffKey : null
+        role: 'customer'
       });
 
       const userData = {
@@ -122,10 +59,7 @@ const Register = () => {
         options: {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
-            role: isStaffRegistration ? staffKeyInfo.role : 'customer',
-            enroller: !isStaffRegistration ? staffKey : '',
-            enrolled_by: !isStaffRegistration ? staffKey : '',
-            staff_key: isStaffRegistration ? staffKey : null
+            role: 'customer'
           }
         }
       };
@@ -176,133 +110,97 @@ const Register = () => {
           console.warn("Non-blocking warning - Failed to repair customer records:", repairErr);
         }
         
-        if (!isStaffRegistration) {
-          try {
-            const { data: licenseData, error: licenseError } = await supabase
+        try {
+          const { data: licenseData, error: licenseError } = await supabase
+            .from('license_keys')
+            .select('*')
+            .eq('user_id', data.user.id)
+            .maybeSingle();
+            
+          if (licenseError || !licenseData) {
+            console.log("No license key found, attempting to create one...");
+            
+            const { error: createLicenseError } = await supabase
               .from('license_keys')
-              .select('*')
-              .eq('user_id', data.user.id)
-              .maybeSingle();
+              .insert({
+                user_id: data.user.id,
+                license_key: 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
+                account_numbers: [],
+                status: 'active',
+                subscription_type: 'standard',
+                name: email.split('@')[0],
+                email: email,
+                phone: '',
+                product_code: 'EA-001'
+              });
               
-            if (licenseError || !licenseData) {
-              console.log("No license key found, attempting to create one...");
-              
-              const { error: createLicenseError } = await supabase
-                .from('license_keys')
-                .insert({
-                  user_id: data.user.id,
-                  license_key: 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
-                  account_numbers: [],
-                  status: 'active',
-                  subscription_type: 'standard',
-                  name: email.split('@')[0],
-                  email: email,
-                  phone: '',
-                  product_code: 'EA-001',
-                  enrolled_by: staffKey,
-                  enroller: staffKey,
-                  staff_key: null
-                });
-                
-              if (createLicenseError) {
-                console.error("Error creating license key record:", createLicenseError);
-              }
+            if (createLicenseError) {
+              console.error("Error creating license key record:", createLicenseError);
             }
+          }
+          
+          const { data: customerAccountData, error: customerAccountError } = await supabase
+            .from('customer_accounts')
+            .select('*')
+            .eq('user_id', data.user.id)
+            .maybeSingle();
             
-            const { data: customerAccountData, error: customerAccountError } = await supabase
+          if (customerAccountError || !customerAccountData) {
+            console.log("No customer_accounts record found, attempting to create one...");
+            
+            const { error: createCustomerAccountError } = await supabase
               .from('customer_accounts')
-              .select('*')
-              .eq('user_id', data.user.id)
-              .maybeSingle();
+              .insert({
+                user_id: data.user.id,
+                name: email.split('@')[0],
+                email: email,
+                phone: '',
+                status: 'active',
+                license_key: licenseData ? licenseData.license_key : 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase()
+              });
               
-            if (customerAccountError || !customerAccountData) {
-              console.log("No customer_accounts record found, attempting to create one...");
-              
-              const { error: createCustomerAccountError } = await supabase
-                .from('customer_accounts')
-                .insert({
-                  user_id: data.user.id,
-                  name: email.split('@')[0],
-                  email: email,
-                  phone: '',
-                  status: 'active',
-                  enrolled_by: staffKey,
-                  enroller: staffKey,
-                  license_key: licenseData ? licenseData.license_key : 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase()
-                });
-                
-              if (createCustomerAccountError) {
-                console.error("Error creating customer_accounts record:", createCustomerAccountError);
-              }
+            if (createCustomerAccountError) {
+              console.error("Error creating customer_accounts record:", createCustomerAccountError);
             }
+          }
+          
+          const customerData = {
+            id: data.user.id,
+            name: email.split('@')[0],
+            email: email,
+            phone: '',
+            status: 'Active',
+            sales_rep_id: '00000000-0000-0000-0000-000000000000',
+            revenue: '$0'
+          };
+          
+          const { data: existingCustomer } = await supabase
+            .from('customers')
+            .select('id')
+            .eq('id', data.user.id)
+            .maybeSingle();
             
-            const customerData = {
-              id: data.user.id,
-              name: email.split('@')[0],
-              email: email,
-              phone: '',
-              status: 'Active',
-              sales_rep_id: '00000000-0000-0000-0000-000000000000',
-              staff_key: null,
-              enroller: staffKey,
-              revenue: '$0'
-            };
-            
-            const { data: existingCustomer } = await supabase
+          if (existingCustomer) {
+            const { error: updateCustomerError } = await supabase
               .from('customers')
-              .select('id')
-              .eq('id', data.user.id)
-              .maybeSingle();
-              
-            if (existingCustomer) {
-              const { error: updateCustomerError } = await supabase
-                .from('customers')
-                .update(customerData)
-                .eq('id', data.user.id);
-                
-              if (updateCustomerError) {
-                console.error("Error updating customer record:", updateCustomerError);
-              }
-            } else {
-              const { error: createCustomerError } = await supabase
-                .from('customers')
-                .insert(customerData);
-                
-              if (createCustomerError) {
-                console.error("Error creating customer record:", createCustomerError);
-              }
-            }
-            
-            const { error: updateProfileError } = await supabase
-              .from('profiles')
-              .update({
-                enrolled_by: staffKey,
-                enroller: staffKey
-              })
+              .update(customerData)
               .eq('id', data.user.id);
               
-            if (updateProfileError) {
-              console.error("Error updating profile with enrollment info:", updateProfileError);
-              
-              try {
-                console.log("Attempting to fix enrollment data with edge function");
-                const { error: fixEnrollmentError } = await supabase.functions.invoke('fix-enrollment-data', {
-                  body: { userEmail: email, enrollmentKey: staffKey }
-                });
-                
-                if (fixEnrollmentError) {
-                  console.warn("Non-blocking warning - Error fixing enrollment data:", fixEnrollmentError);
-                } else {
-                  console.log("Successfully fixed enrollment data with edge function");
-                }
-              } catch (enrollmentError) {
-                console.warn("Non-blocking warning - Failed to fix enrollment data:", enrollmentError);
-              }
+            if (updateCustomerError) {
+              console.error("Error updating customer record:", updateCustomerError);
             }
-            
-          } catch (err) {
-            console.error("Error ensuring customer record creation:", err);
+          } else {
+            const { error: createCustomerError } = await supabase
+              .from('customers')
+              .insert(customerData);
+              
+            if (createCustomerError) {
+              console.error("Error creating customer record:", createCustomerError);
+            }
           }
+          
+        } catch (err) {
+          console.error("Error ensuring customer record creation:", err);
         }
         
         toast({
@@ -384,46 +282,10 @@ const Register = () => {
                 className="bg-darkGrey border-silver/20"
               />
             </div>
-            <div className="space-y-2">
-              <Input
-                type="text"
-                placeholder="Enroller"
-                value={staffKey}
-                onChange={(e) => setStaffKey(e.target.value)}
-                required
-                disabled={isLoading}
-                className={`bg-darkGrey border-silver/20 ${
-                  staffKey && !isValidating ? 
-                    (staffKeyInfo.isValid ? 'border-green-500' : 'border-red-500') : 
-                    ''
-                }`}
-              />
-              <p className="text-xs text-silver/70">
-                {staffKeyInfo.role === 'ceo' || staffKeyInfo.role === 'admin' || staffKeyInfo.role === 'enroller' 
-                  ? "Enter your enrollment key (CEO###, AD####, or EN####)" 
-                  : "Enter the enrollment key of the person who enrolled you"}
-              </p>
-              
-              {staffKey && !isValidating && !staffKeyInfo.isValid && (
-                <Alert variant="destructive" className="mt-2 py-2">
-                  <AlertDescription>
-                    This enrollment key is invalid or inactive
-                  </AlertDescription>
-                </Alert>
-              )}
-              
-              {staffKey && !isValidating && staffKeyInfo.isValid && !staffKeyInfo.canBeUsedForEnrollment && (
-                <Alert className="mt-2 py-2 bg-amber-500/20 border-amber-500 text-amber-200">
-                  <AlertDescription>
-                    This enrollment key cannot be used for enrollment
-                  </AlertDescription>
-                </Alert>
-              )}
-            </div>
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isLoading || isValidating || (staffKey && !staffKeyInfo.canBeUsedForEnrollment)}
+              disabled={isLoading}
             >
               {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
