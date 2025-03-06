@@ -79,34 +79,55 @@ export type Database = {
       }
       customer_accounts: {
         Row: {
+          accounts_locked: boolean | null
+          can_add_accounts: boolean | null
+          can_remove_accounts: boolean | null
           created_at: string
           email: string
+          enrolled_by: string | null
+          enroller: string | null
           id: string
           license_key: string | null
+          max_accounts: number | null
           name: string
           phone: string | null
+          referred_by: string | null
           status: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          accounts_locked?: boolean | null
+          can_add_accounts?: boolean | null
+          can_remove_accounts?: boolean | null
           created_at?: string
           email: string
+          enrolled_by?: string | null
+          enroller?: string | null
           id?: string
           license_key?: string | null
+          max_accounts?: number | null
           name: string
           phone?: string | null
+          referred_by?: string | null
           status?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          accounts_locked?: boolean | null
+          can_add_accounts?: boolean | null
+          can_remove_accounts?: boolean | null
           created_at?: string
           email?: string
+          enrolled_by?: string | null
+          enroller?: string | null
           id?: string
           license_key?: string | null
+          max_accounts?: number | null
           name?: string
           phone?: string | null
+          referred_by?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -117,9 +138,12 @@ export type Database = {
         Row: {
           created_at: string
           email: string
+          enrolled_by: string | null
+          enroller: string | null
           id: string
           name: string
           phone: string | null
+          referred_by: string | null
           revenue: string
           sales_rep_id: string
           staff_key: string | null
@@ -130,9 +154,12 @@ export type Database = {
         Insert: {
           created_at?: string
           email: string
+          enrolled_by?: string | null
+          enroller?: string | null
           id?: string
           name: string
           phone?: string | null
+          referred_by?: string | null
           revenue?: string
           sales_rep_id: string
           staff_key?: string | null
@@ -143,9 +170,12 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string
+          enrolled_by?: string | null
+          enroller?: string | null
           id?: string
           name?: string
           phone?: string | null
+          referred_by?: string | null
           revenue?: string
           sales_rep_id?: string
           staff_key?: string | null
@@ -158,15 +188,21 @@ export type Database = {
       license_keys: {
         Row: {
           account_numbers: string[]
+          accounts_locked: boolean | null
+          can_add_accounts: boolean | null
+          can_remove_accounts: boolean | null
           created_at: string | null
           email: string
+          enrolled_by: string | null
           enroller: string | null
           expiry_date: string | null
           id: string
           license_key: string
+          max_accounts: number | null
           name: string
           phone: string
           product_code: string
+          referred_by: string | null
           staff_id: string | null
           staff_key: string | null
           status: string | null
@@ -176,15 +212,21 @@ export type Database = {
         }
         Insert: {
           account_numbers: string[]
+          accounts_locked?: boolean | null
+          can_add_accounts?: boolean | null
+          can_remove_accounts?: boolean | null
           created_at?: string | null
           email: string
+          enrolled_by?: string | null
           enroller?: string | null
           expiry_date?: string | null
           id?: string
           license_key: string
+          max_accounts?: number | null
           name: string
           phone?: string
           product_code: string
+          referred_by?: string | null
           staff_id?: string | null
           staff_key?: string | null
           status?: string | null
@@ -194,15 +236,21 @@ export type Database = {
         }
         Update: {
           account_numbers?: string[]
+          accounts_locked?: boolean | null
+          can_add_accounts?: boolean | null
+          can_remove_accounts?: boolean | null
           created_at?: string | null
           email?: string
+          enrolled_by?: string | null
           enroller?: string | null
           expiry_date?: string | null
           id?: string
           license_key?: string
+          max_accounts?: number | null
           name?: string
           phone?: string
           product_code?: string
+          referred_by?: string | null
           staff_id?: string | null
           staff_key?: string | null
           status?: string | null
@@ -307,12 +355,41 @@ export type Database = {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          product_code: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          product_code: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          product_code?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
           enrolled_by: string | null
+          enroller: string | null
           id: string
           referral_code: string | null
+          referred_by: string | null
           role: Database["public"]["Enums"]["user_role"]
           staff_key: string | null
           updated_at: string | null
@@ -320,8 +397,10 @@ export type Database = {
         Insert: {
           created_at?: string | null
           enrolled_by?: string | null
+          enroller?: string | null
           id: string
           referral_code?: string | null
+          referred_by?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           staff_key?: string | null
           updated_at?: string | null
@@ -329,8 +408,10 @@ export type Database = {
         Update: {
           created_at?: string | null
           enrolled_by?: string | null
+          enroller?: string | null
           id?: string
           referral_code?: string | null
+          referred_by?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           staff_key?: string | null
           updated_at?: string | null
