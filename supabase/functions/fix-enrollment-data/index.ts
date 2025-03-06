@@ -1,202 +1,160 @@
 
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
+import { corsHeaders } from '../_shared/cors.ts'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+const supabaseUrl = Deno.env.get('SUPABASE_URL') || ''
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
 
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    const { userEmail } = await req.json();
-    
-    if (!userEmail) {
+    // Create a Supabase client with the service role key
+    const supabase = createClient(
+      supabaseUrl,
+      supabaseServiceKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    )
+
+    // Parse request body
+    const { userEmail, enrollmentKey } = await req.json()
+
+    if (!userEmail || !enrollmentKey) {
       return new Response(
-        JSON.stringify({ success: false, error: "Missing userEmail" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
-      );
+        JSON.stringify({ error: 'Missing required fields: userEmail and enrollmentKey are required' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 400,
+        }
+      )
     }
 
-    console.log(`Fixing enrollment data for user ${userEmail}`);
-
-    // Get Supabase client with admin privileges
-    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    console.log(`Fixing enrollment data for ${userEmail} with key ${enrollmentKey}`)
 
     // Find the user by email
-    const { data: authUsers, error: userError } = await supabase
+    const { data: userData, error: userError } = await supabase
       .from('auth.users')
-      .select('id')
+      .select('id, email')
       .eq('email', userEmail)
-      .limit(1);
+      .maybeSingle()
 
-    if (userError || !authUsers || authUsers.length === 0) {
-      console.error("Error finding user by email:", userError);
-      // Try an alternative approach
-      const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
+    if (userError || !userData) {
+      console.error('Error finding user:', userError)
       
-      if (authError) {
-        console.error("Error listing users:", authError);
-        return new Response(
-          JSON.stringify({ success: false, error: "Could not find user" }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 404 }
-        );
-      }
-      
-      const user = users.find(u => u.email === userEmail);
-      if (!user) {
-        return new Response(
-          JSON.stringify({ success: false, error: "User not found" }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 404 }
-        );
-      }
-      
-      // Update the profile 
-      const { error: profileError } = await supabase
+      // Try an alternative approach using the profiles table
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .update({ 
-          enrolled_by: null,
-          enroller: null,
-          staff_key: null,  // Ensure staff_key is NULL for customers
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', user.id);
-
-      if (profileError) {
-        console.error("Error updating profile:", profileError);
-        return new Response(
-          JSON.stringify({ success: false, error: "Failed to update profile" }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-        );
+        .select('id')
+        .eq('email', userEmail)
+        .maybeSingle()
+        
+      if (profileError || !profileData) {
+        // Try using the customers table as a last resort
+        const { data: customerData, error: customerError } = await supabase
+          .from('customers')
+          .select('id')
+          .eq('email', userEmail)
+          .maybeSingle()
+          
+        if (customerError || !customerData) {
+          return new Response(
+            JSON.stringify({ error: 'User not found with the provided email' }),
+            {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+              status: 404,
+            }
+          )
+        }
+        
+        // Use customer ID
+        userData = { id: customerData.id, email: userEmail }
+      } else {
+        // Use profile ID
+        userData = { id: profileData.id, email: userEmail }
       }
-
-      // Update the license_keys record
-      const { error: licenseError } = await supabase
-        .from('license_keys')
-        .update({ 
-          enrolled_by: null,
-          enroller: null,
-          staff_key: null  // Ensure staff_key is NULL for customers
-        })
-        .eq('user_id', user.id);
-
-      if (licenseError) {
-        console.error("Error updating license_keys:", licenseError);
-        // Non-fatal error, continue
-      }
-
-      // Update the customer_accounts record
-      const { error: customerAccountsError } = await supabase
-        .from('customer_accounts')
-        .update({ 
-          enrolled_by: null 
-        })
-        .eq('user_id', user.id);
-
-      if (customerAccountsError) {
-        console.error("Error updating customer_accounts:", customerAccountsError);
-        // Non-fatal error, continue
-      }
-
-      // Update the customers table
-      const { error: customersError } = await supabase
-        .from('customers')
-        .update({ 
-          staff_key: null,  // Ensure staff_key is NULL for customers
-          enroller: null
-        })
-        .eq('id', user.id);
-
-      if (customersError) {
-        console.error("Error updating customers:", customersError);
-        // Non-fatal error, continue
-      }
-
-      return new Response(
-        JSON.stringify({ success: true, message: "Enrollment data fixed successfully" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-      );
     }
 
-    const userId = authUsers[0].id;
+    const userId = userData.id
 
-    // Update the profile with enrollment data
-    const { error: profileError } = await supabase
+    // Update profile enrollment info
+    const { error: profileUpdateError } = await supabase
       .from('profiles')
-      .update({ 
-        enrolled_by: null,
-        enroller: null,
-        staff_key: null,  // Ensure staff_key is NULL for customers
-        updated_at: new Date().toISOString()
+      .update({
+        enrolled_by: enrollmentKey,
+        enroller: enrollmentKey
       })
-      .eq('id', userId);
+      .eq('id', userId)
 
-    if (profileError) {
-      console.error("Error updating profile:", profileError);
-      return new Response(
-        JSON.stringify({ success: false, error: "Failed to update profile" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-      );
+    if (profileUpdateError) {
+      console.error('Error updating profile:', profileUpdateError)
     }
 
-    // Update the license_keys record
-    const { error: licenseError } = await supabase
+    // Update license_keys table
+    const { error: licenseUpdateError } = await supabase
       .from('license_keys')
-      .update({ 
-        enrolled_by: null,
-        enroller: null,
-        staff_key: null  // Ensure staff_key is NULL for customers
+      .update({
+        enrolled_by: enrollmentKey,
+        enroller: enrollmentKey
       })
-      .eq('user_id', userId);
+      .eq('user_id', userId)
 
-    if (licenseError) {
-      console.error("Error updating license_keys:", licenseError);
-      // Non-fatal error, continue
+    if (licenseUpdateError) {
+      console.error('Error updating license_keys:', licenseUpdateError)
     }
 
-    // Update the customer_accounts record
-    const { error: customerAccountsError } = await supabase
+    // Update customer_accounts table
+    const { error: accountUpdateError } = await supabase
       .from('customer_accounts')
-      .update({ 
-        enrolled_by: null 
+      .update({
+        enrolled_by: enrollmentKey,
+        enroller: enrollmentKey
       })
-      .eq('user_id', userId);
+      .eq('user_id', userId)
 
-    if (customerAccountsError) {
-      console.error("Error updating customer_accounts:", customerAccountsError);
-      // Non-fatal error, continue
+    if (accountUpdateError) {
+      console.error('Error updating customer_accounts:', accountUpdateError)
     }
 
-    // Update the customers table
-    const { error: customersError } = await supabase
+    // Update customers table
+    const { error: customerUpdateError } = await supabase
       .from('customers')
-      .update({ 
-        staff_key: null,  // Ensure staff_key is NULL for customers
-        enroller: null
+      .update({
+        enroller: enrollmentKey
       })
-      .eq('id', userId);
+      .eq('id', userId)
 
-    if (customersError) {
-      console.error("Error updating customers:", customersError);
-      // Non-fatal error, continue
+    if (customerUpdateError) {
+      console.error('Error updating customers:', customerUpdateError)
     }
 
     return new Response(
-      JSON.stringify({ success: true, message: "Enrollment data fixed successfully" }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-    );
+      JSON.stringify({
+        success: true,
+        message: 'Enrollment data updated successfully',
+        userId
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200,
+      }
+    )
   } catch (error) {
-    console.error("Error in fix-enrollment-data:", error);
+    console.error('Server error:', error)
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-    );
+      JSON.stringify({ error: error.message }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      }
+    )
   }
-});
+})
