@@ -187,6 +187,7 @@ export type Database = {
           name: string
           phone: string | null
           status: string
+          test: string | null
           updated_at: string
           user_id: string
         }
@@ -198,6 +199,7 @@ export type Database = {
           name: string
           phone?: string | null
           status?: string
+          test?: string | null
           updated_at?: string
           user_id: string
         }
@@ -209,6 +211,7 @@ export type Database = {
           name?: string
           phone?: string | null
           status?: string
+          test?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -269,6 +272,7 @@ export type Database = {
           sales_rep_id: string
           staff_key: string | null
           status: string
+          test: string | null
           updated_at: string | null
         }
         Insert: {
@@ -281,6 +285,7 @@ export type Database = {
           sales_rep_id: string
           staff_key?: string | null
           status?: string
+          test?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -293,6 +298,7 @@ export type Database = {
           sales_rep_id?: string
           staff_key?: string | null
           status?: string
+          test?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -312,6 +318,7 @@ export type Database = {
           staff_key: string | null
           status: string | null
           subscription_type: string
+          test: string | null
           user_id: string
         }
         Insert: {
@@ -328,6 +335,7 @@ export type Database = {
           staff_key?: string | null
           status?: string | null
           subscription_type: string
+          test?: string | null
           user_id: string
         }
         Update: {
@@ -344,6 +352,7 @@ export type Database = {
           staff_key?: string | null
           status?: string | null
           subscription_type?: string
+          test?: string | null
           user_id?: string
         }
         Relationships: []

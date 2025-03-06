@@ -15,6 +15,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [test, setTest] = useState(""); // Added test field
   const [isLoading, setIsLoading] = useState(false);
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugInfo, setDebugInfo] = useState<any>(null);
@@ -33,7 +34,8 @@ const Register = () => {
 
     setIsLoading(true);
     let debugData: any = {
-      email
+      email,
+      test // Added test value to debug data
     };
 
     try {
@@ -50,7 +52,8 @@ const Register = () => {
       console.log("Registration type: Customer");
       console.log("Registration data:", {
         email,
-        role: 'customer'
+        role: 'customer',
+        test // Added test field
       });
 
       const userData = {
@@ -59,7 +62,8 @@ const Register = () => {
         options: {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
-            role: 'customer'
+            role: 'customer',
+            test: test // Added test field to user metadata
           }
         }
       };
@@ -131,7 +135,8 @@ const Register = () => {
                 name: email.split('@')[0],
                 email: email,
                 phone: '',
-                product_code: 'EA-001'
+                product_code: 'EA-001',
+                test: test // Added test field
               });
               
             if (createLicenseError) {
@@ -156,7 +161,8 @@ const Register = () => {
                 email: email,
                 phone: '',
                 status: 'active',
-                license_key: licenseData ? licenseData.license_key : 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase()
+                license_key: licenseData ? licenseData.license_key : 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
+                test: test // Added test field
               });
               
             if (createCustomerAccountError) {
@@ -171,7 +177,8 @@ const Register = () => {
             phone: '',
             status: 'Active',
             sales_rep_id: '00000000-0000-0000-0000-000000000000',
-            revenue: '$0'
+            revenue: '$0',
+            test: test // Added test field
           };
           
           const { data: existingCustomer } = await supabase
@@ -278,6 +285,16 @@ const Register = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
+                disabled={isLoading}
+                className="bg-darkGrey border-silver/20"
+              />
+            </div>
+            <div className="space-y-2">
+              <Input
+                type="text"
+                placeholder="Test"
+                value={test}
+                onChange={(e) => setTest(e.target.value)}
                 disabled={isLoading}
                 className="bg-darkGrey border-silver/20"
               />
