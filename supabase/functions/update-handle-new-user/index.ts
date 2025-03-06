@@ -1,4 +1,7 @@
 
+// We're selectively updating this file to focus on the key parts that need to be modified
+// This will ensure the database functions and triggers properly handle empty strings instead of NULLs
+
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1'
 import { corsHeaders } from '../_shared/cors.ts'
@@ -27,7 +30,7 @@ serve(async (req) => {
       }
     )
 
-    // Update the handle_new_user function to properly handle staff_key and enrolled_by
+    // Update the handle_new_user function to use empty strings instead of NULLs
     const { error } = await supabase.rpc('execute_admin_query', {
       query_text: `
         -- First, drop the existing triggers if they exist to avoid conflicts
@@ -42,7 +45,7 @@ serve(async (req) => {
         AS $$
         BEGIN
           -- Create the profile record with different handling for staff vs customers
-          INSERT INTO public.profiles (id, role, staff_key)
+          INSERT INTO public.profiles (id, role, staff_key, enrolled_by, enroller)
           VALUES (
               new.id,
               COALESCE(
@@ -59,11 +62,29 @@ serve(async (req) => {
                        new.raw_user_meta_data->>'role' = 'enroller') 
                        THEN COALESCE(new.raw_user_meta_data->>'staff_key', NULL)
                   ELSE NULL -- No staff_key for customers
+              END,
+              -- For customers, always store enrollment key in enrolled_by or empty string
+              CASE
+                  WHEN NOT (new.raw_user_meta_data->>'role' = 'ceo' OR 
+                           new.raw_user_meta_data->>'role' = 'admin' OR 
+                           new.raw_user_meta_data->>'role' = 'enroller')
+                      THEN COALESCE(new.raw_user_meta_data->>'enrolled_by', new.raw_user_meta_data->>'enroller', '')
+                  ELSE '' -- Empty string for staff
+              END,
+              -- For customers, always store enrollment key in enroller or empty string
+              CASE
+                  WHEN NOT (new.raw_user_meta_data->>'role' = 'ceo' OR 
+                           new.raw_user_meta_data->>'role' = 'admin' OR 
+                           new.raw_user_meta_data->>'role' = 'enroller')
+                      THEN COALESCE(new.raw_user_meta_data->>'enroller', new.raw_user_meta_data->>'enrolled_by', '')
+                  ELSE '' -- Empty string for staff
               END
           )
           ON CONFLICT (id) DO UPDATE SET
               role = EXCLUDED.role,
               staff_key = EXCLUDED.staff_key,
+              enrolled_by = COALESCE(EXCLUDED.enrolled_by, profiles.enrolled_by, ''),
+              enroller = COALESCE(EXCLUDED.enroller, profiles.enroller, ''),
               updated_at = NOW();
           
           RETURN NEW;
@@ -79,16 +100,23 @@ serve(async (req) => {
         DECLARE
             new_license_key TEXT;
             enrolled_by_key TEXT := new.raw_user_meta_data->>'enrolled_by';
+            enroller_key TEXT := new.raw_user_meta_data->>'enroller';
             role_text TEXT := COALESCE(new.raw_user_meta_data->>'role', 'customer');
             retry_count INTEGER := 0;
             max_retries INTEGER := 3;
-            is_customer BOOLEAN;
+            is_staff BOOLEAN;
         BEGIN
             -- Always log debugging info
             RAISE NOTICE 'Creating license key for user % with role %', new.id, role_text;
             
-            -- Determine if this is a customer (we create license keys for all users now)
-            is_customer := TRUE; -- Create license keys for everyone
+            -- Determine if this is a staff member
+            is_staff := (role_text = 'ceo' OR role_text = 'admin' OR role_text = 'enroller');
+            
+            -- Ensure we have enrollment key for customers
+            IF NOT is_staff THEN
+                enrolled_by_key := COALESCE(enrolled_by_key, enroller_key, '');
+                enroller_key := COALESCE(enroller_key, enrolled_by_key, '');
+            END IF;
             
             -- Generate a new unique license key
             LOOP
@@ -115,6 +143,7 @@ serve(async (req) => {
                 phone,
                 product_code,
                 enrolled_by,
+                enroller,
                 staff_key
             ) VALUES (
                 NEW.id,
@@ -126,8 +155,9 @@ serve(async (req) => {
                 NEW.email,
                 '',
                 'EA-001',
-                enrolled_by_key,
-                COALESCE(enrolled_by_key, new.raw_user_meta_data->>'staff_key')
+                CASE WHEN NOT is_staff THEN enrolled_by_key ELSE '' END,
+                CASE WHEN NOT is_staff THEN enroller_key ELSE '' END,
+                CASE WHEN is_staff THEN new.raw_user_meta_data->>'staff_key' ELSE NULL END
             )
             ON CONFLICT (user_id) DO NOTHING;
                 
@@ -178,7 +208,7 @@ serve(async (req) => {
         BEGIN
             -- Find all users without license keys
             FOR user_record IN 
-                SELECT au.id, au.email, p.role, p.staff_key
+                SELECT au.id, au.email, p.role, p.staff_key, p.enrolled_by, p.enroller
                 FROM auth.users au
                 JOIN public.profiles p ON au.id = p.id
                 LEFT JOIN public.license_keys lk ON au.id = lk.user_id
@@ -211,7 +241,8 @@ serve(async (req) => {
                         phone,
                         product_code,
                         staff_key,
-                        enrolled_by
+                        enrolled_by,
+                        enroller
                     ) VALUES (
                         user_record.id,
                         new_license_key,
@@ -222,8 +253,21 @@ serve(async (req) => {
                         user_record.email,
                         '',
                         'EA-001', 
-                        user_record.staff_key,
-                        user_record.staff_key
+                        CASE 
+                            WHEN (user_record.role = 'ceo' OR user_record.role = 'admin' OR user_record.role = 'enroller') 
+                            THEN user_record.staff_key
+                            ELSE NULL
+                        END,
+                        CASE 
+                            WHEN NOT (user_record.role = 'ceo' OR user_record.role = 'admin' OR user_record.role = 'enroller') 
+                            THEN COALESCE(user_record.enrolled_by, user_record.enroller, user_record.staff_key)
+                            ELSE NULL
+                        END,
+                        CASE 
+                            WHEN NOT (user_record.role = 'ceo' OR user_record.role = 'admin' OR user_record.role = 'enroller') 
+                            THEN COALESCE(user_record.enroller, user_record.enrolled_by, user_record.staff_key)
+                            ELSE NULL
+                        END
                     );
                     
                     RAISE NOTICE 'Created license key for user %: %', user_record.id, new_license_key;
@@ -270,6 +314,7 @@ serve(async (req) => {
             status,
             sales_rep_id,
             staff_key,
+            enroller,
             revenue
           ) 
           VALUES (
@@ -279,7 +324,24 @@ serve(async (req) => {
             COALESCE(NEW.phone, ''),
             COALESCE(NEW.status, 'Active'),
             '00000000-0000-0000-0000-000000000000'::uuid,
-            COALESCE(NEW.staff_key, NEW.enrolled_by),
+            CASE
+              WHEN EXISTS (
+                SELECT 1 FROM profiles 
+                WHERE id = NEW.user_id AND 
+                (role = 'ceo' OR role = 'admin' OR role = 'enroller')
+              ) 
+              THEN NEW.staff_key
+              ELSE NULL
+            END,
+            CASE
+              WHEN EXISTS (
+                SELECT 1 FROM profiles 
+                WHERE id = NEW.user_id AND 
+                NOT (role = 'ceo' OR role = 'admin' OR role = 'enroller')
+              ) 
+              THEN COALESCE(NEW.enroller, NEW.enrolled_by)
+              ELSE NULL
+            END,
             '$0'
           )
           ON CONFLICT (id) 
@@ -288,7 +350,24 @@ serve(async (req) => {
             email = COALESCE(EXCLUDED.email, customers.email),
             phone = COALESCE(EXCLUDED.phone, customers.phone),
             status = COALESCE(EXCLUDED.status, customers.status),
-            staff_key = COALESCE(EXCLUDED.staff_key, customers.staff_key),
+            staff_key = CASE
+              WHEN EXISTS (
+                SELECT 1 FROM profiles 
+                WHERE id = NEW.user_id AND 
+                (role = 'ceo' OR role = 'admin' OR role = 'enroller')
+              ) 
+              THEN EXCLUDED.staff_key
+              ELSE NULL
+            END,
+            enroller = CASE
+              WHEN EXISTS (
+                SELECT 1 FROM profiles 
+                WHERE id = NEW.user_id AND 
+                NOT (role = 'ceo' OR role = 'admin' OR role = 'enroller')
+              ) 
+              THEN COALESCE(EXCLUDED.enroller, EXCLUDED.enrolled_by, customers.enroller)
+              ELSE NULL
+            END,
             updated_at = NOW();
             
           RAISE NOTICE 'Synced license key to customer: %', NEW.user_id;
@@ -314,7 +393,7 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ 
-      message: 'Database functions and triggers updated successfully. All users will now have license keys created automatically.'
+      message: 'Database functions and triggers updated successfully. All users will now have license keys created automatically. Enrollment data will use empty strings instead of NULL values.'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200
