@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,43 +40,43 @@ const EnrollmentFixer = () => {
     setIsLoading(true);
     
     try {
-      // Get user by email first
-      const { data: authUser, error: authUserError } = await supabase.auth.admin.listUsers({
-        filter: {
-          email: email.trim()
-        }
-      });
-      
-      if (authUserError || !authUser || !authUser.users || authUser.users.length === 0) {
-        console.error("Error finding auth user:", authUserError);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Could not find user with that email",
-        });
-        setIsLoading(false);
-        return;
-      }
-      
-      const userId = authUser.users[0].id;
-      
-      // Get user profile to confirm it exists
+      // Get user by email - fixing the API call to use the correct method
       const { data: userData, error: userError } = await supabase
         .from('profiles')
         .select('id')
-        .eq('id', userId)
-        .single();
-        
+        .eq('email', email.trim())
+        .maybeSingle();
+      
       if (userError || !userData) {
         console.error("Error finding user profile:", userError);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Could not find user profile with that email",
+        
+        // Try to find the user in auth.users using the edge function
+        const { data: response, error: functionError } = await supabase.functions.invoke('fix-enrollment-data', {
+          body: { userEmail: email.trim(), referralCode: referralCode.trim() }
         });
+        
+        if (functionError || !response?.success) {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: functionError?.message || response?.error || "Could not find user with that email",
+          });
+          setIsLoading(false);
+          return;
+        }
+        
+        toast({
+          title: "Success",
+          description: "User referral information has been updated",
+        });
+        
+        setEmail("");
+        setReferralCode("");
         setIsLoading(false);
         return;
       }
+      
+      const userId = userData.id;
       
       // Update user's referred_by field
       const { error: updateError } = await supabase
@@ -87,7 +86,7 @@ const EnrollmentFixer = () => {
           enrolled_by: referralCode,  // Keep for backward compatibility
           enroller: referralCode      // Keep for backward compatibility
         })
-        .eq('id', userData.id);
+        .eq('id', userId);
         
       if (updateError) {
         console.error("Error updating referral:", updateError);
@@ -108,7 +107,7 @@ const EnrollmentFixer = () => {
           enrolled_by: referralCode,
           enroller: referralCode
         })
-        .eq('user_id', userData.id);
+        .eq('user_id', userId);
         
       await supabase
         .from('customer_accounts')
@@ -116,14 +115,14 @@ const EnrollmentFixer = () => {
           referred_by: referralCode,
           enrolled_by: referralCode
         })
-        .eq('user_id', userData.id);
+        .eq('user_id', userId);
         
       await supabase
         .from('customers')
         .update({ 
           enroller: referralCode
         })
-        .eq('id', userData.id);
+        .eq('id', userId);
       
       toast({
         title: "Success",
