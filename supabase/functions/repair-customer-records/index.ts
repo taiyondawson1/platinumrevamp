@@ -38,7 +38,7 @@ serve(async (req) => {
       })
     }
     
-    console.log(`Repairing customer records for user: ${userId}`)
+    console.log(`[REPAIR] Starting customer records repair for user: ${userId}`)
     
     // Fetch the user data from profiles table
     const { data: profile, error: profileError } = await supabase
@@ -48,7 +48,7 @@ serve(async (req) => {
       .single()
       
     if (profileError) {
-      console.error('Error fetching profile:', profileError)
+      console.error('[REPAIR] Error fetching profile:', profileError)
       return new Response(JSON.stringify({ 
         success: false, 
         error: 'Failed to fetch user profile',
@@ -68,7 +68,7 @@ serve(async (req) => {
     })
     
     if (userError || !users || users.length === 0) {
-      console.error('Error fetching user:', userError)
+      console.error('[REPAIR] Error fetching user:', userError)
       return new Response(JSON.stringify({ 
         success: false, 
         error: 'Failed to fetch user data',
@@ -86,7 +86,7 @@ serve(async (req) => {
     const referredBy = profile.referred_by || user.user_metadata?.referred_by || null
     const isStaff = (profile.role === 'ceo' || profile.role === 'admin' || profile.role === 'enroller')
     
-    console.log(`User info: ${userName}, ${userEmail}, role: ${profile.role}, referred by: ${referredBy}`)
+    console.log(`[REPAIR] User info: ${userName}, ${userEmail}, role: ${profile.role}, referred by: ${referredBy}`)
     
     // Check if user already has a license key
     const { data: licenseKey, error: licenseKeyError } = await supabase
@@ -97,7 +97,7 @@ serve(async (req) => {
       
     // If license key doesn't exist, create one
     if (!licenseKey || licenseKeyError) {
-      console.log(`No license key found, creating one for user: ${userId}`)
+      console.log(`[REPAIR] No license key found, creating one for user: ${userId}`)
       
       // Call the function to generate a unique license key
       const { data: generatedKeyData, error: genKeyError } = await supabase.rpc(
@@ -105,7 +105,7 @@ serve(async (req) => {
       )
       
       if (genKeyError) {
-        console.error('Error generating license key:', genKeyError)
+        console.error('[REPAIR] Error generating license key:', genKeyError)
         return new Response(JSON.stringify({ 
           success: false, 
           error: 'Failed to generate license key',
@@ -138,7 +138,7 @@ serve(async (req) => {
         })
         
       if (insertLicenseError) {
-        console.error('Error inserting license key:', insertLicenseError)
+        console.error('[REPAIR] Error inserting license key:', insertLicenseError)
         return new Response(JSON.stringify({ 
           success: false, 
           error: 'Failed to insert license key',
@@ -149,9 +149,9 @@ serve(async (req) => {
         })
       }
       
-      console.log(`Created license key ${newLicenseKey} for user ${userId}`)
+      console.log(`[REPAIR] Created license key ${newLicenseKey} for user ${userId}`)
     } else {
-      console.log(`License key already exists for user: ${userId}`)
+      console.log(`[REPAIR] License key already exists for user: ${userId}`)
     }
     
     // Check if user already has a customer account
@@ -163,7 +163,7 @@ serve(async (req) => {
       
     // If customer account doesn't exist, create one
     if (!customerAccount || customerAccountError) {
-      console.log(`No customer account found, creating one for user: ${userId}`)
+      console.log(`[REPAIR] No customer account found, creating one for user: ${userId}`)
       
       // Get the license key (either the existing one or the newly created one)
       const { data: currentLicenseKey } = await supabase
@@ -187,7 +187,7 @@ serve(async (req) => {
         })
         
       if (insertCustomerError) {
-        console.error('Error inserting customer account:', insertCustomerError)
+        console.error('[REPAIR] Error inserting customer account:', insertCustomerError)
         return new Response(JSON.stringify({ 
           success: false, 
           error: 'Failed to insert customer account',
@@ -198,9 +198,9 @@ serve(async (req) => {
         })
       }
       
-      console.log(`Created customer account for user ${userId}`)
+      console.log(`[REPAIR] Created customer account for user ${userId}`)
     } else {
-      console.log(`Customer account already exists for user: ${userId}`)
+      console.log(`[REPAIR] Customer account already exists for user: ${userId}`)
     }
     
     // Check if user already has a customer record in the customers table
@@ -212,7 +212,7 @@ serve(async (req) => {
       
     // If customer doesn't exist, create one
     if (!customer || customerError) {
-      console.log(`No customer record found, creating one for user: ${userId}`)
+      console.log(`[REPAIR] No customer record found, creating one for user: ${userId}`)
       
       // Insert the new customer record
       const { error: insertCustomerRecordError } = await supabase
@@ -230,7 +230,7 @@ serve(async (req) => {
         })
         
       if (insertCustomerRecordError) {
-        console.error('Error inserting customer record:', insertCustomerRecordError)
+        console.error('[REPAIR] Error inserting customer record:', insertCustomerRecordError)
         return new Response(JSON.stringify({ 
           success: false, 
           error: 'Failed to insert customer record',
@@ -241,9 +241,9 @@ serve(async (req) => {
         })
       }
       
-      console.log(`Created customer record for user ${userId}`)
+      console.log(`[REPAIR] Created customer record for user ${userId}`)
     } else {
-      console.log(`Customer record already exists for user: ${userId}`)
+      console.log(`[REPAIR] Customer record already exists for user: ${userId}`)
     }
     
     return new Response(JSON.stringify({ 
@@ -255,7 +255,7 @@ serve(async (req) => {
       status: 200
     })
   } catch (err) {
-    console.error('Error in repair-customer-records function:', err)
+    console.error('[REPAIR] Unexpected error in repair-customer-records function:', err)
     return new Response(JSON.stringify({ 
       success: false, 
       error: err.message 

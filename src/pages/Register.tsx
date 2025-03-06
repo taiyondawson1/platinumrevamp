@@ -110,17 +110,50 @@ const Register = () => {
         console.log("User created successfully:", data.user);
         
         // Ensure user records exist in both license_keys and customer_accounts tables
-        try {
-          // Trigger the repair function to ensure records exist
-          const { error: repairError } = await supabase.functions.invoke('repair-customer-records', {
-            body: { userId: data.user.id }
-          });
-          
-          if (repairError) {
-            console.warn("Non-blocking warning - Error ensuring customer records:", repairError);
+        // Make up to 3 attempts to ensure records are created
+        let repairSuccess = false;
+        let repairAttempts = 0;
+        const maxRepairAttempts = 3;
+        
+        while (!repairSuccess && repairAttempts < maxRepairAttempts) {
+          repairAttempts++;
+          try {
+            console.log(`Repair attempt ${repairAttempts}: Ensuring customer records...`);
+            
+            // Trigger the repair function to ensure records exist
+            const { data: repairData, error: repairError } = await supabase.functions.invoke('repair-customer-records', {
+              body: { userId: data.user.id }
+            });
+            
+            debugData.repairAttempt = {
+              attempt: repairAttempts,
+              data: repairData,
+              error: repairError
+            };
+            
+            if (repairError) {
+              console.warn(`Repair attempt ${repairAttempts} failed:`, repairError);
+              
+              // Wait briefly before retrying
+              if (repairAttempts < maxRepairAttempts) {
+                await new Promise(resolve => setTimeout(resolve, 1000 * repairAttempts));
+              }
+            } else {
+              console.log("Records repair completed successfully:", repairData);
+              repairSuccess = true;
+            }
+          } catch (repairErr) {
+            console.warn(`Repair attempt ${repairAttempts} exception:`, repairErr);
+            
+            // Wait briefly before retrying
+            if (repairAttempts < maxRepairAttempts) {
+              await new Promise(resolve => setTimeout(resolve, 1000 * repairAttempts));
+            }
           }
-        } catch (repairErr) {
-          console.warn("Non-blocking warning - Failed to ensure customer records:", repairErr);
+        }
+        
+        if (!repairSuccess) {
+          console.error("Failed to ensure customer records after multiple attempts. User may need to contact support.");
         }
         
         toast({
