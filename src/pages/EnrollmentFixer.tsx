@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,34 +6,34 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import { useReferralCodeValidation } from "@/hooks/use-referral-code-validation";
+import { useStaffKeyValidation } from "@/hooks/use-staff-key-validation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const EnrollmentFixer = () => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
-  const [referralCode, setReferralCode] = useState("");
+  const [enrollmentKey, setEnrollmentKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   
-  const { referralInfo, isLoading: isValidating } = useReferralCodeValidation(referralCode);
+  const { staffKeyInfo, isLoading: isValidating } = useStaffKeyValidation(enrollmentKey);
 
   const handleFixEnrollment = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email.trim() || !referralCode.trim()) {
+    if (!email.trim() || !enrollmentKey.trim()) {
       toast({
         variant: "destructive",
         title: "Missing Information",
-        description: "Please provide both email and referral code",
+        description: "Please provide both email and enrollment key",
       });
       return;
     }
 
-    if (!referralInfo.isValid) {
+    if (!staffKeyInfo.isValid) {
       toast({
         variant: "destructive",
-        title: "Invalid Referral Code",
-        description: "The referral code provided is invalid",
+        title: "Invalid Enrollment Key",
+        description: "The enrollment key provided is invalid",
       });
       return;
     }
@@ -40,97 +41,26 @@ const EnrollmentFixer = () => {
     setIsLoading(true);
     
     try {
-      // Get user by email - fixing the API call to use the correct method
-      const { data: userData, error: userError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', email.trim())
-        .maybeSingle();
+      const { error } = await supabase.functions.invoke('fix-enrollment-data', {
+        body: { userEmail: email, enrollmentKey }
+      });
       
-      if (userError || !userData) {
-        console.error("Error finding user profile:", userError);
-        
-        // Try to find the user in auth.users using the edge function
-        const { data: response, error: functionError } = await supabase.functions.invoke('fix-enrollment-data', {
-          body: { userEmail: email.trim(), referralCode: referralCode.trim() }
-        });
-        
-        if (functionError || !response?.success) {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: functionError?.message || response?.error || "Could not find user with that email",
-          });
-          setIsLoading(false);
-          return;
-        }
-        
-        toast({
-          title: "Success",
-          description: "User referral information has been updated",
-        });
-        
-        setEmail("");
-        setReferralCode("");
-        setIsLoading(false);
-        return;
-      }
-      
-      const userId = userData.id;
-      
-      // Update user's referred_by field
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ 
-          referred_by: referralCode,
-          enrolled_by: referralCode,  // Keep for backward compatibility
-          enroller: referralCode      // Keep for backward compatibility
-        })
-        .eq('id', userId);
-        
-      if (updateError) {
-        console.error("Error updating referral:", updateError);
+      if (error) {
+        console.error("Error fixing enrollment data:", error);
         toast({
           variant: "destructive",
           title: "Error",
-          description: updateError.message || "Failed to update referral information",
+          description: error.message || "Failed to fix enrollment data",
         });
-        setIsLoading(false);
         return;
       }
       
-      // Update license_keys and customer_accounts for consistency
-      await supabase
-        .from('license_keys')
-        .update({ 
-          referred_by: referralCode,
-          enrolled_by: referralCode,
-          enroller: referralCode
-        })
-        .eq('user_id', userId);
-        
-      await supabase
-        .from('customer_accounts')
-        .update({ 
-          referred_by: referralCode,
-          enrolled_by: referralCode
-        })
-        .eq('user_id', userId);
-        
-      await supabase
-        .from('customers')
-        .update({ 
-          enroller: referralCode
-        })
-        .eq('id', userId);
-      
       toast({
         title: "Success",
-        description: "User referral information has been updated",
+        description: "User enrollment data has been fixed",
       });
       
       setEmail("");
-      setReferralCode("");
     } catch (error) {
       console.error("Error fixing enrollment:", error);
       toast({
@@ -147,7 +77,7 @@ const EnrollmentFixer = () => {
     <div className="container mx-auto p-4 mt-16">
       <Card className="max-w-md mx-auto">
         <CardHeader>
-          <CardTitle>Update User Referral</CardTitle>
+          <CardTitle>Fix User Enrollment</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleFixEnrollment} className="space-y-4">
@@ -165,34 +95,26 @@ const EnrollmentFixer = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="referralCode">Referral Code</Label>
+              <Label htmlFor="enrollmentKey">Enrollment Key</Label>
               <Input
-                id="referralCode"
+                id="enrollmentKey"
                 type="text"
-                placeholder="Enter 4-digit code"
-                value={referralCode}
-                onChange={(e) => setReferralCode(e.target.value)}
+                placeholder="Enter enrollment key"
+                value={enrollmentKey}
+                onChange={(e) => setEnrollmentKey(e.target.value)}
                 required
                 disabled={isLoading}
                 className={`${
-                  referralCode && !isValidating ? 
-                    (referralInfo.isValid ? 'border-green-500' : 'border-red-500') : 
+                  enrollmentKey && !isValidating ? 
+                    (staffKeyInfo.isValid ? 'border-green-500' : 'border-red-500') : 
                     ''
                 }`}
               />
               
-              {referralCode && !isValidating && !referralInfo.isValid && (
+              {enrollmentKey && !isValidating && !staffKeyInfo.isValid && (
                 <Alert variant="destructive" className="mt-2 py-2">
                   <AlertDescription>
-                    This referral code is invalid
-                  </AlertDescription>
-                </Alert>
-              )}
-              
-              {referralCode && !isValidating && referralInfo.isValid && referralInfo.referrerName && (
-                <Alert className="mt-2 py-2 bg-green-500/20 border-green-500 text-green-200">
-                  <AlertDescription>
-                    User will be referred by {referralInfo.referrerName}
+                    This enrollment key is invalid or inactive
                   </AlertDescription>
                 </Alert>
               )}
@@ -201,9 +123,9 @@ const EnrollmentFixer = () => {
             <Button 
               type="submit" 
               className="w-full"
-              disabled={isLoading || isValidating || !referralInfo.isValid}
+              disabled={isLoading || isValidating}
             >
-              {isLoading ? "Updating Referral..." : "Update Referral"}
+              {isLoading ? "Fixing Enrollment..." : "Fix Enrollment"}
             </Button>
           </form>
         </CardContent>
