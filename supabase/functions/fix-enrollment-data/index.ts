@@ -1,11 +1,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import { corsHeaders } from "../_shared/cors.ts";
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -79,8 +75,18 @@ serve(async (req) => {
     // Begin transaction to update all tables consistently
     const updates = [];
     
-    // 1. Update profiles table
-    if (referralCode) {
+    // Use the new update_user_referral_codes function to update all tables
+    const { error: updateError } = await supabase.rpc('update_user_referral_codes', {
+      user_id: userId,
+      referral_code: referralCode
+    });
+      
+    if (updateError) {
+      console.error("Error updating referral codes:", updateError);
+      updates.push({ function: 'update_user_referral_codes', success: false, error: updateError.message });
+      
+      // Fallback to manual updates if the function fails
+      // 1. Update profiles table
       const { error: profileError } = await supabase
         .from('profiles')
         .update({ 
@@ -96,38 +102,12 @@ serve(async (req) => {
       } else {
         updates.push({ table: 'profiles', success: true });
       }
-    } else {
-      // Ensure user has a referral code
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('referral_code')
-        .eq('id', userId)
-        .maybeSingle();
-        
-      if (!profileData?.referral_code) {
-        // Generate a referral code if none exists
-        const { error: genCodeError } = await supabase.rpc('execute_admin_query', {
-          query_text: `
-            UPDATE public.profiles
-            SET referral_code = public.generate_unique_referral_code()
-            WHERE id = '${userId}'
-          `
-        });
-        
-        if (genCodeError) {
-          console.error("Error generating referral code:", genCodeError);
-          updates.push({ table: 'profiles', success: false, error: genCodeError.message });
-        } else {
-          updates.push({ table: 'profiles', success: true, message: "Generated new referral code" });
-        }
-      }
-    }
-    
-    // 2. Update license_keys table
-    if (referralCode) {
+      
+      // 2. Update license_keys table
       const { error: licenseError } = await supabase
         .from('license_keys')
         .update({ 
+          referred_by: referralCode,
           enrolled_by: referralCode,
           enroller: referralCode
         })
@@ -139,13 +119,12 @@ serve(async (req) => {
       } else {
         updates.push({ table: 'license_keys', success: true });
       }
-    }
-    
-    // 3. Update customer_accounts table
-    if (referralCode) {
+      
+      // 3. Update customer_accounts table
       const { error: accountsError } = await supabase
         .from('customer_accounts')
         .update({ 
+          referred_by: referralCode,
           enrolled_by: referralCode
         })
         .eq('user_id', userId);
@@ -156,10 +135,8 @@ serve(async (req) => {
       } else {
         updates.push({ table: 'customer_accounts', success: true });
       }
-    }
-    
-    // 4. Update customers table
-    if (referralCode) {
+      
+      // 4. Update customers table
       const updateData: any = { enroller: referralCode };
       
       // Set sales_rep_id if we have the referrer's user ID
@@ -178,6 +155,8 @@ serve(async (req) => {
       } else {
         updates.push({ table: 'customers', success: true });
       }
+    } else {
+      updates.push({ function: 'update_user_referral_codes', success: true });
     }
 
     return new Response(

@@ -104,6 +104,7 @@ const EnrollmentFixer = () => {
       await supabase
         .from('license_keys')
         .update({ 
+          referred_by: referralCode,
           enrolled_by: referralCode,
           enroller: referralCode
         })
@@ -112,6 +113,7 @@ const EnrollmentFixer = () => {
       await supabase
         .from('customer_accounts')
         .update({ 
+          referred_by: referralCode,
           enrolled_by: referralCode
         })
         .eq('user_id', userData.id);

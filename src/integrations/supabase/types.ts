@@ -188,6 +188,7 @@ export type Database = {
           license_key: string | null
           name: string
           phone: string | null
+          referred_by: string | null
           status: string
           updated_at: string
           user_id: string
@@ -201,6 +202,7 @@ export type Database = {
           license_key?: string | null
           name: string
           phone?: string | null
+          referred_by?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -214,6 +216,7 @@ export type Database = {
           license_key?: string | null
           name?: string
           phone?: string | null
+          referred_by?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -320,6 +323,7 @@ export type Database = {
           name: string
           phone: string
           product_code: string
+          referred_by: string | null
           staff_id: string | null
           staff_key: string | null
           status: string | null
@@ -339,6 +343,7 @@ export type Database = {
           name: string
           phone?: string
           product_code: string
+          referred_by?: string | null
           staff_id?: string | null
           staff_key?: string | null
           status?: string | null
@@ -358,6 +363,7 @@ export type Database = {
           name?: string
           phone?: string
           product_code?: string
+          referred_by?: string | null
           staff_id?: string | null
           staff_key?: string | null
           status?: string | null
@@ -705,6 +711,13 @@ export type Database = {
       }
       repair_missing_customer_records: {
         Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      update_user_referral_codes: {
+        Args: {
+          user_id: string
+          referral_code: string
+        }
         Returns: undefined
       }
     }
