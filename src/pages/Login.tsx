@@ -17,6 +17,62 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugInfo, setDebugInfo] = useState<any>(null);
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
+  const [countdown, setCountdown] = useState(0);
+  const [resendLoading, setResendLoading] = useState(false);
+
+  // Handle countdown timer
+  useEffect(() => {
+    let timer: number | undefined;
+    
+    if (countdown > 0) {
+      timer = window.setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [countdown]);
+
+  const handleResendConfirmation = async () => {
+    if (countdown > 0 || !email) return;
+    
+    setResendLoading(true);
+    
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+      });
+      
+      if (error) {
+        console.error("Resend confirmation error:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: error.message,
+        });
+      } else {
+        toast({
+          title: "Email Sent",
+          description: "Confirmation email has been resent. Please check your inbox.",
+        });
+        // Start the countdown
+        setCountdown(30);
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to resend confirmation email",
+      });
+    } finally {
+      setResendLoading(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +105,13 @@ const Login = () => {
 
       if (error) {
         console.error("Login error:", error);
+        
+        // Check for email confirmation error
+        if (error.message.includes("Email not confirmed") || 
+            error.message.toLowerCase().includes("email confirmation")) {
+          setNeedsConfirmation(true);
+        }
+        
         toast({
           variant: "destructive",
           title: "Error",
@@ -58,6 +121,9 @@ const Login = () => {
         setDebugInfo(debugData);
         return;
       }
+
+      // If we get here, we're successfully logged in
+      setNeedsConfirmation(false);
 
       if (data?.user) {
         try {
@@ -259,6 +325,23 @@ const Login = () => {
                 <UserPlus className="mr-2 h-4 w-4" />
                 Create Account
               </Button>
+              
+              {/* Resend confirmation email button */}
+              {needsConfirmation && (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-full mt-4"
+                  onClick={handleResendConfirmation}
+                  disabled={countdown > 0 || resendLoading || !email}
+                >
+                  {resendLoading 
+                    ? "Sending..." 
+                    : countdown > 0 
+                      ? `Resend Confirmation (${countdown}s)` 
+                      : "Resend Confirmation Email"}
+                </Button>
+              )}
             </div>
             
             {process.env.NODE_ENV === 'development' && (
