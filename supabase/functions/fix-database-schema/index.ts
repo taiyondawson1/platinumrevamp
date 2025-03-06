@@ -17,7 +17,7 @@ serve(async (req) => {
 
     console.log("Starting fix-database-schema function...");
 
-    // Add all the missing columns to the license_keys table
+    // Add all the missing columns to the tables
     const { error: schemaError } = await supabase.rpc('execute_admin_query', {
       query_text: `
         -- Add the 'enroller' column to license_keys table if it doesn't exist

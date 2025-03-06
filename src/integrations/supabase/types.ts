@@ -77,107 +77,6 @@ export type Database = {
           },
         ]
       }
-      account_requests: {
-        Row: {
-          created_at: string | null
-          id: string
-          reviewed_at: string | null
-          reviewed_by: string | null
-          status: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      course_progress: {
-        Row: {
-          completed: boolean | null
-          course_id: string
-          created_at: string | null
-          id: string
-          updated_at: string | null
-          user_id: string
-          watch_time: number | null
-        }
-        Insert: {
-          completed?: boolean | null
-          course_id: string
-          created_at?: string | null
-          id?: string
-          updated_at?: string | null
-          user_id: string
-          watch_time?: number | null
-        }
-        Update: {
-          completed?: boolean | null
-          course_id?: string
-          created_at?: string | null
-          id?: string
-          updated_at?: string | null
-          user_id?: string
-          watch_time?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "course_progress_course_id_fkey"
-            columns: ["course_id"]
-            isOneToOne: false
-            referencedRelation: "courses"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      courses: {
-        Row: {
-          created_at: string | null
-          description: string | null
-          duration: string | null
-          id: string
-          lessons: number | null
-          name: string
-          path: string | null
-          updated_at: string | null
-          video_url: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          duration?: string | null
-          id?: string
-          lessons?: number | null
-          name: string
-          path?: string | null
-          updated_at?: string | null
-          video_url?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          duration?: string | null
-          id?: string
-          lessons?: number | null
-          name?: string
-          path?: string | null
-          updated_at?: string | null
-          video_url?: string | null
-        }
-        Relationships: []
-      }
       customer_accounts: {
         Row: {
           created_at: string
@@ -187,7 +86,6 @@ export type Database = {
           name: string
           phone: string | null
           status: string
-          test: string | null
           updated_at: string
           user_id: string
         }
@@ -199,7 +97,6 @@ export type Database = {
           name: string
           phone?: string | null
           status?: string
-          test?: string | null
           updated_at?: string
           user_id: string
         }
@@ -211,55 +108,10 @@ export type Database = {
           name?: string
           phone?: string | null
           status?: string
-          test?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: []
-      }
-      customer_requests: {
-        Row: {
-          created_at: string
-          customer_id: string | null
-          customer_name: string
-          description: string | null
-          handled_by: string | null
-          id: string
-          request_type: string
-          status: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string
-          customer_id?: string | null
-          customer_name: string
-          description?: string | null
-          handled_by?: string | null
-          id?: string
-          request_type: string
-          status?: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string
-          customer_id?: string | null
-          customer_name?: string
-          description?: string | null
-          handled_by?: string | null
-          id?: string
-          request_type?: string
-          status?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "customer_requests_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: false
-            referencedRelation: "customers"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       customers: {
         Row: {
@@ -308,6 +160,7 @@ export type Database = {
           account_numbers: string[]
           created_at: string | null
           email: string
+          enroller: string | null
           expiry_date: string | null
           id: string
           license_key: string
@@ -325,6 +178,7 @@ export type Database = {
           account_numbers: string[]
           created_at?: string | null
           email: string
+          enroller?: string | null
           expiry_date?: string | null
           id?: string
           license_key: string
@@ -342,6 +196,7 @@ export type Database = {
           account_numbers?: string[]
           created_at?: string | null
           email?: string
+          enroller?: string | null
           expiry_date?: string | null
           id?: string
           license_key?: string
@@ -449,33 +304,6 @@ export type Database = {
           id?: string
           session?: string
           user_id?: string
-        }
-        Relationships: []
-      }
-      products: {
-        Row: {
-          created_at: string | null
-          description: string | null
-          id: string
-          name: string
-          product_code: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          name: string
-          product_code: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          id?: string
-          name?: string
-          product_code?: string
-          updated_at?: string | null
         }
         Relationships: []
       }
