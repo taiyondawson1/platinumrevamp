@@ -76,6 +76,21 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
   useInactivityTimer();
 
+  const ensureCustomerRecords = async () => {
+    try {
+      console.log("Ensuring customer records are properly created...");
+      const { error } = await supabase.functions.invoke('ensure-customer-records');
+      
+      if (error) {
+        console.error("Error ensuring customer records:", error);
+      } else {
+        console.log("Customer records ensured successfully");
+      }
+    } catch (err) {
+      console.error("Failed to call ensure-customer-records function:", err);
+    }
+  };
+
   const fixDatabaseTriggers = async () => {
     try {
       console.log("Attempting to fix database triggers...");
@@ -91,7 +106,6 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Check for orphaned customers without license keys
   const fixOrphanedCustomers = async (userId: string) => {
     try {
       console.log("Checking for customer record/license key consistency...");
@@ -201,6 +215,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         console.log("Auth check - Session:", session);
         
         if (session) {
+          await ensureCustomerRecords();
           await fixDatabaseTriggers();
           await fixOrphanedCustomers(session.user.id);
           
@@ -235,6 +250,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       console.log("Auth state changed - Event:", event, "Session:", session);
       
       if (event === 'SIGNED_IN' && session) {
+        await ensureCustomerRecords();
         await fixDatabaseTriggers();
         await fixOrphanedCustomers(session.user.id);
         
