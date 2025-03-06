@@ -14,182 +14,178 @@ serve(async (req) => {
   }
 
   try {
-    const { userEmail, enrollmentKey } = await req.json();
-    
-    if (!userEmail || !enrollmentKey) {
-      return new Response(
-        JSON.stringify({ success: false, error: "Missing userEmail or enrollmentKey" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
-      );
-    }
-
-    console.log(`Fixing enrollment data for user ${userEmail} with enrollment key ${enrollmentKey}`);
-
     // Get Supabase client with admin privileges
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Find the user by email
-    const { data: authUsers, error: userError } = await supabase
-      .from('auth.users')
-      .select('id')
-      .eq('email', userEmail)
-      .limit(1);
+    // Parse request body
+    const { userEmail, referralCode } = await req.json();
+    
+    if (!userEmail) {
+      return new Response(
+        JSON.stringify({ success: false, error: "User email is required" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
 
-    if (userError || !authUsers || authUsers.length === 0) {
-      console.error("Error finding user by email:", userError);
-      // Try an alternative approach
-      const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
-      
-      if (authError) {
-        console.error("Error listing users:", authError);
+    console.log(`Fixing enrollment data for user: ${userEmail} with referral code: ${referralCode}`);
+
+    // Ensure referral system migration has been executed
+    try {
+      await fetch(`${supabaseUrl}/functions/v1/migrate-to-referral-codes`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json',
+        }
+      });
+    } catch (migrationError) {
+      console.warn("Non-blocking warning - Error during migration:", migrationError);
+    }
+
+    // Get the user by email
+    const { data: userData, error: userError } = await supabase.auth.admin.getUserByEmail(userEmail);
+    
+    if (userError || !userData?.user) {
+      console.error("Error finding user:", userError);
+      return new Response(
+        JSON.stringify({ success: false, error: "User not found" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 404 }
+      );
+    }
+
+    const userId = userData.user.id;
+    
+    // If referral code is provided, validate it
+    let referrerUserId = null;
+    if (referralCode) {
+      const { data: referrerData } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('referral_code', referralCode)
+        .maybeSingle();
+        
+      if (referrerData) {
+        referrerUserId = referrerData.id;
+      } else {
         return new Response(
-          JSON.stringify({ success: false, error: "Could not find user" }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 404 }
+          JSON.stringify({ success: false, error: "Invalid referral code" }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
         );
       }
-      
-      const user = users.find(u => u.email === userEmail);
-      if (!user) {
-        return new Response(
-          JSON.stringify({ success: false, error: "User not found" }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 404 }
-        );
-      }
-      
-      // Update the profile with enrollment data
+    }
+    
+    // Begin transaction to update all tables consistently
+    const updates = [];
+    
+    // 1. Update profiles table
+    if (referralCode) {
       const { error: profileError } = await supabase
         .from('profiles')
         .update({ 
-          enrolled_by: enrollmentKey,
-          enroller: enrollmentKey,
-          staff_key: null,  // Ensure staff_key is NULL for customers
-          updated_at: new Date().toISOString()
+          referred_by: referralCode,
+          enrolled_by: referralCode,  // Keep for backward compatibility
+          enroller: referralCode      // Keep for backward compatibility
         })
-        .eq('id', user.id);
-
+        .eq('id', userId);
+        
       if (profileError) {
         console.error("Error updating profile:", profileError);
-        return new Response(
-          JSON.stringify({ success: false, error: "Failed to update profile" }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-        );
+        updates.push({ table: 'profiles', success: false, error: profileError.message });
+      } else {
+        updates.push({ table: 'profiles', success: true });
       }
-
-      // Update the license_keys record
+    } else {
+      // Ensure user has a referral code
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('referral_code')
+        .eq('id', userId)
+        .maybeSingle();
+        
+      if (!profileData?.referral_code) {
+        // Generate a referral code if none exists
+        const { error: genCodeError } = await supabase.rpc('execute_admin_query', {
+          query_text: `
+            UPDATE public.profiles
+            SET referral_code = public.generate_unique_referral_code()
+            WHERE id = '${userId}'
+          `
+        });
+        
+        if (genCodeError) {
+          console.error("Error generating referral code:", genCodeError);
+          updates.push({ table: 'profiles', success: false, error: genCodeError.message });
+        } else {
+          updates.push({ table: 'profiles', success: true, message: "Generated new referral code" });
+        }
+      }
+    }
+    
+    // 2. Update license_keys table
+    if (referralCode) {
       const { error: licenseError } = await supabase
         .from('license_keys')
         .update({ 
-          enrolled_by: enrollmentKey,
-          enroller: enrollmentKey,
-          staff_key: null  // Ensure staff_key is NULL for customers
+          enrolled_by: referralCode,
+          enroller: referralCode
         })
-        .eq('user_id', user.id);
-
+        .eq('user_id', userId);
+        
       if (licenseError) {
         console.error("Error updating license_keys:", licenseError);
-        // Non-fatal error, continue
+        updates.push({ table: 'license_keys', success: false, error: licenseError.message });
+      } else {
+        updates.push({ table: 'license_keys', success: true });
       }
-
-      // Update the customer_accounts record
-      const { error: customerAccountsError } = await supabase
+    }
+    
+    // 3. Update customer_accounts table
+    if (referralCode) {
+      const { error: accountsError } = await supabase
         .from('customer_accounts')
         .update({ 
-          enrolled_by: enrollmentKey 
+          enrolled_by: referralCode
         })
-        .eq('user_id', user.id);
-
-      if (customerAccountsError) {
-        console.error("Error updating customer_accounts:", customerAccountsError);
-        // Non-fatal error, continue
+        .eq('user_id', userId);
+        
+      if (accountsError) {
+        console.error("Error updating customer_accounts:", accountsError);
+        updates.push({ table: 'customer_accounts', success: false, error: accountsError.message });
+      } else {
+        updates.push({ table: 'customer_accounts', success: true });
       }
-
-      // Update the customers table
+    }
+    
+    // 4. Update customers table
+    if (referralCode) {
+      const updateData: any = { enroller: referralCode };
+      
+      // Set sales_rep_id if we have the referrer's user ID
+      if (referrerUserId) {
+        updateData.sales_rep_id = referrerUserId;
+      }
+      
       const { error: customersError } = await supabase
         .from('customers')
-        .update({ 
-          staff_key: null,  // Ensure staff_key is NULL for customers
-          enroller: enrollmentKey
-        })
-        .eq('id', user.id);
-
+        .update(updateData)
+        .eq('id', userId);
+        
       if (customersError) {
         console.error("Error updating customers:", customersError);
-        // Non-fatal error, continue
+        updates.push({ table: 'customers', success: false, error: customersError.message });
+      } else {
+        updates.push({ table: 'customers', success: true });
       }
-
-      return new Response(
-        JSON.stringify({ success: true, message: "Enrollment data fixed successfully" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-      );
-    }
-
-    const userId = authUsers[0].id;
-
-    // Update the profile with enrollment data
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .update({ 
-        enrolled_by: enrollmentKey,
-        enroller: enrollmentKey,
-        staff_key: null,  // Ensure staff_key is NULL for customers
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', userId);
-
-    if (profileError) {
-      console.error("Error updating profile:", profileError);
-      return new Response(
-        JSON.stringify({ success: false, error: "Failed to update profile" }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-      );
-    }
-
-    // Update the license_keys record
-    const { error: licenseError } = await supabase
-      .from('license_keys')
-      .update({ 
-        enrolled_by: enrollmentKey,
-        enroller: enrollmentKey,
-        staff_key: null  // Ensure staff_key is NULL for customers
-      })
-      .eq('user_id', userId);
-
-    if (licenseError) {
-      console.error("Error updating license_keys:", licenseError);
-      // Non-fatal error, continue
-    }
-
-    // Update the customer_accounts record
-    const { error: customerAccountsError } = await supabase
-      .from('customer_accounts')
-      .update({ 
-        enrolled_by: enrollmentKey 
-      })
-      .eq('user_id', userId);
-
-    if (customerAccountsError) {
-      console.error("Error updating customer_accounts:", customerAccountsError);
-      // Non-fatal error, continue
-    }
-
-    // Update the customers table
-    const { error: customersError } = await supabase
-      .from('customers')
-      .update({ 
-        staff_key: null,  // Ensure staff_key is NULL for customers
-        enroller: enrollmentKey
-      })
-      .eq('id', userId);
-
-    if (customersError) {
-      console.error("Error updating customers:", customersError);
-      // Non-fatal error, continue
     }
 
     return new Response(
-      JSON.stringify({ success: true, message: "Enrollment data fixed successfully" }),
+      JSON.stringify({ 
+        success: true, 
+        message: "Enrollment data fixed successfully",
+        updates 
+      }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
     );
   } catch (error) {
