@@ -41,19 +41,39 @@ const EnrollmentFixer = () => {
     setIsLoading(true);
     
     try {
-      // Get user ID by email
-      const { data: userData, error: userError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', (await supabase.auth.admin.getUserByEmail(email)).data?.user?.id)
-        .single();
-        
-      if (userError || !userData) {
-        console.error("Error finding user:", userError);
+      // Get user by email first
+      const { data: authUser, error: authUserError } = await supabase.auth.admin.listUsers({
+        filter: {
+          email: email.trim()
+        }
+      });
+      
+      if (authUserError || !authUser || !authUser.users || authUser.users.length === 0) {
+        console.error("Error finding auth user:", authUserError);
         toast({
           variant: "destructive",
           title: "Error",
           description: "Could not find user with that email",
+        });
+        setIsLoading(false);
+        return;
+      }
+      
+      const userId = authUser.users[0].id;
+      
+      // Get user profile to confirm it exists
+      const { data: userData, error: userError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', userId)
+        .single();
+        
+      if (userError || !userData) {
+        console.error("Error finding user profile:", userError);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Could not find user profile with that email",
         });
         setIsLoading(false);
         return;
