@@ -36,6 +36,18 @@ const Login = () => {
     };
   }, [countdown]);
 
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        navigate('/dashboard');
+      }
+    };
+    
+    checkSession();
+  }, [navigate]);
+
   const handleResendConfirmation = async () => {
     if (countdown > 0 || !email) return;
     
@@ -85,16 +97,6 @@ const Login = () => {
     try {
       console.log("Attempting login with email:", email);
       
-      try {
-        console.log("Fixing database triggers before login...");
-        const { error: fixError } = await supabase.functions.invoke('fix-handle-new-user');
-        if (fixError) {
-          console.warn("Non-blocking warning - Error fixing triggers:", fixError);
-        }
-      } catch (fixErr) {
-        console.warn("Non-blocking warning - Failed to call fix function:", fixErr);
-      }
-      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -127,16 +129,6 @@ const Login = () => {
 
       if (data?.user) {
         try {
-          try {
-            console.log("Repairing customer records if needed...");
-            const { error: repairError } = await supabase.functions.invoke('repair-customer-records');
-            if (repairError) {
-              console.warn("Non-blocking warning - Error repairing customer records:", repairError);
-            }
-          } catch (repairErr) {
-            console.warn("Non-blocking warning - Failed to repair customer records:", repairErr);
-          }
-
           let { data: profileData, error: profileError } = await supabase
             .from('profiles')
             .select('role, staff_key, enrolled_by, enroller')
@@ -150,119 +142,44 @@ const Login = () => {
             console.error("Profile fetch error or missing profile:", profileError);
             setDebugInfo(debugData);
             
-            try {
-              console.log("Attempting to fix profile issues...");
-              const { error: fixError } = await supabase.functions.invoke('fix-handle-new-user');
-              if (fixError) {
-                console.error("Error fixing triggers:", fixError);
-              }
-
-              const { data: retryProfileData, error: retryProfileError } = await supabase
-                .from('profiles')
-                .select('role, staff_key, enrolled_by, enroller')
-                .eq('id', data.user.id)
-                .maybeSingle();
-                
-              if (retryProfileError || !retryProfileData) {
-                const { error: createProfileError } = await supabase
-                  .from('profiles')
-                  .insert({
-                    id: data.user.id,
-                    role: 'customer',
-                    staff_key: null,
-                    enrolled_by: null,
-                    enroller: null
-                  })
-                  .single();
-                
-                if (createProfileError) {
-                  console.error("Failed to create profile as last resort:", createProfileError);
-                  await supabase.auth.signOut();
-                  toast({
-                    variant: "destructive",
-                    title: "Profile Error",
-                    description: "Could not verify your account role. Please try again.",
-                  });
-                  setIsLoading(false);
-                  setDebugInfo(debugData);
-                  return;
-                }
-                
-                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: null, enroller: null };
-                profileData = { role: 'customer', staff_key: null, enrolled_by: null, enroller: null };
-                console.log("Created new profile as last resort");
-              } else {
-                debugData.retryProfileData = retryProfileData;
-                profileData = retryProfileData;
-                console.log("Successfully fixed and fetched profile:", retryProfileData);
-              }
-            } catch (fixErr) {
-              console.error("Error calling fix function:", fixErr);
-              
-              try {
-                const { error: createProfileError } = await supabase
-                  .from('profiles')
-                  .insert({
-                    id: data.user.id,
-                    role: 'customer',
-                    staff_key: null,
-                    enrolled_by: null,
-                    enroller: null
-                  })
-                  .single();
-                
-                if (createProfileError) {
-                  console.error("Failed to create profile as last resort:", createProfileError);
-                  await supabase.auth.signOut();
-                  toast({
-                    variant: "destructive",
-                    title: "Profile Error",
-                    description: "Could not verify your account role. Please try again.",
-                  });
-                  setIsLoading(false);
-                  setDebugInfo(debugData);
-                  return;
-                }
-                
-                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: null, enroller: null };
-                profileData = { role: 'customer', staff_key: null, enrolled_by: null, enroller: null };
-                console.log("Created new profile as last resort");
-              } catch (createErr) {
-                console.error("Error in last resort profile creation:", createErr);
-                await supabase.auth.signOut();
-                toast({
-                  variant: "destructive",
-                  title: "Profile Error",
-                  description: "Could not verify your account role. Please try again.",
-                });
-                setIsLoading(false);
-                setDebugInfo(debugData);
-                return;
-              }
+            // Create default profile if missing without trying to fix anything complex
+            const { error: createProfileError } = await supabase
+              .from('profiles')
+              .insert({
+                id: data.user.id,
+                role: 'customer',
+                staff_key: null,
+                enrolled_by: null,
+                enroller: null
+              })
+              .single();
+            
+            if (createProfileError) {
+              console.error("Failed to create profile:", createProfileError);
+              // Continue anyway - don't get stuck in a loading state
+            } else {
+              profileData = { role: 'customer', staff_key: null, enrolled_by: null, enroller: null };
             }
           }
 
-          const userRole = profileData?.role || 'customer';
-          console.log("User role:", userRole);
-          debugData.userRole = userRole;
-
-          console.log("Login successful, user:", data.user);
           toast({
             title: "Success",
             description: "Successfully logged in",
           });
+          console.log("Login successful, redirecting to dashboard");
           navigate("/dashboard");
         } catch (error) {
           console.error("Error during login process:", error);
           debugData.processingError = error;
           setDebugInfo(debugData);
-          await supabase.auth.signOut();
+          
+          // Still navigate to dashboard even if there was an error processing
+          // the profile - don't leave user stranded on login page
           toast({
-            variant: "destructive",
-            title: "Login Error",
-            description: "An unexpected error occurred. Please try again.",
+            title: "Logged in",
+            description: "You're logged in but there was an issue loading your profile data.",
           });
-          setIsLoading(false);
+          navigate("/dashboard");
         }
       }
     } catch (error) {

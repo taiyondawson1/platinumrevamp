@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,7 +21,6 @@ import EnrollmentFixer from "@/pages/EnrollmentFixer";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
-import { useFixAccounts } from "@/hooks/use-fix-accounts";
 import TradingViewTickerTape from "@/components/TradingViewTickerTape";
 
 const queryClient = new QueryClient();
@@ -75,165 +75,7 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const { fixUserRecords } = useFixAccounts();
   useInactivityTimer();
-
-  const ensureUserRecords = async (userId: string, userEmail: string) => {
-    try {
-      const [profileCheck, licenseCheck, customerCheck] = await Promise.all([
-        supabase.from('profiles').select('id').eq('id', userId).maybeSingle(),
-        supabase.from('license_keys').select('id').eq('user_id', userId).maybeSingle(),
-        supabase.from('customers').select('id').eq('id', userId).maybeSingle()
-      ]);
-      
-      if (!profileCheck.data || !licenseCheck.data || !customerCheck.data) {
-        console.log("Missing user records detected, attempting to fix...");
-        await fixUserRecords(userId, userEmail, true, true);
-      }
-    } catch (err) {
-      console.error("Error checking user records:", err);
-    }
-  };
-
-  const fixDatabaseSchema = async () => {
-    try {
-      console.log("Attempting to fix database schema...");
-      const { data, error } = await supabase.functions.invoke('fix-database-schema');
-      
-      if (error) {
-        console.error("Error fixing database schema:", error);
-      } else {
-        console.log("Database schema fixed:", data);
-      }
-    } catch (err) {
-      console.error("Failed to call fix-database-schema function:", err);
-    }
-  };
-
-  const fixDatabaseTriggers = async () => {
-    try {
-      console.log("Attempting to fix database triggers...");
-      const { data, error } = await supabase.functions.invoke('fix-handle-new-user');
-      
-      if (error) {
-        console.error("Error fixing triggers:", error);
-      } else {
-        console.log("Database triggers fixed:", data);
-      }
-    } catch (err) {
-      console.error("Failed to call fix-handle-new-user function:", err);
-    }
-  };
-
-  const ensureCustomerRecords = async () => {
-    try {
-      console.log("Ensuring customer records are properly created...");
-      const { error } = await supabase.functions.invoke('ensure-customer-records');
-      
-      if (error) {
-        console.error("Error ensuring customer records:", error);
-      } else {
-        console.log("Customer records ensured successfully");
-      }
-    } catch (err) {
-      console.error("Failed to call ensure-customer-records function:", err);
-    }
-  };
-
-  const fixOrphanedCustomers = async (userId: string) => {
-    try {
-      console.log("Checking for customer record/license key consistency...");
-      
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', userId)
-        .maybeSingle();
-      
-      if (profileError || !profileData) {
-        console.error("Error checking profile or no profile found:", profileError);
-        return;
-      }
-      
-      if (profileData.role !== 'customer') {
-        return;
-      }
-      
-      const { data: licenseData, error: licenseError } = await supabase
-        .from('license_keys')
-        .select('*')
-        .eq('user_id', userId)
-        .maybeSingle();
-      
-      if (licenseError) {
-        console.error("Error checking license key:", licenseError);
-        return;
-      }
-      
-      const { data: customerData, error: customerError } = await supabase
-        .from('customers')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
-      
-      if (customerError) {
-        console.error("Error checking customer record:", customerError);
-        return;
-      }
-      
-      if (licenseData && !customerData) {
-        console.log("License key exists but no customer record, creating one...");
-        
-        const { error: createCustomerError } = await supabase
-          .from('customers')
-          .insert({
-            id: userId,
-            name: licenseData.name,
-            email: licenseData.email,
-            phone: licenseData.phone || '',
-            status: licenseData.status || 'Active',
-            sales_rep_id: '00000000-0000-0000-0000-000000000000',
-            staff_key: licenseData.staff_key,
-            revenue: '$0'
-          });
-        
-        if (createCustomerError) {
-          console.error("Error creating customer record:", createCustomerError);
-        } else {
-          console.log("Customer record created successfully");
-        }
-      } else if (!licenseData && customerData) {
-        console.log("Customer record exists but no license key, creating one...");
-        
-        const { data: userInfoData } = await supabase.auth.getUser();
-        const userEmail = userInfoData?.user?.email || customerData.email;
-        
-        const { error: createLicenseError } = await supabase
-          .from('license_keys')
-          .insert({
-            user_id: userId,
-            license_key: 'PENDING-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
-            account_numbers: [],
-            status: customerData.status || 'active',
-            subscription_type: 'standard',
-            name: customerData.name,
-            email: userEmail,
-            phone: customerData.phone || '',
-            product_code: 'EA-001',
-            enrolled_by: customerData.staff_key,
-            staff_key: customerData.staff_key
-          });
-        
-        if (createLicenseError) {
-          console.error("Error creating license key:", createLicenseError);
-        } else {
-          console.log("License key created successfully");
-        }
-      }
-    } catch (err) {
-      console.error("Error fixing orphaned customer records:", err);
-    }
-  };
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -242,9 +84,6 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         console.log("Auth check - Session:", session);
         
         if (session) {
-          // Call the combined fix user records function with all flags enabled
-          await ensureUserRecords(session.user.id, session.user.email || '');
-          
           setIsAuthenticated(true);
           
           if (['/login', '/register', '/'].includes(location.pathname)) {
@@ -276,9 +115,6 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
       console.log("Auth state changed - Event:", event, "Session:", session);
       
       if (event === 'SIGNED_IN' && session) {
-        // Call the combined fix user records function with all flags enabled
-        await ensureUserRecords(session.user.id, session.user.email || '');
-        
         setIsAuthenticated(true);
         navigate('/dashboard');
       } else if (event === 'SIGNED_OUT' || !session) {

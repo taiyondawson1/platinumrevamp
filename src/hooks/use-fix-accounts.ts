@@ -30,8 +30,8 @@ export const useFixAccounts = () => {
         body: userId || userEmail ? { 
           userId, 
           userEmail, 
-          fixSchema,  // Tell the function to also fix the schema
-          fixTriggers // Tell the function to also fix triggers
+          fixSchema,
+          fixTriggers
         } : { 
           fixSchema, 
           fixTriggers 
@@ -40,30 +40,18 @@ export const useFixAccounts = () => {
       
       if (error) {
         console.error("Error fixing user records:", error);
-        toast({
-          variant: "destructive", 
-          title: "Error", 
-          description: "Failed to fix user records. Please try again."
-        });
-        return false;
+        
+        // Still return true to avoid blocking login flow
+        return true;
       }
       
       console.log("User records fix response:", data);
-      
-      toast({
-        title: "Success", 
-        description: "User records have been fixed successfully."
-      });
-      
       return true;
     } catch (err) {
       console.error("Exception when fixing user records:", err);
-      toast({
-        variant: "destructive", 
-        title: "Error", 
-        description: "An unexpected error occurred while fixing user records."
-      });
-      return false;
+      
+      // Still return true to avoid blocking login flow
+      return true;
     } finally {
       setIsFixing(false);
     }
