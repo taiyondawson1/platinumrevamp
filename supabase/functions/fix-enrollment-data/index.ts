@@ -42,47 +42,95 @@ serve(async (req) => {
 
     // Find the user by email
     const { data: userData, error: userError } = await supabase
-      .from('auth.users')
-      .select('id, email')
-      .eq('email', userEmail)
+      .from('profiles')
+      .select('id')
+      .eq('id', (await supabase.auth.admin.getUserByEmail(userEmail)).data.user.id)
       .maybeSingle()
 
     if (userError || !userData) {
-      console.error('Error finding user:', userError)
+      console.error('Error finding user in profiles:', userError)
       
-      // Try an alternative approach using the profiles table
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', userEmail)
-        .maybeSingle()
-        
-      if (profileError || !profileData) {
-        // Try using the customers table as a last resort
-        const { data: customerData, error: customerError } = await supabase
-          .from('customers')
-          .select('id')
-          .eq('email', userEmail)
-          .maybeSingle()
-          
-        if (customerError || !customerData) {
-          return new Response(
-            JSON.stringify({ error: 'User not found with the provided email' }),
-            {
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-              status: 404,
-            }
-          )
-        }
-        
-        // Use customer ID
-        userData = { id: customerData.id, email: userEmail }
-      } else {
-        // Use profile ID
-        userData = { id: profileData.id, email: userEmail }
+      // Try using the auth API directly
+      const { data: authData, error: authError } = await supabase.auth.admin.getUserByEmail(userEmail)
+      
+      if (authError || !authData?.user) {
+        console.error('Error finding user with auth API:', authError)
+        return new Response(
+          JSON.stringify({ error: 'User not found with the provided email' }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 404,
+          }
+        )
       }
-    }
+      
+      // Use auth user ID
+      const userId = authData.user.id
+      
+      // Update profile enrollment info
+      const { error: profileUpdateError } = await supabase
+        .from('profiles')
+        .update({
+          enrolled_by: enrollmentKey,
+          enroller: enrollmentKey
+        })
+        .eq('id', userId)
 
+      if (profileUpdateError) {
+        console.error('Error updating profile:', profileUpdateError)
+      }
+
+      // Update license_keys table
+      const { error: licenseUpdateError } = await supabase
+        .from('license_keys')
+        .update({
+          enrolled_by: enrollmentKey,
+          enroller: enrollmentKey
+        })
+        .eq('user_id', userId)
+
+      if (licenseUpdateError) {
+        console.error('Error updating license_keys:', licenseUpdateError)
+      }
+
+      // Update customer_accounts table
+      const { error: accountUpdateError } = await supabase
+        .from('customer_accounts')
+        .update({
+          enrolled_by: enrollmentKey,
+          enroller: enrollmentKey
+        })
+        .eq('user_id', userId)
+
+      if (accountUpdateError) {
+        console.error('Error updating customer_accounts:', accountUpdateError)
+      }
+
+      // Update customers table
+      const { error: customerUpdateError } = await supabase
+        .from('customers')
+        .update({
+          enroller: enrollmentKey
+        })
+        .eq('id', userId)
+
+      if (customerUpdateError) {
+        console.error('Error updating customers:', customerUpdateError)
+      }
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: 'Enrollment data updated successfully',
+          userId
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200,
+        }
+      )
+    }
+    
     const userId = userData.id
 
     // Update profile enrollment info
