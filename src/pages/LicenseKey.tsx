@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { RealtimeChannel } from "@supabase/supabase-js";
 
 const MAX_ACCOUNTS = 5;
 
@@ -25,6 +26,7 @@ const LicenseKey = () => {
   const [maxAccounts, setMaxAccounts] = useState<number>(MAX_ACCOUNTS);
   const [licenseStatus, setLicenseStatus] = useState<string>('active');
   const [expiryDate, setExpiryDate] = useState<Date | null>(null);
+  const [channel, setChannel] = useState<RealtimeChannel | null>(null);
 
   useEffect(() => {
     const fetchLicenseData = async () => {
@@ -87,10 +89,12 @@ const LicenseKey = () => {
     };
     
     fetchLicenseData();
-    setupRealtimeListener();
+    const setupChannel = setupRealtimeListener();
     
     return () => {
-      supabase.removeChannel('license_changes');
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [toast]);
   
@@ -98,7 +102,7 @@ const LicenseKey = () => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
       
-      const channel = supabase
+      const newChannel = supabase
         .channel('license_changes')
         .on(
           'postgres_changes',
@@ -123,6 +127,8 @@ const LicenseKey = () => {
           }
         )
         .subscribe();
+        
+      setChannel(newChannel);
     });
   };
   
@@ -396,7 +402,7 @@ const LicenseKey = () => {
     
     if (accountsLocked) {
       return (
-        <Alert variant="warning" className="mb-4 border-amber-500">
+        <Alert variant="default" className="mb-4 border-amber-500">
           <AlertTriangle className="h-4 w-4 text-amber-500" />
           <AlertTitle className="text-amber-500">Account Management Locked</AlertTitle>
           <AlertDescription>Your account management has been locked by an administrator. Please contact support.</AlertDescription>
@@ -470,7 +476,7 @@ const LicenseKey = () => {
             </div>
             
             {!canAddAccounts && (
-              <Alert variant="warning" className="border-amber-500 bg-darkBlue/30">
+              <Alert variant="default" className="border-amber-500 bg-darkBlue/30">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
                 <AlertDescription className="text-amber-500">
                   Adding account numbers has been disabled for your license. Please contact support.
@@ -507,7 +513,7 @@ const LicenseKey = () => {
             )}
             
             {!canRemoveAccounts && accountNumbers.length > 0 && (
-              <Alert variant="warning" className="border-amber-500 bg-darkBlue/30">
+              <Alert variant="default" className="border-amber-500 bg-darkBlue/30">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
                 <AlertDescription className="text-amber-500">
                   Removing account numbers has been disabled for your license. Please contact support.
