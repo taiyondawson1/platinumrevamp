@@ -103,7 +103,9 @@ const Login = () => {
                   .insert({
                     id: data.user.id,
                     role: 'customer',
-                    staff_key: null
+                    staff_key: null,
+                    enrolled_by: null,
+                    enroller: null
                   })
                   .single();
                 
@@ -120,8 +122,8 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null };
-                profileData = { role: 'customer', staff_key: null };
+                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: null, enroller: null };
+                profileData = { role: 'customer', staff_key: null, enrolled_by: null, enroller: null };
                 console.log("Created new profile as last resort");
               } else {
                 debugData.retryProfileData = retryProfileData;
@@ -137,7 +139,9 @@ const Login = () => {
                   .insert({
                     id: data.user.id,
                     role: 'customer',
-                    staff_key: null
+                    staff_key: null,
+                    enrolled_by: null,
+                    enroller: null
                   })
                   .single();
                 
@@ -154,8 +158,8 @@ const Login = () => {
                   return;
                 }
                 
-                debugData.retryProfileData = { role: 'customer', staff_key: null };
-                profileData = { role: 'customer', staff_key: null };
+                debugData.retryProfileData = { role: 'customer', staff_key: null, enrolled_by: null, enroller: null };
+                profileData = { role: 'customer', staff_key: null, enrolled_by: null, enroller: null };
                 console.log("Created new profile as last resort");
               } catch (createErr) {
                 console.error("Error in last resort profile creation:", createErr);
