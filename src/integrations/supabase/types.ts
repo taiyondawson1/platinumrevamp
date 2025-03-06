@@ -182,39 +182,36 @@ export type Database = {
         Row: {
           created_at: string
           email: string
-          enrolled_by: string | null
-          enroller: string | null
           id: string
           license_key: string | null
           name: string
           phone: string | null
           status: string
+          test: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
           email: string
-          enrolled_by?: string | null
-          enroller?: string | null
           id?: string
           license_key?: string | null
           name: string
           phone?: string | null
           status?: string
+          test?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
           email?: string
-          enrolled_by?: string | null
-          enroller?: string | null
           id?: string
           license_key?: string | null
           name?: string
           phone?: string | null
           status?: string
+          test?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -268,7 +265,6 @@ export type Database = {
         Row: {
           created_at: string
           email: string
-          enroller: string | null
           id: string
           name: string
           phone: string | null
@@ -276,12 +272,12 @@ export type Database = {
           sales_rep_id: string
           staff_key: string | null
           status: string
+          test: string | null
           updated_at: string | null
         }
         Insert: {
           created_at?: string
           email: string
-          enroller?: string | null
           id?: string
           name: string
           phone?: string | null
@@ -289,12 +285,12 @@ export type Database = {
           sales_rep_id: string
           staff_key?: string | null
           status?: string
+          test?: string | null
           updated_at?: string | null
         }
         Update: {
           created_at?: string
           email?: string
-          enroller?: string | null
           id?: string
           name?: string
           phone?: string | null
@@ -302,6 +298,7 @@ export type Database = {
           sales_rep_id?: string
           staff_key?: string | null
           status?: string
+          test?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -311,9 +308,6 @@ export type Database = {
           account_numbers: string[]
           created_at: string | null
           email: string
-          enrolled_by: string | null
-          enroller: string | null
-          enroller_id: string | null
           expiry_date: string | null
           id: string
           license_key: string
@@ -324,15 +318,13 @@ export type Database = {
           staff_key: string | null
           status: string | null
           subscription_type: string
+          test: string | null
           user_id: string
         }
         Insert: {
           account_numbers: string[]
           created_at?: string | null
           email: string
-          enrolled_by?: string | null
-          enroller?: string | null
-          enroller_id?: string | null
           expiry_date?: string | null
           id?: string
           license_key: string
@@ -343,15 +335,13 @@ export type Database = {
           staff_key?: string | null
           status?: string | null
           subscription_type: string
+          test?: string | null
           user_id: string
         }
         Update: {
           account_numbers?: string[]
           created_at?: string | null
           email?: string
-          enrolled_by?: string | null
-          enroller?: string | null
-          enroller_id?: string | null
           expiry_date?: string | null
           id?: string
           license_key?: string
@@ -362,6 +352,7 @@ export type Database = {
           staff_key?: string | null
           status?: string | null
           subscription_type?: string
+          test?: string | null
           user_id?: string
         }
         Relationships: []
@@ -492,8 +483,8 @@ export type Database = {
         Row: {
           created_at: string | null
           enrolled_by: string | null
-          enroller: string | null
           id: string
+          referral_code: string | null
           role: Database["public"]["Enums"]["user_role"]
           staff_key: string | null
           updated_at: string | null
@@ -501,8 +492,8 @@ export type Database = {
         Insert: {
           created_at?: string | null
           enrolled_by?: string | null
-          enroller?: string | null
           id: string
+          referral_code?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           staff_key?: string | null
           updated_at?: string | null
@@ -510,8 +501,8 @@ export type Database = {
         Update: {
           created_at?: string | null
           enrolled_by?: string | null
-          enroller?: string | null
           id?: string
+          referral_code?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           staff_key?: string | null
           updated_at?: string | null
@@ -693,6 +684,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      generate_unique_referral_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_user_id_from_account: {
         Args: {
           account_number: string
@@ -705,6 +700,13 @@ export type Database = {
       }
       repair_missing_customer_records: {
         Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      update_user_referral_codes: {
+        Args: {
+          user_id: string
+          referral_code: string
+        }
         Returns: undefined
       }
     }
