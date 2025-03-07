@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -32,7 +33,7 @@ const PositionSizeCalculator = () => {
   return (
     <div className="h-full bg-darkBase/40">
       <div className="p-3 h-full flex flex-col border border-silver/20">
-        <h3 className="text-[10px] font-semibold text-softWhite mb-2">Position Size Calculator</h3>
+        <h3 className="text-[10px] sm:text-xs font-semibold text-softWhite mb-2">Position Size Calculator</h3>
         
         <div className="grid grid-cols-2 gap-2 flex-grow">
           <div className="space-y-1">
