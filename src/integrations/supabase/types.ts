@@ -458,6 +458,7 @@ export type Database = {
       }
       staff_keys: {
         Row: {
+          affiliate_deal_percent: number | null
           created_at: string
           created_by: string | null
           email: string | null
@@ -470,6 +471,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          affiliate_deal_percent?: number | null
           created_at?: string
           created_by?: string | null
           email?: string | null
@@ -482,6 +484,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          affiliate_deal_percent?: number | null
           created_at?: string
           created_by?: string | null
           email?: string | null
