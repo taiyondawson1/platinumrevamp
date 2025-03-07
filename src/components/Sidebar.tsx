@@ -1,9 +1,10 @@
 
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Home, LayoutDashboard, BarChart, Bot, FileText, BookOpen, LogOut, Key } from "lucide-react";
+import { Home, LayoutDashboard, BarChart, Bot, FileText, BookOpen, LogOut, Key, Diamond } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
 
 const menuItems = [
   { label: "Home", path: "/", icon: Home },
@@ -66,7 +67,16 @@ const Sidebar = () => {
   return (
     <div className="fixed left-0 top-0 h-full z-[55] w-[270px]">
       {/* Single continuous navigation box with added top padding */}
-      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 pt-[150px] h-full !rounded-none overflow-auto flex flex-col">
+      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 pt-[50px] h-full !rounded-none overflow-auto flex flex-col">
+        {/* Logo */}
+        <div className="flex items-center gap-2 mb-4 px-4">
+          <Diamond className="w-5 h-5 text-softWhite" />
+          <span className="text-softWhite font-semibold">PlatinumAi</span>
+        </div>
+        
+        {/* Divider */}
+        <Separator className="mb-6 bg-silver/20" />
+        
         <div className="space-y-1 mb-6">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
