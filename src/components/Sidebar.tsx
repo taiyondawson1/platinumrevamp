@@ -66,8 +66,6 @@ const Sidebar = () => {
       setIsMobile(window.innerWidth < 1024);
       if (window.innerWidth >= 1024) {
         setIsOpen(true);
-      } else {
-        setIsOpen(false);
       }
     };
 
@@ -108,47 +106,47 @@ const Sidebar = () => {
   return (
     <>
       {/* Mobile menu trigger */}
-      <div className="lg:hidden fixed top-4 left-4 z-[60]">
+      <div className="lg:hidden fixed top-5 left-5 z-[100]">
         <Button 
           variant="outline" 
           size="icon" 
           onClick={toggleSidebar} 
-          className="bg-darkGrey/50 backdrop-blur-sm border border-silver/20"
+          className="bg-darkGrey/70 backdrop-blur-sm border border-silver/20 w-9 h-9 shadow-lg"
         >
-          {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
         </Button>
       </div>
       
       {/* Sidebar with responsive behavior */}
       <div 
         className={cn(
-          "fixed left-0 top-0 h-full z-[55]",
+          "fixed left-0 top-0 h-full z-[90]",
           "transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          "w-[270px]"
+          "w-[250px]"
         )}
       >
         {/* Overlay to close sidebar on mobile when clicking outside */}
         {isMobile && isOpen && (
           <div 
-            className="fixed inset-0 bg-black/50 z-[54] lg:hidden"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[80] lg:hidden"
             onClick={() => setIsOpen(false)}
             aria-hidden="true"
           />
         )}
       
         {/* Sidebar content */}
-        <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 pt-[50px] h-full !rounded-none overflow-auto flex flex-col relative">
+        <div className="bg-darkGrey/90 backdrop-blur-md border-r border-silver/20 p-4 pt-[60px] h-full overflow-auto flex flex-col relative z-[90]">
           {/* Logo */}
-          <div className="flex items-center gap-2 mb-4 px-4">
+          <div className="flex items-center gap-2 mb-4 px-3">
             <Diamond className="w-5 h-5 text-softWhite" />
             <span className="text-softWhite font-semibold">PlatinumAi</span>
           </div>
           
           {/* Divider */}
-          <Separator className="mb-6 bg-silver/20" />
+          <Separator className="mb-5 bg-silver/20" />
           
-          <div className="space-y-1 mb-6">
+          <div className="space-y-1 mb-5">
             {menuItems.map((item) => {
               const isActive = location.pathname === item.path;
               const Icon = item.icon;
@@ -160,9 +158,9 @@ const Sidebar = () => {
                     if (isMobile) setIsOpen(false);
                   }}
                   className={cn(
-                    "w-full flex items-center gap-3 px-4 py-2 transition-all duration-300 text-xs !rounded-none",
-                    "hover:bg-highlightGray/5 text-left",
-                    isActive ? "text-softWhite bg-highlightGray/10" : "text-mediumGray"
+                    "w-full flex items-center gap-3 px-3 py-2 transition-all duration-300 text-xs rounded-sm",
+                    "hover:bg-highlightGray/10 text-left",
+                    isActive ? "text-softWhite bg-highlightGray/15" : "text-mediumGray"
                   )}
                 >
                   <Icon className="w-4 h-4" />
@@ -173,7 +171,7 @@ const Sidebar = () => {
           </div>
 
           {/* Tools Section */}
-          <h3 className="text-xs font-semibold text-softWhite mb-4 px-4 underline">TOOLS</h3>
+          <h3 className="text-xs font-semibold text-softWhite mb-3 px-3 underline">TOOLS</h3>
           <div className="space-y-1 flex-1">
             {toolItems.map((tool) => (
               <a
@@ -181,7 +179,7 @@ const Sidebar = () => {
                 href={tool.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
+                className="w-full flex items-center gap-3 px-3 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/10 transition-all duration-300 rounded-sm"
               >
                 {tool.label}
               </a>
@@ -192,7 +190,7 @@ const Sidebar = () => {
           <div className="mt-auto pt-4 border-t border-silver/20">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-2 text-xs text-accent-red hover:text-red-400 hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
+              className="w-full flex items-center gap-3 px-3 py-2 text-xs text-accent-red hover:text-red-400 hover:bg-highlightGray/10 transition-all duration-300 rounded-sm"
             >
               <LogOut className="w-4 h-4" />
               Logout

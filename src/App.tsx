@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -159,28 +158,24 @@ function MainContent() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
       {!hideHeader && <Sidebar />}
-      <div className="flex-1 flex relative">
-        <div className="flex-1">
-          <main className={`flex-1 ${!hideHeader ? "ml-0 lg:ml-[270px] pt-[80px] lg:pt-[150px]" : ""}`}>
-            <div className="overflow-auto px-4 lg:px-6">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-                <Route path="/trading" element={<PrivateRoute><TradingPage /></PrivateRoute>} />
-                <Route path="/expert-advisors" element={<PrivateRoute><ExpertAdvisorsPage /></PrivateRoute>} />
-                <Route path="/setfiles" element={<PrivateRoute><SetfilesPage /></PrivateRoute>} />
-                <Route path="/courses" element={<PrivateRoute><CoursesPage /></PrivateRoute>} />
-                <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
-                <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
-                <Route path="/license-key" element={<PrivateRoute><LicenseKey /></PrivateRoute>} />
-                <Route path="/fix-enrollment" element={<PrivateRoute><EnrollmentFixer /></PrivateRoute>} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </div>
-          </main>
-        </div>
+      <div className="flex-1 relative">
+        <main className="w-full">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/trading" element={<PrivateRoute><TradingPage /></PrivateRoute>} />
+            <Route path="/expert-advisors" element={<PrivateRoute><ExpertAdvisorsPage /></PrivateRoute>} />
+            <Route path="/setfiles" element={<PrivateRoute><SetfilesPage /></PrivateRoute>} />
+            <Route path="/courses" element={<PrivateRoute><CoursesPage /></PrivateRoute>} />
+            <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
+            <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
+            <Route path="/license-key" element={<PrivateRoute><LicenseKey /></PrivateRoute>} />
+            <Route path="/fix-enrollment" element={<PrivateRoute><EnrollmentFixer /></PrivateRoute>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
       </div>
     </div>
   );

@@ -48,8 +48,8 @@
 
   /* Custom Scrollbar Styling */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   ::-webkit-scrollbar-track {
@@ -89,4 +89,19 @@
   @apply bg-darkBlue/40 border border-[#1D1D1D] backdrop-blur-sm 
          shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 rounded-lg 
          hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] !important;
+}
+
+/* Fix mobile layout with Sidebar */
+@media (max-width: 1023px) {
+  .main-content-with-sidebar {
+    margin-left: 0 !important;
+    padding-top: 70px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main-content-with-sidebar {
+    margin-left: 250px;
+    padding-top: 1.5rem;
+  }
 }
