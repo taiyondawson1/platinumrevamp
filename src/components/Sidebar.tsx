@@ -66,8 +66,6 @@ const Sidebar = () => {
       setIsMobile(window.innerWidth < 1024);
       if (window.innerWidth >= 1024) {
         setIsOpen(true);
-      } else {
-        setIsOpen(false);
       }
     };
 
@@ -80,6 +78,26 @@ const Sidebar = () => {
     // Cleanup listener on unmount
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  // Close sidebar when clicking outside on mobile
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMobile && isOpen) {
+        // Check if click is outside sidebar - this is a simplified check
+        const sidebar = document.getElementById('mobile-sidebar');
+        const trigger = document.getElementById('sidebar-trigger');
+        
+        if (sidebar && trigger && 
+            !sidebar.contains(event.target as Node) && 
+            !trigger.contains(event.target as Node)) {
+          setIsOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobile, isOpen]);
 
   const handleLogout = async () => {
     try {
@@ -107,13 +125,13 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile menu trigger */}
-      <div className="lg:hidden fixed top-4 left-4 z-[60]">
+      {/* Mobile menu trigger - fixed position with higher z-index */}
+      <div id="sidebar-trigger" className="lg:hidden fixed top-4 left-4 z-[80]">
         <Button 
           variant="outline" 
           size="icon" 
           onClick={toggleSidebar} 
-          className="bg-darkGrey/50 backdrop-blur-sm border border-silver/20"
+          className="bg-darkGrey/80 backdrop-blur-sm border border-silver/20 shadow-md"
         >
           {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
@@ -121,8 +139,9 @@ const Sidebar = () => {
       
       {/* Sidebar with responsive behavior */}
       <div 
+        id="mobile-sidebar"
         className={cn(
-          "fixed left-0 top-0 h-full z-[55]",
+          "fixed lg:sticky top-0 left-0 h-full z-[70]",
           "transition-all duration-300 ease-in-out",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
           "w-[270px]"
@@ -131,14 +150,13 @@ const Sidebar = () => {
         {/* Overlay to close sidebar on mobile when clicking outside */}
         {isMobile && isOpen && (
           <div 
-            className="fixed inset-0 bg-black/50 z-[54] lg:hidden"
-            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 bg-black/50 z-[65] lg:hidden"
             aria-hidden="true"
           />
         )}
       
-        {/* Sidebar content */}
-        <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 pt-[50px] h-full !rounded-none overflow-auto flex flex-col relative">
+        {/* Sidebar content - increased z-index to be above the overlay */}
+        <div className="relative z-[75] bg-darkGrey/90 backdrop-blur-sm border-r border-silver/20 p-4 pt-[60px] h-full overflow-auto flex flex-col">
           {/* Logo */}
           <div className="flex items-center gap-2 mb-4 px-4">
             <Diamond className="w-5 h-5 text-softWhite" />
@@ -160,7 +178,7 @@ const Sidebar = () => {
                     if (isMobile) setIsOpen(false);
                   }}
                   className={cn(
-                    "w-full flex items-center gap-3 px-4 py-2 transition-all duration-300 text-xs !rounded-none",
+                    "w-full flex items-center gap-3 px-4 py-2 transition-all duration-300 text-sm",
                     "hover:bg-highlightGray/5 text-left",
                     isActive ? "text-softWhite bg-highlightGray/10" : "text-mediumGray"
                   )}
@@ -181,7 +199,10 @@ const Sidebar = () => {
                 href={tool.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
+                className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300"
+                onClick={() => {
+                  if (isMobile) setIsOpen(false);
+                }}
               >
                 {tool.label}
               </a>
@@ -192,7 +213,7 @@ const Sidebar = () => {
           <div className="mt-auto pt-4 border-t border-silver/20">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-2 text-xs text-accent-red hover:text-red-400 hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
+              className="w-full flex items-center gap-3 px-4 py-2 text-xs text-accent-red hover:text-red-400 hover:bg-highlightGray/5 transition-all duration-300"
             >
               <LogOut className="w-4 h-4" />
               Logout

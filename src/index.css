@@ -44,6 +44,7 @@
   body {
     @apply bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey text-foreground font-['Inter'];
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   /* Custom Scrollbar Styling */
@@ -62,17 +63,17 @@
 }
 
 .metric-card {
-  @apply bg-black/40 p-6 border border-silver/20 
+  @apply bg-black/40 p-4 sm:p-6 border border-silver/20 
          hover:border-silver/30 transition-all duration-300 rounded-none 
          backdrop-blur-sm shadow-lg !important;
 }
 
 .metric-value {
-  @apply text-3xl font-bold mb-2 text-softWhite;
+  @apply text-2xl sm:text-3xl font-bold mb-2 text-softWhite;
 }
 
 .metric-label {
-  @apply text-mediumGray text-sm font-medium;
+  @apply text-mediumGray text-xs sm:text-sm font-medium;
 }
 
 .chart-container {
@@ -82,11 +83,34 @@
 }
 
 .stats-grid {
-  @apply grid grid-cols-2 md:grid-cols-4 gap-4;
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4;
 }
 
 .tradehub-card {
   @apply bg-darkBlue/40 border border-[#1D1D1D] backdrop-blur-sm 
          shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 rounded-lg 
          hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] !important;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 640px) {
+  .container {
+    @apply px-3 py-2;
+  }
+  
+  button {
+    @apply touch-manipulation;
+  }
+  
+  /* Ensure content doesn't get hidden behind fixed elements */
+  main {
+    @apply pt-14;
+  }
+}
+
+/* Tap highlight color for mobile */
+@layer utilities {
+  .tap-highlight-transparent {
+    -webkit-tap-highlight-color: transparent;
+  }
 }

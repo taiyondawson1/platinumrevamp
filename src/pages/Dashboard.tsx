@@ -1,7 +1,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Key } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import WorldClocks from "@/components/WorldClocks";
 import PositionSizeCalculator from "@/components/PositionSizeCalculator";
@@ -12,7 +12,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="flex-1 p-4 sm:p-6 pt-6 sm:pt-8 max-w-[1400px] mx-auto">
+    <main className="flex-1 p-4 sm:p-6 pt-14 lg:pt-6 max-w-[1400px] mx-auto">
       <div className="flex flex-col gap-6">
         {/* Welcome Section */}
         <section className="space-y-4">
