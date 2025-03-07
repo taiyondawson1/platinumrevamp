@@ -64,10 +64,10 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="fixed left-[44px] top-[270px] h-[calc(100vh-290px)] flex flex-col z-[55]">
-      {/* Navigation Box */}
-      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] mb-4 !rounded-none">
-        <div className="space-y-1">
+    <div className="fixed left-0 top-0 h-full z-[55] w-[270px]">
+      {/* Single continuous navigation box */}
+      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 h-full !rounded-none overflow-auto flex flex-col">
+        <div className="space-y-1 mb-6">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -87,35 +87,32 @@ const Sidebar = () => {
             );
           })}
         </div>
-      </div>
 
-      {/* Tools Box */}
-      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 w-[250px] flex-1 !rounded-none flex flex-col">
+        {/* Tools Section */}
         <h3 className="text-xs font-semibold text-softWhite mb-4 px-4 underline">TOOLS</h3>
-        <div className="flex-1 flex flex-col min-h-0">
-          <div className="space-y-1 flex-1">
-            {toolItems.map((tool) => (
-              <a
-                key={tool.label}
-                href={tool.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
-              >
-                {tool.label}
-              </a>
-            ))}
-          </div>
-          
-          <div className="mt-auto pt-4 border-t border-silver/20">
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-2 text-xs text-accent-red hover:text-red-400 hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
+        <div className="space-y-1 flex-1">
+          {toolItems.map((tool) => (
+            <a
+              key={tool.label}
+              href={tool.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center gap-3 px-4 py-2 text-xs text-mediumGray hover:text-softWhite hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
             >
-              <LogOut className="w-4 h-4" />
-              Logout
-            </button>
-          </div>
+              {tool.label}
+            </a>
+          ))}
+        </div>
+        
+        {/* Logout at the bottom */}
+        <div className="mt-auto pt-4 border-t border-silver/20">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-2 text-xs text-accent-red hover:text-red-400 hover:bg-highlightGray/5 transition-all duration-300 !rounded-none"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
         </div>
       </div>
     </div>
