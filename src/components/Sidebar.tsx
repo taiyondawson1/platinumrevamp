@@ -66,7 +66,7 @@ const Sidebar = () => {
   return (
     <div className="fixed left-0 top-0 h-full z-[55] w-[270px]">
       {/* Single continuous navigation box with added top padding */}
-      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 pt-[50px] h-full !rounded-none overflow-auto flex flex-col">
+      <div className="bg-darkGrey/30 backdrop-blur-sm border border-silver/20 p-4 pt-[150px] h-full !rounded-none overflow-auto flex flex-col">
         <div className="space-y-1 mb-6">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.path;

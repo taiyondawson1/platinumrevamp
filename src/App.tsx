@@ -161,7 +161,7 @@ function MainContent() {
       {!hideHeader && <Sidebar />}
       <div className="flex-1 flex relative">
         <div className="flex-1">
-          <main className={`flex-1 ${!hideHeader ? "ml-[270px] pt-[50px]" : ""}`}>
+          <main className={`flex-1 ${!hideHeader ? "ml-[270px] pt-[150px]" : ""}`}>
             <div className="overflow-auto">
               <Routes>
                 <Route path="/" element={<Home />} />
