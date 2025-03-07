@@ -12,7 +12,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="flex-1 p-6 max-w-[1400px] mx-auto">
+    <main className="flex-1 p-6 pt-8 max-w-[1400px] mx-auto">
       <div className="flex flex-col gap-6">
         {/* Welcome Section */}
         <section className="space-y-4">

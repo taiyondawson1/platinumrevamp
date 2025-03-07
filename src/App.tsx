@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -160,7 +161,7 @@ function MainContent() {
       {!hideHeader && <Sidebar />}
       <div className="flex-1 flex relative">
         <div className="flex-1">
-          <main className={`flex-1 ${!hideHeader ? "ml-[270px]" : ""}`}>
+          <main className={`flex-1 ${!hideHeader ? "ml-[270px] pt-[50px]" : ""}`}>
             <div className="overflow-auto">
               <Routes>
                 <Route path="/" element={<Home />} />
