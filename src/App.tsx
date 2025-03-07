@@ -20,7 +20,6 @@ import EnrollmentFixer from "@/pages/EnrollmentFixer";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
-
 const queryClient = new QueryClient();
 const INACTIVITY_TIMEOUT = 300000; // 5 minutes in milliseconds
 
@@ -61,7 +60,6 @@ function useInactivityTimer() {
     };
   }, [navigate]);
 }
-
 function PrivateRoute({
   children
 }: {
@@ -146,7 +144,6 @@ function PrivateRoute({
   }
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
-
 function MainContent() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
@@ -155,14 +152,13 @@ function MainContent() {
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
   const hideHeader = isHomePage || isSetfilesPage || isTradeHubPage || isLoginPage || isRegisterPage;
-
   return <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
       {!hideHeader && <Sidebar />}
       <div className="flex-1 flex relative">
         <div className="flex-1">
           {!hideHeader}
           {!hideHeader && <div className="fixed left-0 right-0 top-[135px] z-[50] px-[44px]">
-              <Separator className="h-[1px] bg-silver/20" />
+              
             </div>}
           <main className={`flex-1 ${!hideHeader ? "ml-[270px] mr-0 mt-[135px]" : ""}`}>
             <div className="overflow-auto">
@@ -187,7 +183,6 @@ function MainContent() {
       </div>
     </div>;
 }
-
 function App() {
   return <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -199,5 +194,4 @@ function App() {
       </TooltipProvider>
     </QueryClientProvider>;
 }
-
 export default App;
