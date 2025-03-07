@@ -161,7 +161,7 @@ function MainContent() {
       <div className="flex-1 flex relative">
         <div className="flex-1">
           <main className={`flex-1 ${!hideHeader ? "ml-[270px]" : ""}`}>
-            <div className="overflow-auto pt-8">
+            <div className="overflow-auto">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
