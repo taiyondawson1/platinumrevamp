@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import Sidebar from "@/components/Sidebar";
+import Navbar from "@/components/Navbar";
 import Dashboard from "@/pages/Dashboard";
 import ExpertAdvisorsPage from "@/pages/ExpertAdvisors";
 import SetfilesPage from "@/pages/Setfiles";
@@ -20,6 +21,7 @@ import EnrollmentFixer from "@/pages/EnrollmentFixer";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
+
 const queryClient = new QueryClient();
 const INACTIVITY_TIMEOUT = 300000; // 5 minutes in milliseconds
 
@@ -60,6 +62,7 @@ function useInactivityTimer() {
     };
   }, [navigate]);
 }
+
 function PrivateRoute({
   children
 }: {
@@ -144,6 +147,7 @@ function PrivateRoute({
   }
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
+
 function MainContent() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
@@ -151,40 +155,41 @@ function MainContent() {
   const isTradeHubPage = location.pathname === "/tradehub";
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
-  const hideHeader = isHomePage || isSetfilesPage || isTradeHubPage || isLoginPage || isRegisterPage;
-  return <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
-      {!hideHeader && <Sidebar />}
-      <div className="flex-1 flex relative">
-        <div className="flex-1">
-          {!hideHeader}
-          {!hideHeader && <div className="fixed left-0 right-0 top-[135px] z-[50] px-[44px]">
-              
-            </div>}
-          <main className={`flex-1 ${!hideHeader ? "ml-[270px] mr-0 mt-[135px]" : ""}`}>
-            <div className="overflow-auto">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-                <Route path="/trading" element={<PrivateRoute><TradingPage /></PrivateRoute>} />
-                <Route path="/expert-advisors" element={<PrivateRoute><ExpertAdvisorsPage /></PrivateRoute>} />
-                <Route path="/setfiles" element={<PrivateRoute><SetfilesPage /></PrivateRoute>} />
-                <Route path="/courses" element={<PrivateRoute><CoursesPage /></PrivateRoute>} />
-                <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
-                <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
-                <Route path="/license-key" element={<PrivateRoute><LicenseKey /></PrivateRoute>} />
-                <Route path="/fix-enrollment" element={<PrivateRoute><EnrollmentFixer /></PrivateRoute>} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </div>
-          </main>
-        </div>
+  const hideNavbar = isHomePage || isLoginPage || isRegisterPage;
+  const hideSidebar = isHomePage || isSetfilesPage || isTradeHubPage || isLoginPage || isRegisterPage;
+
+  return (
+    <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
+      {!hideSidebar && <Sidebar />}
+      <div className="flex-1 flex flex-col relative">
+        {!hideNavbar && <Navbar />}
+        <main className={`flex-1 ${!hideSidebar ? "ml-[270px]" : ""} ${!hideNavbar ? "mt-16" : ""}`}>
+          <div className="overflow-auto">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+              <Route path="/trading" element={<PrivateRoute><TradingPage /></PrivateRoute>} />
+              <Route path="/expert-advisors" element={<PrivateRoute><ExpertAdvisorsPage /></PrivateRoute>} />
+              <Route path="/setfiles" element={<PrivateRoute><SetfilesPage /></PrivateRoute>} />
+              <Route path="/courses" element={<PrivateRoute><CoursesPage /></PrivateRoute>} />
+              <Route path="/tradehub" element={<PrivateRoute><TradeHub /></PrivateRoute>} />
+              <Route path="/connect-myfxbook" element={<PrivateRoute><MyFxBookLoginPage /></PrivateRoute>} />
+              <Route path="/license-key" element={<PrivateRoute><LicenseKey /></PrivateRoute>} />
+              <Route path="/fix-enrollment" element={<PrivateRoute><EnrollmentFixer /></PrivateRoute>} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
+        </main>
       </div>
-    </div>;
+    </div>
+  );
 }
+
 function App() {
-  return <QueryClientProvider client={queryClient}>
+  return (
+    <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -192,6 +197,8 @@ function App() {
           <MainContent />
         </BrowserRouter>
       </TooltipProvider>
-    </QueryClientProvider>;
+    </QueryClientProvider>
+  );
 }
+
 export default App;
