@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,16 +21,15 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import TradingViewTickerTape from "@/components/TradingViewTickerTape";
-
 const queryClient = new QueryClient();
-
 const INACTIVITY_TIMEOUT = 300000; // 5 minutes in milliseconds
 
 function useInactivityTimer() {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   let timer: NodeJS.Timeout;
-
   const resetTimer = () => {
     if (timer) clearTimeout(timer);
     timer = setTimeout(async () => {
@@ -40,26 +38,21 @@ function useInactivityTimer() {
       sessionStorage.clear();
       toast({
         title: "Session Expired",
-        description: "You have been logged out due to inactivity",
+        description: "You have been logged out due to inactivity"
       });
       navigate('/login');
     }, INACTIVITY_TIMEOUT);
   };
-
   useEffect(() => {
     const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
-    
     const handleUserActivity = () => {
       console.log("User activity detected - resetting timer");
       resetTimer();
     };
-
     events.forEach(event => {
       document.addEventListener(event, handleUserActivity);
     });
-
     resetTimer();
-
     return () => {
       if (timer) clearTimeout(timer);
       events.forEach(event => {
@@ -68,24 +61,30 @@ function useInactivityTimer() {
     };
   }, [navigate]);
 }
-
-function PrivateRoute({ children }: { children: React.ReactNode }) {
+function PrivateRoute({
+  children
+}: {
+  children: React.ReactNode;
+}) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   useInactivityTimer();
-
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: {
+            session
+          }
+        } = await supabase.auth.getSession();
         console.log("Auth check - Session:", session);
-        
         if (session) {
           setIsAuthenticated(true);
-          
           if (['/login', '/register', '/'].includes(location.pathname)) {
             navigate('/dashboard');
           }
@@ -108,12 +107,13 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
         setIsLoading(false);
       }
     };
-
     checkAuth();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const {
+      data: {
+        subscription
+      }
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed - Event:", event, "Session:", session);
-      
       if (event === 'SIGNED_IN' && session) {
         setIsAuthenticated(true);
         navigate('/dashboard');
@@ -124,36 +124,27 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
           navigate('/login');
         }
       }
-      
       setIsLoading(false);
     });
-
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         console.log("Tab became visible - checking auth status");
         checkAuth();
       }
     };
-
     document.addEventListener('visibilitychange', handleVisibilityChange);
-
     return () => {
       subscription.unsubscribe();
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [navigate, location]);
-
   if (isLoading || isAuthenticated === null) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
+    return <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
         <div className="animate-pulse text-softWhite">Loading...</div>
-      </div>
-    );
+      </div>;
   }
-
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
-
 function MainContent() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
@@ -162,25 +153,17 @@ function MainContent() {
   const isLoginPage = location.pathname === "/login";
   const isRegisterPage = location.pathname === "/register";
   const hideHeader = isHomePage || isSetfilesPage || isTradeHubPage || isLoginPage || isRegisterPage;
-
-  return (
-    <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
+  return <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
       {!hideHeader && <Sidebar />}
       <div className="flex-1 flex relative">
         <div className="flex-1">
-          {!hideHeader && (
-            <div className="fixed top-0 left-0 right-0 bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey z-[50] h-[230px]" />
-          )}
-          {!hideHeader && (
-            <div className="fixed top-0 left-[270px] right-0 z-[51]">
+          {!hideHeader}
+          {!hideHeader && <div className="fixed top-0 left-[270px] right-0 z-[51]">
               <TradingViewTickerTape />
-            </div>
-          )}
-          {!hideHeader && (
-            <div className="fixed left-0 right-0 top-[230px] z-[50] px-[44px]">
+            </div>}
+          {!hideHeader && <div className="fixed left-0 right-0 top-[230px] z-[50] px-[44px]">
               <Separator className="h-[1px] bg-silver/20" />
-            </div>
-          )}
+            </div>}
           <main className={`flex-1 ${!hideHeader ? "ml-[270px] mr-0 mt-[250px]" : ""}`}>
             <div className="overflow-auto">
               <Routes>
@@ -202,13 +185,10 @@ function MainContent() {
           </main>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
-
 function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
+  return <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -216,8 +196,6 @@ function App() {
           <MainContent />
         </BrowserRouter>
       </TooltipProvider>
-    </QueryClientProvider>
-  );
+    </QueryClientProvider>;
 }
-
 export default App;
