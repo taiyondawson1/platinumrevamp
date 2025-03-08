@@ -1,8 +1,12 @@
+
 import { useNavigate } from "react-router-dom";
 import { SplineSceneBasic } from "@/components/ui/SplineSceneDemo";
+
 const Home = () => {
   const navigate = useNavigate();
-  return <div className="min-h-screen flex flex-col items-center justify-center p-0 relative">
+  
+  return (
+    <div className="min-h-screen w-full flex flex-col items-center justify-start p-0 relative bg-black">
       {/* 3D Scene at the top */}
       <div className="w-full">
         <SplineSceneBasic />
@@ -10,6 +14,8 @@ const Home = () => {
       
       {/* Additional content below */}
       
-    </div>;
+    </div>
+  );
 };
+
 export default Home;
