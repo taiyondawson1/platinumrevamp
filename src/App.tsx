@@ -1,9 +1,10 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, Navigate, useNavigate } from "react-router-dom";
-import Sidebar from "@/components/Sidebar";
+import { ModernSidebar } from "@/components/ModernSidebar";
 import Dashboard from "@/pages/Dashboard";
 import ExpertAdvisorsPage from "@/pages/ExpertAdvisors";
 import SetfilesPage from "@/pages/Setfiles";
@@ -157,7 +158,7 @@ function MainContent() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
-      {!hideHeader && <Sidebar />}
+      {!hideHeader && <ModernSidebar />}
       <div className="flex-1 relative">
         <main className="w-full">
           <Routes>
