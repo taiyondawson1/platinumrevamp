@@ -1,7 +1,7 @@
 
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
@@ -44,6 +44,19 @@ export const SidebarProvider = ({
 
   const open = openProp !== undefined ? openProp : openState;
   const setOpen = setOpenProp !== undefined ? setOpenProp : setOpenState;
+
+  // Update document body class when sidebar state changes
+  useEffect(() => {
+    if (open) {
+      document.body.classList.add('sidebar-expanded');
+    } else {
+      document.body.classList.remove('sidebar-expanded');
+    }
+    
+    return () => {
+      document.body.classList.remove('sidebar-expanded');
+    };
+  }, [open]);
 
   return (
     <SidebarContext.Provider value={{ open, setOpen, animate }}>
@@ -101,7 +114,7 @@ export const DesktopSidebar = ({
   return (
     <motion.div
       className={cn(
-        "h-screen min-h-screen px-4 py-4 hidden md:flex md:flex-col bg-darkGrey/90 backdrop-blur-md border-r border-silver/20 w-[300px] flex-shrink-0 sticky top-0 left-0",
+        "h-screen min-h-screen px-4 py-4 hidden md:flex md:flex-col bg-darkGrey/90 backdrop-blur-md border-r border-silver/20 w-[300px] flex-shrink-0 sticky top-0 left-0 z-20",
         className
       )}
       animate={{

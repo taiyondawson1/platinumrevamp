@@ -10,8 +10,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="flex-1 p-4 sm:p-6 pt-8 sm:pt-12 main-content-with-sidebar max-w-[1400px] mx-auto">
-      <div className="flex flex-col gap-6">
+    <main className="flex-1 p-4 sm:p-6 pt-8 sm:pt-12 main-content-with-sidebar">
+      <div className="flex flex-col gap-6 balanced-content">
         {/* Welcome Section */}
         <section className="space-y-3 sm:space-y-4">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-softWhite">Welcome to Your Dashboard</h1>
@@ -22,7 +22,7 @@ const Dashboard = () => {
         </section>
 
         {/* Dashboard Grid Cards */}
-        <ul className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-6 min-h-[30rem]">
+        <ul className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-6 min-h-[30rem] dashboard-grid">
           <DashboardGridItem
             area="md:[grid-area:1/1/2/7] lg:[grid-area:1/1/2/5]"
             icon={<Bot className="h-5 w-5 text-silver" />}
@@ -61,7 +61,7 @@ const Dashboard = () => {
         </ul>
 
         {/* World Clocks and Position Size Calculator Section */}
-        <div className="flex flex-col lg:flex-row h-auto lg:h-[340px]">
+        <div className="flex flex-col lg:flex-row h-auto lg:h-[340px] laptop-centered">
           <section className="flex-1 border border-silver/20 bg-darkBase/40 !rounded-none">
             <WorldClocks />
           </section>

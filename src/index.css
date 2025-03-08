@@ -115,6 +115,15 @@
 
 @media (min-width: 1024px) {
   .main-content-with-sidebar {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+    max-width: 1600px;
+  }
+}
+
+/* Adjust layout when sidebar is expanded */
+@media (min-width: 1024px) {
+  .sidebar-expanded .main-content-with-sidebar {
     margin-left: 250px;
     width: calc(100% - 250px);
   }
@@ -130,5 +139,36 @@ img, video, iframe {
 @media (max-width: 640px) {
   input, select, textarea, button {
     font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+}
+
+/* Center content on larger screens */
+@media (min-width: 1400px) {
+  .container {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Add balanced content class for laptop/desktop */
+.balanced-content {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 768px) {
+  .balanced-content {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .balanced-content {
+    padding-left: 3rem;
+    padding-right: 3rem;
   }
 }
