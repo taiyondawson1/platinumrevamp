@@ -1,4 +1,4 @@
-import { SparklesCore } from "@/components/ui/sparkles";
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { UserPlus } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Squares } from "@/components/ui/squares-background";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -188,8 +189,20 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center relative p-4">
+      {/* Squares Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <Squares 
+          direction="diagonal"
+          speed={0.3}
+          squareSize={50}
+          borderColor="#333333" 
+          hoverFillColor="#222222"
+        />
+      </div>
+      
+      {/* Login Card */}
+      <Card className="w-full max-w-md z-10 bg-black/80 backdrop-blur-sm border-silver/20">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-softWhite">Login</CardTitle>
         </CardHeader>
