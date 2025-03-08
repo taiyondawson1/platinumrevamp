@@ -2,13 +2,20 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SparklesPreviewDark } from "@/components/ui/SparklesDemo";
 
 const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
-      <div className="max-w-4xl mx-auto space-y-12">
+    <div className="min-h-screen flex flex-col items-center justify-center p-0 text-center relative overflow-hidden">
+      {/* Particle background */}
+      <div className="absolute inset-0 w-full h-full">
+        <SparklesPreviewDark />
+      </div>
+      
+      {/* Content overlay */}
+      <div className="max-w-4xl mx-auto space-y-12 relative z-10">
         {/* Hero Section */}
         <section className="space-y-6">
           <h1 className="text-6xl font-bold text-softWhite leading-tight">
@@ -39,20 +46,20 @@ const Home = () => {
         </section>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-          <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 px-4">
+          <div className="space-y-3 backdrop-blur-sm p-6 border border-silver/20 rounded-none hover:border-silver/40 transition-all">
             <h3 className="text-xl font-semibold text-softWhite">Real-Time Analytics</h3>
             <p className="text-mediumGray">
               Track your trading performance with advanced metrics and insights.
             </p>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-3 backdrop-blur-sm p-6 border border-silver/20 rounded-none hover:border-silver/40 transition-all">
             <h3 className="text-xl font-semibold text-softWhite">Expert Advisors</h3>
             <p className="text-mediumGray">
               Automate your trading strategies with powerful expert advisors.
             </p>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-3 backdrop-blur-sm p-6 border border-silver/20 rounded-none hover:border-silver/40 transition-all">
             <h3 className="text-xl font-semibold text-softWhite">Market Education</h3>
             <p className="text-mediumGray">
               Access comprehensive trading courses and resources.

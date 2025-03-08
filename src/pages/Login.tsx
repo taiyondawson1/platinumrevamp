@@ -1,4 +1,4 @@
-
+import { SparklesCore } from "@/components/ui/sparkles";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,6 @@ const Login = () => {
   const [countdown, setCountdown] = useState(0);
   const [resendLoading, setResendLoading] = useState(false);
 
-  // Handle countdown timer
   useEffect(() => {
     let timer: number | undefined;
     
@@ -36,7 +35,6 @@ const Login = () => {
     };
   }, [countdown]);
 
-  // Check if user is already logged in
   useEffect(() => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
@@ -71,7 +69,6 @@ const Login = () => {
           title: "Email Sent",
           description: "Confirmation email has been resent. Please check your inbox.",
         });
-        // Start the countdown
         setCountdown(30);
       }
     } catch (error) {
@@ -108,7 +105,6 @@ const Login = () => {
       if (error) {
         console.error("Login error:", error);
         
-        // Check for email confirmation error
         if (error.message.includes("Email not confirmed") || 
             error.message.toLowerCase().includes("email confirmation")) {
           setNeedsConfirmation(true);
@@ -124,7 +120,6 @@ const Login = () => {
         return;
       }
 
-      // If we get here, we're successfully logged in
       setNeedsConfirmation(false);
 
       if (data?.user) {
@@ -142,7 +137,6 @@ const Login = () => {
             console.error("Profile fetch error or missing profile:", profileError);
             setDebugInfo(debugData);
             
-            // Create default profile if missing without trying to fix anything complex
             const { error: createProfileError } = await supabase
               .from('profiles')
               .insert({
@@ -156,7 +150,6 @@ const Login = () => {
             
             if (createProfileError) {
               console.error("Failed to create profile:", createProfileError);
-              // Continue anyway - don't get stuck in a loading state
             } else {
               profileData = { role: 'customer', staff_key: null, enrolled_by: null, enroller: null };
             }
@@ -173,8 +166,6 @@ const Login = () => {
           debugData.processingError = error;
           setDebugInfo(debugData);
           
-          // Still navigate to dashboard even if there was an error processing
-          // the profile - don't leave user stranded on login page
           toast({
             title: "Logged in",
             description: "You're logged in but there was an issue loading your profile data.",
@@ -243,7 +234,6 @@ const Login = () => {
                 Create Account
               </Button>
               
-              {/* Resend confirmation email button */}
               {needsConfirmation && (
                 <Button
                   type="button"
