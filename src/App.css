@@ -2,10 +2,15 @@
 #root {
   max-width: 100%;
   margin: 0 auto;
-  padding: 0;
+  padding: 1rem;
   text-align: center;
   background-color: black;
-  overflow-x: hidden;
+}
+
+@media (min-width: 768px) {
+  #root {
+    padding: 2rem;
+  }
 }
 
 .logo {
@@ -37,18 +42,12 @@
 }
 
 .card {
-  padding: 0.5em;
-}
-
-@media (min-width: 640px) {
-  .card {
-    padding: 0.75em;
-  }
+  padding: 1em;
 }
 
 @media (min-width: 768px) {
   .card {
-    padding: 1em;
+    padding: 2em;
   }
 }
 
@@ -68,129 +67,4 @@
 [data-route='tradehub'] .card,
 [data-route='tradehub'] [class*='rounded'] {
   border-radius: 0.5rem !important;
-}
-
-/* Responsive padding and margin adjustments */
-.section-padding {
-  padding: 0.5rem;
-}
-@media (min-width: 640px) {
-  .section-padding {
-    padding: 0.75rem;
-  }
-}
-@media (min-width: 768px) {
-  .section-padding {
-    padding: 1rem;
-  }
-}
-@media (min-width: 1024px) {
-  .section-padding {
-    padding: 1.5rem;
-  }
-}
-
-/* Better mobile fixed content handling */
-.mobile-adjusted-content {
-  padding-top: 3rem; /* Space for fixed mobile header */
-}
-
-/* Reduce box shadow on mobile */
-@media (max-width: 640px) {
-  .shadow-sm {
-    box-shadow: none !important;
-  }
-  
-  .shadow-md {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-  }
-}
-
-/* Fix overflow issues */
-html, body, #root {
-  overflow-x: hidden;
-  width: 100%;
-  position: relative;
-}
-
-/* Improve mobile touch targets */
-@media (max-width: 640px) {
-  button, 
-  [role="button"],
-  a {
-    min-height: 36px;
-    min-width: 36px;
-  }
-  
-  .btn-touch-target {
-    padding: 0.35rem 0.5rem;
-  }
-}
-
-/* Adjust mobile text truncation */
-.mobile-truncate {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Ensure proper spacing on mobile */
-.mobile-stack > * + * {
-  margin-top: 0.5rem;
-}
-
-/* Improve mobile grid layouts */
-.mobile-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 0.5rem;
-}
-
-@media (min-width: 640px) {
-  .mobile-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 0.75rem;
-  }
-}
-
-/* Ensure vertical scrolling works properly on mobile */
-.scroll-container {
-  max-height: 100vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Ensure content doesn't get cut off at the bottom on mobile */
-.mobile-full-height {
-  min-height: 100vh;
-  padding-bottom: 2rem;
-}
-
-/* Make sure ScrollArea component works properly on mobile */
-.scrollarea-mobile-fix {
-  max-height: 90vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Fix for content being cut off at the bottom on mobile */
-main, .main-content {
-  min-height: 100vh;
-  padding-bottom: env(safe-area-inset-bottom, 20px);
-}
-
-/* Prevent fixed position elements from hiding content */
-.has-fixed-header {
-  padding-top: 60px;
-}
-
-.has-fixed-footer {
-  padding-bottom: 60px;
-}
-
-/* Ensure cards and grid items are fully visible */
-.card, .grid > div {
-  max-width: 100%;
-  overflow: visible;
 }

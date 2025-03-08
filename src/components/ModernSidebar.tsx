@@ -47,49 +47,49 @@ export function ModernSidebar() {
       label: "Home",
       href: "/",
       icon: (
-        <Home className="text-silver h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+        <Home className="text-silver h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Dashboard",
       href: "/dashboard",
       icon: (
-        <LayoutDashboard className="text-silver h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+        <LayoutDashboard className="text-silver h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "TradeHub",
       href: "/tradehub",
       icon: (
-        <BarChart className="text-silver h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+        <BarChart className="text-silver h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Expert Advisors",
       href: "/expert-advisors",
       icon: (
-        <Bot className="text-silver h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+        <Bot className="text-silver h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Setfiles",
       href: "/setfiles",
       icon: (
-        <FileText className="text-silver h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+        <FileText className="text-silver h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "Courses",
       href: "/courses",
       icon: (
-        <BookOpen className="text-silver h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+        <BookOpen className="text-silver h-5 w-5 flex-shrink-0" />
       ),
     },
     {
       label: "License Key",
       href: "/license-key",
       icon: (
-        <Key className="text-silver h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+        <Key className="text-silver h-5 w-5 flex-shrink-0" />
       ),
     },
   ];
@@ -101,7 +101,7 @@ export function ModernSidebar() {
       <SidebarBody className="flex flex-col h-full justify-between">
         <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
           <Logo />
-          <div className="mt-6 flex flex-col gap-1">
+          <div className="mt-8 flex flex-col gap-2">
             {links.map((link, idx) => (
               <SidebarLink key={idx} link={link} />
             ))}
@@ -112,13 +112,13 @@ export function ModernSidebar() {
             onClick={handleLogout}
             className="flex items-center gap-2 py-2 text-accent-red hover:text-red-400 group/sidebar"
           >
-            <LogOut className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+            <LogOut className="h-5 w-5 flex-shrink-0" />
             <motion.span
               animate={{
                 display: open ? "inline-block" : "none",
                 opacity: open ? 1 : 0,
               }}
-              className="text-xs md:text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block"
+              className="text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block"
             >
               Logout
             </motion.span>
@@ -133,9 +133,9 @@ export const Logo = () => {
   const { open } = useSidebar();
   
   return (
-    <div className="font-normal flex space-x-2 items-center text-xs md:text-sm text-softWhite py-1 relative z-20">
-      <div className="h-5 w-5 md:h-6 md:w-6 flex-shrink-0 flex items-center justify-center transform rotate-45 bg-silver/80">
-        <Diamond className="h-3 w-3 md:h-4 md:w-4 text-darkBase transform -rotate-45" />
+    <div className="font-normal flex space-x-2 items-center text-sm text-softWhite py-1 relative z-20">
+      <div className="h-6 w-6 flex-shrink-0 flex items-center justify-center transform rotate-45 bg-silver/80">
+        <Diamond className="h-4 w-4 text-darkBase transform -rotate-45" />
       </div>
       {open && (
         <motion.span
