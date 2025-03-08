@@ -1,12 +1,11 @@
 
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, BarChart, Bot, BookOpen, Key, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import WorldClocks from "@/components/WorldClocks";
 import PositionSizeCalculator from "@/components/PositionSizeCalculator";
 import DailyHabits from "@/components/DailyHabits";
 import ToolsBar from "@/components/ToolsBar";
+import DashboardGridItem from "@/components/DashboardGridItem";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -26,60 +25,44 @@ const Dashboard = () => {
         {/* Tools Bar */}
         <ToolsBar />
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-4 sm:p-6 space-y-4">
-            <h3 className="text-lg sm:text-xl font-semibold text-softWhite">Expert Advisors</h3>
-            <p className="text-mediumGray text-sm">Access and manage your automated trading strategies.</p>
-            <Button 
-              variant="ghost" 
-              className="group !rounded-none"
-              onClick={() => navigate('/expert-advisors')}
-            >
-              Explore EAs
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Card>
-
-          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-4 sm:p-6 space-y-4">
-            <h3 className="text-lg sm:text-xl font-semibold text-softWhite">Trading Analysis</h3>
-            <p className="text-mediumGray text-sm">View detailed analytics and performance metrics.</p>
-            <Button 
-              variant="ghost" 
-              className="group !rounded-none"
-              onClick={() => navigate('/connect-myfxbook')}
-            >
-              View Analytics
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Card>
-
-          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-4 sm:p-6 space-y-4">
-            <h3 className="text-lg sm:text-xl font-semibold text-softWhite">Learning Resources</h3>
-            <p className="text-mediumGray text-sm">Access educational content and trading courses.</p>
-            <Button 
-              variant="ghost" 
-              className="group !rounded-none"
-              onClick={() => navigate('/courses')}
-            >
-              Start Learning
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Card>
-          
-          <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] p-4 sm:p-6 space-y-4">
-            <h3 className="text-lg sm:text-xl font-semibold text-softWhite">License Key</h3>
-            <p className="text-mediumGray text-sm">Manage your license key and authorized MT4 accounts.</p>
-            <Button 
-              variant="ghost" 
-              className="group !rounded-none"
-              onClick={() => navigate('/license-key')}
-            >
-              Manage License
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Card>
-        </div>
+        {/* Dashboard Grid Cards */}
+        <ul className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-6 min-h-[30rem]">
+          <DashboardGridItem
+            area="md:[grid-area:1/1/2/7] lg:[grid-area:1/1/2/5]"
+            icon={<Bot className="h-5 w-5 text-accent-blue" />}
+            title="Expert Advisors"
+            description="Access and manage your automated trading strategies."
+            path="/expert-advisors"
+          />
+          <DashboardGridItem
+            area="md:[grid-area:1/7/2/13] lg:[grid-area:2/1/3/5]"
+            icon={<BarChart className="h-5 w-5 text-accent-green" />}
+            title="Trading Analysis"
+            description="View detailed analytics and performance metrics."
+            path="/connect-myfxbook"
+          />
+          <DashboardGridItem
+            area="md:[grid-area:2/1/3/7] lg:[grid-area:1/5/3/9]"
+            icon={<Key className="h-5 w-5 text-silver" />}
+            title="License Key"
+            description="Manage your license key and authorized MT4 accounts."
+            path="/license-key"
+          />
+          <DashboardGridItem
+            area="md:[grid-area:2/7/3/13] lg:[grid-area:1/9/2/13]"
+            icon={<BookOpen className="h-5 w-5 text-accent-blue" />}
+            title="Learning Resources"
+            description="Access educational content and trading courses."
+            path="/courses"
+          />
+          <DashboardGridItem
+            area="md:[grid-area:3/1/4/13] lg:[grid-area:2/9/3/13]"
+            icon={<Users className="h-5 w-5 text-accent-red" />}
+            title="Private Group"
+            description="Join our exclusive trading community for insights and support."
+            path="/courses"
+          />
+        </ul>
 
         {/* World Clocks and Position Size Calculator Section */}
         <div className="flex flex-col lg:flex-row h-auto lg:h-[340px]">
