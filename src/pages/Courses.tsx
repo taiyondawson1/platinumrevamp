@@ -66,7 +66,7 @@ const CoursesPage = () => {
                     className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 
                              shadow-embossed hover:shadow-embossed-hover transition-all duration-300
                              border border-[#FFD700]/30 hover:border-[#FFD700]/40 text-xs h-7
-                             relative overflow-hidden group !rounded-none"
+                             relative overflow-hidden group rounded-full"
                   >
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
                                   bg-gradient-to-r from-transparent via-[#ffd70022] to-transparent
