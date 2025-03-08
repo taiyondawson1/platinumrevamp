@@ -17,10 +17,10 @@ export function SplineSceneBasic() {
           <p className="mt-4 text-neutral-300 max-w-lg text-lg">Welcome to PlatinumAi!  Trade smarter with powerful automation and reliable risk management.</p>
           <div className="mt-8 flex gap-4">
             <RainbowButton>
-              Learn More
+              Login
             </RainbowButton>
             <button className="px-6 py-3 h-[44px] bg-transparent border border-white/20 text-white rounded-md hover:bg-white/10 transition-colors">
-              View Demo
+              Register
             </button>
           </div>
         </div>
