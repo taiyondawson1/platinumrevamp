@@ -27,9 +27,32 @@ export default {
         "fade-in": {
           "0%": { opacity: "0", transform: "translateY(5px)" },
           "100%": { opacity: "1", transform: "translateY(0)" }
+        },
+        "rainbow": {
+          "0%": { backgroundPosition: "0%" },
+          "100%": { backgroundPosition: "200%" }
         }
       },
+      animation: {
+        "rainbow": "rainbow 4s linear infinite"
+      },
       colors: {
+        // Color variables for rainbow button
+        "--color-1": {
+          DEFAULT: "344deg 85% 60%", // Pink
+        },
+        "--color-2": {
+          DEFAULT: "237deg 85% 60%", // Blue
+        },
+        "--color-3": {
+          DEFAULT: "178deg 85% 50%", // Cyan
+        },
+        "--color-4": {
+          DEFAULT: "120deg 85% 40%", // Green
+        },
+        "--color-5": {
+          DEFAULT: "45deg 93% 56%", // Yellow
+        },
         // Base colors
         darkBase: "#191919", // Updated to RGB(25, 25, 25)
         darkBlue: "#1A1A1A", // Slightly lighter for gradient
