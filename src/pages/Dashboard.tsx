@@ -25,14 +25,14 @@ const Dashboard = () => {
         <ul className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-6 min-h-[30rem]">
           <DashboardGridItem
             area="md:[grid-area:1/1/2/7] lg:[grid-area:1/1/2/5]"
-            icon={<Bot className="h-5 w-5 text-accent-blue" />}
+            icon={<Bot className="h-5 w-5 text-silver" />}
             title="Expert Advisors"
             description="Access and manage your automated trading strategies."
             path="/expert-advisors"
           />
           <DashboardGridItem
             area="md:[grid-area:1/7/2/13] lg:[grid-area:2/1/3/5]"
-            icon={<BarChart className="h-5 w-5 text-accent-green" />}
+            icon={<BarChart className="h-5 w-5 text-silver" />}
             title="Trading Analysis"
             description="View detailed analytics and performance metrics."
             path="/connect-myfxbook"
@@ -46,14 +46,14 @@ const Dashboard = () => {
           />
           <DashboardGridItem
             area="md:[grid-area:2/7/3/13] lg:[grid-area:1/9/2/13]"
-            icon={<BookOpen className="h-5 w-5 text-accent-blue" />}
+            icon={<BookOpen className="h-5 w-5 text-silver" />}
             title="Learning Resources"
             description="Access educational content and trading courses."
             path="/courses"
           />
           <DashboardGridItem
             area="md:[grid-area:3/1/4/13] lg:[grid-area:2/9/3/13]"
-            icon={<Users className="h-5 w-5 text-accent-red" />}
+            icon={<Users className="h-5 w-5 text-silver" />}
             title="Private Group"
             description="Join our exclusive trading community for insights and support."
             path="/courses"
