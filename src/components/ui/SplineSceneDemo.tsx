@@ -13,11 +13,11 @@ export function SplineSceneBasic() {
   return <Card className="w-full h-[70vh] bg-black/[0.96] relative overflow-hidden border-0 rounded-none shadow-xl">
       <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
       
-      <div className="flex flex-col md:flex-row h-full">
-        {/* Left content */}
-        <div className="flex-1 p-8 md:p-12 relative z-10 flex flex-col justify-center">
+      <div className="flex flex-col items-center justify-center h-full">
+        {/* Centered content */}
+        <div className="relative z-10 flex flex-col items-center text-center p-8 max-w-xl">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">Welcome</h1>
-          <p className="mt-4 text-neutral-300 max-w-lg text-lg">Welcome to PlatinumAi!  Trade smarter with powerful automation and reliable risk management.</p>
+          <p className="mt-4 text-neutral-300 text-lg">Welcome to PlatinumAi! Trade smarter with powerful automation and reliable risk management.</p>
           <div className="mt-8 flex gap-4">
             <RainbowButton onClick={() => navigate("/login")}>
               Login
@@ -29,11 +29,6 @@ export function SplineSceneBasic() {
               Register
             </button>
           </div>
-        </div>
-
-        {/* Right content */}
-        <div className="flex-1 relative">
-          <SplineScene scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" className="w-full h-full" />
         </div>
       </div>
     </Card>;
