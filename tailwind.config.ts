@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -41,22 +42,10 @@ export default {
           "0%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
           "100%": { backgroundPosition: "0% 50%" }
-        },
-        "star-movement-top": {
-          "0%": { transform: "translateX(0)" },
-          "50%": { transform: "translateX(450px)" },
-          "100%": { transform: "translateX(0)" },
-        },
-        "star-movement-bottom": {
-          "0%": { transform: "translateX(0)" },
-          "50%": { transform: "translateX(-450px)" },
-          "100%": { transform: "translateX(0)" },
         }
       },
       animation: {
-        "rainbow": "rainbow 3s ease infinite",
-        "star-movement-top": "star-movement-top var(--speed, 6s) ease infinite",
-        "star-movement-bottom": "star-movement-bottom var(--speed, 6s) ease infinite",
+        "rainbow": "rainbow 3s ease infinite"
       },
       colors: {
         // Color variables for rainbow button
