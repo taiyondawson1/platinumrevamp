@@ -35,21 +35,27 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
     return String(value);
   };
 
+  // Format the display text to handle overflow on small screens
+  const displayValue = formatValue(value, label);
+  const displayLabel = label.length > 12 && window.innerWidth < 400 
+    ? `${label.substring(0, 10)}...` 
+    : label;
+
   return (
     <div className={cn(
       "w-full bg-darkBlue/40",
-      "shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)]",
-      "hover:shadow-[inset_0px_3px_6px_rgba(0,0,0,0.25)]",
+      "shadow-[inset_0px_1px_3px_rgba(0,0,0,0.15)]",
+      "hover:shadow-[inset_0px_2px_4px_rgba(0,0,0,0.2)]",
       "transition-shadow duration-200",
-      "rounded-xl",
+      "rounded-none sm:rounded-lg",
       "bg-gradient-to-b from-white/10 to-transparent",
       "backdrop-blur-sm",
       className
     )}>
-      <div className="flex flex-col items-center justify-center p-1.5 sm:p-2">
-        <div className="text-[10px] xs:text-xs sm:text-sm text-softWhite/70 font-medium">{label}</div>
-        <div className="text-sm sm:text-base lg:text-lg font-bold text-softWhite truncate max-w-full px-1">
-          {formatValue(value, label)}
+      <div className="flex flex-col items-center justify-center p-1 sm:p-1.5">
+        <div className="text-[9px] xs:text-[10px] sm:text-xs text-softWhite/70 font-medium truncate max-w-full px-1">{displayLabel}</div>
+        <div className="text-xs sm:text-sm lg:text-base font-bold text-softWhite truncate max-w-full px-1">
+          {displayValue}
         </div>
       </div>
     </div>

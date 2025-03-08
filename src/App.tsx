@@ -159,7 +159,7 @@ function MainContent() {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey">
       {!hideHeader && <ModernSidebar />}
-      <div className="flex-1 relative">
+      <div className="flex-1 w-full overflow-x-hidden">
         <main className="w-full">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -183,7 +183,8 @@ function MainContent() {
 }
 
 function App() {
-  return <QueryClientProvider client={queryClient}>
+  return (
+    <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -191,7 +192,8 @@ function App() {
           <MainContent />
         </BrowserRouter>
       </TooltipProvider>
-    </QueryClientProvider>;
+    </QueryClientProvider>
+  );
 }
 
 export default App;

@@ -101,11 +101,11 @@ export const DesktopSidebar = ({
   return (
     <motion.div
       className={cn(
-        "h-screen min-h-screen px-4 py-4 hidden md:flex md:flex-col bg-darkGrey/90 backdrop-blur-md border-r border-silver/20 w-[300px] flex-shrink-0 sticky top-0 left-0",
+        "h-screen min-h-screen px-4 py-4 hidden md:flex md:flex-col bg-darkGrey/90 backdrop-blur-md border-r border-silver/20 w-[250px] flex-shrink-0 sticky top-0 left-0",
         className
       )}
       animate={{
-        width: animate ? (open ? "300px" : "60px") : "300px",
+        width: animate ? (open ? "250px" : "60px") : "250px",
       }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
@@ -127,15 +127,17 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "h-10 px-4 py-4 flex flex-row md:hidden items-center justify-between bg-darkGrey/90 backdrop-blur-md w-full"
+          "h-12 px-3 py-3 flex flex-row md:hidden items-center justify-between bg-darkGrey/90 backdrop-blur-md w-full fixed top-0 left-0 z-[90]"
         )}
       >
-        <div className="flex justify-end z-20 w-full">
+        <div className="flex justify-start z-20 w-auto">
           <Menu
-            className="text-softWhite cursor-pointer"
+            className="text-softWhite cursor-pointer h-5 w-5"
             onClick={() => setOpen(!open)}
           />
         </div>
+        <div className="text-center text-sm font-semibold text-softWhite">PlatinumAi</div>
+        <div className="w-5"></div> {/* Empty space for balance */}
         <AnimatePresence>
           {open && (
             <motion.div
@@ -147,21 +149,22 @@ export const MobileSidebar = ({
                 ease: "easeInOut",
               }}
               className={cn(
-                "fixed h-screen inset-0 bg-darkGrey/95 backdrop-blur-md p-10 z-[100] flex flex-col justify-between",
+                "fixed h-screen inset-0 bg-darkGrey/95 backdrop-blur-md p-6 z-[100] flex flex-col justify-between",
                 className
               )}
             >
               <div
-                className="absolute right-10 top-10 z-50 text-softWhite cursor-pointer"
+                className="absolute right-6 top-6 z-50 text-softWhite cursor-pointer"
                 onClick={() => setOpen(!open)}
               >
-                <X />
+                <X className="h-5 w-5" />
               </div>
               {children}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      <div className="block md:hidden h-12 w-full"></div> {/* Mobile spacer to prevent content being under the header */}
     </>
   );
 };

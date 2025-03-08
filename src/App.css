@@ -37,12 +37,12 @@
 }
 
 .card {
-  padding: 1em;
+  padding: 0.75em;
 }
 
 @media (min-width: 768px) {
   .card {
-    padding: 1.5em;
+    padding: 1em;
   }
 }
 
@@ -66,20 +66,43 @@
 
 /* Responsive padding and margin adjustments */
 .section-padding {
-  padding: 0.75rem;
+  padding: 0.5rem;
 }
 @media (min-width: 640px) {
   .section-padding {
-    padding: 1rem;
+    padding: 0.75rem;
   }
 }
 @media (min-width: 768px) {
   .section-padding {
-    padding: 1.5rem;
+    padding: 1rem;
   }
 }
 @media (min-width: 1024px) {
   .section-padding {
-    padding: 2rem;
+    padding: 1.5rem;
   }
+}
+
+/* Better mobile fixed content handling */
+.mobile-adjusted-content {
+  padding-top: 3rem; /* Space for fixed mobile header */
+}
+
+/* Reduce box shadow on mobile */
+@media (max-width: 640px) {
+  .shadow-sm {
+    box-shadow: none !important;
+  }
+  
+  .shadow-md {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  }
+}
+
+/* Fix overflow issues */
+html, body, #root {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
 }
