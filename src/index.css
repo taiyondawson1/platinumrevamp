@@ -25,6 +25,13 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.75rem;
+    
+    /* Rainbow button color variables */
+    --color-1: 344deg 85% 60%;
+    --color-2: 237deg 85% 60%;
+    --color-3: 178deg 85% 50%;
+    --color-4: 120deg 85% 40%;
+    --color-5: 45deg 93% 56%;
   }
 
   .dark {

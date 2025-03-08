@@ -29,12 +29,13 @@ export default {
           "100%": { opacity: "1", transform: "translateY(0)" }
         },
         "rainbow": {
-          "0%": { backgroundPosition: "0%" },
-          "100%": { backgroundPosition: "200%" }
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" }
         }
       },
       animation: {
-        "rainbow": "rainbow 4s linear infinite"
+        "rainbow": "rainbow 3s ease infinite"
       },
       colors: {
         // Color variables for rainbow button
