@@ -1,7 +1,8 @@
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Download, Info, X, Clock, CheckCircle, Asterisk, ArrowLeft, BarChart } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Download, Info, X, Clock, CheckCircle, Asterisk, ArrowLeft, BarChart, AlertTriangle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -300,6 +301,18 @@ const SetfilesPage = () => {
             ))}
           </div>
         </div>
+        
+        <Alert variant="default" className="mb-6 border-amber-500 bg-darkBlue/30">
+          <AlertTriangle className="h-4 w-4 text-amber-500" />
+          <AlertTitle className="text-amber-500">Important MT4 Configuration</AlertTitle>
+          <AlertDescription className="text-mediumGray">
+            Make sure to add the validation URL to MT4's allowed URLs list:
+            <br />
+            Tools -&gt; Options -&gt; Expert Advisors -&gt; "Allow WebRequest for listed URL"
+            <br />
+            Add this URL: <span className="font-mono text-xs bg-black/30 px-1 py-0.5 rounded">https://qzbwxtegqsusmfwjauwh.supabase.co/functions/v1/validate-license</span>
+          </AlertDescription>
+        </Alert>
 
         <div className="border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px rgba(0,0,0,0.3)] animate-[fade-in_0.3s_ease-out]">
           <div className="max-w-[900px] mx-auto border border-mediumGray/20 rounded-xl p-8 bg-darkBlue/20 backdrop-blur-sm shadow-[0_8px_32px rgba(0,0,0,0.3)] animate-[fade-in_0.3s_ease-out]">

@@ -434,6 +434,18 @@ const LicenseKey = () => {
           </Alert>
         )}
         
+        <Alert variant="default" className="mb-6 border-amber-500 bg-darkBlue/30">
+          <AlertTriangle className="h-4 w-4 text-amber-500" />
+          <AlertTitle className="text-amber-500">Important MT4 Configuration</AlertTitle>
+          <AlertDescription className="text-mediumGray">
+            Make sure to add the validation URL to MT4's allowed URLs list:
+            <br />
+            Tools -&gt; Options -&gt; Expert Advisors -&gt; "Allow WebRequest for listed URL"
+            <br />
+            Add this URL: <span className="font-mono text-xs bg-black/30 px-1 py-0.5 rounded">https://qzbwxtegqsusmfwjauwh.supabase.co/functions/v1/validate-license</span>
+          </AlertDescription>
+        </Alert>
+        
         <Card className="bg-darkBlue/60 border-silver/20 backdrop-blur-sm shadow-lg">
           <CardContent className="p-6 space-y-4">
             <h2 className="text-xl font-semibold text-softWhite mb-4">Your License Key</h2>

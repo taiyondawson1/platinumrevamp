@@ -1,7 +1,9 @@
+
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { Download } from "lucide-react";
+import { AlertTriangle, Download } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const ExpertAdvisors = () => {
   const { toast } = useToast();
@@ -95,6 +97,18 @@ const ExpertAdvisors = () => {
   return (
     <div className="p-4 ml-[64px] relative">
       <h1 className="text-xl font-semibold text-softWhite mb-4">Expert Advisors</h1>
+      
+      <Alert variant="default" className="mb-6 border-amber-500 bg-darkBlue/30">
+        <AlertTriangle className="h-4 w-4 text-amber-500" />
+        <AlertTitle className="text-amber-500">Important MT4 Configuration</AlertTitle>
+        <AlertDescription className="text-mediumGray">
+          Make sure to add the validation URL to MT4's allowed URLs list:
+          <br />
+          Tools -&gt; Options -&gt; Expert Advisors -&gt; "Allow WebRequest for listed URL"
+          <br />
+          Add this URL: <span className="font-mono text-xs bg-black/30 px-1 py-0.5 rounded">https://qzbwxtegqsusmfwjauwh.supabase.co/functions/v1/validate-license</span>
+        </AlertDescription>
+      </Alert>
       
       <div className="grid gap-3 relative">
         {/* Left fade gradient */}
