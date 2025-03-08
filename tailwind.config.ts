@@ -32,22 +32,10 @@ export default {
           "0%": { backgroundPosition: "0% 50%" },
           "50%": { backgroundPosition: "100% 50%" },
           "100%": { backgroundPosition: "0% 50%" }
-        },
-        "star-movement-top": {
-          "0%": { transform: "translateX(0)" },
-          "50%": { transform: "translateX(75%)" },
-          "100%": { transform: "translateX(0)" }
-        },
-        "star-movement-bottom": {
-          "0%": { transform: "translateX(0)" },
-          "50%": { transform: "translateX(-75%)" },
-          "100%": { transform: "translateX(0)" }
         }
       },
       animation: {
-        "rainbow": "rainbow 3s ease infinite",
-        "star-movement-top": "star-movement-top 6s ease-in-out infinite",
-        "star-movement-bottom": "star-movement-bottom 6s ease-in-out infinite"
+        "rainbow": "rainbow 3s ease infinite"
       },
       colors: {
         // Color variables for rainbow button
