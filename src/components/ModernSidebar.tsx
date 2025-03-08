@@ -98,7 +98,7 @@ export function ModernSidebar() {
   
   return (
     <Sidebar open={open} setOpen={setOpen}>
-      <SidebarBody className="justify-between gap-10">
+      <SidebarBody className="flex flex-col h-full justify-between">
         <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
           <Logo />
           <div className="mt-8 flex flex-col gap-2">
@@ -107,7 +107,7 @@ export function ModernSidebar() {
             ))}
           </div>
         </div>
-        <div>
+        <div className="mt-auto pt-4">
           <button 
             onClick={handleLogout}
             className="flex items-center gap-2 py-2 text-accent-red hover:text-red-400 group/sidebar"

@@ -73,9 +73,10 @@ export const Sidebar = ({
 export const SidebarBody = ({
   className,
   children,
-  ...props
-}: React.ComponentProps<"div">) => {
-  // We're not passing props to DesktopSidebar anymore
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) => {
   return (
     <>
       <DesktopSidebar className={className}>
@@ -91,13 +92,16 @@ export const SidebarBody = ({
 export const DesktopSidebar = ({
   className,
   children,
-  ...props
-}: React.ComponentProps<typeof motion.div>) => {
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) => {
   const { open, setOpen, animate } = useSidebar();
+  
   return (
     <motion.div
       className={cn(
-        "h-full px-4 py-4 hidden md:flex md:flex-col bg-darkGrey/90 backdrop-blur-md border-r border-silver/20 w-[300px] flex-shrink-0",
+        "h-screen min-h-screen px-4 py-4 hidden md:flex md:flex-col bg-darkGrey/90 backdrop-blur-md border-r border-silver/20 w-[300px] flex-shrink-0 sticky top-0 left-0",
         className
       )}
       animate={{
@@ -105,7 +109,6 @@ export const DesktopSidebar = ({
       }}
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
-      {...props}
     >
       {children}
     </motion.div>
@@ -144,7 +147,7 @@ export const MobileSidebar = ({
                 ease: "easeInOut",
               }}
               className={cn(
-                "fixed h-full w-full inset-0 bg-darkGrey/95 backdrop-blur-md p-10 z-[100] flex flex-col justify-between",
+                "fixed h-screen inset-0 bg-darkGrey/95 backdrop-blur-md p-10 z-[100] flex flex-col justify-between",
                 className
               )}
             >
@@ -166,11 +169,9 @@ export const MobileSidebar = ({
 export const SidebarLink = ({
   link,
   className,
-  ...props
 }: {
   link: Links;
   className?: string;
-  props?: React.ComponentProps<typeof Link>;
 }) => {
   const { open, animate } = useSidebar();
   return (
@@ -180,7 +181,6 @@ export const SidebarLink = ({
         "flex items-center justify-start gap-2 group/sidebar py-2",
         className
       )}
-      {...props}
     >
       {link.icon}
       <motion.span
