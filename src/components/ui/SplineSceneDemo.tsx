@@ -4,7 +4,7 @@
 import { SplineScene } from "@/components/ui/splite";
 import { Card } from "@/components/ui/card";
 import { Spotlight } from "@/components/ui/spotlight";
-import { RainbowButton } from "@/components/ui/rainbow-button";
+import { StarBorder } from "@/components/ui/star-border";
 
 export function SplineSceneBasic() {
   return <Card className="w-full h-[70vh] bg-black/[0.96] relative overflow-hidden border-0 rounded-none shadow-xl">
@@ -16,9 +16,9 @@ export function SplineSceneBasic() {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">Welcome</h1>
           <p className="mt-4 text-neutral-300 max-w-lg text-lg">Welcome to PlatinumAi!  Trade smarter with powerful automation and reliable risk management.</p>
           <div className="mt-8 flex gap-4">
-            <RainbowButton>
+            <StarBorder color="white">
               Learn More
-            </RainbowButton>
+            </StarBorder>
             <button className="px-6 py-3 bg-transparent border border-white/20 text-white rounded-md hover:bg-white/10 transition-colors">
               View Demo
             </button>
