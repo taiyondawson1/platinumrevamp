@@ -241,3 +241,64 @@ img, video, iframe {
   left: -10px;
   z-index: -1;
 }
+
+/* Ensure proper scrolling for mobile devices */
+html, body, #root {
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Fixed sections should not affect content visibility */
+.fixed-content-container {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile scrollable containers */
+.mobile-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+/* Custom scrollbar for better visibility */
+.mobile-scroll-container::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+.mobile-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+.mobile-scroll-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Prevent content from being hidden under fixed elements */
+.content-with-fixed-header {
+  padding-top: env(safe-area-inset-top, 60px);
+}
+
+.content-with-fixed-footer {
+  padding-bottom: env(safe-area-inset-bottom, 60px);
+}
+
+/* Ensure cards don't overflow on mobile */
+.card {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Ensure grid items stack properly on mobile */
+@media (max-width: 640px) {
+  .grid-stack-mobile {
+    grid-template-columns: 1fr !important;
+  }
+}
