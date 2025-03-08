@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { AlertTriangle, Download } from "lucide-react";
@@ -95,13 +94,13 @@ const ExpertAdvisors = () => {
   };
 
   return (
-    <div className="p-4 pt-8 sm:pt-12 ml-[64px] relative">
-      <h1 className="text-xl font-semibold text-softWhite mb-4">Expert Advisors</h1>
+    <div className="p-3 md:p-5 lg:p-6 pt-6 sm:pt-8 lg:pt-10 ml-0 sm:ml-[64px] relative">
+      <h1 className="text-lg sm:text-xl font-semibold text-softWhite mb-3 sm:mb-4">Expert Advisors</h1>
       
-      <Alert variant="default" className="mb-6 border-amber-500 bg-darkBlue/30">
+      <Alert variant="default" className="mb-4 sm:mb-6 border-amber-500 bg-darkBlue/30 max-w-[1000px] mx-auto">
         <AlertTriangle className="h-4 w-4 text-amber-500" />
-        <AlertTitle className="text-amber-500">Important MT4 Configuration</AlertTitle>
-        <AlertDescription className="text-mediumGray">
+        <AlertTitle className="text-amber-500 text-sm">Important MT4 Configuration</AlertTitle>
+        <AlertDescription className="text-mediumGray text-xs sm:text-sm">
           Make sure to add the validation URL to MT4's allowed URLs list:
           <br />
           Tools -&gt; Options -&gt; Expert Advisors -&gt; "Allow WebRequest for listed URL"
@@ -110,71 +109,73 @@ const ExpertAdvisors = () => {
         </AlertDescription>
       </Alert>
       
-      <div className="grid gap-3 relative">
+      <div className="grid gap-3 relative max-w-[1000px] mx-auto">
         {/* Left fade gradient */}
-        <div className="absolute left-0 top-0 w-16 h-full bg-gradient-to-r from-darkBase to-transparent z-10" />
+        <div className="absolute left-0 top-0 w-8 sm:w-12 h-full bg-gradient-to-r from-darkBase to-transparent z-10" />
         
         {/* Right fade gradient */}
-        <div className="absolute right-0 top-0 w-16 h-full bg-gradient-to-l from-darkBase to-transparent z-10" />
+        <div className="absolute right-0 top-0 w-8 sm:w-12 h-full bg-gradient-to-l from-darkBase to-transparent z-10" />
         
-        {experts.map((expert) => (
-          <div 
-            key={expert.name}
-            className="group bg-darkBlue/40 backdrop-blur-sm p-3 border border-mediumGray/20 
-                     hover:border-mediumGray/30 transition-all duration-300
-                     relative overflow-hidden"
-          >
-            {/* Shiny gold reflective effect */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
-                          bg-gradient-to-r from-transparent via-[#ffd70022] to-transparent
-                          translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000
-                          pointer-events-none" />
-            
-            <div className="flex flex-col items-center justify-center gap-3 relative">
-              <div className="space-y-1.5 text-center">
-                <div>
-                  <h2 className="text-base font-medium text-softWhite">{expert.name}</h2>
-                  <p className="text-sm text-mediumGray leading-relaxed">{expert.description}</p>
-                  {expert.subtitle && (
-                    <p className="text-xs text-mediumGray/80 mt-1 leading-relaxed">{expert.subtitle}</p>
-                  )}
-                </div>
-                <div className="flex flex-col items-center justify-center gap-2 pt-1.5">
-                  <div className="text-xs text-mediumGray flex items-center mb-2">
-                    <span className="inline-block mr-1">📄</span>
-                    {expert.presets}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {experts.map((expert) => (
+            <div 
+              key={expert.name}
+              className="group bg-darkBlue/40 backdrop-blur-sm p-3 border border-mediumGray/20 
+                       hover:border-mediumGray/30 transition-all duration-300
+                       relative overflow-hidden"
+            >
+              {/* Shiny gold reflective effect */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
+                            bg-gradient-to-r from-transparent via-[#ffd70022] to-transparent
+                            translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000
+                            pointer-events-none" />
+              
+              <div className="flex flex-col items-center justify-center gap-2 relative h-full">
+                <div className="space-y-1.5 text-center">
+                  <div>
+                    <h2 className="text-sm sm:text-base font-medium text-softWhite">{expert.name}</h2>
+                    <p className="text-xs sm:text-sm text-mediumGray leading-relaxed">{expert.description}</p>
+                    {expert.subtitle && (
+                      <p className="text-xs text-mediumGray/80 mt-1 leading-relaxed">{expert.subtitle}</p>
+                    )}
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => handleDownload(expert)}
-                      size="sm"
-                      className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 
-                               shadow-embossed hover:shadow-embossed-hover transition-all duration-300
-                               border border-[#FFD700]/30 hover:border-[#FFD700]/40 text-xs h-7
-                               relative overflow-hidden group rounded-lg"
-                    >
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
-                                    bg-gradient-to-r from-transparent via-[#ffd70022] to-transparent
-                                    translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000
-                                    pointer-events-none" />
-                      <Download className="w-3.5 h-3.5 mr-1" />
-                      Download
-                    </Button>
-                    <Button
-                      onClick={() => handleSetupGuide(expert.name)}
-                      variant="outline"
-                      size="sm"
-                      className="border-mediumGray/20 hover:bg-mediumGray/10 text-mediumGray 
-                               hover:text-softWhite transition-colors duration-300 text-xs h-7 rounded-lg"
-                    >
-                      Setup guide
-                    </Button>
+                  <div className="flex flex-col items-center justify-center gap-2 pt-1.5">
+                    <div className="text-xs text-mediumGray flex items-center mb-2">
+                      <span className="inline-block mr-1">📄</span>
+                      {expert.presets}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => handleDownload(expert)}
+                        size="sm"
+                        className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-2 sm:px-3 
+                                 shadow-embossed hover:shadow-embossed-hover transition-all duration-300
+                                 border border-[#FFD700]/30 hover:border-[#FFD700]/40 text-xs h-6 sm:h-7
+                                 relative overflow-hidden group rounded-lg"
+                      >
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
+                                      bg-gradient-to-r from-transparent via-[#ffd70022] to-transparent
+                                      translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000
+                                      pointer-events-none" />
+                        <Download className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1" />
+                        Download
+                      </Button>
+                      <Button
+                        onClick={() => handleSetupGuide(expert.name)}
+                        variant="outline"
+                        size="sm"
+                        className="border-mediumGray/20 hover:bg-mediumGray/10 text-mediumGray 
+                                 hover:text-softWhite transition-colors duration-300 text-xs h-6 sm:h-7 rounded-lg"
+                      >
+                        Setup guide
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

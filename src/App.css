@@ -2,15 +2,10 @@
 #root {
   max-width: 100%;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0;
   text-align: center;
   background-color: black;
-}
-
-@media (min-width: 768px) {
-  #root {
-    padding: 2rem;
-  }
+  overflow-x: hidden;
 }
 
 .logo {
@@ -47,7 +42,7 @@
 
 @media (min-width: 768px) {
   .card {
-    padding: 2em;
+    padding: 1.5em;
   }
 }
 
@@ -67,4 +62,24 @@
 [data-route='tradehub'] .card,
 [data-route='tradehub'] [class*='rounded'] {
   border-radius: 0.5rem !important;
+}
+
+/* Responsive padding and margin adjustments */
+.section-padding {
+  padding: 0.75rem;
+}
+@media (min-width: 640px) {
+  .section-padding {
+    padding: 1rem;
+  }
+}
+@media (min-width: 768px) {
+  .section-padding {
+    padding: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .section-padding {
+    padding: 2rem;
+  }
 }

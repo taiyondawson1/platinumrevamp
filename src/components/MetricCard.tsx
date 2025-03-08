@@ -46,9 +46,9 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
       "backdrop-blur-sm",
       className
     )}>
-      <div className="flex flex-col items-center justify-center p-2 sm:py-2">
-        <div className="text-xs sm:text-sm text-softWhite/70 font-medium">{label}</div>
-        <div className="text-base sm:text-lg font-bold text-softWhite truncate max-w-full px-1">
+      <div className="flex flex-col items-center justify-center p-1.5 sm:p-2">
+        <div className="text-[10px] xs:text-xs sm:text-sm text-softWhite/70 font-medium">{label}</div>
+        <div className="text-sm sm:text-base lg:text-lg font-bold text-softWhite truncate max-w-full px-1">
           {formatValue(value, label)}
         </div>
       </div>
