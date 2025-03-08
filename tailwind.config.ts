@@ -65,9 +65,9 @@ export default {
           DEFAULT: "45deg 93% 56%", // Yellow
         },
         // Base colors
-        darkBase: "#191919", // Updated to RGB(25, 25, 25)
-        darkBlue: "#1A1A1A", // Slightly lighter for gradient
-        darkGrey: "#1D1D1D", // Middle tone for contrast
+        darkBase: "#000000", // Updated to pure black
+        darkBlue: "#0A0A0A", // Slightly lighter for gradient
+        darkGrey: "#0D0D0D", // Middle tone for contrast
         
         // Metallic palette
         silver: {
@@ -80,7 +80,7 @@ export default {
         softWhite: "#F6F6F7",
         softGray: "#E5E5E5",
         mediumGray: "#8E9196",
-        shadowGray: "#2A2A2A",
+        shadowGray: "#1A1A1A",
         highlightGray: "#FFFFFF10",
         
         // Accent colors

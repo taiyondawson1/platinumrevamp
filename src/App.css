@@ -4,6 +4,7 @@
   margin: 0 auto;
   padding: 1rem;
   text-align: center;
+  background-color: black;
 }
 
 @media (min-width: 768px) {
