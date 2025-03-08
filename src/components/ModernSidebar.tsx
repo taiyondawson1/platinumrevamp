@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar-new";
+import { Sidebar, SidebarBody, SidebarLink, useSidebar } from "@/components/ui/sidebar-new";
 import { 
   LayoutDashboard, 
   BarChart, 
@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export function ModernSidebar() {
   const { toast } = useToast();

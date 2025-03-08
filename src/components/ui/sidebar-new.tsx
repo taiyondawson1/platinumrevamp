@@ -74,7 +74,8 @@ export const SidebarBody = ({
   className,
   children,
   ...props
-}: React.ComponentProps<typeof motion.div>) => {
+}: React.ComponentProps<"div">) => {
+  // Extract children and className to avoid type errors when spreading props
   return (
     <>
       <DesktopSidebar className={className} {...props}>
