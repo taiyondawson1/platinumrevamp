@@ -23,8 +23,7 @@ const ExpertAdvisors = () => {
     },
     {
       name: "PlatinumAi: Stealth",
-      description: "Our most advanced bot. Use with caution.",
-      subtitle: "Ideal for personal capital, optimized for prop firm capital.",
+      description: "Minimal manual intervention required, with a \"one shot, one entry at a time\" approach.",
       presets: "2 presets available",
       path: "/expert-advisors/platinumai-stealth",
       filename: "PlatinumAI Stealth.ex4",
@@ -32,7 +31,8 @@ const ExpertAdvisors = () => {
     },
     {
       name: "PlatinumAi: Infinity",
-      description: "Minimal manual intervention required, with a \"one shot, one entry at a time\" approach.",
+      description: "Our most advanced bot. Use with caution.",
+      subtitle: "Ideal for personal capital, optimized for prop firm capital.",
       presets: "5 presets available",
       path: "/expert-advisors/platinumai-infinity",
       filename: "PlatinumAi Infinity.ex4",
