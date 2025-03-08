@@ -19,7 +19,7 @@ export function SplineSceneBasic() {
             <RainbowButton>
               Learn More
             </RainbowButton>
-            <button className="px-6 py-3 bg-transparent border border-white/20 text-white rounded-md hover:bg-white/10 transition-colors">
+            <button className="px-6 py-3 h-[44px] bg-transparent border border-white/20 text-white rounded-md hover:bg-white/10 transition-colors">
               View Demo
             </button>
           </div>
