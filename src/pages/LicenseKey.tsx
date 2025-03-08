@@ -8,7 +8,6 @@ import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import { RainbowButton } from "@/components/ui/rainbow-button";
 
 const MAX_ACCOUNTS = 5;
 
@@ -540,10 +539,6 @@ const LicenseKey = () => {
             </ol>
           </CardContent>
         </Card>
-        
-        <RainbowButton className="w-full max-w-xs mx-auto mt-2 mb-6">
-          Need Help? Contact Support
-        </RainbowButton>
       </div>
     </main>
   );
