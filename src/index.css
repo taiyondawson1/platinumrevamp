@@ -63,6 +63,25 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-size: 16px;
+  }
+  
+  @media (max-width: 640px) {
+    body {
+      font-size: 14px;
+    }
+  }
+  
+  h1 {
+    @apply text-2xl font-bold md:text-3xl lg:text-4xl;
+  }
+  
+  h2 {
+    @apply text-xl font-bold md:text-2xl lg:text-3xl;
+  }
+  
+  h3 {
+    @apply text-lg font-bold md:text-xl;
   }
 }
 
@@ -84,5 +103,32 @@
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+/* Responsive layout helpers */
+.main-content-with-sidebar {
+  margin-left: 0;
+  width: 100%;
+  transition: margin-left 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .main-content-with-sidebar {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+  }
+}
+
+/* Ensure images and media are responsive */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Improve form elements on smaller screens */
+@media (max-width: 640px) {
+  input, select, textarea, button {
+    font-size: 16px !important; /* Prevents zoom on iOS */
   }
 }

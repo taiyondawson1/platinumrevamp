@@ -32,7 +32,7 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
       }
       return value.toFixed(2);
     }
-    return value;
+    return String(value);
   };
 
   return (
@@ -46,9 +46,9 @@ const MetricCard = ({ label, value, trend, className }: MetricCardProps) => {
       "backdrop-blur-sm",
       className
     )}>
-      <div className="flex flex-col items-center justify-center py-2">
-        <div className="text-sm text-softWhite/70 font-medium">{label}</div>
-        <div className="text-lg font-bold text-softWhite">
+      <div className="flex flex-col items-center justify-center p-2 sm:py-2">
+        <div className="text-xs sm:text-sm text-softWhite/70 font-medium">{label}</div>
+        <div className="text-base sm:text-lg font-bold text-softWhite truncate max-w-full px-1">
           {formatValue(value, label)}
         </div>
       </div>
