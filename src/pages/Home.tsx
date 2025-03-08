@@ -1,6 +1,8 @@
 
 import { useNavigate } from "react-router-dom";
-import { SplineSceneBasic } from "@/components/ui/SplineSceneDemo";
+import { Card } from "@/components/ui/card";
+import { Spotlight } from "@/components/ui/spotlight";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 const Home = () => {
   const navigate = useNavigate();
