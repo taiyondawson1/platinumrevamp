@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { AlertTriangle, Download } from "lucide-react";
@@ -122,7 +121,7 @@ const ExpertAdvisors = () => {
             key={expert.name}
             className="group bg-darkBlue/40 backdrop-blur-sm p-3 border border-mediumGray/20 
                      hover:border-mediumGray/30 transition-all duration-300
-                     relative overflow-hidden !rounded-none"
+                     relative overflow-hidden"
           >
             {/* Shiny gold reflective effect */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
@@ -151,7 +150,7 @@ const ExpertAdvisors = () => {
                       className="bg-[#FFD700] hover:bg-[#FFD700]/90 text-black px-3 
                                shadow-embossed hover:shadow-embossed-hover transition-all duration-300
                                border border-[#FFD700]/30 hover:border-[#FFD700]/40 text-xs h-7
-                               relative overflow-hidden group !rounded-none"
+                               relative overflow-hidden group rounded-lg"
                     >
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700
                                     bg-gradient-to-r from-transparent via-[#ffd70022] to-transparent
@@ -165,7 +164,7 @@ const ExpertAdvisors = () => {
                       variant="outline"
                       size="sm"
                       className="border-mediumGray/20 hover:bg-mediumGray/10 text-mediumGray 
-                               hover:text-softWhite transition-colors duration-300 text-xs h-7 !rounded-none"
+                               hover:text-softWhite transition-colors duration-300 text-xs h-7 rounded-lg"
                     >
                       Setup guide
                     </Button>
