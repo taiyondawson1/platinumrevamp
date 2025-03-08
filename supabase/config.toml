@@ -1,6 +1,1 @@
-
 project_id = "qzbwxtegqsusmfwjauwh"
-[functions.validate-license]
-verify_jwt = false
-[functions.fix-missing-user-records]
-verify_jwt = false

@@ -614,6 +614,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      update_expired_licenses: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       update_user_referral_codes: {
         Args: {
           user_id: string
