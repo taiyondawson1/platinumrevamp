@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PlusCircle, XCircle, Copy, CheckCircle, AlertTriangle, Info } from "lucide-react";
@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { RealtimeChannel } from "@supabase/supabase-js";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 
 const MAX_ACCOUNTS = 5;
 
@@ -382,7 +383,7 @@ const LicenseKey = () => {
   const LicenseStatusWarning = () => {
     if (licenseStatus !== 'active') {
       return (
-        <Alert variant="destructive" className="mb-4">
+        <Alert variant="destructive" className="mb-6">
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>License Not Active</AlertTitle>
           <AlertDescription>Your license is currently {licenseStatus}. Please contact support for assistance.</AlertDescription>
@@ -392,7 +393,7 @@ const LicenseKey = () => {
     
     if (expiryDate && new Date() > expiryDate) {
       return (
-        <Alert variant="destructive" className="mb-4">
+        <Alert variant="destructive" className="mb-6">
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>License Expired</AlertTitle>
           <AlertDescription>Your license expired on {formatExpiryDate(expiryDate)}. Please renew your subscription.</AlertDescription>
@@ -402,7 +403,7 @@ const LicenseKey = () => {
     
     if (accountsLocked) {
       return (
-        <Alert variant="default" className="mb-4 border-amber-500">
+        <Alert variant="default" className="mb-6 border-amber-500">
           <AlertTriangle className="h-4 w-4 text-amber-500" />
           <AlertTitle className="text-amber-500">Account Management Locked</AlertTitle>
           <AlertDescription>Your account management has been locked by an administrator. Please contact support.</AlertDescription>
@@ -415,7 +416,7 @@ const LicenseKey = () => {
   
   return (
     <main className="flex-1 p-6 max-w-[1400px] mx-auto">
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-8">
         <section className="space-y-4">
           <h1 className="text-4xl font-bold text-softWhite">License Key Management</h1>
           <p className="text-mediumGray text-lg max-w-2xl">
@@ -427,111 +428,122 @@ const LicenseKey = () => {
         <LicenseStatusWarning />
         
         {expiryDate && licenseStatus === 'active' && new Date() <= expiryDate && (
-          <Alert className="mb-4 border-blue-500 bg-darkBlue/30">
+          <Alert className="mb-6 border-blue-500 bg-darkBlue/30">
             <Info className="h-4 w-4 text-blue-500" />
             <AlertTitle className="text-blue-500">License Information</AlertTitle>
             <AlertDescription>Your license is valid until: {formatExpiryDate(expiryDate)}</AlertDescription>
           </Alert>
         )}
         
-        <Card className="!rounded-none bg-darkBlue/60 border-silver/20 backdrop-blur-sm p-6 space-y-4">
-          <h2 className="text-xl font-semibold text-softWhite">Your License Key</h2>
-          <div className="flex items-center gap-4">
-            <div className="flex-1 bg-darkGrey/50 p-4 border border-silver/20 font-mono text-lg text-softWhite">
-              {licenseKey}
-            </div>
-            <Button 
-              variant="outline" 
-              size="icon" 
-              onClick={handleCopyKey}
-              className="h-12 w-12"
-            >
-              {isCopied ? <CheckCircle className="h-5 w-5 text-green-500" /> : <Copy className="h-5 w-5" />}
-            </Button>
-          </div>
-          <p className="text-sm text-mediumGray">
-            Use this key to activate your Expert Advisor. Keep your license key secure.
-          </p>
-        </Card>
-        
-        <Card className="!rounded-none bg-darkBlue/60 border-silver/20 backdrop-blur-sm p-6 space-y-4">
-          <h2 className="text-xl font-semibold text-softWhite">MT4 Account Numbers</h2>
-          <div className="space-y-4">
+        <Card className="bg-darkBlue/60 border-silver/20 backdrop-blur-sm shadow-lg">
+          <CardContent className="p-6 space-y-4">
+            <h2 className="text-xl font-semibold text-softWhite mb-4">Your License Key</h2>
             <div className="flex items-center gap-4">
-              <Input
-                placeholder="Enter MT4 account number"
-                value={newAccount}
-                onChange={(e) => setNewAccount(e.target.value)}
-                className="flex-1 bg-darkGrey/50 border-silver/20"
-                disabled={!canAddAccounts || accountsLocked || accountNumbers.length >= maxAccounts}
-              />
+              <div className="flex-1 bg-darkGrey/50 p-4 border border-silver/20 font-mono text-lg text-softWhite rounded-lg">
+                {licenseKey}
+              </div>
               <Button 
-                onClick={handleAddAccount}
-                disabled={!canAddAccounts || accountsLocked || accountNumbers.length >= maxAccounts}
-                className="min-w-[100px]"
+                variant="outline" 
+                size="icon" 
+                onClick={handleCopyKey}
+                className="h-12 w-12"
               >
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Add
+                {isCopied ? <CheckCircle className="h-5 w-5 text-green-500" /> : <Copy className="h-5 w-5" />}
               </Button>
             </div>
-            
-            {!canAddAccounts && (
-              <Alert variant="default" className="border-amber-500 bg-darkBlue/30">
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
-                <AlertDescription className="text-amber-500">
-                  Adding account numbers has been disabled for your license. Please contact support.
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            {accountNumbers.length === 0 ? (
-              <div className="text-center p-4 text-mediumGray">
-                No account numbers added yet. Add up to {maxAccounts} MT4 account numbers.
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {accountNumbers.map((account, index) => (
-                  <div 
-                    key={index} 
-                    className="flex items-center justify-between p-4 bg-darkGrey/30 border border-silver/20"
-                  >
-                    <span className="font-mono text-softWhite">{account}</span>
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      onClick={() => handleRemoveAccount(account)}
-                      disabled={!canRemoveAccounts || accountsLocked}
-                    >
-                      <XCircle className="h-5 w-5 text-accent-red" />
-                    </Button>
-                  </div>
-                ))}
-                <div className="text-right text-sm text-mediumGray">
-                  {accountNumbers.length} of {maxAccounts} accounts used
-                </div>
-              </div>
-            )}
-            
-            {!canRemoveAccounts && accountNumbers.length > 0 && (
-              <Alert variant="default" className="border-amber-500 bg-darkBlue/30">
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
-                <AlertDescription className="text-amber-500">
-                  Removing account numbers has been disabled for your license. Please contact support.
-                </AlertDescription>
-              </Alert>
-            )}
-          </div>
+            <p className="text-sm text-mediumGray">
+              Use this key to activate your Expert Advisor. Keep your license key secure.
+            </p>
+          </CardContent>
         </Card>
         
-        <Card className="!rounded-none bg-darkBlue/40 border-silver/20 backdrop-blur-sm p-6 space-y-4">
-          <h2 className="text-xl font-semibold text-softWhite">Instructions</h2>
-          <ol className="list-decimal list-inside space-y-2 text-mediumGray">
-            <li>Copy your license key from above</li>
-            <li>Paste the key into your Expert Advisor's LicenseKey variable</li>
-            <li>Add your MT4 account numbers (up to {maxAccounts}) to authorize them</li>
-            <li>The EA will only work on authorized accounts</li>
-          </ol>
+        <Card className="bg-darkBlue/60 border-silver/20 backdrop-blur-sm shadow-lg">
+          <CardContent className="p-6 space-y-6">
+            <h2 className="text-xl font-semibold text-softWhite mb-4">MT4 Account Numbers</h2>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <Input
+                  placeholder="Enter MT4 account number"
+                  value={newAccount}
+                  onChange={(e) => setNewAccount(e.target.value)}
+                  className="flex-1 bg-darkGrey/50 border-silver/20"
+                  disabled={!canAddAccounts || accountsLocked || accountNumbers.length >= maxAccounts}
+                />
+                <Button 
+                  onClick={handleAddAccount}
+                  disabled={!canAddAccounts || accountsLocked || accountNumbers.length >= maxAccounts}
+                  className="min-w-[100px]"
+                >
+                  <PlusCircle className="h-4 w-4 mr-2" />
+                  Add
+                </Button>
+              </div>
+              
+              {!canAddAccounts && (
+                <Alert variant="default" className="border-amber-500 bg-darkBlue/30">
+                  <AlertTriangle className="h-4 w-4 text-amber-500" />
+                  <AlertDescription className="text-amber-500">
+                    Adding account numbers has been disabled for your license. Please contact support.
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {accountNumbers.length === 0 ? (
+                <div className="text-center p-6 text-mediumGray bg-darkGrey/20 rounded-lg border border-silver/10">
+                  No account numbers added yet. Add up to {maxAccounts} MT4 account numbers.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {accountNumbers.map((account, index) => (
+                    <div 
+                      key={index} 
+                      className="flex items-center justify-between p-4 bg-darkGrey/30 border border-silver/20 rounded-lg hover:bg-darkGrey/40 transition-colors"
+                    >
+                      <span className="font-mono text-softWhite">{account}</span>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        onClick={() => handleRemoveAccount(account)}
+                        disabled={!canRemoveAccounts || accountsLocked}
+                        className="rounded-full hover:bg-red-500/20 hover:text-red-400"
+                      >
+                        <XCircle className="h-5 w-5 text-accent-red" />
+                      </Button>
+                    </div>
+                  ))}
+                  <div className="text-right text-sm text-mediumGray">
+                    {accountNumbers.length} of {maxAccounts} accounts used
+                  </div>
+                </div>
+              )}
+              
+              {!canRemoveAccounts && accountNumbers.length > 0 && (
+                <Alert variant="default" className="border-amber-500 bg-darkBlue/30">
+                  <AlertTriangle className="h-4 w-4 text-amber-500" />
+                  <AlertDescription className="text-amber-500">
+                    Removing account numbers has been disabled for your license. Please contact support.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+          </CardContent>
         </Card>
+        
+        <Card className="bg-darkBlue/40 border-silver/20 backdrop-blur-sm shadow-lg mb-6">
+          <CardContent className="p-6 space-y-4">
+            <h2 className="text-xl font-semibold text-softWhite mb-4">Instructions</h2>
+            <ol className="list-decimal list-inside space-y-3 text-mediumGray">
+              <li className="p-2 rounded-lg hover:bg-darkGrey/20 transition-colors">Copy your license key from above</li>
+              <li className="p-2 rounded-lg hover:bg-darkGrey/20 transition-colors">Paste the key into your Expert Advisor's LicenseKey variable</li>
+              <li className="p-2 rounded-lg hover:bg-darkGrey/20 transition-colors">Add your MT4 account numbers (up to {maxAccounts}) to authorize them</li>
+              <li className="p-2 rounded-lg hover:bg-darkGrey/20 transition-colors">The EA will only work on authorized accounts</li>
+            </ol>
+          </CardContent>
+        </Card>
+        
+        <RainbowButton className="w-full max-w-xs mx-auto mt-2 mb-6">
+          Need Help? Contact Support
+        </RainbowButton>
       </div>
     </main>
   );
