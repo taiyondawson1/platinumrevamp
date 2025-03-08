@@ -1,15 +1,15 @@
 
 import { useNavigate } from "react-router-dom";
-import { SparklesPreviewDark } from "@/components/ui/SparklesDemo";
+import { LampDemo } from "@/components/ui/LampDemo";
 
 const Home = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-0 relative overflow-hidden">
-      {/* Particle background */}
+      {/* Lamp background */}
       <div className="absolute inset-0 w-full h-full">
-        <SparklesPreviewDark />
+        <LampDemo />
       </div>
       
       {/* Empty content overlay with clickable area */}
