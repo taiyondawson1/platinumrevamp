@@ -10,6 +10,7 @@ import { ArrowLeft } from "lucide-react";
 import { useStaffKeyValidation } from "@/hooks/use-staff-key-validation";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Squares } from "@/components/ui/squares-background";
 
 const STAFF_KEY_PATTERNS = {
   CEO: /^CEO\d{3}$/,    // CEO followed by 3 digits
@@ -335,8 +336,19 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-darkBlue via-darkBase to-darkGrey p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center relative p-4">
+      {/* Squares Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <Squares 
+          direction="diagonal"
+          speed={0.3}
+          squareSize={50}
+          borderColor="#333333" 
+          hoverFillColor="#222222"
+        />
+      </div>
+      
+      <Card className="w-full max-w-md z-10 bg-black/80 backdrop-blur-sm border-silver/20">
         <CardHeader>
           <div className="flex items-center space-x-2">
             <Button 
