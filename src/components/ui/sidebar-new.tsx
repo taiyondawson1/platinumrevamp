@@ -75,10 +75,10 @@ export const SidebarBody = ({
   children,
   ...props
 }: React.ComponentProps<"div">) => {
-  // Extract children and className to avoid type errors when spreading props
+  // We're not passing props to DesktopSidebar anymore
   return (
     <>
-      <DesktopSidebar className={className} {...props}>
+      <DesktopSidebar className={className}>
         {children}
       </DesktopSidebar>
       <MobileSidebar className={className}>
