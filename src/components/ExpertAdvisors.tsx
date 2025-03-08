@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { AlertTriangle, Download } from "lucide-react";
@@ -94,7 +95,7 @@ const ExpertAdvisors = () => {
   };
 
   return (
-    <div className="p-4 ml-[64px] relative">
+    <div className="p-4 pt-8 sm:pt-12 ml-[64px] relative">
       <h1 className="text-xl font-semibold text-softWhite mb-4">Expert Advisors</h1>
       
       <Alert variant="default" className="mb-6 border-amber-500 bg-darkBlue/30">
