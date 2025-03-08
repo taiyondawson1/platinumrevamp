@@ -134,8 +134,8 @@ export const Logo = () => {
   
   return (
     <div className="font-normal flex space-x-2 items-center text-sm text-softWhite py-1 relative z-20">
-      <div className="h-5 w-6 bg-silver/80 rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm flex-shrink-0">
-        <Diamond className="h-4 w-4 text-darkBase" />
+      <div className="h-6 w-6 flex-shrink-0 flex items-center justify-center transform rotate-45 bg-silver/80">
+        <Diamond className="h-4 w-4 text-darkBase transform -rotate-45" />
       </div>
       {open && (
         <motion.span
