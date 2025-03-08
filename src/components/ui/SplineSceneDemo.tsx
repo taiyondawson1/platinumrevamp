@@ -15,7 +15,7 @@ export function SplineSceneBasic() {
       
       <div className="flex flex-col md:flex-row h-full">
         {/* Left content */}
-        <div className="flex-1 p-8 md:p-12 relative z-10 flex flex-col justify-center ml-[50px]">
+        <div className="flex-1 p-8 md:p-12 relative z-10 flex flex-col justify-center ml-[300px]">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">Welcome</h1>
           <p className="mt-4 text-neutral-300 max-w-lg text-lg">Welcome to PlatinumAi!  Trade smarter with powerful automation and reliable risk management.</p>
           <div className="mt-8 flex gap-4">
