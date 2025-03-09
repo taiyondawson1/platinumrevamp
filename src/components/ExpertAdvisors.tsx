@@ -19,7 +19,7 @@ const ExpertAdvisors = () => {
       presets: "4 presets available",
       path: "/expert-advisors/platinumai-pulse",
       filename: "PlatinumAi Pulse v2.ex4",
-      downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Pulse%20v2.ex4"
+      downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Pulse%20v2.2"
     },
     {
       name: "PlatinumAi: Stealth",
@@ -27,7 +27,7 @@ const ExpertAdvisors = () => {
       presets: "2 presets available",
       path: "/expert-advisors/platinumai-stealth",
       filename: "PlatinumAI Stealth.ex4",
-      downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAI%20Stealth.ex4"
+      downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Stealth%202.ex4"
     },
     {
       name: "PlatinumAi: Infinity",
@@ -36,7 +36,7 @@ const ExpertAdvisors = () => {
       presets: "5 presets available",
       path: "/expert-advisors/platinumai-infinity",
       filename: "PlatinumAi Infinity.ex4",
-      downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//PlatinumAi%20Infinity.ex4"
+      downloadUrl: "https://qzbwxtegqsusmfwjauwh.supabase.co/storage/v1/object/public/expert-advisors//Platinumai%20Infinity%20v2.ex4"
     },
   ];
 
